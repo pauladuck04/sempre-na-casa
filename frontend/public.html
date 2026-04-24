@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio - Sempre na Casa</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/componentes.css">
+    <link rel="stylesheet" href="css/paginas.css">
+</head>
+    <nav class="navbar navbar-light bg-white sticky-top shadow-sm py-3">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a class="navbar-brand d-flex align-items-center fw-bold" href="index.html" style="color: black; font-size: 1.5rem;">
+                <img src="assets/images/logo.jpg" alt="Logo" width="40" height="40" class="d-inline-block align-text-top me-2">
+                SEMPRE NA CASA
+            </a>
+
+            <div class="d-flex">
+                <a href="login.html" class="btn btn-primary fw-semibold px-4 rounded-pill">
+                    INICIAR SESIÓN
+                </a>
+            </div>
+        </div>
+    </nav>
+<body>
+    <header class="intro py-5" style="background-color: #7A99DD;"> <div class="container">
+            <div class="row align-items-center min-vh-75">
+                <div class="col-lg-7 text-white py-5">
+                    <span class="badge rounded-pill bg-light mb-3 px-3 py-2" style="color: #7A99DD;">NEW · PLATAFORMA MATCHING 2026</span>
+                    <h1 class="display-3 fw-bold mb-4">Conectando generaciones, construyendo hogares</h1>
+                    <p class="lead mb-5 opacity-90">Una solución de impacto para la sociedad y la vivienda en Ourense.</p>
+                    
+                    <div class="d-flex gap-3">
+                        <a onclick="setRol('anfitrion')" href="registro.html?rol=anfitrion" class="btn btn-light px-4 rounded-pill">Soy anfitrión</a>
+                        <a onclick="setRol('inquilino')" href="registro.html?rol=inquilino" class="btn btn-dark px-4 rounded-pill">Soy inquilino</a>
+                    </div>
+                </div>
+
+                <div class="col-lg-5 text-center">
+                    <div class="image-wrapper">
+                        <img src="assets/images/imagen-landing-page.png" alt="Convivencia" class="img-fluid rounded-4 shadow-lg">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="how-works py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-4 fw-bold mb-3">¿Cómo funciona?</h2>
+                <p class="lead opacity-75">Un proceso simple y seguro para encontrar a tu compañero ideal</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm p-4 text-center">
+                        <div class="icon-wrapper mb-3">
+                            <i class="bi bi-person-plus-fill fs-1" style="color: var(--color-primario)"></i>
+                        </div>
+                        <h5 class="fw-bold">1. Crea tu perfil</h5>
+                        <p class="text-muted">Regístrate y cuéntanos sobre ti, tus hábitos y preferencias.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm p-4 text-center">
+                        <div class="icon-wrapper mb-3">
+                            <i class="bi bi-cpu fs-1" style="color: var(--color-primario)"></i>
+                        </div>
+                        <h5 class="fw-bold">2. Matching inteligente</h5>
+                        <p class="text-muted">Nuestro algoritmo busca los perfiles más afines basándose en estilo de vida.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm p-4 text-center">
+                        <div class="icon-wrapper mb-3">
+                            <i class="bi bi-chat-heart fs-1" style="color: var(--color-primario)"></i>
+                        </div>
+                        <h5 class="fw-bold">3. Conecta y convive</h5>
+                        <p class="text-muted">Conózcanse y comiencen una experiencia enriquecedora.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+<footer class="footer bg-dark"> <div class="container-fluid px-5 py-4">
+        <div class="row align-items-start">
+            <div class="col-md-6 mb-3 mb-md-0">
+                <a class="d-flex align-items-center fw-bold text-white text-decoration-none mb-2" href="index.html">
+                    <img src="assets/images/logo.JPG" alt="Logo" width="55" height="55" class="me-2 rounded-circle">
+                    <span style="font-size: 1.6rem; letter-spacing: 1px;">SEMPRE NA CASA</span>
+                </a>
+                <p class="text-white-50 mb-0" style="max-width: 600px; font-size: 1.15rem; font-weight: 100;">
+                    Fomentando la convivencia intergeneracional, combatiendo la soledad y facilitando el acceso a la vivienda.
+                </p>
+            </div>
+
+            <div class="col-md-6 d-flex justify-content-md-end">
+                <ul class="list-unstyled text-md-end mb-0">
+                    <li class="mb-2"><a href="sobre-nosotros.html" class="text-white text-decoration-none footer-link">Sobre nosotros</a></li>
+                    <li class="mb-2"><a href="testimonios.html" class="text-white text-decoration-none footer-link">Testimonios</a></li>
+                    <li class="mb-2"><a href="faq.html" class="text-white text-decoration-none footer-link">Preguntas frecuentes</a></li>
+                    <li><a href="contacto.html" class="text-white text-decoration-none footer-link">Contacto</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <hr class="border-secondary mt-4 mb-3">
+        <p class="text-center text-white-50 mb-0" style="font-size: 0.85rem;">
+            © 2026 Sempre na Casa. Todos los derechos reservados.
+        </p>
+    </div>
+</footer>
+</html>

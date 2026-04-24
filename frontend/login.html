@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio - Sempre na Casa</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/componentes.css">
+    <link rel="stylesheet" href="css/paginas.css">
+</head>
+<body>
+    <div class="login-bg d-flex align-items-center justify-content-center min-vh-100">
+    <div class="login-card">
+        <div class="text-center mb-4">
+            <img src="./assets/images/logo.JPG" alt="Logo" width="70" height="70" class="rounded-circle mb-3 logo-shadow">
+            <h2 class="fw-bold mb-1">Bienvenido de nuevo</h2>
+            <p class="text-muted small">Inicia sesión en tu cuenta de Sempre na Casa</p>
+        </div>
+
+        <form action="login.html" method="POST">
+            <div class="mb-3">
+                <label for="email" class="form-label fw-semibold">Email</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0">
+                        <i class="bi bi-envelope text-muted"></i>
+                    </span>
+                    <input type="email" class="form-control border-start-0 bg-light" id="email" name="email"
+                           placeholder="tucorreo@ejemplo.com" required>
+                </div>
+            </div>
+
+            <div class="mb-2">
+                <label for="password" class="form-label fw-semibold">Contraseña</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0">
+                        <i class="bi bi-lock text-muted"></i>
+                    </span>
+                    <input type="password" class="form-control border-start-0 bg-light" id="password" name="password"
+                           placeholder="••••••••" required>
+                    <span class="input-group-text bg-light border-start-0 toggle-password" style="cursor:pointer;">
+                        <i class="bi bi-eye text-muted" id="toggleIcon"></i>
+                    </span>
+                </div>
+            </div>
+
+            <div class="text-end mb-4">
+                <a href="recuperar-password.html" class="small text-decoration-none link-custom">¿Has olvidado tu contraseña?</a>
+            </div>
+
+            <button type="submit" class="btn btn-primary-inverse w-100 fw-bold py-2 rounded-pill">
+                Iniciar sesión
+            </button>
+
+        </form>
+
+        <div class="divider my-4">
+            <span>¿Aún no tienes cuenta?</span>
+        </div>
+
+        <div class="d-flex gap-2">
+            <a href="./registro.html?rol=anfitrion" class="btn btn-dark w-50 rounded-pill small fw-semibold">
+                Soy anfitrión
+            </a>
+            <a href="./registro.html?rol=inquilino" class="btn btn-dark w-50 rounded-pill small fw-semibold">
+                Soy inquilino
+            </a>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>
