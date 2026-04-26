@@ -1,0 +1,257 @@
+/* ====================================================
+   3-GENERIC / BASE.CSS
+   Estilos base para elementos HTML generales
+   ==================================================== */
+
+/* ============================================
+   HEADINGS
+   ============================================ */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: var(--font-weight-bold);
+    color: var(--color-texto);
+    line-height: var(--line-height-tight);
+    margin-bottom: var(--space-md);
+    font-family: var(--fuente-heading);
+}
+
+h1 {
+    font-size: var(--font-size-4xl);
+}
+
+h2 {
+    font-size: var(--font-size-3xl);
+}
+
+h3 {
+    font-size: var(--font-size-2xl);
+}
+
+h4 {
+    font-size: var(--font-size-xl);
+}
+
+h5 {
+    font-size: var(--font-size-lg);
+}
+
+h6 {
+    font-size: var(--font-size-base);
+}
+
+/* Eliminar margen inferior del último heading */
+h1:last-child,
+h2:last-child,
+h3:last-child,
+h4:last-child,
+h5:last-child,
+h6:last-child {
+    margin-bottom: 0;
+}
+
+/* ============================================
+   PÁRRAFOS Y TEXTO
+   ============================================ */
+p {
+    margin-bottom: var(--space-md);
+    line-height: var(--line-height-normal);
+}
+
+p:last-child {
+    margin-bottom: 0;
+}
+
+small {
+    font-size: var(--font-size-sm);
+    color: var(--color-texto-muted);
+}
+
+strong,
+.font-bold {
+    font-weight: var(--font-weight-bold);
+}
+
+em,
+.italic {
+    font-style: italic;
+}
+
+mark,
+.mark {
+    background-color: #fff3cd;
+    padding: 0.125rem 0.25rem;
+    border-radius: var(--border-radius-sm);
+}
+
+/* ============================================
+   LISTAS
+   ============================================ */
+ul,
+ol {
+    margin-bottom: var(--space-md);
+    padding-left: var(--space-lg);
+}
+
+ul ul,
+ul ol,
+ol ul,
+ol ol {
+    margin-bottom: 0;
+}
+
+li {
+    margin-bottom: 0.5rem;
+}
+
+dl {
+    margin-bottom: var(--space-md);
+}
+
+dt {
+    font-weight: var(--font-weight-semibold);
+    margin-top: var(--space-md);
+}
+
+dd {
+    margin-left: 0;
+    margin-bottom: var(--space-sm);
+}
+
+/* ============================================
+   CÓDIGO
+   ============================================ */
+code {
+    font-family: var(--fuente-mono);
+    font-size: 0.9em;
+    color: var(--color-error);
+    background-color: var(--color-gris-claro);
+    padding: 0.2em 0.4em;
+    border-radius: var(--border-radius-sm);
+}
+
+pre {
+    background-color: var(--color-gris-claro);
+    padding: var(--space-md);
+    border-radius: var(--border-radius-md);
+    overflow-x: auto;
+    margin-bottom: var(--space-md);
+    font-size: var(--font-size-sm);
+}
+
+pre code {
+    color: inherit;
+    background-color: transparent;
+    padding: 0;
+}
+
+/* ============================================
+   BLOCKQUOTE
+   ============================================ */
+blockquote {
+    margin-bottom: var(--space-md);
+    padding-left: var(--space-md);
+    border-left: 4px solid var(--color-primario);
+    color: var(--color-texto-muted);
+    font-style: italic;
+}
+
+/* ============================================
+   SEPARADORES
+   ============================================ */
+hr {
+    border: none;
+    border-top: 1px solid var(--color-gris-400);
+    margin: var(--space-lg) 0;
+}
+
+/* ============================================
+   TABLAS
+   ============================================ */
+table {
+    width: 100%;
+    margin-bottom: var(--space-lg);
+    border-collapse: collapse;
+}
+
+thead {
+    background-color: var(--color-gris-claro);
+}
+
+thead th {
+    padding: var(--space-md);
+    font-weight: var(--font-weight-semibold);
+    text-align: left;
+    border-bottom: 2px solid var(--color-gris-400);
+}
+
+tbody td {
+    padding: var(--space-md);
+    border-bottom: 1px solid var(--color-gris-400);
+}
+
+tbody tr:hover {
+    background-color: var(--color-gris-claro);
+}
+
+/* ============================================
+   IMÁGENES
+   ============================================ */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+img.img-responsive {
+    max-width: 100%;
+    height: auto;
+}
+
+/* ============================================
+   VIDEO/IFRAME
+   ============================================ */
+iframe,
+video,
+embed,
+object {
+    max-width: 100%;
+    height: auto;
+}
+
+/* ============================================
+   CONTENEDOR HTML5
+   ============================================ */
+main {
+    display: block;
+}
+
+article {
+    margin-bottom: var(--space-lg);
+}
+
+section {
+    margin-bottom: var(--space-lg);
+}
+
+aside {
+    margin-bottom: var(--space-lg);
+}
+
+/* ============================================
+   FOCUS STATES (Accesibilidad)
+   ============================================ */
+:focus-visible {
+    outline: 2px solid var(--color-primario);
+    outline-offset: 2px;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+    outline: 2px solid var(--color-primario);
+    outline-offset: 2px;
+}

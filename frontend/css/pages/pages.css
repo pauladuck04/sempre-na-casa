@@ -1,0 +1,540 @@
+/* ====================================================
+   7-PAGES / PAGES.CSS
+   Estilos específicos de páginas
+   ==================================================== */
+
+/* ============================================
+   PÁGINA LOGIN
+   ============================================ */
+.login-bg {
+    background-color: var(--color-primario);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-card {
+    background: var(--color-blanco);
+    border-radius: 24px;
+    padding: 2.5rem 2rem;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+.login-card h2 {
+    margin-bottom: var(--space-md);
+}
+
+.login-card p {
+    color: var(--color-texto-muted);
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--space-lg);
+}
+
+.logo-shadow {
+    box-shadow: 0 8px 20px rgba(122, 153, 221, 0.4);
+}
+
+.link-custom {
+    color: var(--color-primario);
+    text-decoration: none;
+    transition: var(--transicion);
+    font-size: var(--font-size-sm);
+}
+
+.link-custom:hover {
+    color: var(--color-primario-oscuro);
+    text-decoration: underline;
+}
+
+/* ============================================
+   PÁGINA REGISTRO
+   ============================================ */
+.registro-bg {
+    background-color: var(--color-primario);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-lg) 0;
+}
+
+.registro-card {
+    background: var(--color-blanco);
+    border-radius: 24px;
+    padding: 2.5rem 2rem;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+/* ============================================
+   PÁGINA ENCUESTA
+   ============================================ */
+.encuesta-header {
+    background-color: var(--color-primario);
+    color: var(--color-blanco);
+    padding: var(--space-2xl) 0;
+    text-align: center;
+}
+
+.encuesta-header h1 {
+    color: var(--color-blanco);
+    margin-bottom: var(--space-md);
+}
+
+.encuesta-header p {
+    color: rgba(255, 255, 255, 0.75);
+    font-size: var(--font-size-lg);
+}
+
+.encuesta-progress {
+    height: 8px;
+    max-width: 400px;
+    margin: var(--space-lg) auto 0;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: var(--border-radius-full);
+    overflow: hidden;
+}
+
+.encuesta-progress-bar {
+    background-color: var(--color-blanco);
+    height: 100%;
+    transition: width var(--transicion);
+}
+
+.encuesta-container {
+    margin-top: -80px;
+    margin-bottom: var(--space-3xl);
+}
+
+.encuesta-card {
+    background: var(--color-blanco);
+    border-radius: 20px;
+    padding: 2rem 2.5rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+.encuesta-question {
+    margin-bottom: var(--space-2xl);
+}
+
+.encuesta-question:last-child {
+    margin-bottom: 0;
+}
+
+.encuesta-question h5 {
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--space-lg);
+    font-size: var(--font-size-lg);
+}
+
+.encuesta-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-md);
+}
+
+/* ============================================
+   PÁGINA INTRO / HOME
+   ============================================ */
+.intro {
+    background-color: var(--color-primario);
+    position: relative;
+    overflow: hidden;
+    padding: var(--space-3xl) 0;
+    color: var(--color-blanco);
+}
+
+.intro-content {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2xl);
+}
+
+.img-hero-custom {
+    max-width: 100%;
+    height: auto;
+    filter: drop-shadow(10px 10px 20px rgba(0, 0, 0, 0.2));
+    border-radius: var(--border-radius-lg);
+}
+
+/* ============================================
+   DASHBOARD ANFITRIÓN
+   ============================================ */
+.dashboard-anfitrion {
+    padding: var(--space-2xl) 0;
+}
+
+.dashboard-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--space-lg);
+    margin-bottom: var(--space-2xl);
+}
+
+.stat-card {
+    background: var(--color-blanco);
+    border-radius: var(--border-radius-lg);
+    padding: var(--space-xl);
+    box-shadow: var(--sombra-md);
+    transition: var(--transicion);
+}
+
+.stat-card:hover {
+    box-shadow: var(--sombra-hover);
+    transform: translateY(-5px);
+}
+
+.stat-card h3 {
+    color: var(--color-texto-muted);
+    font-size: var(--font-size-sm);
+    text-transform: uppercase;
+    margin-bottom: var(--space-md);
+}
+
+.stat-number {
+    font-size: var(--font-size-4xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primario);
+}
+
+/* ============================================
+   DASHBOARD INQUILINO
+   ============================================ */
+.dashboard-inquilino {
+    padding: var(--space-2xl) 0;
+}
+
+.properties-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--space-lg);
+}
+
+.property-card {
+    background: var(--color-blanco);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    box-shadow: var(--sombra-md);
+    transition: var(--transicion);
+}
+
+.property-card:hover {
+    box-shadow: var(--sombra-hover);
+    transform: translateY(-5px);
+}
+
+.property-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.property-info {
+    padding: var(--space-lg);
+}
+
+.property-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--space-sm);
+}
+
+.property-price {
+    font-size: var(--font-size-2xl);
+    color: var(--color-primario);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--space-md);
+}
+
+.property-specs {
+    display: flex;
+    gap: var(--space-md);
+    margin-bottom: var(--space-md);
+    font-size: var(--font-size-sm);
+    color: var(--color-texto-muted);
+}
+
+/* ============================================
+   TABLAS / GESTIÓN
+   ============================================ */
+.table-responsive {
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: var(--space-lg);
+}
+
+.table thead {
+    background-color: var(--color-gris-claro);
+}
+
+.table th {
+    padding: var(--space-md);
+    text-align: left;
+    font-weight: var(--font-weight-semibold);
+    border-bottom: 2px solid var(--color-gris-400);
+    color: var(--color-texto);
+}
+
+.table td {
+    padding: var(--space-md);
+    border-bottom: 1px solid var(--color-gris-400);
+}
+
+.table tbody tr:hover {
+    background-color: var(--color-gris-claro);
+}
+
+/* Tabla con hover activo (cuando se selecciona una fila) */
+.table-active-custom {
+    background-color: rgba(122, 153, 221, 0.2) !important;
+    border-left: 4px solid var(--color-primario);
+}
+
+.table-hover tbody tr {
+    cursor: pointer;
+    transition: all var(--transicion);
+}
+
+/* ============================================
+   PÁGINA HOME / LANDING PAGE
+   ============================================ */
+
+/* Sección intro/hero */
+.intro {
+    background-color: var(--color-primario);
+    padding: var(--space-3xl) 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.intro h1 {
+    color: var(--color-blanco);
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1.1;
+    margin-bottom: var(--space-lg);
+}
+
+.intro .lead {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    margin-bottom: var(--space-xl);
+}
+
+.intro .badge {
+    background-color: var(--color-blanco);
+    color: var(--color-primario);
+    font-weight: var(--font-weight-semibold);
+    padding: var(--space-sm) var(--space-md);
+    display: inline-block;
+    margin-bottom: var(--space-lg);
+}
+
+.intro .btn-light {
+    background-color: var(--color-blanco);
+    color: var(--color-primario);
+    border: 2px solid var(--color-blanco);
+    font-weight: var(--font-weight-semibold);
+    transition: var(--transicion);
+}
+
+.intro .btn-light:hover {
+    background-color: rgba(255, 255, 255, 0.9);
+    transform: translateY(-2px);
+    box-shadow: var(--sombra-md);
+}
+
+.intro .btn-dark {
+    background-color: var(--color-secundario);
+    color: var(--color-blanco);
+    border: 2px solid var(--color-secundario);
+    font-weight: var(--font-weight-semibold);
+    transition: var(--transicion);
+}
+
+.intro .btn-dark:hover {
+    background-color: var(--color-blanco);
+    color: var(--color-secundario);
+    border-color: var(--color-blanco);
+    transform: translateY(-2px);
+    box-shadow: var(--sombra-md);
+}
+
+.intro .image-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.intro img {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--border-radius-lg);
+    filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.15));
+}
+
+/* Sección "Cómo funciona" */
+.how-works {
+    background-color: var(--color-gris-claro);
+    padding: var(--space-3xl) 0;
+}
+
+.how-works h2 {
+    color: var(--color-texto);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--space-lg);
+}
+
+.how-works .lead {
+    color: var(--color-texto-muted);
+    margin-bottom: var(--space-3xl);
+}
+
+.how-works .step-card {
+    border: none;
+    border-radius: var(--border-radius-lg);
+    background: var(--color-blanco);
+    transition: var(--transicion);
+    padding: var(--space-xl);
+}
+
+.how-works .step-card:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--sombra-hover);
+}
+
+.how-works .icon-wrapper {
+    width: 80px;
+    height: 80px;
+    background: rgba(122, 153, 221, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin: 0 auto var(--space-lg);
+    color: var(--color-primario);
+    font-size: 2.5rem;
+}
+
+.how-works .card h5 {
+    color: var(--color-texto);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--space-md);
+    font-size: var(--font-size-lg);
+}
+
+.how-works .card p {
+    color: var(--color-texto-muted);
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-normal);
+}
+
+/* ============================================
+   RESPONSIVE ADAPTACIONES
+   ============================================ */
+@media (max-width: 768px) {
+    .login-card,
+    .registro-card,
+    .encuesta-card {
+        padding: 1.5rem 1rem;
+    }
+    
+    .intro-content {
+        flex-direction: column;
+        gap: var(--space-lg);
+    }
+    
+    .encuesta-options {
+        grid-template-columns: 1fr;
+    }
+    
+    .dashboard-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .properties-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .stat-number {
+        font-size: var(--font-size-3xl);
+    }
+    
+    .encuesta-progress {
+        max-width: 100%;
+    }
+    
+    .intro h1 {
+        font-size: 2rem;
+    }
+    
+    .intro .lead {
+        font-size: 1rem;
+    }
+    
+    .how-works h2 {
+        font-size: var(--font-size-2xl);
+    }
+}
+
+@media (max-width: 576px) {
+    .login-card,
+    .registro-card,
+    .encuesta-card {
+        max-width: 100%;
+        border-radius: 16px;
+        padding: 1.25rem 1rem;
+    }
+    
+    .login-bg,
+    .registro-bg,
+    .encuesta-header {
+        padding: var(--space-md);
+    }
+    
+    .encuesta-container {
+        margin-top: -60px;
+        margin-bottom: var(--space-2xl);
+    }
+    
+    .modal-content {
+        width: 95%;
+    }
+    
+    .intro {
+        padding: var(--space-2xl) 0;
+    }
+    
+    .intro h1 {
+        font-size: 1.5rem;
+        margin-bottom: var(--space-md);
+    }
+    
+    .intro .lead {
+        margin-bottom: var(--space-lg);
+        font-size: 0.95rem;
+    }
+    
+    .intro .d-flex {
+        flex-direction: column;
+    }
+    
+    .intro .btn {
+        width: 100%;
+    }
+    
+    .how-works {
+        padding: var(--space-2xl) 0;
+    }
+    
+    .how-works h2 {
+        font-size: 1.75rem;
+    }
+}

@@ -1,0 +1,203 @@
+/* ====================================================
+   MAIN.CSS
+   Archivo principal que importa todos los estilos
+   Arquitectura ITCSS
+   ==================================================== */
+
+/* ============================================
+   1. SETTINGS
+   Variables, colores, tipografía, espacios
+   ============================================ */
+@import url('1-settings-variables.css');
+@import url('1-settings-reset.css');
+
+/* ============================================
+   2. TOOLS
+   Mixins, funciones, utilidades
+   ============================================ */
+@import url('2-tools-utilities.css');
+
+/* ============================================
+   3. GENERIC
+   Estilos base para elementos HTML
+   ============================================ */
+@import url('3-generic-base.css');
+
+/* ============================================
+   5. COMPONENTS
+   Componentes reutilizables (botones, cards, etc)
+   ============================================ */
+@import url('5-components-components.css');
+
+/* ============================================
+   7. PAGES
+   Estilos específicos de páginas
+   ============================================ */
+@import url('7-pages-pages.css');
+
+/* ============================================
+   ESTILOS ADICIONALES PERSONALIZADOS
+   (Aquí puedes agregar ajustes finales si es necesario)
+   ============================================ */
+
+/* Ajustes específicos de Bootstrap si lo usas */
+.form-control:focus {
+    border-color: var(--color-primario) !important;
+    box-shadow: 0 0 0 0.2rem rgba(122, 153, 221, 0.25) !important;
+}
+
+.form-control.is-invalid:focus {
+    border-color: var(--color-error) !important;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+}
+
+/* Asegurar que los row de Bootstrap usen variables CSS */
+.row {
+    --bs-gutter-x: var(--space-lg);
+    --bs-gutter-y: 0;
+}
+
+/* Columnas de Bootstrap */
+.col-md-1,
+.col-md-2,
+.col-md-3,
+.col-md-4,
+.col-md-5,
+.col-md-6,
+.col-md-7,
+.col-md-8,
+.col-md-9,
+.col-md-10,
+.col-md-11,
+.col-md-12 {
+    padding-left: var(--space-md);
+    padding-right: var(--space-md);
+}
+
+/* Asegurar que min-vh-100 funcione correctamente */
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+}
+
+/* ============================================
+   ANIMACIONES COMUNES
+   ============================================ */
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+.animate-slide-in {
+    animation: slideIn 0.3s ease-out;
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+}
+
+.animate-pulse {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+/* ============================================
+   MEJORAS DE ACCESIBILIDAD
+   ============================================ */
+
+/* Para usuarios que prefieren reducir movimiento */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Modo oscuro (si quieres soportarlo) */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #1a1a1a;
+        color: #f8f9fa;
+    }
+    
+    .card,
+    .login-card,
+    .registro-card,
+    .encuesta-card {
+        background-color: #2a2a2a;
+        border-color: #404040;
+    }
+    
+    .navbar,
+    .footer {
+        background-color: #212529;
+        border-color: #404040;
+    }
+}
+
+/* ============================================
+   IMPRENTA (Para impresoras)
+   ============================================ */
+@media print {
+    body {
+        font-size: 12pt;
+        line-height: 1.5;
+    }
+    
+    .navbar,
+    .footer,
+    .btn,
+    .modal {
+        display: none !important;
+    }
+    
+    .card {
+        box-shadow: none;
+        border: 1px solid #000;
+    }
+}

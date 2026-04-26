@@ -1,0 +1,158 @@
+/* ====================================================
+   1-SETTINGS / RESET.CSS
+   Reset y normalización de estilos por defecto
+   ==================================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--fuente-principal);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-normal);
+    color: var(--color-texto);
+    background-color: var(--color-blanco);
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* Elementos de bloque */
+main,
+article,
+aside,
+footer,
+header,
+nav,
+section {
+    display: block;
+}
+
+/* Listas */
+ul,
+ol {
+    list-style: none;
+}
+
+li {
+    list-style: none;
+}
+
+/* Enlaces */
+a {
+    color: inherit;
+    text-decoration: none;
+    transition: var(--transicion);
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+/* Botones */
+button,
+[role="button"] {
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+}
+
+button:disabled {
+    cursor: not-allowed;
+}
+
+/* Inputs y forms */
+input,
+textarea,
+select,
+optgroup {
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    color: inherit;
+}
+
+input:disabled,
+textarea:disabled,
+select:disabled {
+    cursor: not-allowed;
+}
+
+textarea {
+    resize: vertical;
+}
+
+/* Imágenes */
+img,
+svg {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+img {
+    vertical-align: middle;
+    border-style: none;
+}
+
+/* Tablas */
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+th,
+td {
+    text-align: left;
+}
+
+/* Code */
+code,
+kbd,
+pre,
+samp {
+    font-family: var(--fuente-mono);
+    font-size: 0.9em;
+}
+
+/* Scrollbar personalizado */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--color-gris-claro);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-gris-600);
+    border-radius: var(--border-radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-gris-oscuro);
+}
+
+/* Selection */
+::selection {
+    background-color: var(--color-primario);
+    color: var(--color-blanco);
+}
+
+::-moz-selection {
+    background-color: var(--color-primario);
+    color: var(--color-blanco);
+}

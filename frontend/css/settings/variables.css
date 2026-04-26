@@ -1,0 +1,135 @@
+/* ====================================================
+   1-SETTINGS / VARIABLES.CSS
+   Todas las variables del proyecto (colores, tipografía, espacios, etc)
+   ==================================================== */
+ 
+:root {
+    /* ============================================
+       COLORES PRINCIPALES
+       ============================================ */
+    --color-primario: #7A99DD;           /* Azul suave de la marca */
+    --color-primario-oscuro: #6687cc;   /* Azul más oscuro para hover */
+    --color-primario-claro: #9BB5E8;    /* Azul más claro */
+    
+    --color-secundario: #212529;         /* Gris oscuro/Negro */
+    --color-secundario-claro: #2F3542;  /* Gris oscuro más claro */
+    
+    --color-acento: #007bff;             /* Azul acción */
+    
+    /* ============================================
+       COLORES NEUTRALES
+       ============================================ */
+    --color-blanco: #ffffff;
+    --color-blanco-puro: #ffffff;
+    --color-gris-claro: #f8f9fa;
+    --color-gris-200: #e9ecef;
+    --color-gris-400: #ced4da;
+    --color-gris-600: #6c757d;
+    --color-gris-oscuro: #212529;
+    
+    --color-texto: #212529;              /* Texto principal */
+    --color-texto-muted: #6c757d;        /* Texto secundario */
+    --color-texto-ligero: #aaa;          /* Texto muy ligero */
+    
+    /* ============================================
+       COLORES DE ESTADO
+       ============================================ */
+    --color-success: #28a745;
+    --color-warning: #ffc107;
+    --color-error: #dc3545;
+    --color-info: #17a2b8;
+    
+    /* ============================================
+       TIPOGRAFÍA
+       ============================================ */
+    --fuente-principal: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
+    --fuente-heading: 'Poppins', var(--fuente-principal);
+    --fuente-mono: 'Courier New', monospace;
+    
+    --font-size-xs: 0.75rem;     /* 12px */
+    --font-size-sm: 0.875rem;    /* 14px */
+    --font-size-base: 1rem;      /* 16px */
+    --font-size-lg: 1.125rem;    /* 18px */
+    --font-size-xl: 1.25rem;     /* 20px */
+    --font-size-2xl: 1.5rem;     /* 24px */
+    --font-size-3xl: 1.875rem;   /* 30px */
+    --font-size-4xl: 2.25rem;    /* 36px */
+    
+    --font-weight-light: 300;
+    --font-weight-normal: 400;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    
+    --line-height-tight: 1.2;
+    --line-height-normal: 1.5;
+    --line-height-loose: 1.75;
+    
+    /* ============================================
+       ESPACIADO (Sistema 8px)
+       ============================================ */
+    --space-xs: 0.25rem;    /* 4px */
+    --space-sm: 0.5rem;     /* 8px */
+    --space-md: 1rem;       /* 16px */
+    --space-lg: 1.5rem;     /* 24px */
+    --space-xl: 2rem;       /* 32px */
+    --space-2xl: 3rem;      /* 48px */
+    --space-3xl: 4rem;      /* 64px */
+    
+    /* ============================================
+       BORDES Y ESQUINAS
+       ============================================ */
+    --border-radius-sm: 4px;
+    --border-radius-md: 8px;
+    --border-radius-lg: 20px;
+    --border-radius-xl: 24px;
+    --border-radius-pill: 50px;
+    --border-radius-full: 9999px;
+    
+    /* ============================================
+       SOMBRAS
+       ============================================ */
+    --sombra-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --sombra-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --sombra-suave: 0 4px 15px rgba(0, 0, 0, 0.1);
+    --sombra-hover: 0 8px 25px rgba(0, 0, 0, 0.15);
+    --sombra-lg: 0 10px 30px rgba(0, 0, 0, 0.15);
+    --sombra-xl: 0 20px 60px rgba(0, 0, 0, 0.15);
+    
+    /* ============================================
+       TRANSICIONES
+       ============================================ */
+    --transicion-rapida: 150ms ease-in-out;
+    --transicion: 250ms ease-in-out;
+    --transicion-lenta: 350ms ease-in-out;
+    --transicion-all: all 0.3s ease;
+    
+    /* ============================================
+       BREAKPOINTS (Mobile-first)
+       ============================================ */
+    --breakpoint-sm: 576px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 992px;
+    --breakpoint-xl: 1200px;
+    --breakpoint-xxl: 1400px;
+    
+    /* ============================================
+       Z-INDEX
+       ============================================ */
+    --z-dropdown: 1000;
+    --z-sticky: 1020;
+    --z-fixed: 1030;
+    --z-modal-backdrop: 1040;
+    --z-modal: 1050;
+    --z-popover: 1060;
+    --z-tooltip: 1070;
+}
+ 
+/* Tema oscuro (opcional, para el futuro) */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --color-texto: #f8f9fa;
+        --color-texto-muted: #adb5bd;
+        --color-gris-claro: #212529;
+        --color-blanco: #1a1a1a;
+    }
+}
