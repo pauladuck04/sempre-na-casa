@@ -99,7 +99,7 @@
        TRANSICIONES
        ============================================ */
     --transicion-rapida: 150ms ease-in-out;
-    --transicion: 250ms ease-in-out;
+    --transicion: all 0.3s ease;
     --transicion-lenta: 350ms ease-in-out;
     --transicion-all: all 0.3s ease;
     
