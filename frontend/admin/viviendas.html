@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Viviendas - Sempre na Casa</title>
+    
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <!-- CSS Principal -->
+    <link rel="stylesheet" href="../../css/main.css">
+</head>
+<body class="bg-light">
+    <div class="d-flex" style="min-height: 100vh;">
+        <!-- ============================================
+             SIDEBAR / NAVEGACIÓN LATERAL
+             ============================================ -->
+        <aside class="sidebar bg-white shadow-sm d-none d-lg-flex flex-column p-4" style="width: 280px; min-height: 100vh; position: sticky; top: 0;">
+            <div class="text-center mb-4">
+                <img src="../../assets/images/logo.JPG" width="60" class="rounded-circle mb-3" alt="Logo"
+                     onerror="this.src='https://ui-avatars.com/api/?name=Admin&background=7A99DD&color=fff'">
+                <h5 class="fw-bold mb-2" style="color: var(--color-primario);">Sempre na Casa</h5>
+                <span class="badge bg-dark rounded-pill">Administrador</span>
+            </div>
+            
+            <nav class="nav flex-column gap-2 flex-grow-1">
+                <a href="../dashboard-administrador.html" class="nav-link text-muted transition">
+                    <i class="bi bi-speedometer2 me-2"></i> Vista General
+                </a>
+                <a href="gestion-usuarios.html" class="nav-link text-muted transition">
+                    <i class="bi bi-people me-2"></i> Gestión Usuarios
+                </a>
+                <a href="gestion-roles.html" class="nav-link text-muted transition">
+                    <i class="bi bi-shield-lock me-2"></i> Roles y Permisos
+                </a>
+                <a href="gestion-viviendas.html" class="nav-link active-custom transition">
+                    <i class="bi bi-houses me-2"></i> Gestión Viviendas
+                </a>
+                <a href="gestion-criterios.html" class="nav-link text-muted transition">
+                    <i class="bi bi-diagram-3 me-2"></i> Criterios Match
+                </a>
+                
+                <hr class="my-3">
+                
+                <a href="../../index.html" class="nav-link text-danger transition">
+                    <i class="bi bi-box-arrow-left me-2"></i> Salir
+                </a>
+            </nav>
+        </aside>
+
+        <!-- ============================================
+             CONTENIDO PRINCIPAL
+             ============================================ -->
+        <main class="flex-grow-1 p-4 p-md-5">
+            <!-- ENCABEZADO -->
+            <div class="d-flex justify-content-between align-items-center mb-5">
+                <div>
+                    <h1 class="fw-bold mb-2">Gestión de Viviendas</h1>
+                    <p class="text-muted">Administra todas las viviendas registradas en la plataforma</p>
+                </div>
+                
+                <div class="d-flex align-items-center gap-3">
+                    <div class="text-end d-none d-md-block">
+                        <p class="small mb-0 fw-bold">Super Admin</p>
+                        <p class="small text-muted mb-0">admin@semprenacasa.com</p>
+                    </div>
+                    <img src="https://ui-avatars.com/api/?name=Admin&background=7A99DD&color=fff" 
+                         width="45" class="rounded-circle shadow-sm" alt="Avatar">
+                </div>
+            </div>
+
+            <!-- TABLA DE VIVIENDAS -->
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-header bg-white border-bottom py-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="fw-bold mb-0">
+                            <i class="bi bi-houses-fill me-2 text-primary"></i>
+                            Viviendas Registradas
+                        </h5>
+                        
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-primary-inverse btn-sm rounded-pill px-4">
+                                <i class="bi bi-plus-lg me-1"></i> Añadir
+                            </button>
+                            <button class="btn btn-primary-inverse btn-sm rounded-pill px-4" disabled>
+                                <i class="bi bi-pencil me-1"></i> Editar
+                            </button>
+                            <button class="btn btn-primary-inverse btn-sm rounded-pill px-4" disabled>
+                                <i class="bi bi-trash me-1"></i> Eliminar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body p-4">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>
+                                        <input class="form-check-input" type="checkbox">
+                                    </th>
+                                    <th>Dirección</th>
+                                    <th>Ciudad</th>
+                                    <th>Anfitrión</th>
+                                    <th>Plazas</th>
+                                    <th>Ocupación</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <input class="form-check-input" type="checkbox">
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <p class="mb-0 fw-semibold">Rúa da Paz, 45</p>
+                                            <small class="text-muted">Apt. 2B</small>
+                                        </div>
+                                    </td>
+                                    <td>Ourense</td>
+                                    <td>Mercedes Rosas</td>
+                                    <td>
+                                        <span class="badge bg-light text-dark rounded-pill px-3">2</span>
+                                    </td>
+                                    <td>
+                                        <div class="progress" style="height: 20px; width: 120px;">
+                                            <div class="progress-bar bg-success" role="progressbar" style="width: 100%">
+                                                <small class="text-white fw-bold">2/2</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-success rounded-pill px-3">Ocupada</span>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary rounded-pill px-3" title="Ver">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input class="form-check-input" type="checkbox">
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <p class="mb-0 fw-semibold">Avenida Santa Clara, 78</p>
+                                            <small class="text-muted">Apto. 3A</small>
+                                        </div>
+                                    </td>
+                                    <td>Ourense</td>
+                                    <td>Ramón Vázquez</td>
+                                    <td>
+                                        <span class="badge bg-light text-dark rounded-pill px-3">3</span>
+                                    </td>
+                                    <td>
+                                        <div class="progress" style="height: 20px; width: 120px;">
+                                            <div class="progress-bar bg-warning" role="progressbar" style="width: 33%">
+                                                <small class="text-dark fw-bold">1/3</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info rounded-pill px-3">Disponible</span>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary rounded-pill px-3" title="Ver">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input class="form-check-input" type="checkbox">
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <p class="mb-0 fw-semibold">Rúa Leopoldo Alas Clarín, 25</p>
+                                            <small class="text-muted">Casa</small>
+                                        </div>
+                                    </td>
+                                    <td>Ourense</td>
+                                    <td>Carmen Cid</td>
+                                    <td>
+                                        <span class="badge bg-light text-dark rounded-pill px-3">4</span>
+                                    </td>
+                                    <td>
+                                        <div class="progress" style="height: 20px; width: 120px;">
+                                            <div class="progress-bar bg-danger" role="progressbar" style="width: 50%">
+                                                <small class="text-white fw-bold">2/4</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info rounded-pill px-3">Disponible</span>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary rounded-pill px-3" title="Ver">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Scripts del admin -->
+    <script src="../../js/api.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/admin/viviendas.js"></script>
+</body>
+</html>

@@ -8,32 +8,32 @@
    1. SETTINGS
    Variables, colores, tipografía, espacios
    ============================================ */
-@import url('1-settings-variables.css');
-@import url('1-settings-reset.css');
+@import url('settings/variables.css');
+@import url('settings/reset.css');
 
 /* ============================================
    2. TOOLS
    Mixins, funciones, utilidades
    ============================================ */
-@import url('2-tools-utilities.css');
+@import url('tools/utilities.css');
 
 /* ============================================
    3. GENERIC
    Estilos base para elementos HTML
    ============================================ */
-@import url('3-generic-base.css');
+@import url('generic/base.css');
 
 /* ============================================
    5. COMPONENTS
    Componentes reutilizables (botones, cards, etc)
    ============================================ */
-@import url('5-components-components.css');
+@import url('components/components.css');
 
 /* ============================================
    7. PAGES
    Estilos específicos de páginas
    ============================================ */
-@import url('7-pages-pages.css');
+@import url('pages/pages.css');
 
 /* ============================================
    ESTILOS ADICIONALES PERSONALIZADOS
