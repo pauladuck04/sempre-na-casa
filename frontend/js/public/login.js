@@ -40,9 +40,9 @@ document.addEventListener('DOMContentLoaded', () => {
             // Redirigir según rol
             const role = auth.getRole();
             if (role === 'anfitrion') {
-                window.location.href = 'anfitrion.html';
+                window.location.href = 'dashboard-administrador.html';
             } else if (role === 'inquilino') {
-                window.location.href = 'inquilino.html';
+                window.location.href = 'dashboard-administrador.html';
             }
             
         } catch (error) {

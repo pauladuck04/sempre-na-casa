@@ -10,24 +10,78 @@ document.addEventListener('DOMContentLoaded', function() {
     // Cargar datos
     cargarValidacionesUsuarios();
     cargarSeguimientoConvivencias();
+
+    const sectionLinks = document.querySelectorAll('.section-link');
+    const sectionContents = document.querySelectorAll('.section-content');
+
+    // Textos para cada sección
+    const sectionTitles = {
+        general: 'Panel de Control',
+        usuarios: 'Gestión de Usuarios',
+        roles: 'Roles y Permisos',
+        viviendas: 'Gestión de Viviendas',
+        criterios: 'Criterios de Compatibilidad'
+    };
+
+    const sectionDescriptions = {
+        general: 'Gestión global de usuarios, viviendas y algoritmos de compatibilidad',
+        usuarios: 'Administra y gestiona todos los usuarios del sistema',
+        roles: 'Configura roles y permisos de acceso',
+        viviendas: 'Gestiona el catálogo de viviendas disponibles',
+        criterios: 'Define criterios de compatibilidad para el matching'
+    };
+
+    // Event listeners para cada enlace
+    sectionLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+
+            const sectionName = link.getAttribute('data-section');
+
+            // Ocultar todas las secciones
+            sectionContents.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Mostrar la sección seleccionada
+            const activeSection = document.querySelector(`.section-content[data-section="${sectionName}"]`);
+            if (activeSection) {
+                activeSection.classList.add('active');
+            }
+
+            // Actualizar título y descripción
+            document.getElementById('section-title').textContent = sectionTitles[sectionName] || 'Panel de Control';
+            document.getElementById('section-description').textContent = sectionDescriptions[sectionName] || '';
+
+            // Actualizar estilos de los enlaces
+            sectionLinks.forEach(l => {
+                l.classList.remove('active-custom');
+                l.classList.add('text-muted');
+            });
+            link.classList.add('active-custom');
+            link.classList.remove('text-muted');
+        });
+    });
 });
 
 /**
  * Verificar si el usuario está autenticado y es administrador
  */
 function verificarAutenticacion() {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    
-    if (!user.id || user.rol !== 'admin') {
-        // Redirigir a login si no está autenticado o no es admin
+    // Verificar si está autenticado usando auth.js
+    if (!auth.isLoggedIn()) {
         window.location.href = '../../index.html';
         return;
     }
-    
-    // Actualizar nombre de usuario en el header
+
+    // Obtener datos del usuario
+    const email = auth.getEmail();
+    const role = auth.getRole();
+
+    // Actualizar nombre de usuario en el header (si existe el elemento)
     const userNameElement = document.querySelector('[data-user-name]');
     if (userNameElement) {
-        userNameElement.textContent = user.nombre || 'Admin';
+        userNameElement.textContent = email || 'Admin';
     }
 }
 

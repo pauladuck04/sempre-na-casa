@@ -56,19 +56,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     // Enviar formulario
-    form.addEventListener('submit', async (e) => {
+    form.addEventListener('submit', (e) => {
         e.preventDefault();
-        
+
         // Validaciones básicas
         if (password.value !== password2.value) {
             passError.classList.remove('d-none');
             return;
         }
-        
-        // Limpiar mensajes previos
-        errorMessage.classList.add('d-none');
-        successMessage.classList.add('d-none');
-        
+
         // Recopilar datos del formulario
         const formData = {
             dni: document.getElementById('dni').value,
@@ -79,32 +75,11 @@ document.addEventListener('DOMContentLoaded', () => {
             password: password.value,
             rol: rolInput.value
         };
-        
-        try {
-            // Llamar a la API de registro
-            const response = await api.request('/auth/register', {
-                method: 'POST',
-                body: JSON.stringify(formData)
-            });
-            
-            console.log('Registro exitoso:', response);
-            
-            // Guardar datos temporales en sessionStorage para la encuesta
-            sessionStorage.setItem('newUser', JSON.stringify({
-                ...formData,
-                userId: response.userId
-            }));
-            
-            // Redirigir a encuesta
-            window.location.href = `encuesta.html?rol=${formData.rol}`;
-            
-        } catch (error) {
-            console.error('Error en registro:', error);
-            errorMessage.textContent = error.message || 'Error al registrarse. Intenta de nuevo.';
-            errorMessage.classList.remove('d-none');
-            
-            // Desplazar a la parte superior
-            window.scrollTo(0, 0);
-        }
+
+        // Guardar datos en sessionStorage
+        sessionStorage.setItem('newUser', JSON.stringify(formData));
+
+        // Redirigir a encuesta
+        window.location.href = `encuesta.html?rol=${formData.rol}`;
     });
 });

@@ -110,9 +110,9 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 // Redirigir según el rol
                 if (userData.rol === 'anfitrion') {
-                    window.location.href = 'anfitrion.html';
+                    window.location.href = 'dashboard-administrador.html';
                 } else {
-                    window.location.href = 'inquilino.html';
+                    window.location.href = 'dashboard-administrador.html';
                 }
             }, 1500);
             
