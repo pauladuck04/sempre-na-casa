@@ -1,10 +1,10 @@
 // js/admin/dashboard.js
 // Script para el dashboard del administrador
 
-import * as usuarios from './usuarios.js';
-import * as roles from './roles.js';
-import * as criterios from './criterios.js';
-import * as viviendas from './viviendas.js';
+import * as usuarios from '../admin/usuarios.js';
+import * as roles from '../admin/roles.js';
+import * as criterios from '../admin/criterios.js';
+import * as viviendas from '../admin/viviendas.js';
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Dashboard administrador cargado');
@@ -151,10 +151,16 @@ function cargarSeguimientoConvivencias() {
  */
 function renderizarConvivencias(convivencias) {
     const tbody = document.getElementById('tabla-convivencias');
+    console.log("Intentando renderizar en:", tbody);
     
     if (!tbody) return;
     
     tbody.innerHTML = '';
+
+    if (convivencias.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="text-center">No hay convivencias activas</td></tr>';
+        return;
+    }
     
     convivencias.forEach(convivencia => {
         const row = document.createElement('tr');

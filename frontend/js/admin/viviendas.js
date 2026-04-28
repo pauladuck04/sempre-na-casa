@@ -1,14 +1,6 @@
 // js/admin/viviendas.js
 // Script para la página de gestión de viviendas
 
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('Gestión de viviendas cargada');
-    
-    verificarAutenticacion();
-    cargarViviendas();
-    configurarEventListeners();
-});
-
 /**
  * Cargar lista de viviendas
  */
