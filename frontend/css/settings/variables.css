@@ -124,7 +124,7 @@
     --z-tooltip: 1070;
 }
  
-/* Tema oscuro (opcional, para el futuro) */
+/* Tema oscuro (opcional, para el futuro) 
 @media (prefers-color-scheme: dark) {
     :root {
         --color-texto: #f8f9fa;
@@ -132,4 +132,4 @@
         --color-gris-claro: #212529;
         --color-blanco: #1a1a1a;
     }
-}
+}*/

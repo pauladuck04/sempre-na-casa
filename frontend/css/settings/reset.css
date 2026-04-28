@@ -21,7 +21,7 @@ body {
     font-size: var(--font-size-base);
     line-height: var(--line-height-normal);
     color: var(--color-texto);
-    background-color: var(--color-blanco);
+    background-color: var(--color-primario);
     height: 100%;
     margin: 0;
     padding: 0;

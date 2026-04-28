@@ -17,11 +17,6 @@
     padding: 2.5rem 2rem;
     width: 100%;
     max-width: 440px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-}
-
-.logo-shadow {
-    box-shadow: 0 8px 20px rgba(122, 153, 221, 0.4);
 }
 
 .link-custom {
@@ -41,11 +36,11 @@
    ============================================ */
 .registro-bg {
     background-color: var(--color-primario);
-    min-height: 100vh;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
-    padding: var(--space-lg) 0;
+    padding: 2rem 1rem 3rem 1rem;
+    box-sizing: border-box;
 }
 
 .registro-card {
@@ -55,6 +50,7 @@
     width: 100%;
     max-width: 500px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    margin-bottom: 0;
 }
 
 /* ============================================
@@ -367,72 +363,12 @@
     filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.15));
 }
 
-/* Sección "Cómo funciona" */
-.how-works {
-    background-color: var(--color-gris-claro);
-    padding: var(--space-3xl) 0;
-}
 
-.how-works h2 {
-    color: var(--color-texto);
-    font-weight: var(--font-weight-bold);
-    margin-bottom: var(--space-lg);
-}
-
-.how-works .lead {
-    color: var(--color-texto-muted);
-    margin-bottom: var(--space-3xl);
-}
-
-.how-works .step-card {
-    border: none;
-    border-radius: var(--border-radius-lg);
-    background: var(--color-blanco);
-    transition: var(--transicion);
-    padding: var(--space-xl);
-}
-
-.how-works .step-card:hover {
-    transform: translateY(-10px);
-    box-shadow: var(--sombra-hover);
-}
-
-.how-works .icon-wrapper {
-    width: 80px;
-    height: 80px;
-    background: rgba(122, 153, 221, 0.15);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    margin: 0 auto var(--space-lg);
-    color: var(--color-primario);
-    font-size: 2.5rem;
-}
-
-.how-works .card h5 {
-    color: var(--color-texto);
-    font-weight: var(--font-weight-bold);
-    margin-bottom: var(--space-md);
-    font-size: var(--font-size-lg);
-}
-
-.how-works .card p {
-    color: var(--color-texto-muted);
-    font-size: var(--font-size-sm);
-    line-height: var(--line-height-normal);
-}
 
 /* ============================================
    RESPONSIVE ADAPTACIONES
    ============================================ */
-@media (max-width: 768px) {
-    .login-card,
-    .registro-card,
-    .encuesta-card {
-        padding: 1.5rem 1rem;
-    }
-    
+@media (max-width: 768px) {    
     .intro-content {
         flex-direction: column;
         gap: var(--space-lg);
@@ -471,21 +407,7 @@
     }
 }
 
-@media (max-width: 576px) {
-    .login-card,
-    .registro-card,
-    .encuesta-card {
-        max-width: 100%;
-        border-radius: 16px;
-        padding: 1.25rem 1rem;
-    }
-    
-    .login-bg,
-    .registro-bg,
-    .encuesta-header {
-        padding: var(--space-md);
-    }
-    
+@media (max-width: 576px) {   
     .encuesta-container {
         margin-top: -60px;
         margin-bottom: var(--space-2xl);
