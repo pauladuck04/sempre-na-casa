@@ -10,21 +10,9 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 /**
- * Verificar autenticación
- */
-function verificarAutenticacion() {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    
-    if (!user.id || user.rol !== 'admin') {
-        window.location.href = '../../index.html';
-        return;
-    }
-}
-
-/**
  * Cargar lista de viviendas
  */
-function cargarViviendas() {
+export function cargarViviendas() {
     const viviendas = [
         {
             id: 1,

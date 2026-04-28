@@ -1,30 +1,10 @@
 // js/admin/roles.js
 // Script para la página de gestión de roles
 
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('Gestión de roles cargada');
-    
-    verificarAutenticacion();
-    cargarRoles();
-    configurarEventListeners();
-});
-
-/**
- * Verificar autenticación
- */
-function verificarAutenticacion() {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    
-    if (!user.id || user.rol !== 'admin') {
-        window.location.href = '../../index.html';
-        return;
-    }
-}
-
 /**
  * Cargar lista de roles
  */
-function cargarRoles() {
+export function cargarRoles() {
     const roles = [
         {
             id: 1,

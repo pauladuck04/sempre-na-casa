@@ -1,30 +1,10 @@
 // js/admin/criterios.js
 // Script para la página de gestión de criterios
 
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('Gestión de criterios cargada');
-    
-    verificarAutenticacion();
-    cargarCriterios();
-    configurarEventListeners();
-});
-
-/**
- * Verificar autenticación
- */
-function verificarAutenticacion() {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    
-    if (!user.id || user.rol !== 'admin') {
-        window.location.href = '../../index.html';
-        return;
-    }
-}
-
 /**
  * Cargar lista de criterios
  */
-function cargarCriterios() {
+export function cargarCriterios() {
     const criterios = [
         {
             id: 1,

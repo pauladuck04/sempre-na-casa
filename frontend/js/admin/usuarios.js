@@ -1,35 +1,10 @@
 // js/admin/usuarios.js
 // Script para la página de gestión de usuarios
 
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('Gestión de usuarios cargada');
-    
-    // Verificar autenticación
-    verificarAutenticacion();
-    
-    // Cargar usuarios
-    cargarUsuarios();
-    
-    // Event listeners
-    configurarEventListeners();
-});
-
-/**
- * Verificar autenticación
- */
-function verificarAutenticacion() {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    
-    if (!user.id || user.rol !== 'admin') {
-        window.location.href = '../../index.html';
-        return;
-    }
-}
-
 /**
  * Cargar lista de usuarios
  */
-function cargarUsuarios() {
+export function cargarUsuarios() {
     // Datos simulados
     const usuarios = [
         {
