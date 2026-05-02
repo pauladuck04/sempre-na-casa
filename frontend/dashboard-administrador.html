@@ -71,7 +71,7 @@
             <!-- CONTENEDOR DE SECCIONES -->
             <div id="content-sections">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div class="d-flex gap-2 d-none" id="acciones-globales">
+                    <div class="gap-2 d-none" id="acciones-globales">
                         <button type="button" class="btn btn-primary rounded-pill px-2 shadow-sm" id="btnCrear">
                             <i class="bi bi-plus-circle me-2"></i> Crear
                         </button>
@@ -81,6 +81,13 @@
                         <button type="button" class="btn btn-outline-danger rounded-pill px-2" id="btnEliminar" disabled>
                             <i class="bi bi-trash me-2"></i> Eliminar
                         </button>
+                        <button type="button" class="btn btn-outline-success rounded-pill px-2" id="btnReactivar" disabled>
+                            <i class="bi bi-arrow-clockwise me-2"></i> Reactivar
+                        </button>
+                    </div>
+                    <div class="gap-2 flex-wrap d-none" id="filtros-globales">
+                        <input type="search" class="form-control" id="filtroTexto" placeholder="Filtrar listado">
+                        <div class="d-flex gap-2 flex-wrap" id="filtrosEspecificos"></div>
                     </div>
                 </div>
 
@@ -214,6 +221,7 @@
                                             <th>Criterios</th>
                                             <th>Opciones</th>
                                             <th>Valores</th>
+                                            <th>Estado</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tabla-criterios">

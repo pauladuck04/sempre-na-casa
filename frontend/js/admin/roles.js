@@ -1,48 +1,60 @@
 // js/admin/roles.js
-// Script para la página de gestión de roles
+// Script para la pagina de gestion de roles
 
 export let listaRolesMemoria = [];
 
-/**
- * Cargar lista de roles
- */
 export function cargarRoles() {
-    const roles = [
-        {
-            id: 1,
-            nombre: 'Administrador',
-            estado: 'activo'
-        },
-        {
-            id: 2,
-            nombre: 'Anfitrión',
-            estado: 'activo'
-        },
-        {
-            id: 3,
-            nombre: 'Inquilino',
-            estado: 'activo'
-        }
-    ];
-    
-    listaRolesMemoria = roles;
-    renderizarRoles(roles);
+    if (listaRolesMemoria.length === 0) {
+        listaRolesMemoria = [
+            {
+                id: 1,
+                nombre: 'Administrador',
+                estado: 'activo'
+            },
+            {
+                id: 2,
+                nombre: 'Anfitrion',
+                estado: 'activo'
+            },
+            {
+                id: 3,
+                nombre: 'Inquilino',
+                estado: 'activo'
+            },
+            {
+                id: 4,
+                nombre: 'Voluntario',
+                estado: 'inactivo'
+            }
+        ];
+    }
+
+    renderizarRoles(listaRolesMemoria);
 }
 
-/**
- * Renderizar tabla de roles
- */
+export function reactivarRoles(ids) {
+    listaRolesMemoria.forEach(rol => {
+        if (ids.includes(String(rol.id))) rol.estado = 'activo';
+    });
+}
+
+export function desactivarRoles(ids) {
+    listaRolesMemoria.forEach(rol => {
+        if (ids.includes(String(rol.id))) rol.estado = 'inactivo';
+    });
+}
+
 export function renderizarRoles(roles) {
     const tbody = document.getElementById('tabla-roles');
-    
-    if (!tbody) return;
-    
-    tbody.innerHTML = '';
-    
-    roles.forEach((rol, index) => {
-        const iniciales = rol.nombre.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
 
+    if (!tbody) return;
+
+    tbody.innerHTML = '';
+
+    roles.forEach(rol => {
         const row = document.createElement('tr');
+        const esActivo = rol.estado === 'activo';
+
         row.innerHTML = `
             <td>
                 <div class="d-flex align-items-center gap-2">
@@ -53,19 +65,20 @@ export function renderizarRoles(roles) {
                 </div>
             </td>
             <td>
-                <span class="badge ${rol.estado === 'activo' ? 'bg-success' : 'bg-warning text-dark'} rounded-pill px-3">
-                    ${rol.estado === 'activo' ? 'Activo' : 'Pendiente'}
+                <span class="badge ${esActivo ? 'bg-success' : 'bg-secondary'} rounded-pill px-3">
+                    ${esActivo ? 'Activo' : 'Inactivo'}
                 </span>
             </td>
         `;
         tbody.appendChild(row);
     });
 
-    // Doble clic en nombre para ver detalles
     tbody.querySelectorAll('.rol-nombre').forEach(span => {
         span.addEventListener('dblclick', function(e) {
             const id = this.getAttribute('data-id');
-            verRol(Number(id), e);
+            if (typeof verRol === 'function') {
+                verRol(Number(id), e);
+            }
         });
     });
 }

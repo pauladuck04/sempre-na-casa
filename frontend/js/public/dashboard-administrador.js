@@ -6,6 +6,47 @@ import * as roles from '../admin/roles.js';
 import * as criterios from '../admin/criterios.js';
 import * as viviendas from '../admin/viviendas.js';
 
+const FILTROS_POR_SECCION = {
+    usuarios: [
+        {
+            campo: 'estado',
+            opciones: [
+                ['activo', 'Activos'],
+                ['pendiente', 'Pendientes'],
+                ['inactivo', 'Inactivos']
+            ]
+        }
+    ],
+    roles: [
+        {
+            campo: 'estado',
+            opciones: [
+                ['activo', 'Activos'],
+                ['inactivo', 'Inactivos']
+            ]
+        }
+    ],
+    viviendas: [
+        {
+            campo: 'estado',
+            opciones: [
+                ['disponible', 'Disponibles'],
+                ['ocupada', 'Ocupadas'],
+                ['inactivo', 'Inactivas']
+            ]
+        }
+    ],
+    criterios: [
+        {
+            campo: 'estado',
+            opciones: [
+                ['activo', 'Activos'],
+                ['inactivo', 'Inactivos']
+            ]
+        }
+    ]
+};
+
 // Configuración de los formularios para el modal genérico
     const CONFIG_MODALES = {
         usuarios: {
@@ -59,11 +100,8 @@ import * as viviendas from '../admin/viviendas.js';
 
 document.addEventListener('DOMContentLoaded', function() {
         // Ocultar acciones globales si la sección activa es 'general' al cargar
-        const accionesGlobales = document.getElementById('acciones-globales');
         const seccionActiva = document.querySelector('.section-link.active-custom')?.getAttribute('data-section');
-        if (accionesGlobales && seccionActiva === 'general') {
-            accionesGlobales.classList.add('d-none');
-        }
+        actualizarControlesSeccion(seccionActiva);
     console.log('Dashboard administrador cargado');
     
     // Verificar autenticación
@@ -155,27 +193,33 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('btnEliminar')?.addEventListener('click', () => {
         // Detectar sección activa
         const seccion = document.querySelector('.section-link.active-custom').getAttribute('data-section');
-        let seleccionados = [];
-        if (seccion === 'usuarios') {
-            seleccionados = Array.from(document.querySelectorAll('tbody .usuario-checkbox:checked')).map(cb => cb.value);
-        } else if (seccion === 'roles') {
-            seleccionados = Array.from(document.querySelectorAll('tbody .rol-checkbox:checked')).map(cb => cb.value);
-        }else if (seccion === 'criterios') {
-            seleccionados = Array.from(document.querySelectorAll('tbody .criterio-checkbox:checked')).map(cb => cb.value);
-        }else if (seccion === 'viviendas') {
-            seleccionados = Array.from(document.querySelectorAll('tbody .vivienda-checkbox:checked')).map(cb => cb.value);
-        }
+        let seleccionados = obtenerIdsSeleccionados(seccion);
+        if (seleccionados.length === 0) return;
         if (confirm(`¿Estás seguro de que deseas eliminar ${seleccionados.length} elemento(s)?`)) {
-            console.log('Eliminando IDs:', seleccionados);
-            alert('Elementos eliminados correctamente');
-            // Refrescar la vista actual
-            const linkActivo = document.querySelector('.section-link.active-custom');
-            if (linkActivo) linkActivo.click(); 
+            desactivarSeleccion(seccion, seleccionados);
+            aplicarFiltros();
             actualizarBotones();
         }
     });
 
     // --- Escuchar cambios en los Checkboxes (Delegación) ---
+    document.getElementById('btnReactivar')?.addEventListener('click', () => {
+        const seccion = document.querySelector('.section-link.active-custom').getAttribute('data-section');
+        const seleccionados = obtenerIdsSeleccionadosInactivos(seccion);
+        if (seleccionados.length === 0) return;
+
+        reactivarSeleccion(seccion, seleccionados);
+        aplicarFiltros();
+        actualizarBotones();
+    });
+
+    document.getElementById('filtroTexto')?.addEventListener('input', aplicarFiltros);
+    document.getElementById('filtros-globales')?.addEventListener('change', (e) => {
+        if (e.target.matches('[data-filtro-campo]')) {
+            aplicarFiltros();
+        }
+    });
+
     document.addEventListener('change', (e) => {
         if (e.target.type === 'checkbox') {
             actualizarBotones();
@@ -201,6 +245,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (seccionActual === 'roles') roles.cargarRoles();
         if (seccionActual === 'criterios') criterios.cargarCriterios();
         if (seccionActual === 'viviendas') viviendas.cargarViviendas();
+        aplicarFiltros();
         
         bootstrap.Modal.getInstance(document.getElementById('modalGenerico')).hide();
     
@@ -232,16 +277,9 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
 
             const sectionName = link.getAttribute('data-section');
-
-            const accionesGlobales = document.getElementById('acciones-globales');
+            actualizarControlesSeccion(sectionName);
 
             // LÓGICA DE VISIBILIDAD
-            if (sectionName === 'general') {
-                accionesGlobales.classList.add('d-none'); // Escondemos en Convivencias
-            } else {
-                accionesGlobales.classList.remove('d-none'); // Mostramos en el resto
-            }
-
             sectionContents.forEach(content => content.classList.remove('active'));
             sectionLinks.forEach(l => {
                 l.classList.remove('active-custom');
@@ -286,6 +324,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             // Actualizar título y descripción
+            aplicarFiltros();
             document.getElementById('section-title').textContent = sectionTitles[sectionName] || 'Panel de Control';
             document.getElementById('section-description').textContent = sectionDescriptions[sectionName] || '';
         });
@@ -410,6 +449,155 @@ function abrirModalGenerico(seccion) {
     modalInstance.show();
 }
 
+function obtenerIdsSeleccionados(seccion) {
+    const selectores = {
+        usuarios: '.usuario-checkbox',
+        roles: '.rol-checkbox',
+        criterios: '.criterio-checkbox',
+        viviendas: '.vivienda-checkbox'
+    };
+    const selector = selectores[seccion];
+    if (!selector) return [];
+
+    return Array.from(document.querySelectorAll(`tbody ${selector}:checked`)).map(cb => cb.value);
+}
+
+function obtenerIdsSeleccionadosInactivos(seccion) {
+    const config = obtenerConfigSeccion(seccion);
+    const seleccionados = obtenerIdsSeleccionados(seccion);
+    if (!config) return [];
+
+    return seleccionados.filter(id => {
+        const item = config.lista.find(elemento => String(elemento.id) === id);
+        return item?.estado === 'inactivo';
+    });
+}
+
+function obtenerConfigSeccion(seccion) {
+    const configs = {
+        usuarios: {
+            lista: usuarios.listaUsuariosMemoria,
+            renderizar: usuarios.renderizarUsuarios,
+            reactivar: usuarios.reactivarUsuarios,
+            desactivar: usuarios.desactivarUsuarios,
+        },
+        roles: {
+            lista: roles.listaRolesMemoria,
+            renderizar: roles.renderizarRoles,
+            reactivar: roles.reactivarRoles,
+            desactivar: roles.desactivarRoles,
+        },
+        criterios: {
+            lista: criterios.listaCriteriosMemoria,
+            renderizar: criterios.renderizarCriterios,
+            reactivar: criterios.reactivarCriterios,
+            desactivar: criterios.desactivarCriterios,
+        },
+        viviendas: {
+            lista: viviendas.listaViviendasMemoria,
+            renderizar: viviendas.renderizarViviendas,
+            reactivar: viviendas.reactivarViviendas,
+            desactivar: viviendas.desactivarViviendas,
+        }
+    };
+
+    return configs[seccion];
+}
+
+function actualizarControlesSeccion(seccion) {
+    const accionesGlobales = document.getElementById('acciones-globales');
+    const filtrosGlobales = document.getElementById('filtros-globales');
+    const filtrosEspecificos = document.getElementById('filtrosEspecificos');
+    const filtroTexto = document.getElementById('filtroTexto');
+
+    if (!accionesGlobales || !filtrosGlobales) return;
+
+    if (seccion === 'general') {
+        accionesGlobales.classList.remove('d-flex');
+        filtrosGlobales.classList.remove('d-flex');
+        accionesGlobales.classList.add('d-none');
+        filtrosGlobales.classList.add('d-none');
+        if (filtrosEspecificos) filtrosEspecificos.innerHTML = '';
+        if (filtroTexto) filtroTexto.value = '';
+        return;
+    }
+
+    accionesGlobales.classList.remove('d-none');
+    filtrosGlobales.classList.remove('d-none');
+    accionesGlobales.classList.add('d-flex');
+    filtrosGlobales.classList.add('d-flex');
+    configurarFiltros(seccion);
+}
+
+function configurarFiltros(seccion) {
+    const contenedor = document.getElementById('filtrosEspecificos');
+    const texto = document.getElementById('filtroTexto');
+    if (!contenedor) return;
+
+    if (texto) texto.value = '';
+    contenedor.innerHTML = '';
+
+    (FILTROS_POR_SECCION[seccion] || []).forEach(filtro => {
+        const select = document.createElement('select');
+        select.className = 'form-select';
+        select.style.width = 'auto';
+        select.dataset.filtroCampo = filtro.campo;
+        select.innerHTML = `
+            <option value="">${obtenerEtiquetaFiltro(filtro.campo)}</option>
+            ${filtro.opciones.map(([valor, etiqueta]) => `<option value="${valor}">${etiqueta}</option>`).join('')}
+        `;
+        contenedor.appendChild(select);
+    });
+}
+
+function obtenerEtiquetaFiltro(campo) {
+    const etiquetas = {
+        estado: 'Todos los estados'
+    };
+
+    return etiquetas[campo] || 'Todos';
+}
+
+function aplicarFiltros() {
+    const seccion = document.querySelector('.section-link.active-custom')?.getAttribute('data-section');
+    const config = obtenerConfigSeccion(seccion);
+    if (!config) return;
+
+    const texto = document.getElementById('filtroTexto')?.value.trim().toLowerCase() || '';
+    const filtrosActivos = Array.from(document.querySelectorAll('#filtrosEspecificos [data-filtro-campo]'))
+        .map(select => ({
+            campo: select.dataset.filtroCampo,
+            valor: select.value
+        }))
+        .filter(filtro => filtro.valor);
+
+    const filtrados = config.lista.filter(item => {
+        const coincideTexto = !texto || Object.values(item).some(valor =>
+            String(valor).toLowerCase().includes(texto)
+        );
+        const coincidenFiltros = filtrosActivos.every(filtro => coincideFiltro(item, filtro));
+
+        return coincideTexto && coincidenFiltros;
+    });
+
+    config.renderizar(filtrados);
+    actualizarBotones();
+}
+
+function coincideFiltro(item, filtro) {
+    return String(item[filtro.campo]) === filtro.valor;
+}
+
+function reactivarSeleccion(seccion, ids) {
+    const config = obtenerConfigSeccion(seccion);
+    if (config?.reactivar) config.reactivar(ids);
+}
+
+function desactivarSeleccion(seccion, ids) {
+    const config = obtenerConfigSeccion(seccion);
+    if (config?.desactivar) config.desactivar(ids);
+}
+
 /**
  * Actualizar estado de botones según selección
  */
@@ -428,8 +616,11 @@ function actualizarBotones() {
     }
     const btnEditar = document.getElementById('btnEditar');
     const btnEliminar = document.getElementById('btnEliminar');
-    if (btnEditar && btnEliminar) {
+    const btnReactivar = document.getElementById('btnReactivar');
+    const inactivosSeleccionados = obtenerIdsSeleccionadosInactivos(seccion).length;
+    if (btnEditar && btnEliminar && btnReactivar) {
         btnEditar.disabled = (seleccionados !== 1);
         btnEliminar.disabled = (seleccionados == 0);
+        btnReactivar.disabled = (inactivosSeleccionados == 0);
     }
 }
