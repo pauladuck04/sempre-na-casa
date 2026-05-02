@@ -74,7 +74,8 @@ export function renderizarRoles(roles) {
     });
 
     tbody.querySelectorAll('.rol-nombre').forEach(span => {
-        span.addEventListener('dblclick', function(e) {
+        span.addEventListener('click', function(e) {
+            e.stopPropagation();
             const id = this.getAttribute('data-id');
             if (typeof verRol === 'function') {
                 verRol(Number(id), e);

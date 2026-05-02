@@ -91,7 +91,8 @@ export function renderizarCriterios(criterios) {
     });
 
     tbody.querySelectorAll('.criterio-nombre').forEach(span => {
-        span.addEventListener('dblclick', function(e) {
+        span.addEventListener('click', function(e) {
+            e.stopPropagation();
             const id = this.getAttribute('data-id');
             if (typeof verCriterio === 'function') {
                 verCriterio(Number(id), e);

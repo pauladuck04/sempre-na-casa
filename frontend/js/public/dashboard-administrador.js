@@ -624,3 +624,193 @@ function actualizarBotones() {
         btnReactivar.disabled = (inactivosSeleccionados == 0);
     }
 }
+
+/**
+ * Ver detalles de un usuario
+ */
+window.verUsuario = function(id) {
+    const usuario = usuarios.listaUsuariosMemoria.find(u => u.id === id);
+    if (!usuario) return;
+
+    const estadoBadge = usuario.estado === 'activo'
+        ? '<span class="badge bg-success">Activo</span>'
+        : usuario.estado === 'inactivo'
+            ? '<span class="badge bg-secondary">Inactivo</span>'
+            : '<span class="badge bg-warning text-dark">Pendiente</span>';
+
+    const rolBadge = usuario.rol === 'anfitrion'
+        ? '<span class="badge bg-success-subtle text-success">Anfitrión</span>'
+        : '<span class="badge bg-info-subtle text-info">Inquilino</span>';
+
+    const contenido = `
+        <div class="row">
+            <div class="col-md-6">
+                <h6 class="text-muted small mb-2">Nombre Completo</h6>
+                <p class="fw-semibold">${usuario.nombre}</p>
+            </div>
+            <div class="col-md-6">
+                <h6 class="text-muted small mb-2">Correo Electrónico</h6>
+                <p class="fw-semibold">${usuario.email}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <h6 class="text-muted small mb-2">DNI</h6>
+                <p class="fw-semibold">${usuario.dni}</p>
+            </div>
+            <div class="col-md-6">
+                <h6 class="text-muted small mb-2">Teléfono</h6>
+                <p class="fw-semibold">${usuario.telefono}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <h6 class="text-muted small mb-2">Rol</h6>
+                <p>${rolBadge}</p>
+            </div>
+            <div class="col-md-6">
+                <h6 class="text-muted small mb-2">Estado</h6>
+                <p>${estadoBadge}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <h6 class="text-muted small mb-2">Fecha de Registro</h6>
+                <p class="fw-semibold">${usuario.fechaRegistro}</p>
+            </div>
+        </div>
+    `;
+
+    document.getElementById('modalDetalleTitle').textContent = `Detalles del Usuario: ${usuario.nombre}`;
+    document.getElementById('modalDetalleContent').innerHTML = contenido;
+    const modalInstance = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalDetalle'));
+    modalInstance.show();
+};
+
+/**
+ * Ver detalles de una vivienda
+ */
+window.verVivienda = function(id) {
+    const vivienda = viviendas.listaViviendasMemoria.find(v => v.id === id);
+    if (!vivienda) return;
+
+    const estadoBadge = vivienda.estado === 'ocupada'
+        ? '<span class="badge bg-success">Ocupada</span>'
+        : vivienda.estado === 'inactivo'
+            ? '<span class="badge bg-secondary">Inactiva</span>'
+            : '<span class="badge bg-info">Disponible</span>';
+
+    const contenido = `
+        <div class="row">
+            <div class="col-md-12">
+                <h6 class="text-muted small mb-2">Dirección</h6>
+                <p class="fw-semibold">${vivienda.direccion}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <h6 class="text-muted small mb-2">Ciudad</h6>
+                <p class="fw-semibold">${vivienda.ciudad}</p>
+            </div>
+            <div class="col-md-6">
+                <h6 class="text-muted small mb-2">Anfitrión</h6>
+                <p class="fw-semibold">${vivienda.anfitrion}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <h6 class="text-muted small mb-2">Plazas Totales</h6>
+                <p class="fw-semibold">${vivienda.plazas_totales}</p>
+            </div>
+            <div class="col-md-6">
+                <h6 class="text-muted small mb-2">Plazas Libres</h6>
+                <p class="fw-semibold text-success">${vivienda.plazas_libres}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <h6 class="text-muted small mb-2">Estado</h6>
+                <p>${estadoBadge}</p>
+            </div>
+        </div>
+    `;
+
+    document.getElementById('modalDetalleTitle').textContent = `Detalles de la Vivienda: ${vivienda.direccion}`;
+    document.getElementById('modalDetalleContent').innerHTML = contenido;
+    const modalInstance = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalDetalle'));
+    modalInstance.show();
+};
+
+/**
+ * Ver detalles de un rol
+ */
+window.verRol = function(id) {
+    const rol = roles.listaRolesMemoria.find(r => r.id === id);
+    if (!rol) return;
+
+    const estadoBadge = rol.estado === 'activo'
+        ? '<span class="badge bg-success">Activo</span>'
+        : '<span class="badge bg-secondary">Inactivo</span>';
+
+    const contenido = `
+        <div class="row">
+            <div class="col-md-12">
+                <h6 class="text-muted small mb-2">Nombre del Rol</h6>
+                <p class="fw-semibold">${rol.nombre}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <h6 class="text-muted small mb-2">Estado</h6>
+                <p>${estadoBadge}</p>
+            </div>
+        </div>
+    `;
+
+    document.getElementById('modalDetalleTitle').textContent = `Detalles del Rol: ${rol.nombre}`;
+    document.getElementById('modalDetalleContent').innerHTML = contenido;
+    const modalInstance = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalDetalle'));
+    modalInstance.show();
+};
+
+/**
+ * Ver detalles de un criterio
+ */
+window.verCriterio = function(id) {
+    const criterio = criterios.listaCriteriosMemoria.find(c => c.id === id);
+    if (!criterio) return;
+
+    const estadoBadge = criterio.estado === 'activo'
+        ? '<span class="badge bg-success">Activo</span>'
+        : '<span class="badge bg-secondary">Inactivo</span>';
+
+    const contenido = `
+        <div class="row">
+            <div class="col-md-12">
+                <h6 class="text-muted small mb-2">Criterio de Compatibilidad</h6>
+                <p class="fw-semibold">${criterio.criterio}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <h6 class="text-muted small mb-2">Opción</h6>
+                <p class="fw-semibold">${criterio.opcion}</p>
+            </div>
+            <div class="col-md-6">
+                <h6 class="text-muted small mb-2">Valor</h6>
+                <p class="fw-semibold">${criterio.valor}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <h6 class="text-muted small mb-2">Estado</h6>
+                <p>${estadoBadge}</p>
+            </div>
+        </div>
+    `;
+
+    document.getElementById('modalDetalleTitle').textContent = `Detalles del Criterio: ${criterio.criterio}`;
+    document.getElementById('modalDetalleContent').innerHTML = contenido;
+    const modalInstance = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalDetalle'));
+    modalInstance.show();
+};

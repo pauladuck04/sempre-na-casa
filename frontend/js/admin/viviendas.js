@@ -103,7 +103,8 @@ export function renderizarViviendas(viviendas) {
     });
 
     tbody.querySelectorAll('.vivienda-direccion').forEach(span => {
-        span.addEventListener('dblclick', function(e) {
+        span.addEventListener('click', function(e) {
+            e.stopPropagation();
             const id = this.getAttribute('data-id');
             if (typeof verVivienda === 'function') {
                 verVivienda(Number(id), e);

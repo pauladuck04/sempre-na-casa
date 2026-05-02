@@ -118,7 +118,8 @@ export function renderizarUsuarios(usuarios) {
     });
 
     tbody.querySelectorAll('.usuario-nombre').forEach(span => {
-        span.addEventListener('dblclick', function(e) {
+        span.addEventListener('click', function(e) {
+            e.stopPropagation();
             const id = this.getAttribute('data-id');
             if (typeof verUsuario === 'function') {
                 verUsuario(Number(id), e);
