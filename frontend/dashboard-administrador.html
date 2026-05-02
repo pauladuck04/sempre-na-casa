@@ -55,19 +55,14 @@
         <!-- ============================================
              CONTENIDO PRINCIPAL
              ============================================ -->
-        <main class="flex-grow-1 p-4 p-md-5">
+        <main class="flex-grow-1 p-4 p-md-3">
             <!-- ENCABEZADO -->
-            <div class="d-flex justify-content-between align-items-center mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-2">
                 <div>
                     <h1 class="fw-bold mb-2" id="section-title">Panel de Control</h1>
                     <p class="text-muted" id="section-description">Gestión global de usuarios, viviendas y algoritmos de compatibilidad</p>
                 </div>
-
-                <div class="d-flex align-items-center gap-3">
-                    <div class="text-end d-none d-md-block">
-                        <p class="small mb-0 fw-bold">Super Admin</p>
-                        <p class="small text-muted mb-0">admin@semprenacasa.com</p>
-                    </div>
+                <div class="d-flex align-items-center">
                     <img src="https://ui-avatars.com/api/?name=Admin&background=7A99DD&color=fff"
                          width="45" class="rounded-circle shadow-sm" alt="Avatar">
                 </div>
@@ -75,6 +70,19 @@
 
             <!-- CONTENEDOR DE SECCIONES -->
             <div id="content-sections">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="d-flex gap-2 d-none" id="acciones-globales">
+                        <button type="button" class="btn btn-primary rounded-pill px-2 shadow-sm" id="btnCrear">
+                            <i class="bi bi-plus-circle me-2"></i> Crear
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary rounded-pill px-2" id="btnEditar" disabled>
+                            <i class="bi bi-pencil me-2"></i> Editar
+                        </button>
+                        <button type="button" class="btn btn-outline-danger rounded-pill px-2" id="btnEliminar" disabled>
+                            <i class="bi bi-trash me-2"></i> Eliminar
+                        </button>
+                    </div>
+                </div>
 
                 <!-- SECCIÓN: GENERAL (Por defecto) -->
                 <div class="section-content active" data-section="general">
@@ -109,8 +117,8 @@
                     <div class="card border-0 shadow-sm rounded-4">
                         <div class="card-header bg-white border-bottom py-4">
                             <h5 class="fw-bold mb-0">
-                                <i class="bi bi-people me-2 text-primary"></i>
-                                Gestión de Usuarios
+                                <i class="bi bi-houses me-2 text-primary"></i>
+                                Gestión de Viviendas
                             </h5>
                         </div>
                         <div class="card-body p-4">
@@ -139,8 +147,8 @@
                     <div class="card border-0 shadow-sm rounded-4">
                         <div class="card-header bg-white border-bottom py-4">
                             <h5 class="fw-bold mb-0">
-                                <i class="bi bi-shield-lock me-2 text-primary"></i>
-                                Roles y Permisos
+                                <i class="bi bi-diagram-3 me-2 text-primary"></i>
+                                Gestion de roles y permisos
                             </h5>
                         </div>
                         <div class="card-body p-4">
@@ -148,15 +156,11 @@
                                 <table class="table table-hover align-middle">
                                     <thead class="table-light">
                                         <tr>
-                                            <th>Usuario</th>
                                             <th>Rol</th>
-                                            <th>Fecha Registro</th>
-                                            <th>DNI</th>
-                                            <th>Numero telefono</th>
                                             <th>Estado</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="tabla-usuarios">
+                                    <tbody id="tabla-roles">
                                     </tbody>
                                 </table>
                             </div>
@@ -178,15 +182,14 @@
                                 <table class="table table-hover align-middle">
                                     <thead class="table-light">
                                         <tr>
-                                            <th>Usuario</th>
-                                            <th>Rol</th>
-                                            <th>Fecha Registro</th>
-                                            <th>DNI</th>
-                                            <th>Numero telefono</th>
+                                            <th>Dirección</th>
+                                            <th>Plazas libres</th>
+                                            <th>Plazas totales</th>
+                                            <th>Anfitrión</th>
                                             <th>Estado</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="tabla-usuarios">
+                                    <tbody id="tabla-viviendas">
                                     </tbody>
                                 </table>
                             </div>
@@ -200,7 +203,7 @@
                         <div class="card-header bg-white border-bottom py-4">
                             <h5 class="fw-bold mb-0">
                                 <i class="bi bi-diagram-3 me-2 text-primary"></i>
-                                Criterios de Compatibilidad
+                                Gestion de Criterios de Compatibilidad
                             </h5>
                         </div>
                         <div class="card-body p-4">
@@ -208,15 +211,12 @@
                                 <table class="table table-hover align-middle">
                                     <thead class="table-light">
                                         <tr>
-                                            <th>Usuario</th>
-                                            <th>Rol</th>
-                                            <th>Fecha Registro</th>
-                                            <th>DNI</th>
-                                            <th>Numero telefono</th>
-                                            <th>Estado</th>
+                                            <th>Criterios</th>
+                                            <th>Opciones</th>
+                                            <th>Valores</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="tabla-usuarios">
+                                    <tbody id="tabla-criterios">
                                     </tbody>
                                 </table>
                             </div>
@@ -226,6 +226,24 @@
             </div>
         </main>
     </div>
+    <div class="modal fade" id="modalGenerico" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title fw-bold" id="modalTitle">Nuevo Registro</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="formGenerico">
+                <div class="modal-body p-4" id="modalFormContent">
+                    </div>
+                <div class="modal-footer border-0 p-4">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

@@ -1,6 +1,8 @@
 // js/admin/criterios.js
 // Script para la página de gestión de criterios
 
+export let listaCriteriosMemoria = [];
+
 /**
  * Cargar lista de criterios
  */
@@ -11,7 +13,6 @@ export function cargarCriterios() {
             criterio: 'Nivel de Ruido',
             opcion: 'Silencio Absoluto',
             valor: 1,
-            tipo: 'Escala',
             estado: 'activo'
         },
         {
@@ -19,7 +20,6 @@ export function cargarCriterios() {
             criterio: 'Hábito de Tabaco',
             opcion: 'Prohibido Totalmente',
             valor: 1,
-            tipo: 'Escala',
             estado: 'activo'
         },
         {
@@ -27,7 +27,6 @@ export function cargarCriterios() {
             criterio: 'Frecuencia de Visitas',
             opcion: 'Sin Visitas',
             valor: 1,
-            tipo: 'Escala',
             estado: 'activo'
         },
         {
@@ -35,7 +34,6 @@ export function cargarCriterios() {
             criterio: 'Mascotas',
             opcion: 'NO Acepto Mascotas',
             valor: 1,
-            tipo: 'Escala',
             estado: 'activo'
         },
         {
@@ -43,182 +41,60 @@ export function cargarCriterios() {
             criterio: 'Limpieza y Orden',
             opcion: 'Muy Meticuloso (Diario)',
             valor: 1,
-            tipo: 'Escala',
             estado: 'activo'
         }
     ];
     
+    listaCriteriosMemoria = criterios;
     renderizarCriterios(criterios);
 }
 
 /**
  * Renderizar tabla de criterios
  */
-function renderizarCriterios(criterios) {
-    const tbody = document.querySelector('table tbody');
+export function renderizarCriterios(criterios) {
+    const tbody = document.getElementById('tabla-criterios');
     
     if (!tbody) return;
     
     tbody.innerHTML = '';
     
-    criterios.forEach(criterio => {
+    criterios.forEach((criterio, index) => {
+        const iniciales = criterio.criterio.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>
-                <input class="form-check-input criterio-checkbox" type="checkbox" value="${criterio.id}">
+                <div class="d-flex align-items-center gap-2">
+                    <input class="form-check-input criterio-checkbox align-self-start mt-1" type="checkbox" value="${criterio.id}">
+                    <div>
+                        <span class="fw-semibold d-block criterio-nombre" data-id="${criterio.id}" style="cursor:pointer;">${criterio.criterio}</span>
+                    </div>
+                </div>
             </td>
             <td>
-                <span class="fw-semibold">${criterio.criterio}</span>
-            </td>
-            <td>${criterio.opcion}</td>
-            <td>
-                <code>${criterio.valor}</code>
-            </td>
-            <td>
-                <span class="badge rounded-pill bg-light text-dark px-3">${criterio.tipo}</span>
+                <div class="d-flex align-items-center gap-2">
+                    <div>
+                        <span class="fw-semibold d-block criterio-nombre" data-id="${criterio.id}" style="cursor:pointer;">${criterio.opcion}</span>
+                    </div>
+                </div>
             </td>
             <td>
-                <span class="badge bg-success rounded-pill px-3">Activo</span>
-            </td>
-            <td>
-                <button class="btn btn-sm btn-outline-primary rounded-pill px-3" onclick="verCriterio(${criterio.id}, event)">
-                    <i class="bi bi-eye"></i>
-                </button>
+                <div class="d-flex align-items-center gap-2">
+                    <div>
+                        <span class="fw-semibold d-block criterio-nombre" data-id="${criterio.id}" style="cursor:pointer;">${criterio.valor}</span>
+                    </div>
+                </div>
             </td>
         `;
         tbody.appendChild(row);
     });
-    
-    actualizarBotones();
-}
 
-/**
- * Configurar event listeners
- */
-function configurarEventListeners() {
-    // Checkbox maestro
-    const masterCheckbox = document.querySelector('th input[type="checkbox"]');
-    if (masterCheckbox) {
-        masterCheckbox.addEventListener('change', function() {
-            const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
-            checkboxes.forEach(cb => cb.checked = this.checked);
-            actualizarBotones();
+    // Doble clic en nombre para ver detalles
+    tbody.querySelectorAll('.criterio-nombre').forEach(span => {
+        span.addEventListener('dblclick', function(e) {
+            const id = this.getAttribute('data-id');
+            verCriterio(Number(id), e);
         });
-    }
-    
-    // Checkboxes individuales
-    document.addEventListener('change', function(e) {
-        if (e.target.classList.contains('criterio-checkbox')) {
-            actualizarBotones();
-        }
     });
-    
-    // Botón Añadir
-    const btnAnadir = document.querySelector('button[data-bs-toggle="modal"]');
-    if (btnAnadir) {
-        btnAnadir.addEventListener('click', abrirModalNuevoCriterio);
-    }
-    
-    // Formulario
-    const form = document.getElementById('formNuevoCriterio');
-    if (form) {
-        form.addEventListener('submit', guardarNuevoCriterio);
-    }
-}
-
-/**
- * Actualizar estado de botones
- */
-function actualizarBotones() {
-    const seleccionados = document.querySelectorAll('tbody input[type="checkbox"]:checked').length;
-    const botones = document.querySelectorAll('.card-header button');
-    
-    if (botones.length >= 3) {
-        botones[1].disabled = seleccionados === 0; // Editar
-        botones[2].disabled = seleccionados === 0; // Eliminar
-    }
-}
-
-/**
- * Abrir modal para nuevo criterio
- */
-function abrirModalNuevoCriterio() {
-    const modal = new bootstrap.Modal(document.getElementById('modalNuevoCriterio'));
-    modal.show();
-}
-
-/**
- * Guardar nuevo criterio
- */
-function guardarNuevoCriterio(e) {
-    e.preventDefault();
-    
-    const form = e.target;
-    const inputs = form.querySelectorAll('input[type="text"], input[type="number"], select, textarea');
-    
-    const nuevoCriterio = {
-        nombre: inputs[0].value,
-        opcion: inputs[1].value,
-        valor: inputs[2].value,
-        tipo: inputs[3].value,
-        activoPorDefecto: form.querySelector('input[type="checkbox"]').checked
-    };
-    
-    console.log('Guardando nuevo criterio:', nuevoCriterio);
-    
-    alert('Criterio creado correctamente');
-    cargarCriterios();
-    
-    const modal = bootstrap.Modal.getInstance(document.getElementById('modalNuevoCriterio'));
-    modal.hide();
-    form.reset();
-}
-
-/**
- * Ver detalles del criterio
- */
-function verCriterio(criterioId, event) {
-    event.preventDefault();
-    console.log('Ver criterio:', criterioId);
-    alert('Abriendo detalles del criterio ID: ' + criterioId);
-}
-
-/**
- * Editar criterio
- */
-function editarCriterio() {
-    const seleccionados = Array.from(document.querySelectorAll('tbody input[type="checkbox"]:checked'))
-        .map(cb => cb.value);
-    
-    if (seleccionados.length === 0) {
-        alert('Selecciona un criterio para editar');
-        return;
-    }
-    
-    if (seleccionados.length > 1) {
-        alert('Solo puedes editar un criterio a la vez');
-        return;
-    }
-    
-    console.log('Editando criterio:', seleccionados[0]);
-    alert('Abriendo formulario de edición para criterio ID: ' + seleccionados[0]);
-}
-
-/**
- * Eliminar criterio
- */
-function eliminarCriterio() {
-    const seleccionados = Array.from(document.querySelectorAll('tbody input[type="checkbox"]:checked'))
-        .map(cb => cb.value);
-    
-    if (seleccionados.length === 0) {
-        alert('Selecciona un criterio para eliminar');
-        return;
-    }
-    
-    if (confirm(`¿Estás seguro de que deseas eliminar ${seleccionados.length} criterio(s)?`)) {
-        console.log('Eliminando criterios:', seleccionados);
-        alert('Criterio(s) eliminado(s) correctamente');
-        cargarCriterios();
-    }
 }

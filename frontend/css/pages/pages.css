@@ -228,11 +228,15 @@
    TABLAS / GESTIÓN
    ============================================ */
 .table-responsive {
-    overflow-x: auto;
+    width: max-content;
+    min-width: 100%;
+    overflow-x: visible;
 }
 
 .table {
-    width: 100%;
+    width: max-content;
+    min-width: 100%;
+    table-layout: auto;
     border-collapse: collapse;
     margin-bottom: var(--space-lg);
 }
@@ -252,6 +256,7 @@
 .table td {
     padding: var(--space-md);
     border-bottom: 1px solid var(--color-gris-400);
+    white-space: nowrap;
 }
 
 .table tbody tr:hover {
