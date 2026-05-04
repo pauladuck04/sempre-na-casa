@@ -5,14 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Anfitrión - Sempre na Casa</title>
 
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+    <!-- CSS Principal -->
     <link rel="stylesheet" href="css/main.css">
 </head>
 <body class="bg-light">
     <div class="d-flex" style="min-height: 100vh;">
         <!-- ============================================
-             SIDEBAR
+             SIDEBAR / NAVEGACIÓN LATERAL
              ============================================ -->
         <aside class="sidebar bg-white shadow-sm d-none d-lg-flex flex-column p-4" style="width: 280px; min-height: 100vh; position: sticky; top: 0;">
             <!-- Logo y Branding -->
@@ -64,8 +67,28 @@
 
             <!-- CONTENEDOR DE SECCIONES -->
             <div id="content-sections">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="gap-2 d-none" id="acciones-globales">
+                        <button type="button" class="btn btn-primary rounded-pill px-2 shadow-sm" id="btnCrear">
+                            <i class="bi bi-plus-circle me-2"></i> Añadir
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary rounded-pill px-2" id="btnEditar" disabled>
+                            <i class="bi bi-pencil me-2"></i> Editar
+                        </button>
+                        <button type="button" class="btn btn-outline-danger rounded-pill px-2" id="btnEliminar" disabled>
+                            <i class="bi bi-x-circle me-2"></i> Desactivar
+                        </button>
+                        <button type="button" class="btn btn-outline-success rounded-pill px-2" id="btnReactivar" disabled>
+                            <i class="bi bi-check-circle me-2"></i> Activar
+                        </button>
+                    </div>
+                    <div class="gap-2 flex-wrap d-none" id="filtros-globales">
+                        <input type="search" class="form-control" id="filtroTexto" placeholder="Filtrar listado">
+                        <div class="d-flex gap-2 flex-wrap" id="filtrosEspecificos"></div>
+                    </div>
+                </div>
 
-                <!-- SECCIÓN: GENERAL -->
+                <!-- SECCIÓN: GENERAL (Por defecto) -->
                 <div class="section-content active" data-section="general">
                     <!-- Tarjetas resumen -->
                     <div class="row g-3 mb-4">
@@ -126,10 +149,10 @@
                                             <th>Inquilino</th>
                                             <th>Inicio</th>
                                             <th>Estado</th>
-                                            <th>Acciones</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="tabla-convivencias"></tbody>
+                                    <tbody id="tabla-convivencias">
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
@@ -172,14 +195,11 @@
                 <!-- SECCIÓN: CRITERIOS -->
                 <div class="section-content" data-section="criterios">
                     <div class="card border-0 shadow-sm rounded-4">
-                        <div class="card-header bg-white border-bottom py-4 d-flex justify-content-between align-items-center">
+                        <div class="card-header bg-white border-bottom py-4">
                             <h5 class="fw-bold mb-0">
                                 <i class="bi bi-sliders me-2 text-primary"></i>
                                 Criterios de la Vivienda
                             </h5>
-                            <button class="btn btn-primary rounded-pill btn-sm px-3" id="btnNuevoCriterio">
-                                <i class="bi bi-plus-circle me-1"></i> Añadir Criterio
-                            </button>
                         </div>
                         <div class="card-body p-4">
                             <div class="table-responsive">
@@ -189,10 +209,10 @@
                                             <th>Criterio</th>
                                             <th>Valor Preferido</th>
                                             <th>Estado</th>
-                                            <th>Acciones</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="tabla-criterios"></tbody>
+                                    <tbody id="tabla-criterios">
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
@@ -213,13 +233,13 @@
                                 <table class="table table-hover align-middle">
                                     <thead class="table-light">
                                         <tr>
-                                            <th>Nombre</th>
+                                            <th>Inquilino</th>
                                             <th>Compatibilidad</th>
                                             <th>Estado</th>
-                                            <th>Acciones</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="tabla-inquilinos"></tbody>
+                                    <tbody id="tabla-inquilinos">
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
@@ -230,16 +250,17 @@
         </main>
     </div>
 
-    <!-- Modal Genérico (vivienda / criterios) -->
+    <!-- Modal Genérico (criterios / vivienda) -->
     <div class="modal fade" id="modalGenerico" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow">
-                <div class="modal-header text-white" style="background-color: var(--color-primario);">
+                <div class="modal-header bg-primary text-white">
                     <h5 class="modal-title fw-bold" id="modalTitle">Nuevo Registro</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="formGenerico">
-                    <div class="modal-body p-4" id="modalFormContent"></div>
+                    <div class="modal-body p-4" id="modalFormContent">
+                    </div>
                     <div class="modal-footer border-0 p-4">
                         <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancelar</button>
                         <button type="submit" class="btn btn-primary rounded-pill px-4">Guardar Cambios</button>
@@ -249,15 +270,16 @@
         </div>
     </div>
 
-    <!-- Modal Detalle Inquilino -->
+    <!-- Modal de Detalle -->
     <div class="modal fade" id="modalDetalle" tabindex="-1" aria-labelledby="modalDetalleTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow">
                 <div class="modal-header text-white" style="background-color: var(--color-primario);">
-                    <h5 class="modal-title fw-bold" id="modalDetalleTitle">Perfil del Inquilino</h5>
+                    <h5 class="modal-title fw-bold" id="modalDetalleTitle">Detalles</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body p-4" id="modalDetalleContent"></div>
+                <div class="modal-body p-4" id="modalDetalleContent">
+                </div>
                 <div class="modal-footer border-0 p-4">
                     <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cerrar</button>
                 </div>
@@ -265,7 +287,7 @@
         </div>
     </div>
 
-    <!-- Modal Notificar Baja -->
+    <!-- Modal Notificar Baja (exclusivo anfitrión) -->
     <div class="modal fade" id="modalBaja" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow">
@@ -303,6 +325,8 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Scripts del anfitrión -->
     <script src="js/api.js"></script>
     <script type="module" src="js/public/dashboard-anfitrion.js"></script>
 </body>
