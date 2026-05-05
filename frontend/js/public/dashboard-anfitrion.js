@@ -61,7 +61,7 @@ const CONFIG_MODALES = {
 };
 
 // ============================================
-// DATOS DE VIVIENDA (detalle único, no tabla)
+// DATOS DE VIVIENDA
 // ============================================
 
 let viviendaActual = {
@@ -77,28 +77,62 @@ let viviendaActual = {
 let inquilinoBajaId = null;
 
 // ============================================
+// DATOS DE USUARIO
+// ============================================
+
+const usuarioActual = {
+    nombre:    'Ana García López',
+    iniciales: 'AG',
+    email:     'ana.garcia@semprenacasa.es',
+    telefono:  '+34 600 123 456',
+    ciudad:    'Santiago de Compostela',
+    dni:       '12345678A',
+    fechaAlta: 'enero de 2024',
+};
+
+// ============================================
+// TEXTOS DE SECCIONES (scope de módulo)
+// ============================================
+
+const SECTION_TITLES = {
+    general:    'Panel de Anfitrión',
+    vivienda:   'Mi Vivienda',
+    criterios:  'Criterios de la Vivienda',
+    inquilinos: 'Inquilinos',
+    perfil:     'Mi Perfil',
+};
+
+const SECTION_DESCRIPTIONS = {
+    general:    'Resumen de tu vivienda e inquilinos actuales',
+    vivienda:   'Gestiona los datos de tu vivienda',
+    criterios:  'Define las preferencias para los inquilinos',
+    inquilinos: 'Consulta perfiles y gestiona las bajas',
+    perfil:     'Gestiona tu información personal y configuración de cuenta',
+};
+
+// ============================================
 // INICIALIZACIÓN
 // ============================================
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Pre-cargar datos de inquilinos para que la vista general los pueda usar
     inquilinos.cargarInquilinos();
 
     const seccionActiva = document.querySelector('.section-link.active-custom')?.getAttribute('data-section');
     actualizarControlesSeccion(seccionActiva);
-
     cargarSeguimientoConvivencias();
 
-    // ---- Botón Crear (Añadir Criterio) ----
-    const btnCrear = document.getElementById('btnCrear');
-    if (btnCrear) {
-        btnCrear.addEventListener('click', () => {
-            const seccionActual = document.querySelector('.section-link.active-custom')?.getAttribute('data-section');
-            abrirModalGenerico(seccionActual);
-        });
-    }
+    // ---- Avatar → sección perfil ----
+    document.getElementById('btnPerfil')?.addEventListener('click', () => {
+        navegarASeccion('perfil');
+    });
 
-    // ---- Botón Editar / Ver Perfil ----
+    // ---- Botón Crear ----
+    document.getElementById('btnCrear')?.addEventListener('click', () => {
+        const seccion = document.querySelector('.section-link.active-custom')?.getAttribute('data-section');
+        abrirModalGenerico(seccion);
+    });
+
+    // ---- Botón Editar ----
     document.getElementById('btnEditar')?.addEventListener('click', () => {
         const seccion = document.querySelector('.section-link.active-custom')?.getAttribute('data-section');
 
@@ -108,14 +142,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const id = parseInt(seleccionado.value);
             const c = criterios.listaCriteriosMemoria.find(x => x.id === id);
             if (!c) return;
-
             abrirModalGenerico('criterios');
             const form = document.getElementById('formGenerico');
             form.querySelector('[name="criterio"]').value = c.criterio;
             form.querySelector('[name="valor"]').value = c.valor;
             form.insertAdjacentHTML('beforeend', `<input type="hidden" name="id_edit" value="${id}">`);
             document.getElementById('modalTitle').textContent = 'Editar Criterio: ' + c.criterio;
-
         } else if (seccion === 'inquilinos') {
             const seleccionado = document.querySelector('tbody .inquilino-checkbox:checked');
             if (!seleccionado) return;
@@ -123,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // ---- Botón Eliminar / Desactivar / Notificar Baja ----
+    // ---- Botón Eliminar / Notificar Baja ----
     document.getElementById('btnEliminar')?.addEventListener('click', () => {
         const seccion = document.querySelector('.section-link.active-custom')?.getAttribute('data-section');
         const seleccionados = obtenerIdsSeleccionados(seccion);
@@ -140,7 +172,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // ---- Botón Reactivar / Activar ----
+    // ---- Botón Reactivar ----
     document.getElementById('btnReactivar')?.addEventListener('click', () => {
         const seccion = document.querySelector('.section-link.active-custom')?.getAttribute('data-section');
         const seleccionados = obtenerIdsSeleccionadosInactivos(seccion);
@@ -167,11 +199,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // ---- Submit modal genérico ----
     document.getElementById('formGenerico')?.addEventListener('submit', function(e) {
         e.preventDefault();
-        const seccionActual = document.querySelector('.section-link.active-custom')?.getAttribute('data-section');
-        const formData = new FormData(this);
-        const data = Object.fromEntries(formData);
+        const seccion = document.querySelector('.section-link.active-custom')?.getAttribute('data-section');
+        const data = Object.fromEntries(new FormData(this));
 
-        if (seccionActual === 'criterios') {
+        if (seccion === 'criterios') {
             if (data.id_edit) {
                 const c = criterios.listaCriteriosMemoria.find(x => x.id === parseInt(data.id_edit));
                 if (c) { c.criterio = data.criterio; c.valor = data.valor; }
@@ -179,7 +210,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 criterios.listaCriteriosMemoria.push({ id: Date.now(), criterio: data.criterio, valor: data.valor, estado: 'activo' });
             }
             criterios.cargarCriterios();
-        } else if (seccionActual === 'vivienda') {
+        } else if (seccion === 'vivienda') {
             viviendaActual = {
                 id: viviendaActual?.id || Date.now(),
                 direccion:      data.direccion,
@@ -213,75 +244,164 @@ document.addEventListener('DOMContentLoaded', function() {
         cargarSeguimientoConvivencias();
     });
 
-    // ---- Botón Dar de Alta Vivienda (inline) ----
+    // ---- Botón Dar de Alta Vivienda ----
     document.getElementById('btnDarDeAlta')?.addEventListener('click', () => {
         abrirModalGenerico('vivienda');
     });
 
-    // ---- Botón Editar Vivienda (inline) ----
+    // ---- Botón Editar Vivienda ----
     document.getElementById('btnEditarVivienda')?.addEventListener('click', () => {
         abrirModalGenerico('vivienda');
         if (viviendaActual) {
             const form = document.getElementById('modalFormContent');
-            form.querySelector('[name="direccion"]').value    = viviendaActual.direccion;
-            form.querySelector('[name="ciudad"]').value       = viviendaActual.ciudad;
+            form.querySelector('[name="direccion"]').value      = viviendaActual.direccion;
+            form.querySelector('[name="ciudad"]').value         = viviendaActual.ciudad;
             form.querySelector('[name="plazas_totales"]').value = viviendaActual.plazas_totales;
             form.querySelector('[name="plazas_libres"]').value  = viviendaActual.plazas_libres;
-            form.querySelector('[name="descripcion"]').value  = viviendaActual.descripcion || '';
-            document.getElementById('modalTitle').textContent = 'Editar Vivienda';
+            form.querySelector('[name="descripcion"]').value    = viviendaActual.descripcion || '';
+            document.getElementById('modalTitle').textContent  = 'Editar Vivienda';
             document.getElementById('formGenerico').insertAdjacentHTML('beforeend',
                 `<input type="hidden" name="id_edit" value="${viviendaActual.id}">`);
         }
     });
 
     // ---- Navegación entre secciones ----
-    const sectionLinks    = document.querySelectorAll('.section-link');
-    const sectionContents = document.querySelectorAll('.section-content');
-
-    const sectionTitles = {
-        general:    'Panel de Anfitrión',
-        vivienda:   'Mi Vivienda',
-        criterios:  'Criterios de la Vivienda',
-        inquilinos: 'Inquilinos',
-    };
-
-    const sectionDescriptions = {
-        general:    'Resumen de tu vivienda e inquilinos actuales',
-        vivienda:   'Gestiona los datos de tu vivienda',
-        criterios:  'Define las preferencias para los inquilinos',
-        inquilinos: 'Consulta perfiles y gestiona las bajas',
-    };
-
-    sectionLinks.forEach(link => {
+    document.querySelectorAll('.section-link').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
-            const sectionName = link.getAttribute('data-section');
-            actualizarControlesSeccion(sectionName);
-
-            sectionContents.forEach(content => content.classList.remove('active'));
-            sectionLinks.forEach(l => { l.classList.remove('active-custom'); l.classList.add('text-muted'); });
-
-            actualizarBotones();
-
-            const activeSection = document.querySelector(`.section-content[data-section="${sectionName}"]`);
-            if (activeSection) activeSection.classList.add('active');
-
-            link.classList.add('active-custom');
-            link.classList.remove('text-muted');
-
-            switch (sectionName) {
-                case 'general':    cargarSeguimientoConvivencias();  break;
-                case 'vivienda':   renderizarVivienda();             break;
-                case 'criterios':  criterios.cargarCriterios();      break;
-                case 'inquilinos': inquilinos.cargarInquilinos();    break;
-            }
-
-            aplicarFiltros();
-            document.getElementById('section-title').textContent       = sectionTitles[sectionName]       || '';
-            document.getElementById('section-description').textContent = sectionDescriptions[sectionName] || '';
+            navegarASeccion(link.getAttribute('data-section'));
         });
     });
+
+    // ---- Perfil: toggle ojo contraseña ----
+    document.querySelectorAll('[data-toggle-pwd]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const input = document.getElementById(btn.dataset.togglePwd);
+            const icon  = btn.querySelector('i');
+            if (input.type === 'password') {
+                input.type    = 'text';
+                icon.className = 'bi bi-eye-slash';
+            } else {
+                input.type    = 'password';
+                icon.className = 'bi bi-eye';
+            }
+        });
+    });
+
+    // ---- Perfil: indicador de fortaleza ----
+    document.getElementById('pwd-nueva')?.addEventListener('input', function () {
+        const wrap = document.getElementById('pwd-strength-wrap');
+        const bar  = document.getElementById('pwd-strength-bar');
+        const txt  = document.getElementById('pwd-strength-text');
+        if (!this.value) { wrap.style.display = 'none'; return; }
+        wrap.style.display = 'block';
+        const cfg = { 1: [25,'#dc3545','Muy débil'], 2: [50,'#fd7e14','Débil'], 3: [75,'#ffc107','Moderada'], 4: [100,'#28a745','Fuerte'] }[calcularFortaleza(this.value)];
+        bar.style.width           = cfg[0] + '%';
+        bar.style.backgroundColor = cfg[1];
+        txt.textContent           = cfg[2];
+        txt.style.color           = cfg[1];
+    });
+
+    // ---- Perfil: editar datos personales ----
+    let valoresOriginalesPerfil = {};
+    const perfilInputs = () => Array.from(document.querySelectorAll('#perfil-form input'));
+
+    document.getElementById('perfil-btnEditar')?.addEventListener('click', () => {
+        valoresOriginalesPerfil = {};
+        perfilInputs().forEach(inp => { valoresOriginalesPerfil[inp.id] = inp.value; inp.disabled = false; });
+        document.getElementById('perfil-btnEditar').classList.add('d-none');
+        const ac = document.getElementById('perfil-acciones');
+        ac.classList.remove('d-none'); ac.classList.add('d-flex');
+        document.getElementById('perfil-nombre').focus();
+    });
+
+    document.getElementById('perfil-btnCancelar')?.addEventListener('click', () => {
+        perfilInputs().forEach(inp => { inp.value = valoresOriginalesPerfil[inp.id]; inp.disabled = true; inp.classList.remove('is-invalid'); });
+        document.getElementById('perfil-btnEditar').classList.remove('d-none');
+        const ac = document.getElementById('perfil-acciones');
+        ac.classList.add('d-none'); ac.classList.remove('d-flex');
+    });
+
+    document.getElementById('perfil-form')?.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const nombre = document.getElementById('perfil-nombre').value.trim();
+        const email  = document.getElementById('perfil-email').value.trim();
+        if (!nombre) { marcarInvalidoPerfil('perfil-nombre', 'El nombre no puede estar vacío.'); return; }
+        if (!email.includes('@')) { marcarInvalidoPerfil('perfil-email', 'Introduce un correo válido.'); return; }
+
+        usuarioActual.nombre   = nombre;
+        usuarioActual.email    = email;
+        usuarioActual.telefono = document.getElementById('perfil-telefono').value.trim();
+        usuarioActual.ciudad   = document.getElementById('perfil-ciudad').value.trim();
+        usuarioActual.dni      = document.getElementById('perfil-dni').value.trim();
+
+        perfilInputs().forEach(inp => { inp.disabled = true; inp.classList.remove('is-invalid'); });
+        document.getElementById('perfil-btnEditar').classList.remove('d-none');
+        const ac = document.getElementById('perfil-acciones');
+        ac.classList.add('d-none'); ac.classList.remove('d-flex');
+
+        document.getElementById('perfil-display-nombre').textContent = usuarioActual.nombre;
+        mostrarToast('Datos personales actualizados correctamente.', 'success');
+    });
+
+    // ---- Perfil: cambiar contraseña ----
+    document.getElementById('perfil-form-pwd')?.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const actual   = document.getElementById('pwd-actual').value;
+        const nueva    = document.getElementById('pwd-nueva').value;
+        const confirma = document.getElementById('pwd-confirmar').value;
+        const feedback = document.getElementById('pwd-feedback');
+        feedback.innerHTML = '';
+
+        if (!actual) { feedback.innerHTML = pwdErrorHtml('Introduce tu contraseña actual.'); return; }
+        if (nueva.length < 8) { feedback.innerHTML = pwdErrorHtml('La nueva contraseña debe tener al menos 8 caracteres.'); return; }
+        if (nueva !== confirma) { feedback.innerHTML = pwdErrorHtml('Las contraseñas no coinciden.'); return; }
+
+        this.reset();
+        document.getElementById('pwd-strength-wrap').style.display = 'none';
+        mostrarToast('Contraseña actualizada correctamente.', 'success');
+    });
+
+    // ---- Perfil: eliminar cuenta ----
+    document.getElementById('btnEliminarCuenta')?.addEventListener('click', () => {
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('modalEliminarCuenta')).show();
+    });
+
+    document.getElementById('btnConfirmarEliminarCuenta')?.addEventListener('click', () => {
+        bootstrap.Modal.getInstance(document.getElementById('modalEliminarCuenta')).hide();
+        mostrarToast('Cuenta eliminada. Redirigiendo...', 'danger');
+        setTimeout(() => { window.location.href = 'public.html'; }, 2000);
+    });
 });
+
+// ============================================
+// NAVEGACIÓN ENTRE SECCIONES
+// ============================================
+
+function navegarASeccion(sectionName) {
+    actualizarControlesSeccion(sectionName);
+
+    document.querySelectorAll('.section-content').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.section-link').forEach(l => { l.classList.remove('active-custom'); l.classList.add('text-muted'); });
+    actualizarBotones();
+
+    const activeSection = document.querySelector(`.section-content[data-section="${sectionName}"]`);
+    if (activeSection) activeSection.classList.add('active');
+
+    const matchingLink = document.querySelector(`.section-link[data-section="${sectionName}"]`);
+    if (matchingLink) { matchingLink.classList.add('active-custom'); matchingLink.classList.remove('text-muted'); }
+
+    switch (sectionName) {
+        case 'general':    cargarSeguimientoConvivencias(); break;
+        case 'vivienda':   renderizarVivienda();            break;
+        case 'criterios':  criterios.cargarCriterios();     break;
+        case 'inquilinos': inquilinos.cargarInquilinos();   break;
+    }
+
+    aplicarFiltros();
+    document.getElementById('section-title').textContent       = SECTION_TITLES[sectionName]       || '';
+    document.getElementById('section-description').textContent = SECTION_DESCRIPTIONS[sectionName] || '';
+}
 
 // ============================================
 // VISTA GENERAL
@@ -290,7 +410,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function cargarSeguimientoConvivencias() {
     const v = viviendaActual;
     const plazasOcupadas = v ? v.plazas_totales - v.plazas_libres : 0;
-    const enEntrevista = inquilinos.listaInquilinosMemoria.filter(i => i.estado === 'entrevista').length;
+    const enEntrevista   = inquilinos.listaInquilinosMemoria.filter(i => i.estado === 'entrevista').length;
 
     const estadoEl = document.getElementById('estado-vivienda');
     if (estadoEl) estadoEl.textContent = v ? (v.estado === 'disponible' ? 'Disponible' : 'Completa') : 'Sin vivienda';
@@ -322,13 +442,7 @@ function renderizarConvivencias() {
             case 'entrevista': estadoBadge = `<span class="badge rounded-pill px-3 py-2" style="background-color:#FFF3CD;color:#856404;">⏳ En Entrevista</span>`;   break;
             case 'prueba':     estadoBadge = `<span class="badge rounded-pill px-3 py-2" style="background-color:#CFE2FF;color:#084298;">⚠️ Periodo de Prueba</span>`; break;
         }
-        return `
-            <tr>
-                <td class="fw-semibold">${i.nombre}</td>
-                <td>${i.fechaIngreso || '-'}</td>
-                <td>${estadoBadge}</td>
-            </tr>
-        `;
+        return `<tr><td class="fw-semibold">${i.nombre}</td><td>${i.fechaIngreso || '-'}</td><td>${estadoBadge}</td></tr>`;
     }).join('');
 }
 
@@ -389,13 +503,12 @@ function abrirModalGenerico(seccion) {
     const config = CONFIG_MODALES[seccion];
     if (!config) return;
 
-    document.getElementById('modalTitle').textContent = config.titulo;
+    document.getElementById('modalTitle').textContent    = config.titulo;
     document.getElementById('modalFormContent').innerHTML = config.html;
 
     const form = document.getElementById('formGenerico');
     form.reset();
-    const hiddenId = form.querySelector('input[name="id_edit"]');
-    if (hiddenId) hiddenId.remove();
+    form.querySelector('input[name="id_edit"]')?.remove();
 
     bootstrap.Modal.getOrCreateInstance(document.getElementById('modalGenerico')).show();
 }
@@ -408,7 +521,7 @@ function abrirModalBaja(id) {
     const i = inquilinos.listaInquilinosMemoria.find(x => x.id === id);
     if (!i) return;
     inquilinoBajaId = id;
-    document.getElementById('baja-nombre').textContent = i.nombre;
+    document.getElementById('baja-nombre').textContent      = i.nombre;
     document.getElementById('baja-observaciones').value = '';
     bootstrap.Modal.getOrCreateInstance(document.getElementById('modalBaja')).show();
 }
@@ -421,8 +534,7 @@ window.verInquilino = function(id) {
     const i = inquilinos.listaInquilinosMemoria.find(x => x.id === id);
     if (!i) return;
 
-    const pctColor = i.compatibilidad >= 85 ? 'success' : i.compatibilidad >= 65 ? 'warning' : 'danger';
-
+    const pctColor   = i.compatibilidad >= 85 ? 'success' : i.compatibilidad >= 65 ? 'warning' : 'danger';
     const estadoBadge = {
         activo:     `<span class="badge bg-success">Activo</span>`,
         entrevista: `<span class="badge bg-warning text-dark">En Entrevista</span>`,
@@ -430,7 +542,8 @@ window.verInquilino = function(id) {
         inactivo:   `<span class="badge bg-secondary">Inactivo</span>`,
     }[i.estado] || `<span class="badge bg-secondary">${i.estado}</span>`;
 
-    const contenido = `
+    document.getElementById('modalDetalleTitle').textContent = `Perfil del Inquilino: ${i.nombre}`;
+    document.getElementById('modalDetalleContent').innerHTML = `
         <div class="text-center mb-4">
             <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(i.nombre)}&background=7A99DD&color=fff"
                  width="80" class="rounded-circle shadow-sm mb-3" alt="${i.nombre}">
@@ -463,9 +576,6 @@ window.verInquilino = function(id) {
             </div>
         </div>
     `;
-
-    document.getElementById('modalDetalleTitle').textContent = `Perfil del Inquilino: ${i.nombre}`;
-    document.getElementById('modalDetalleContent').innerHTML = contenido;
     bootstrap.Modal.getOrCreateInstance(document.getElementById('modalDetalle')).show();
 };
 
@@ -474,14 +584,14 @@ window.verInquilino = function(id) {
 // ============================================
 
 function actualizarControlesSeccion(seccion) {
-    const accionesGlobales = document.getElementById('acciones-globales');
-    const filtrosGlobales  = document.getElementById('filtros-globales');
+    const accionesGlobales   = document.getElementById('acciones-globales');
+    const filtrosGlobales    = document.getElementById('filtros-globales');
     const filtrosEspecificos = document.getElementById('filtrosEspecificos');
-    const filtroTexto = document.getElementById('filtroTexto');
+    const filtroTexto        = document.getElementById('filtroTexto');
 
     if (!accionesGlobales || !filtrosGlobales) return;
 
-    if (seccion === 'general' || seccion === 'vivienda') {
+    if (seccion === 'general' || seccion === 'vivienda' || seccion === 'perfil') {
         accionesGlobales.classList.remove('d-flex');
         filtrosGlobales.classList.remove('d-flex');
         accionesGlobales.classList.add('d-none');
@@ -518,7 +628,7 @@ function actualizarControlesSeccion(seccion) {
 
 function configurarFiltros(seccion) {
     const contenedor = document.getElementById('filtrosEspecificos');
-    const texto = document.getElementById('filtroTexto');
+    const texto      = document.getElementById('filtroTexto');
     if (!contenedor) return;
 
     if (texto) texto.value = '';
@@ -531,7 +641,7 @@ function configurarFiltros(seccion) {
         select.dataset.filtroCampo = filtro.campo;
         select.innerHTML = `
             <option value="">Todos los estados</option>
-            ${filtro.opciones.map(([valor, etiqueta]) => `<option value="${valor}">${etiqueta}</option>`).join('')}
+            ${filtro.opciones.map(([v, e]) => `<option value="${v}">${e}</option>`).join('')}
         `;
         contenedor.appendChild(select);
     });
@@ -548,12 +658,12 @@ function aplicarFiltros() {
 
     const texto = document.getElementById('filtroTexto')?.value.trim().toLowerCase() || '';
     const filtrosActivos = Array.from(document.querySelectorAll('#filtrosEspecificos [data-filtro-campo]'))
-        .map(select => ({ campo: select.dataset.filtroCampo, valor: select.value }))
-        .filter(filtro => filtro.valor);
+        .map(s => ({ campo: s.dataset.filtroCampo, valor: s.value }))
+        .filter(f => f.valor);
 
     const filtrados = config.lista.filter(item => {
         const coincideTexto    = !texto || Object.values(item).some(v => String(v).toLowerCase().includes(texto));
-        const coincidenFiltros = filtrosActivos.every(filtro => String(item[filtro.campo]) === filtro.valor);
+        const coincidenFiltros = filtrosActivos.every(f => String(item[f.campo]) === f.valor);
         return coincideTexto && coincidenFiltros;
     });
 
@@ -563,25 +673,14 @@ function aplicarFiltros() {
 
 function obtenerConfigSeccion(seccion) {
     const configs = {
-        criterios: {
-            lista:     criterios.listaCriteriosMemoria,
-            renderizar: criterios.renderizarCriterios,
-            reactivar:  criterios.reactivarCriterios,
-            desactivar: criterios.desactivarCriterios,
-        },
-        inquilinos: {
-            lista:     inquilinos.listaInquilinosMemoria,
-            renderizar: inquilinos.renderizarInquilinos,
-        }
+        criterios:  { lista: criterios.listaCriteriosMemoria,  renderizar: criterios.renderizarCriterios },
+        inquilinos: { lista: inquilinos.listaInquilinosMemoria, renderizar: inquilinos.renderizarInquilinos },
     };
     return configs[seccion];
 }
 
 function obtenerIdsSeleccionados(seccion) {
-    const selectores = {
-        criterios:  '.criterio-checkbox',
-        inquilinos: '.inquilino-checkbox',
-    };
+    const selectores = { criterios: '.criterio-checkbox', inquilinos: '.inquilino-checkbox' };
     const selector = selectores[seccion];
     if (!selector) return [];
     return Array.from(document.querySelectorAll(`tbody ${selector}:checked`)).map(cb => cb.value);
@@ -590,8 +689,7 @@ function obtenerIdsSeleccionados(seccion) {
 function obtenerIdsSeleccionadosInactivos(seccion) {
     const config = obtenerConfigSeccion(seccion);
     if (!config) return [];
-    const seleccionados = obtenerIdsSeleccionados(seccion);
-    return seleccionados.filter(id => {
+    return obtenerIdsSeleccionados(seccion).filter(id => {
         const item = config.lista.find(x => String(x.id) === id);
         return item?.estado === 'inactivo';
     });
@@ -601,11 +699,8 @@ function actualizarBotones() {
     const seccion = document.querySelector('.section-link.active-custom')?.getAttribute('data-section');
     let seleccionados = 0;
 
-    if (seccion === 'criterios') {
-        seleccionados = document.querySelectorAll('tbody .criterio-checkbox:checked').length;
-    } else if (seccion === 'inquilinos') {
-        seleccionados = document.querySelectorAll('tbody .inquilino-checkbox:checked').length;
-    }
+    if (seccion === 'criterios')  seleccionados = document.querySelectorAll('tbody .criterio-checkbox:checked').length;
+    if (seccion === 'inquilinos') seleccionados = document.querySelectorAll('tbody .inquilino-checkbox:checked').length;
 
     const btnEditar    = document.getElementById('btnEditar');
     const btnEliminar  = document.getElementById('btnEliminar');
@@ -615,16 +710,51 @@ function actualizarBotones() {
     if (btnEliminar) btnEliminar.disabled = (seleccionados === 0);
 
     if (seccion === 'criterios') {
-        const inactivosSeleccionados = obtenerIdsSeleccionadosInactivos(seccion).length;
-        if (btnReactivar) btnReactivar.disabled = (inactivosSeleccionados === 0);
+        if (btnReactivar) btnReactivar.disabled = (obtenerIdsSeleccionadosInactivos(seccion).length === 0);
     } else if (seccion === 'inquilinos') {
         if (btnEliminar) {
-            const ids = obtenerIdsSeleccionados(seccion);
-            const puedeBaja = ids.filter(id => {
+            const puedeBaja = obtenerIdsSeleccionados(seccion).filter(id => {
                 const i = inquilinos.listaInquilinosMemoria.find(x => String(x.id) === id);
                 return i?.estado === 'activo' || i?.estado === 'prueba';
             }).length;
             btnEliminar.disabled = (puedeBaja === 0);
         }
     }
+}
+
+// ============================================
+// UTILIDADES PERFIL
+// ============================================
+
+function calcularFortaleza(pwd) {
+    let p = 0;
+    if (pwd.length >= 8)           p++;
+    if (/[A-Z]/.test(pwd))         p++;
+    if (/[0-9]/.test(pwd))         p++;
+    if (/[^A-Za-z0-9]/.test(pwd))  p++;
+    return Math.max(1, p);
+}
+
+function marcarInvalidoPerfil(id, mensaje) {
+    const el = document.getElementById(id);
+    el.classList.add('is-invalid');
+    let fb = el.nextElementSibling;
+    if (!fb || !fb.classList.contains('invalid-feedback')) {
+        fb = document.createElement('div');
+        fb.className = 'invalid-feedback';
+        el.after(fb);
+    }
+    fb.textContent = mensaje;
+}
+
+function pwdErrorHtml(texto) {
+    return `<p class="text-danger small mb-0"><i class="bi bi-x-circle me-1"></i>${texto}</p>`;
+}
+
+function mostrarToast(mensaje, tipo = 'success') {
+    const toast = document.getElementById('toastDashboard');
+    if (!toast) return;
+    toast.className = `toast align-items-center border-0 text-bg-${tipo}`;
+    document.getElementById('toastDashboardMsg').textContent = mensaje;
+    bootstrap.Toast.getOrCreateInstance(toast, { delay: 3000 }).show();
 }

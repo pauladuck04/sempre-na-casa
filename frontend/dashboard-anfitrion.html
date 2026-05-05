@@ -41,6 +41,9 @@
                     <i class="bi bi-people me-2"></i> Inquilinos
                 </a>
 
+                <!-- enlace oculto necesario para el sistema de navegación por secciones -->
+                <a href="#" class="nav-link d-none section-link" data-section="perfil"></a>
+
                 <hr class="my-3">
 
                 <a href="public.html" class="nav-link text-danger transition">
@@ -60,8 +63,9 @@
                     <p class="text-muted" id="section-description">Resumen de tu vivienda e inquilinos actuales</p>
                 </div>
                 <div class="d-flex align-items-center">
-                    <img src="https://ui-avatars.com/api/?name=Anfitrion&background=7A99DD&color=fff"
-                         width="45" class="rounded-circle shadow-sm" alt="Avatar">
+                    <button id="btnPerfil" class="avatar-iniciales shadow-sm" title="Ver mi perfil">
+                        AG
+                    </button>
                 </div>
             </div>
 
@@ -72,7 +76,7 @@
                         <button type="button" class="btn btn-primary rounded-pill px-2 shadow-sm" id="btnCrear">
                             <i class="bi bi-plus-circle me-2"></i> Añadir
                         </button>
-                        <button type="button" class="btn btn-outline-secondary rounded-pill px-2" id="btnEditar" disabled>
+                        <button type="button" class="btn btn-primary-inverse rounded-pill px-2" id="btnEditar" disabled>
                             <i class="bi bi-pencil me-2"></i> Editar
                         </button>
                         <button type="button" class="btn btn-outline-danger rounded-pill px-2" id="btnEliminar" disabled>
@@ -183,7 +187,7 @@
                                     <i class="bi bi-house me-2 text-primary"></i>
                                     Detalles de Mi Vivienda
                                 </h5>
-                                <button class="btn btn-outline-primary rounded-pill btn-sm px-3" id="btnEditarVivienda">
+                                <button class="btn btn-primary-inverse rounded-pill btn-sm px-3" id="btnEditarVivienda">
                                     <i class="bi bi-pencil me-1"></i> Editar
                                 </button>
                             </div>
@@ -241,6 +245,125 @@
                                     <tbody id="tabla-inquilinos">
                                     </tbody>
                                 </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN: MI PERFIL -->
+                <div class="section-content" data-section="perfil">
+                    <div class="row g-4">
+                        <!-- Columna izquierda -->
+                        <div class="col-lg-4">
+                            <div class="card border-0 shadow-sm rounded-4 text-center p-4 mb-4">
+                                <div class="avatar-iniciales avatar-iniciales-lg mx-auto mb-3">AG</div>
+                                <h5 class="fw-bold mb-1" id="perfil-display-nombre">Ana García López</h5>
+                                <span class="badge bg-dark rounded-pill px-3 mb-3">Anfitrión</span>
+                                <p class="text-muted small mb-0">
+                                    <i class="bi bi-calendar3 me-1"></i>Miembro desde enero de 2024
+                                </p>
+                            </div>
+                            <div class="card border-0 shadow-sm rounded-4 p-4">
+                                <h6 class="fw-bold text-danger mb-2">
+                                    <i class="bi bi-exclamation-triangle me-2"></i>Zona de peligro
+                                </h6>
+                                <p class="text-muted small mb-3">Esta acción es permanente e irreversible.</p>
+                                <button class="btn btn-outline-danger rounded-pill w-100 btn-sm" id="btnEliminarCuenta">
+                                    <i class="bi bi-trash me-2"></i>Eliminar mi cuenta
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Columna derecha -->
+                        <div class="col-lg-8">
+                            <!-- Datos personales -->
+                            <div class="card border-0 shadow-sm rounded-4 mb-4">
+                                <div class="card-header bg-white border-bottom py-4 d-flex justify-content-between align-items-center">
+                                    <h5 class="fw-bold mb-0">
+                                        <i class="bi bi-person me-2 text-primary"></i>Datos Personales
+                                    </h5>
+                                    <button class="btn btn-primary-inverse rounded-pill btn-sm px-3" id="perfil-btnEditar">
+                                        <i class="bi bi-pencil me-1"></i>Editar
+                                    </button>
+                                </div>
+                                <div class="card-body p-4">
+                                    <form id="perfil-form" novalidate>
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-semibold text-muted small">Nombre completo</label>
+                                                <input type="text" class="form-control" id="perfil-nombre" value="Ana García López" disabled>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-semibold text-muted small">DNI / NIE</label>
+                                                <input type="text" class="form-control" id="perfil-dni" value="12345678A" disabled>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-semibold text-muted small">Correo electrónico</label>
+                                                <input type="email" class="form-control" id="perfil-email" value="ana.garcia@semprenacasa.es" disabled>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-semibold text-muted small">Teléfono</label>
+                                                <input type="tel" class="form-control" id="perfil-telefono" value="+34 600 123 456" disabled>
+                                            </div>
+                                            <div class="col-12">
+                                                <label class="form-label fw-semibold text-muted small">Ciudad</label>
+                                                <input type="text" class="form-control" id="perfil-ciudad" value="Santiago de Compostela" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="d-none gap-2 justify-content-end mt-4" id="perfil-acciones">
+                                            <button type="button" class="btn btn-light rounded-pill px-4" id="perfil-btnCancelar">Cancelar</button>
+                                            <button type="submit" class="btn btn-primary rounded-pill px-4">
+                                                <i class="bi bi-check-circle me-1"></i>Guardar Cambios
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <!-- Cambiar contraseña -->
+                            <div class="card border-0 shadow-sm rounded-4">
+                                <div class="card-header bg-white border-bottom py-4">
+                                    <h5 class="fw-bold mb-0">
+                                        <i class="bi bi-shield-lock me-2 text-primary"></i>Cambiar Contraseña
+                                    </h5>
+                                </div>
+                                <div class="card-body p-4">
+                                    <form id="perfil-form-pwd" novalidate>
+                                        <div class="mb-4">
+                                            <label class="form-label fw-semibold text-muted small">Contraseña actual</label>
+                                            <div class="position-relative">
+                                                <input type="password" class="form-control pe-5" id="pwd-actual" placeholder="Introduce tu contraseña actual">
+                                                <button type="button" class="btn-pwd-toggle" data-toggle-pwd="pwd-actual" tabindex="-1"><i class="bi bi-eye"></i></button>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label fw-semibold text-muted small">Nueva contraseña</label>
+                                            <div class="position-relative">
+                                                <input type="password" class="form-control pe-5" id="pwd-nueva" placeholder="Mínimo 8 caracteres">
+                                                <button type="button" class="btn-pwd-toggle" data-toggle-pwd="pwd-nueva" tabindex="-1"><i class="bi bi-eye"></i></button>
+                                            </div>
+                                            <div id="pwd-strength-wrap" class="mt-2" style="display:none;">
+                                                <div class="progress" style="height:4px;">
+                                                    <div class="progress-bar" id="pwd-strength-bar" style="width:0%; transition:width .3s,background-color .3s;"></div>
+                                                </div>
+                                                <small class="d-block mt-1" id="pwd-strength-text"></small>
+                                            </div>
+                                        </div>
+                                        <div class="mb-4">
+                                            <label class="form-label fw-semibold text-muted small">Confirmar nueva contraseña</label>
+                                            <div class="position-relative">
+                                                <input type="password" class="form-control pe-5" id="pwd-confirmar" placeholder="Repite la nueva contraseña">
+                                                <button type="button" class="btn-pwd-toggle" data-toggle-pwd="pwd-confirmar" tabindex="-1"><i class="bi bi-eye"></i></button>
+                                            </div>
+                                        </div>
+                                        <div id="pwd-feedback" class="mb-3"></div>
+                                        <div class="text-end">
+                                            <button type="submit" class="btn btn-primary rounded-pill px-4">
+                                                <i class="bi bi-lock me-1"></i>Actualizar Contraseña
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -319,6 +442,40 @@
                         <i class="bi bi-check-circle me-1"></i>Confirmar Baja
                     </button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Eliminar Cuenta -->
+    <div class="modal fade" id="modalEliminarCuenta" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-danger text-white border-0">
+                    <h5 class="modal-title fw-bold">
+                        <i class="bi bi-exclamation-triangle me-2"></i>Eliminar cuenta
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <p class="mb-2">¿Estás segura de que quieres eliminar tu cuenta? Esta acción es <strong>permanente e irreversible</strong>.</p>
+                    <p class="text-muted small mb-0">Se eliminarán todos tus datos, tu vivienda y tus convivencias activas.</p>
+                </div>
+                <div class="modal-footer border-0 p-4">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger rounded-pill px-4" id="btnConfirmarEliminarCuenta">
+                        <i class="bi bi-trash me-1"></i>Sí, eliminar cuenta
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast feedback -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100;">
+        <div id="toastDashboard" class="toast align-items-center border-0" role="alert" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body fw-semibold" id="toastDashboardMsg"></div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button>
             </div>
         </div>
     </div>

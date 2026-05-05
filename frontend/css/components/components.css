@@ -35,14 +35,14 @@
 .btn-primary-inverse {
     background-color: var(--color-blanco); /* Fondo blanco inicial */
     color: var(--color-primario);         /* Texto en color azul primario */
-    border: 2px solid var(--color-blanco); /* Borde para que se vea el contorno */
+    border: 1px solid var(--color-primario); /* Borde para que se vea el contorno */
     transition: var(--transicion);        /* Para que el cambio de color sea suave */
 }
 
 .btn-primary-inverse:hover {
-    background-color: var(--color-blanco); /* Un gris muy leve para notar el hover */
-    color: var(--color-primario);
-    border-color: var(--color-blanco);
+    background-color: var(--color-primario); /* Un gris muy leve para notar el hover */
+    color: var(--color-blanco);
+    border-color: var(--color-primario);
 }
 
 .btn-primary-inverse:disabled {
@@ -73,6 +73,59 @@
     justify-content: center;
     border-radius: 50%;
     margin: 0 auto;
+}
+
+/* AVATAR INICIALES */
+.avatar-iniciales {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background-color: var(--color-primario);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: none;
+    transition: var(--transicion);
+    flex-shrink: 0;
+}
+
+.avatar-iniciales:hover {
+    background-color: var(--color-primario-oscuro);
+    transform: scale(1.08);
+    box-shadow: 0 4px 12px rgba(122, 153, 221, 0.45);
+}
+
+.avatar-iniciales-lg {
+    width: 80px;
+    height: 80px;
+    font-size: 1.6rem;
+    letter-spacing: 1px;
+    pointer-events: none;
+}
+
+/* TOGGLE OJO CONTRASEÑA */
+.btn-pwd-toggle {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--color-gris-600);
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 1;
+    z-index: 5;
+}
+
+.btn-pwd-toggle:hover {
+    color: var(--color-primario);
 }
 
 /* FOOTER */
