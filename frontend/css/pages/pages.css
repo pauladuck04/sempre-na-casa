@@ -448,6 +448,17 @@
     display: block;
 }
 
+.dashboard-layout {
+    background-color: var(--color-gris-claro);
+    min-height: 100vh;
+}
+
+.dashboard-layout > main {
+    background-color: var(--color-gris-claro);
+    min-height: 100vh;
+    padding-bottom: var(--space-xl);
+}
+
 @keyframes fadeIn {
     from {
         opacity: 0;
