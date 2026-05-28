@@ -15,6 +15,9 @@ export function cargarConvivencia() {
             compatibilidad: 92,
             fechaInicio: '01/02/2026',
             estado: 'activo',
+            companeros: [
+                { nombre: 'Marta Soto',    fechaIngreso: '15/03/2026' },
+            ],
         };
     }
     renderizarConvivencia();
@@ -37,6 +40,8 @@ export function renderizarConvivencia() {
     const c = convivenciaMemoria;
     const pctColor = c.compatibilidad >= 85 ? 'success' : c.compatibilidad >= 65 ? 'warning' : 'danger';
     const badgeEstado = badgeEstadoHtml(c.estado);
+
+    const companerosHtml = companerosList(c.companeros);
 
     document.getElementById('ficha-convivencia').innerHTML = `
         <div class="row g-4">
@@ -82,7 +87,37 @@ export function renderizarConvivencia() {
                 </div>
             </div>
         </div>
+
+        <hr class="my-4">
+
+        <h6 class="fw-bold mb-3">
+            <i class="bi bi-people me-2 text-primary"></i>Compañeros de Piso
+        </h6>
+        ${companerosHtml}
     `;
+}
+
+function companerosList(companeros) {
+    if (!companeros || companeros.length === 0) {
+        return `<p class="text-muted small mb-0">No hay otros inquilinos en esta vivienda.</p>`;
+    }
+    const items = companeros.map(p => `
+        <div class="d-flex align-items-center gap-3 py-2 border-bottom">
+            <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                 style="width:38px;height:38px;background-color:#EBF0FF;color:var(--color-primario);font-weight:600;font-size:.85rem;">
+                ${iniciales(p.nombre)}
+            </div>
+            <div>
+                <span class="fw-semibold d-block">${p.nombre}</span>
+                <span class="text-muted small">Desde ${p.fechaIngreso}</span>
+            </div>
+        </div>
+    `).join('');
+    return `<div class="card border-0 bg-light rounded-3 p-3">${items}</div>`;
+}
+
+function iniciales(nombre) {
+    return nombre.split(' ').slice(0, 2).map(n => n[0]).join('').toUpperCase();
 }
 
 function badgeEstadoHtml(estado) {
