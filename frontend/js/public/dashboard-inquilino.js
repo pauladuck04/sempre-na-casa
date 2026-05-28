@@ -1,6 +1,6 @@
 // js/public/dashboard-inquilino.js
 
-import * as convivencia  from '../inquilino/convivencia.js';
+import * as convivencia from '../inquilino/convivencia.js';
 import * as preferencias from '../inquilino/preferencias.js';
 
 // ============================================
@@ -63,9 +63,15 @@ const SECTION_TITLES = {
     perfil:       'Mi Perfil',
 };
 
-const SECTION_DESCRIPTIONS = {
+const SECTION_DESCRIPTIONS_CON = {
     general:      'Resumen de tu convivencia y estado de solicitud',
     convivencia:  'Consulta los detalles de tu vivienda y anfitrión',
+    preferencias: 'Define tus preferencias para el proceso de matching',
+    perfil:       'Gestiona tu información personal y configuración de cuenta',
+};
+
+const SECTION_DESCRIPTIONS_SIN = {
+    general:      'Explora las viviendas con mejor compatibilidad para ti',
     preferencias: 'Define tus preferencias para el proceso de matching',
     perfil:       'Gestiona tu información personal y configuración de cuenta',
 };
@@ -77,6 +83,16 @@ const SECTION_DESCRIPTIONS = {
 document.addEventListener('DOMContentLoaded', function() {
     convivencia.cargarConvivencia();
     preferencias.cargarPreferencias();
+
+    // Mostrar/ocultar nav de convivencia según estado
+    const navConvivencia = document.getElementById('nav-convivencia');
+    if (navConvivencia) {
+        if (!convivencia.convivenciaMemoria) {
+            navConvivencia.classList.add('d-none');
+        } else {
+            navConvivencia.classList.remove('d-none');
+        }
+    }
 
     const seccionActiva = document.querySelector('.section-link.active-custom')?.getAttribute('data-section');
     actualizarControlesSeccion(seccionActiva);
@@ -299,8 +315,9 @@ function navegarASeccion(sectionName) {
     }
 
     aplicarFiltros();
-    document.getElementById('section-title').textContent       = SECTION_TITLES[sectionName]       || '';
-    document.getElementById('section-description').textContent = SECTION_DESCRIPTIONS[sectionName] || '';
+    const descriptions = convivencia.convivenciaMemoria ? SECTION_DESCRIPTIONS_CON : SECTION_DESCRIPTIONS_SIN;
+    document.getElementById('section-title').textContent       = SECTION_TITLES[sectionName]    || '';
+    document.getElementById('section-description').textContent = descriptions[sectionName]      || '';
 }
 
 // ============================================
@@ -309,52 +326,92 @@ function navegarASeccion(sectionName) {
 
 function cargarResumenGeneral() {
     const c = convivencia.convivenciaMemoria;
-
-    const estadoEl = document.getElementById('estado-solicitud');
-    if (estadoEl) {
-        const textos = {
-            activo:     'Activa',
-            entrevista: 'En Entrevista',
-            prueba:     'Periodo de Prueba',
-            inactivo:   'Finalizada',
-        };
-        estadoEl.textContent = c ? (textos[c.estado] || c.estado) : 'Sin solicitud';
-    }
-
-    const compatEl = document.getElementById('compatibilidad-score');
-    if (compatEl) compatEl.textContent = c ? `${c.compatibilidad}%` : '-';
-
-    const fechaEl = document.getElementById('fecha-inicio');
-    if (fechaEl) fechaEl.textContent = c ? (c.fechaInicio || 'Pendiente') : '-';
-
-    renderizarTablaResumen();
-}
-
-function renderizarTablaResumen() {
-    const tbody = document.getElementById('tabla-resumen-convivencia');
-    if (!tbody) return;
-
-    const c = convivencia.convivenciaMemoria;
+    const sinBloque = document.getElementById('general-sin-convivencia');
+    const conBloque = document.getElementById('general-con-convivencia');
 
     if (!c) {
-        tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-3">No tienes una convivencia asignada</td></tr>';
-        return;
+        sinBloque?.classList.remove('d-none');
+        conBloque?.classList.add('d-none');
+        renderizarCandidatos();
+    } else {
+        sinBloque?.classList.add('d-none');
+        conBloque?.classList.remove('d-none');
+        renderizarResumenConvivencia(c);
     }
+}
 
-    let estadoBadge = '';
-    switch (c.estado) {
-        case 'activo':     estadoBadge = `<span class="badge rounded-pill px-3 py-2" style="background-color:#D1E7DD;color:#0F5132;">✓ Activa</span>`;           break;
-        case 'entrevista': estadoBadge = `<span class="badge rounded-pill px-3 py-2" style="background-color:#FFF3CD;color:#856404;">⏳ En Entrevista</span>`;   break;
-        case 'prueba':     estadoBadge = `<span class="badge rounded-pill px-3 py-2" style="background-color:#CFE2FF;color:#084298;">⚠️ Periodo de Prueba</span>`; break;
-        default:           estadoBadge = `<span class="badge bg-secondary rounded-pill px-3 py-2">${c.estado}</span>`;
-    }
+function renderizarCandidatos() {
+    const candidatos = [...convivencia.candidatosMemoria].sort((a, b) => b.compatibilidad - a.compatibilidad);
 
+    const totalEl  = document.getElementById('total-candidatos');
+    const maxEl    = document.getElementById('max-compatibilidad');
+    const prefEl   = document.getElementById('preferencias-activas');
+    if (totalEl) totalEl.textContent = candidatos.length;
+    if (maxEl)   maxEl.textContent   = candidatos.length ? `${candidatos[0].compatibilidad}%` : '-';
+    if (prefEl)  prefEl.textContent  = preferencias.listaPreferenciasMemoria.filter(p => p.estado === 'activo').length;
+
+    const grid = document.getElementById('grid-candidatos');
+    if (!grid) return;
+
+    grid.innerHTML = candidatos.map(cand => {
+        const pctColor = cand.compatibilidad >= 85 ? 'success' : cand.compatibilidad >= 65 ? 'warning' : 'danger';
+        const inis = cand.anfitrion.split(' ').slice(0, 2).map(n => n[0]).join('').toUpperCase();
+        return `
+            <div class="col-md-6 col-xl-3">
+                <div class="card border-0 shadow-sm rounded-4 h-100 p-3">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                             style="width:44px;height:44px;background-color:#EBF0FF;color:var(--color-primario);font-weight:700;font-size:.9rem;">
+                            ${inis}
+                        </div>
+                        <div class="overflow-hidden">
+                            <span class="fw-semibold d-block text-truncate">${cand.anfitrion}</span>
+                            <span class="text-muted small">${cand.ciudad}</span>
+                        </div>
+                    </div>
+                    <p class="text-muted small mb-1 text-truncate">
+                        <i class="bi bi-geo-alt me-1"></i>${cand.direccion}
+                    </p>
+                    <p class="text-muted small mb-3">
+                        <i class="bi bi-door-open me-1"></i>${cand.plazasLibres} plaza${cand.plazasLibres !== 1 ? 's' : ''} libre${cand.plazasLibres !== 1 ? 's' : ''}
+                    </p>
+                    <div class="mt-auto">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <small class="text-muted">Compatibilidad</small>
+                            <small class="fw-bold text-${pctColor}">${cand.compatibilidad}%</small>
+                        </div>
+                        <div class="progress" style="height:6px;">
+                            <div class="progress-bar bg-${pctColor}" style="width:${cand.compatibilidad}%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function renderizarResumenConvivencia(c) {
+    const textos = { activo: 'Activa', entrevista: 'En Entrevista', prueba: 'Periodo de Prueba', inactivo: 'Finalizada' };
+    const estadoEl = document.getElementById('estado-solicitud');
+    const compatEl = document.getElementById('compatibilidad-score');
+    const fechaEl  = document.getElementById('fecha-inicio');
+    if (estadoEl) estadoEl.textContent = textos[c.estado] || c.estado;
+    if (compatEl) compatEl.textContent = `${c.compatibilidad}%`;
+    if (fechaEl)  fechaEl.textContent  = c.fechaInicio || 'Pendiente';
+
+    const tbody = document.getElementById('tabla-resumen-convivencia');
+    if (!tbody) return;
+    const badges = {
+        activo:     `<span class="badge rounded-pill px-3 py-2" style="background-color:#D1E7DD;color:#0F5132;">✓ Activa</span>`,
+        entrevista: `<span class="badge rounded-pill px-3 py-2" style="background-color:#FFF3CD;color:#856404;">⏳ En Entrevista</span>`,
+        prueba:     `<span class="badge rounded-pill px-3 py-2" style="background-color:#CFE2FF;color:#084298;">⚠️ Periodo de Prueba</span>`,
+    };
     tbody.innerHTML = `
         <tr>
             <td class="fw-semibold">${c.anfitrion}</td>
             <td>${c.direccion}, ${c.ciudad}</td>
             <td>${c.fechaInicio || '-'}</td>
-            <td>${estadoBadge}</td>
+            <td>${badges[c.estado] || `<span class="badge bg-secondary rounded-pill px-3 py-2">${c.estado}</span>`}</td>
         </tr>
     `;
 }

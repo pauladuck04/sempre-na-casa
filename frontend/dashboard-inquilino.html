@@ -31,7 +31,7 @@
                 <a href="#" class="nav-link active-custom transition section-link" data-section="general">
                     <i class="bi bi-speedometer2 me-2"></i> Vista General
                 </a>
-                <a href="#" class="nav-link text-muted transition section-link" data-section="convivencia">
+                <a href="#" class="nav-link text-muted transition section-link" data-section="convivencia" id="nav-convivencia">
                     <i class="bi bi-house-heart me-2"></i> Mi Convivencia
                 </a>
                 <a href="#" class="nav-link text-muted transition section-link" data-section="preferencias">
@@ -91,74 +91,137 @@
 
                 <!-- SECCIÓN: GENERAL (Por defecto) -->
                 <div class="section-content active" data-section="general">
-                    <!-- Tarjetas resumen -->
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-4">
-                            <div class="card border-0 shadow-sm rounded-4 h-100">
-                                <div class="card-body p-4 d-flex align-items-center gap-3">
-                                    <div class="rounded-3 p-3" style="background-color: #EBF0FF;">
-                                        <i class="bi bi-clipboard-check fs-4" style="color: var(--color-primario);"></i>
+
+                    <!-- ── ESTADO: SIN CONVIVENCIA ── -->
+                    <div id="general-sin-convivencia" class="d-none">
+                        <!-- Tarjetas resumen -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <div class="card border-0 shadow-sm rounded-4 h-100">
+                                    <div class="card-body p-4 d-flex align-items-center gap-3">
+                                        <div class="rounded-3 p-3" style="background-color: #EBF0FF;">
+                                            <i class="bi bi-houses fs-4" style="color: var(--color-primario);"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-muted small mb-1">Candidatos Disponibles</p>
+                                            <h5 class="fw-bold mb-0" id="total-candidatos">-</h5>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p class="text-muted small mb-1">Estado Solicitud</p>
-                                        <h5 class="fw-bold mb-0" id="estado-solicitud">-</h5>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card border-0 shadow-sm rounded-4 h-100">
+                                    <div class="card-body p-4 d-flex align-items-center gap-3">
+                                        <div class="rounded-3 p-3" style="background-color: #E8F5E9;">
+                                            <i class="bi bi-graph-up-arrow fs-4 text-success"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-muted small mb-1">Mayor Compatibilidad</p>
+                                            <h5 class="fw-bold mb-0" id="max-compatibilidad">-</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card border-0 shadow-sm rounded-4 h-100">
+                                    <div class="card-body p-4 d-flex align-items-center gap-3">
+                                        <div class="rounded-3 p-3" style="background-color: #FFF8E1;">
+                                            <i class="bi bi-sliders fs-4 text-warning"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-muted small mb-1">Preferencias Activas</p>
+                                            <h5 class="fw-bold mb-0" id="preferencias-activas">-</h5>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="card border-0 shadow-sm rounded-4 h-100">
-                                <div class="card-body p-4 d-flex align-items-center gap-3">
-                                    <div class="rounded-3 p-3" style="background-color: #E8F5E9;">
-                                        <i class="bi bi-graph-up-arrow fs-4 text-success"></i>
+
+                        <!-- Lista de candidatos -->
+                        <div class="card border-0 shadow-sm rounded-4">
+                            <div class="card-header bg-white border-bottom py-4">
+                                <h5 class="fw-bold mb-0">
+                                    <i class="bi bi-star me-2 text-primary"></i>
+                                    Posibles Viviendas para Ti
+                                </h5>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="row g-3" id="grid-candidatos"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ── ESTADO: CON CONVIVENCIA ── -->
+                    <div id="general-con-convivencia" class="d-none">
+                        <!-- Tarjetas resumen -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <div class="card border-0 shadow-sm rounded-4 h-100">
+                                    <div class="card-body p-4 d-flex align-items-center gap-3">
+                                        <div class="rounded-3 p-3" style="background-color: #EBF0FF;">
+                                            <i class="bi bi-clipboard-check fs-4" style="color: var(--color-primario);"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-muted small mb-1">Estado Solicitud</p>
+                                            <h5 class="fw-bold mb-0" id="estado-solicitud">-</h5>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p class="text-muted small mb-1">Compatibilidad</p>
-                                        <h5 class="fw-bold mb-0" id="compatibilidad-score">-</h5>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card border-0 shadow-sm rounded-4 h-100">
+                                    <div class="card-body p-4 d-flex align-items-center gap-3">
+                                        <div class="rounded-3 p-3" style="background-color: #E8F5E9;">
+                                            <i class="bi bi-graph-up-arrow fs-4 text-success"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-muted small mb-1">Compatibilidad</p>
+                                            <h5 class="fw-bold mb-0" id="compatibilidad-score">-</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card border-0 shadow-sm rounded-4 h-100">
+                                    <div class="card-body p-4 d-flex align-items-center gap-3">
+                                        <div class="rounded-3 p-3" style="background-color: #FFF8E1;">
+                                            <i class="bi bi-calendar-check fs-4 text-warning"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-muted small mb-1">Fecha de Inicio</p>
+                                            <h5 class="fw-bold mb-0" id="fecha-inicio">-</h5>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="card border-0 shadow-sm rounded-4 h-100">
-                                <div class="card-body p-4 d-flex align-items-center gap-3">
-                                    <div class="rounded-3 p-3" style="background-color: #FFF8E1;">
-                                        <i class="bi bi-calendar-check fs-4 text-warning"></i>
-                                    </div>
-                                    <div>
-                                        <p class="text-muted small mb-1">Fecha de Inicio</p>
-                                        <h5 class="fw-bold mb-0" id="fecha-inicio">-</h5>
-                                    </div>
+
+                        <!-- Tabla resumen convivencia -->
+                        <div class="card border-0 shadow-sm rounded-4">
+                            <div class="card-header bg-white border-bottom py-4">
+                                <h5 class="fw-bold mb-0">
+                                    <i class="bi bi-house-heart me-2 text-primary"></i>
+                                    Mi Convivencia Actual
+                                </h5>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Anfitrión</th>
+                                                <th>Dirección</th>
+                                                <th>Inicio</th>
+                                                <th>Estado</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tabla-resumen-convivencia"></tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Tabla resumen convivencia -->
-                    <div class="card border-0 shadow-sm rounded-4">
-                        <div class="card-header bg-white border-bottom py-4">
-                            <h5 class="fw-bold mb-0">
-                                <i class="bi bi-house-heart me-2 text-primary"></i>
-                                Mi Convivencia Actual
-                            </h5>
-                        </div>
-                        <div class="card-body p-4">
-                            <div class="table-responsive">
-                                <table class="table table-hover align-middle">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>Anfitrión</th>
-                                            <th>Dirección</th>
-                                            <th>Inicio</th>
-                                            <th>Estado</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tabla-resumen-convivencia">
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- SECCIÓN: MI CONVIVENCIA -->

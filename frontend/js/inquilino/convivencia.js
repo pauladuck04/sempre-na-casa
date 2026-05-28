@@ -1,25 +1,44 @@
 // js/inquilino/convivencia.js
 
+// null = usuario sin convivencia asignada todavía
 export let convivenciaMemoria = null;
 
+export const candidatosMemoria = [
+    {
+        id: 1,
+        anfitrion:    'Ana García López',
+        direccion:    'Calle Mayor 12, 3º B',
+        ciudad:       'Santiago de Compostela',
+        plazasLibres: 2,
+        compatibilidad: 92,
+    },
+    {
+        id: 2,
+        anfitrion:    'Carlos Fernández',
+        direccion:    'Rúa do Franco 8, 1º A',
+        ciudad:       'Santiago de Compostela',
+        plazasLibres: 1,
+        compatibilidad: 78,
+    },
+    {
+        id: 3,
+        anfitrion:    'Rosa Méndez Vidal',
+        direccion:    'Avenida de Lugo 34, 2º C',
+        ciudad:       'Santiago de Compostela',
+        plazasLibres: 3,
+        compatibilidad: 65,
+    },
+    {
+        id: 4,
+        anfitrion:    'Manuel Losada',
+        direccion:    'Praza de Galicia 5, Ático',
+        ciudad:       'Santiago de Compostela',
+        plazasLibres: 1,
+        compatibilidad: 54,
+    },
+];
+
 export function cargarConvivencia() {
-    if (!convivenciaMemoria) {
-        convivenciaMemoria = {
-            id: 1,
-            anfitrion: 'Ana García López',
-            emailAnfitrion: 'ana.garcia@semprenacasa.es',
-            telefonoAnfitrion: '+34 600 123 456',
-            direccion: 'Calle Mayor 12, 3º B',
-            ciudad: 'Santiago de Compostela',
-            plazasTotales: 3,
-            compatibilidad: 92,
-            fechaInicio: '01/02/2026',
-            estado: 'activo',
-            companeros: [
-                { nombre: 'Marta Soto',    fechaIngreso: '15/03/2026' },
-            ],
-        };
-    }
     renderizarConvivencia();
 }
 
