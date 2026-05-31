@@ -110,6 +110,18 @@ document.addEventListener('DOMContentLoaded', function() {
     // Cargar datos
     cargarSeguimientoConvivencias();
 
+    // ---- Avatar → sección perfil ----
+    document.getElementById('btnPerfil')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        const sectionName = 'perfil';
+        document.querySelectorAll('.section-content').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.section-link').forEach(l => { l.classList.remove('active-custom'); l.classList.add('text-muted'); });
+        const activeSection = document.querySelector(`.section-content[data-section="${sectionName}"]`);
+        if (activeSection) activeSection.classList.add('active');
+        document.getElementById('acciones-globales').classList.add('d-none');
+        document.getElementById('filtros-globales').classList.add('d-none');
+    });
+
     const btnCrear = document.querySelector('#btnCrear'); 
 
     if (btnCrear) {
@@ -328,6 +340,65 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('section-title').textContent = sectionTitles[sectionName] || 'Panel de Control';
             document.getElementById('section-description').textContent = sectionDescriptions[sectionName] || '';
         });
+    });
+
+    // ---- Perfil: toggle ojo contraseña ----
+    document.querySelectorAll('[data-toggle-pwd]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const input = document.getElementById(btn.dataset.togglePwd);
+            const icon  = btn.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'bi bi-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'bi bi-eye';
+            }
+        });
+    });
+
+    // ---- Perfil: editar datos ----
+    document.getElementById('perfil-btnEditar')?.addEventListener('click', () => {
+        Array.from(document.querySelectorAll('#perfil-form input')).forEach(inp => inp.disabled = false);
+        document.getElementById('perfil-btnEditar').classList.add('d-none');
+        document.getElementById('perfil-acciones').classList.remove('d-none');
+    });
+
+    document.getElementById('perfil-btnCancelar')?.addEventListener('click', () => {
+        Array.from(document.querySelectorAll('#perfil-form input')).forEach(inp => inp.disabled = true);
+        document.getElementById('perfil-btnEditar').classList.remove('d-none');
+        document.getElementById('perfil-acciones').classList.add('d-none');
+    });
+
+    // ---- Perfil: guardar cambios ----
+    document.getElementById('perfil-form')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        Array.from(document.querySelectorAll('#perfil-form input')).forEach(inp => inp.disabled = true);
+        document.getElementById('perfil-btnEditar').classList.remove('d-none');
+        document.getElementById('perfil-acciones').classList.add('d-none');
+        alert('Datos actualizados correctamente');
+    });
+
+    // ---- Perfil: cambiar contraseña ----
+    document.getElementById('perfil-form-pwd')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const nueva = document.getElementById('pwd-nueva').value;
+        const confirma = document.getElementById('pwd-confirmar').value;
+        if (nueva.length < 8) { alert('La contraseña debe tener al menos 8 caracteres'); return; }
+        if (nueva !== confirma) { alert('Las contraseñas no coinciden'); return; }
+        document.getElementById('perfil-form-pwd').reset();
+        alert('Contraseña actualizada correctamente');
+    });
+
+    // ---- Perfil: eliminar cuenta ----
+    document.getElementById('btnEliminarCuenta')?.addEventListener('click', () => {
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('modalEliminarCuenta')).show();
+    });
+
+    document.getElementById('btnConfirmarEliminarCuenta')?.addEventListener('click', () => {
+        bootstrap.Modal.getInstance(document.getElementById('modalEliminarCuenta')).hide();
+        alert('Cuenta eliminada. Redirigiendo...');
+        setTimeout(() => { window.location.href = 'public.html'; }, 2000);
     });
 });
 
