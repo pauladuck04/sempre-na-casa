@@ -189,26 +189,49 @@
 
                 <!-- SECCIÓN: CRITERIOS -->
                 <div class="section-content" data-section="criterios">
-                    <div class="card border-0 shadow-sm rounded-4">
-                        <div class="card-header bg-white border-bottom py-4">
-                            <h5 class="fw-bold mb-0">
-                                <i class="bi bi-diagram-3 me-2 text-primary"></i>
-                                <span data-i18n="admin.cardTitles.criteria"></span>
-                            </h5>
+                    <ul class="nav nav-tabs mb-3" id="criteriosTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="tab-criterios-btn" data-bs-toggle="tab" data-bs-target="#tab-criterios" type="button" role="tab" data-i18n="admin.criteria.tabCriteria"></button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="tab-opciones-btn" data-bs-toggle="tab" data-bs-target="#tab-opciones" type="button" role="tab" data-i18n="admin.criteria.tabOptions"></button>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="tab-criterios" role="tabpanel">
+                            <div class="card border-0 shadow-sm rounded-4">
+                                <div class="card-body p-4">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover align-middle">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th data-i18n="admin.table.criteria"></th>
+                                                    <th data-i18n="admin.table.status"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tabla-criterios"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="card-body p-4">
-                            <div class="table-responsive">
-                                <table class="table table-hover align-middle">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th data-i18n="admin.table.criteria"></th>
-                                            <th data-i18n="admin.table.options"></th>
-                                            <th data-i18n="admin.table.values"></th>
-                                            <th data-i18n="admin.table.status"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tabla-criterios"></tbody>
-                                </table>
+                        <div class="tab-pane fade" id="tab-opciones" role="tabpanel">
+                            <div class="card border-0 shadow-sm rounded-4">
+                                <div class="card-body p-4">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover align-middle">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th data-i18n="admin.table.options"></th>
+                                                    <th data-i18n="admin.table.criteria"></th>
+                                                    <th data-i18n="admin.table.values"></th>
+                                                    <th data-i18n="admin.table.status"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tabla-opciones"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

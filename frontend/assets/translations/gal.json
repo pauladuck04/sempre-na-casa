@@ -229,7 +229,9 @@
     "criteria": {
       "criteriaName": "Nome do Criterio", "compatibilityCriteria": "Criterio de Compatibilidade",
       "option": "Opción", "value": "Valor", "filterActive": "Activos", "filterInactive": "Inactivos",
-      "createTitle": "Novo Criterio de Match", "editTitle": "Editar Criterio", "detailTitle": "Detalles do Criterio"
+      "createTitle": "Novo Criterio", "editTitle": "Editar Criterio", "detailTitle": "Detalles do Criterio",
+      "tabCriteria": "Criterios", "tabOptions": "Opcións",
+      "createOptionTitle": "Nova Opción", "editOptionTitle": "Editar Opción"
     }
   },
   "anfitrion": {

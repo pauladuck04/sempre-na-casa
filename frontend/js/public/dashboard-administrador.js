@@ -8,7 +8,8 @@ const FILTROS_POR_SECCION = {
     usuarios: [{ campo: 'estado', opciones: [['activo','filterActive'],['pendiente','filterPending'],['inactivo','filterInactive']] }],
     roles:    [{ campo: 'estado', opciones: [['activo','filterActive'],['inactivo','filterInactive']] }],
     viviendas:[{ campo: 'estado', opciones: [['disponible','filterAvailable'],['ocupada','filterOccupied'],['inactivo','filterInactive']] }],
-    criterios:[{ campo: 'estado', opciones: [['activo','filterActive'],['inactivo','filterInactive']] }]
+    criterios:[{ campo: 'estado', opciones: [['activo','filterActive'],['inactivo','filterInactive']] }],
+    opciones: [{ campo: 'estado', opciones: [['activo','filterActive'],['inactivo','filterInactive']] }]
 };
 
 const CONFIG_MODALES = {
@@ -45,7 +46,17 @@ const CONFIG_MODALES = {
     criterios: {
         getTitulo: () => t('admin.criteria.createTitle'),
         getHtml: () => `
-            <div class="mb-3"><label class="form-label fw-bold">${t('admin.criteria.criteriaName')}</label><input name="nombre" class="form-control" required></div>
+            <div class="mb-3"><label class="form-label fw-bold">${t('admin.criteria.criteriaName')}</label><input name="nombre" class="form-control" required></div>`
+    },
+    opciones: {
+        getTitulo: () => t('admin.criteria.createOptionTitle'),
+        getHtml: () => `
+            <div class="mb-3">
+                <label class="form-label fw-bold">${t('admin.criteria.criteriaName')}</label>
+                <select name="criterio_id" class="form-select">
+                    ${criterios.listaCriteriosMemoria.filter(c => c.estado === 'activo').map(c => `<option value="${c.id}">${c.nombre}</option>`).join('')}
+                </select>
+            </div>
             <div class="mb-3"><label class="form-label fw-bold">${t('admin.criteria.option')}</label><input name="opcion" class="form-control" required></div>
             <div class="mb-3"><label class="form-label fw-bold">${t('admin.criteria.value')}</label><input name="valor" class="form-control" required></div>`
     }
@@ -67,6 +78,11 @@ const sectionDescriptions = {
     criterios:() => t('admin.sections.criteria.description')
 };
 
+function getActiveCriteriosSubTab() {
+    const activeTabBtn = document.querySelector('#criteriosTabs .nav-link.active');
+    return activeTabBtn?.getAttribute('data-bs-target') === '#tab-opciones' ? 'opciones' : 'criterios';
+}
+
 document.addEventListener('DOMContentLoaded', async function() {
     await initI18n();
     applyTranslations();
@@ -74,6 +90,16 @@ document.addEventListener('DOMContentLoaded', async function() {
     const seccionActiva = document.querySelector('.section-link.active-custom')?.getAttribute('data-section');
     actualizarControlesSeccion(seccionActiva);
     cargarSeguimientoConvivencias();
+
+    // Listener para cambio de pestaña en criterios
+    document.querySelectorAll('#criteriosTabs .nav-link').forEach(tab => {
+        tab.addEventListener('shown.bs.tab', () => {
+            const subTab = getActiveCriteriosSubTab();
+            configurarFiltros(subTab);
+            aplicarFiltros();
+            actualizarBotones();
+        });
+    });
 
     document.getElementById('btnPerfil')?.addEventListener('click', (e) => {
         e.preventDefault();
@@ -86,25 +112,29 @@ document.addEventListener('DOMContentLoaded', async function() {
     });
 
     document.getElementById('btnCrear')?.addEventListener('click', () => {
-        const seccionActual = document.querySelector('.section-link.active-custom')?.getAttribute('data-section') || 'usuarios';
-        abrirModalGenerico(seccionActual);
+        const seccion = document.querySelector('.section-link.active-custom')?.getAttribute('data-section') || 'usuarios';
+        const efectiva = seccion === 'criterios' ? getActiveCriteriosSubTab() : seccion;
+        abrirModalGenerico(efectiva);
     });
 
     document.getElementById('btnEditar')?.addEventListener('click', () => {
         const seccion = document.querySelector('.section-link.active-custom').getAttribute('data-section');
+        const efectiva = seccion === 'criterios' ? getActiveCriteriosSubTab() : seccion;
+
         let seleccionado;
-        if (seccion === 'usuarios')  seleccionado = document.querySelector('tbody .usuario-checkbox:checked');
-        else if (seccion === 'roles')     seleccionado = document.querySelector('tbody .rol-checkbox:checked');
-        else if (seccion === 'criterios') seleccionado = document.querySelector('tbody .criterio-checkbox:checked');
-        else if (seccion === 'viviendas') seleccionado = document.querySelector('tbody .vivienda-checkbox:checked');
+        if (efectiva === 'usuarios')  seleccionado = document.querySelector('tbody .usuario-checkbox:checked');
+        else if (efectiva === 'roles')     seleccionado = document.querySelector('tbody .rol-checkbox:checked');
+        else if (efectiva === 'criterios') seleccionado = document.querySelector('tbody .criterio-checkbox:checked');
+        else if (efectiva === 'opciones')  seleccionado = document.querySelector('tbody .opcion-checkbox:checked');
+        else if (efectiva === 'viviendas') seleccionado = document.querySelector('tbody .vivienda-checkbox:checked');
         if (!seleccionado) return;
 
         const id   = parseInt(seleccionado.value);
-        abrirModalGenerico(seccion);
+        abrirModalGenerico(efectiva);
         const form = document.getElementById('formGenerico');
         form.insertAdjacentHTML('beforeend', `<input type="hidden" name="id_edit" value="${id}">`);
 
-        if (seccion === 'usuarios') {
+        if (efectiva === 'usuarios') {
             const u = usuarios.listaUsuariosMemoria.find(x => x.id === id);
             if (u) {
                 form.querySelector('[name="nombre"]').value = u.nombre;
@@ -114,21 +144,27 @@ document.addEventListener('DOMContentLoaded', async function() {
                 form.querySelector('[name="rol"]').value    = u.rol;
                 document.getElementById('modalTitle').textContent = `${t('admin.users.editTitle')}: ${u.nombre}`;
             }
-        } else if (seccion === 'roles') {
+        } else if (efectiva === 'roles') {
             const r = roles.listaRolesMemoria.find(x => x.id === id);
             if (r) {
                 form.querySelector('[name="nombre"]').value = r.nombre;
                 document.getElementById('modalTitle').textContent = `${t('admin.roles.editTitle')}: ${r.nombre}`;
             }
-        } else if (seccion === 'criterios') {
+        } else if (efectiva === 'criterios') {
             const c = criterios.listaCriteriosMemoria.find(x => x.id === id);
             if (c) {
-                form.querySelector('[name="nombre"]').value = c.criterio;
-                form.querySelector('[name="opcion"]').value = c.opcion;
-                form.querySelector('[name="valor"]').value  = c.valor;
-                document.getElementById('modalTitle').textContent = `${t('admin.criteria.editTitle')}: ${c.criterio}`;
+                form.querySelector('[name="nombre"]').value = c.nombre;
+                document.getElementById('modalTitle').textContent = `${t('admin.criteria.editTitle')}: ${c.nombre}`;
             }
-        } else if (seccion === 'viviendas') {
+        } else if (efectiva === 'opciones') {
+            const o = criterios.listaOpcionesMemoria.find(x => x.id === id);
+            if (o) {
+                form.querySelector('[name="criterio_id"]').value = String(o.criterio_id);
+                form.querySelector('[name="opcion"]').value = o.opcion;
+                form.querySelector('[name="valor"]').value  = o.valor;
+                document.getElementById('modalTitle').textContent = `${t('admin.criteria.editOptionTitle')}: ${o.opcion}`;
+            }
+        } else if (efectiva === 'viviendas') {
             const v = viviendas.listaViviendasMemoria.find(x => x.id === id);
             if (v) {
                 form.querySelector('[name="direccion"]').value     = v.direccion;
@@ -146,9 +182,10 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     document.getElementById('btnEliminar')?.addEventListener('click', () => {
         const seccion = document.querySelector('.section-link.active-custom').getAttribute('data-section');
-        const seleccionados = obtenerIdsSeleccionados(seccion);
+        const efectiva = seccion === 'criterios' ? getActiveCriteriosSubTab() : seccion;
+        const seleccionados = obtenerIdsSeleccionados(efectiva);
         if (seleccionados.length === 0) return;
-        _pendingEliminar = { seccion, seleccionados };
+        _pendingEliminar = { seccion: efectiva, seleccionados };
         const msg = document.getElementById('modalConfirmarEliminarMsg');
         if (msg) msg.textContent = `${t('modal.confirmDeleteBody')} (${seleccionados.length})`;
         bootstrap.Modal.getOrCreateInstance(document.getElementById('modalConfirmarEliminar')).show();
@@ -166,9 +203,10 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     document.getElementById('btnReactivar')?.addEventListener('click', () => {
         const seccion = document.querySelector('.section-link.active-custom').getAttribute('data-section');
-        const seleccionados = obtenerIdsSeleccionadosInactivos(seccion);
+        const efectiva = seccion === 'criterios' ? getActiveCriteriosSubTab() : seccion;
+        const seleccionados = obtenerIdsSeleccionadosInactivos(efectiva);
         if (seleccionados.length === 0) return;
-        _pendingReactivar = { seccion, seleccionados };
+        _pendingReactivar = { seccion: efectiva, seleccionados };
         const msg = document.getElementById('modalConfirmarReactivarMsg');
         if (msg) msg.textContent = `${t('modal.confirmReactivateBody')} (${seleccionados.length})`;
         bootstrap.Modal.getOrCreateInstance(document.getElementById('modalConfirmarReactivar')).show();
@@ -195,7 +233,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     document.getElementById('formGenerico')?.addEventListener('submit', function(e) {
         e.preventDefault();
         const seccionActual = document.querySelector('.section-link.active-custom').getAttribute('data-section');
-        const data = Object.fromEntries(new FormData(this));
 
         if (seccionActual === 'usuarios') usuarios.cargarUsuarios();
         if (seccionActual === 'roles')    roles.cargarRoles();
@@ -335,17 +372,23 @@ function abrirModalGenerico(seccion) {
     bootstrap.Modal.getOrCreateInstance(document.getElementById('modalGenerico')).show();
 }
 
-function obtenerIdsSeleccionados(seccion) {
-    const selectores = { usuarios: '.usuario-checkbox', roles: '.rol-checkbox', criterios: '.criterio-checkbox', viviendas: '.vivienda-checkbox' };
-    const selector = selectores[seccion];
+function obtenerIdsSeleccionados(seccionEfectiva) {
+    const selectores = {
+        usuarios: '.usuario-checkbox',
+        roles: '.rol-checkbox',
+        criterios: '.criterio-checkbox',
+        opciones: '.opcion-checkbox',
+        viviendas: '.vivienda-checkbox'
+    };
+    const selector = selectores[seccionEfectiva];
     if (!selector) return [];
     return Array.from(document.querySelectorAll(`tbody ${selector}:checked`)).map(cb => cb.value);
 }
 
-function obtenerIdsSeleccionadosInactivos(seccion) {
-    const config = obtenerConfigSeccion(seccion);
+function obtenerIdsSeleccionadosInactivos(seccionEfectiva) {
+    const config = obtenerConfigSeccion(seccionEfectiva);
     if (!config) return [];
-    return obtenerIdsSeleccionados(seccion).filter(id => {
+    return obtenerIdsSeleccionados(seccionEfectiva).filter(id => {
         const item = config.lista.find(el => String(el.id) === id);
         return item?.estado === 'inactivo';
     });
@@ -356,6 +399,7 @@ function obtenerConfigSeccion(seccion) {
         usuarios: { lista: usuarios.listaUsuariosMemoria, renderizar: usuarios.renderizarUsuarios, reactivar: usuarios.reactivarUsuarios, desactivar: usuarios.desactivarUsuarios },
         roles:    { lista: roles.listaRolesMemoria,     renderizar: roles.renderizarRoles,     reactivar: roles.reactivarRoles,     desactivar: roles.desactivarRoles     },
         criterios:{ lista: criterios.listaCriteriosMemoria, renderizar: criterios.renderizarCriterios, reactivar: criterios.reactivarCriterios, desactivar: criterios.desactivarCriterios },
+        opciones: { lista: criterios.listaOpcionesMemoria, renderizar: criterios.renderizarOpciones, reactivar: criterios.reactivarOpciones, desactivar: criterios.desactivarOpciones },
         viviendas:{ lista: viviendas.listaViviendasMemoria, renderizar: viviendas.renderizarViviendas, reactivar: viviendas.reactivarViviendas, desactivar: viviendas.desactivarViviendas }
     }[seccion];
 }
@@ -376,7 +420,8 @@ function actualizarControlesSeccion(seccion) {
     }
     accionesGlobales.classList.replace('d-none','d-flex');
     filtrosGlobales.classList.replace('d-none','d-flex');
-    configurarFiltros(seccion);
+    const subSeccion = seccion === 'criterios' ? getActiveCriteriosSubTab() : seccion;
+    configurarFiltros(subSeccion);
 }
 
 function configurarFiltros(seccion) {
@@ -386,8 +431,16 @@ function configurarFiltros(seccion) {
     if (texto) texto.value = '';
     contenedor.innerHTML = '';
 
+    const secKeyMap = {
+        usuarios: 'admin.users',
+        roles: 'admin.roles',
+        viviendas: 'admin.homes',
+        criterios: 'admin.criteria',
+        opciones: 'admin.criteria'
+    };
+    const secKey = secKeyMap[seccion] || 'admin.criteria';
+
     (FILTROS_POR_SECCION[seccion] || []).forEach(filtro => {
-        const secKey = seccion === 'usuarios' ? 'admin.users' : seccion === 'roles' ? 'admin.roles' : seccion === 'viviendas' ? 'admin.homes' : 'admin.criteria';
         const select = document.createElement('select');
         select.className = 'form-select';
         select.style.width = 'auto';
@@ -402,7 +455,8 @@ function configurarFiltros(seccion) {
 
 function aplicarFiltros() {
     const seccion = document.querySelector('.section-link.active-custom')?.getAttribute('data-section');
-    const config  = obtenerConfigSeccion(seccion);
+    const efectiva = seccion === 'criterios' ? getActiveCriteriosSubTab() : seccion;
+    const config  = obtenerConfigSeccion(efectiva);
     if (!config) return;
 
     const texto = document.getElementById('filtroTexto')?.value.trim().toLowerCase() || '';
@@ -425,8 +479,9 @@ function desactivarSeleccion(seccion, ids) { obtenerConfigSeccion(seccion)?.desa
 
 function actualizarBotones() {
     const seccion = document.querySelector('.section-link.active-custom')?.getAttribute('data-section');
-    const selectores = { usuarios: '.usuario-checkbox', roles: '.rol-checkbox', criterios: '.criterio-checkbox', viviendas: '.vivienda-checkbox' };
-    const seleccionados = document.querySelectorAll(`tbody ${selectores[seccion] || '.noexiste'}:checked`).length;
+    const efectiva = seccion === 'criterios' ? getActiveCriteriosSubTab() : seccion;
+    const selectores = { usuarios: '.usuario-checkbox', roles: '.rol-checkbox', criterios: '.criterio-checkbox', opciones: '.opcion-checkbox', viviendas: '.vivienda-checkbox' };
+    const seleccionados = document.querySelectorAll(`tbody ${selectores[efectiva] || '.noexiste'}:checked`).length;
 
     const btnEditar    = document.getElementById('btnEditar');
     const btnEliminar  = document.getElementById('btnEliminar');
@@ -434,7 +489,7 @@ function actualizarBotones() {
     if (btnEditar && btnEliminar && btnReactivar) {
         btnEditar.disabled    = (seleccionados !== 1);
         btnEliminar.disabled  = (seleccionados === 0);
-        btnReactivar.disabled = (obtenerIdsSeleccionadosInactivos(seccion).length === 0);
+        btnReactivar.disabled = (obtenerIdsSeleccionadosInactivos(efectiva).length === 0);
     }
 }
 
@@ -511,12 +566,18 @@ window.verCriterio = function(id) {
         ? `<span class="badge bg-success">${t('common.active')}</span>`
         : `<span class="badge bg-secondary">${t('common.inactive')}</span>`;
 
-    document.getElementById('modalDetalleTitle').textContent = `${t('admin.criteria.detailTitle')}: ${c.criterio}`;
+    const opcionesDelCriterio = criterios.listaOpcionesMemoria.filter(o => o.criterio_id === c.id);
+
+    document.getElementById('modalDetalleTitle').textContent = `${t('admin.criteria.detailTitle')}: ${c.nombre}`;
     document.getElementById('modalDetalleContent').innerHTML = `
-        <div class="row"><div class="col-md-12"><h6 class="text-muted small mb-2">${t('admin.criteria.compatibilityCriteria')}</h6><p class="fw-semibold">${c.criterio}</p></div></div>
-        <div class="row"><div class="col-md-6"><h6 class="text-muted small mb-2">${t('admin.criteria.option')}</h6><p class="fw-semibold">${c.opcion}</p></div>
-        <div class="col-md-6"><h6 class="text-muted small mb-2">${t('admin.criteria.value')}</h6><p class="fw-semibold">${c.valor}</p></div></div>
+        <div class="row"><div class="col-md-12"><h6 class="text-muted small mb-2">${t('admin.criteria.criteriaName')}</h6><p class="fw-semibold">${c.nombre}</p></div></div>
         <div class="row"><div class="col-md-12"><h6 class="text-muted small mb-2">${t('common.status')}</h6><p>${estadoBadge}</p></div></div>
+        ${opcionesDelCriterio.length ? `
+        <div class="row mt-2"><div class="col-md-12"><h6 class="text-muted small mb-2">${t('admin.criteria.tabOptions')}</h6>
+            <ul class="list-unstyled mb-0">
+                ${opcionesDelCriterio.map(o => `<li><span class="fw-semibold">${o.opcion}</span> <span class="text-muted">(${t('admin.criteria.value')}: ${o.valor})</span></li>`).join('')}
+            </ul>
+        </div></div>` : ''}
     `;
     bootstrap.Modal.getOrCreateInstance(document.getElementById('modalDetalle')).show();
 };

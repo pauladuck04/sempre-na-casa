@@ -258,9 +258,13 @@
       "value": "Value",
       "filterActive": "Active",
       "filterInactive": "Inactive",
-      "createTitle": "New Match Criteria",
-      "editTitle": "Edit Criteria",
-      "detailTitle": "Criteria Details"
+      "createTitle": "New Criterion",
+      "editTitle": "Edit Criterion",
+      "detailTitle": "Criterion Details",
+      "tabCriteria": "Criteria",
+      "tabOptions": "Options",
+      "createOptionTitle": "New Option",
+      "editOptionTitle": "Edit Option"
     }
   },
   "anfitrion": {
