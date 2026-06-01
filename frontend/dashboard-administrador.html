@@ -22,24 +22,24 @@
 
             <nav class="nav flex-column gap-2 flex-grow-1">
                 <a href="#" class="nav-link active-custom transition section-link" data-section="general">
-                    <i class="bi bi-speedometer2 me-2"></i> <span data-i18n="admin.nav.general">Vista General</span>
+                    <i class="bi bi-speedometer2 me-2"></i> <span data-i18n="admin.nav.general"></span>
                 </a>
                 <a href="#" class="nav-link text-muted transition section-link" data-section="usuarios">
-                    <i class="bi bi-people me-2"></i> <span data-i18n="admin.nav.users">Gestión Usuarios</span>
+                    <i class="bi bi-people me-2"></i> <span data-i18n="admin.nav.users"></span>
                 </a>
                 <a href="#" class="nav-link text-muted transition section-link" data-section="roles">
-                    <i class="bi bi-shield-lock me-2"></i> <span data-i18n="admin.nav.roles">Roles y Permisos</span>
+                    <i class="bi bi-shield-lock me-2"></i> <span data-i18n="admin.nav.roles"></span>
                 </a>
                 <a href="#" class="nav-link text-muted transition section-link" data-section="viviendas">
-                    <i class="bi bi-houses me-2"></i> <span data-i18n="admin.nav.homes">Gestión Viviendas</span>
+                    <i class="bi bi-houses me-2"></i> <span data-i18n="admin.nav.homes"></span>
                 </a>
                 <a href="#" class="nav-link text-muted transition section-link" data-section="criterios">
-                    <i class="bi bi-diagram-3 me-2"></i> <span data-i18n="admin.nav.criteria">Criterios Match</span>
+                    <i class="bi bi-diagram-3 me-2"></i> <span data-i18n="admin.nav.criteria"></span>
                 </a>
                 <a href="#" class="nav-link d-none section-link" data-section="perfil"></a>
                 <hr class="my-3">
                 <a href="public.html" class="nav-link text-danger transition">
-                    <i class="bi bi-box-arrow-left me-2"></i> <span data-i18n="nav.logout">Salir</span>
+                    <i class="bi bi-box-arrow-left me-2"></i> <span data-i18n="nav.logout"></span>
                 </a>
             </nav>
         </aside>
@@ -48,11 +48,11 @@
         <main class="flex-grow-1 p-4 p-md-3" style="margin-left: 280px;">
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <div>
-                    <h1 class="fw-bold mb-2" id="section-title" data-i18n="admin.sections.general.title">Panel de Control</h1>
-                    <p class="text-muted" id="section-description" data-i18n="admin.sections.general.description">Gestión global de usuarios, viviendas y algoritmos de compatibilidad</p>
+                    <h1 class="fw-bold mb-2" id="section-title" data-i18n="admin.sections.general.title"></h1>
+                    <p class="text-muted" id="section-description" data-i18n="admin.sections.general.description"></p>
                 </div>
                 <div class="d-flex align-items-center">
-                    <button id="btnPerfil" class="avatar-iniciales shadow-sm" data-i18n-title="nav.overview" title="Ver mi perfil">AD</button>
+                    <button id="btnPerfil" class="avatar-iniciales shadow-sm" data-i18n-title="nav.overview" title="Ver mi perfil"></button>
                 </div>
             </div>
 
@@ -60,20 +60,20 @@
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <div class="gap-2 d-none" id="acciones-globales">
                         <button type="button" class="btn btn-primary rounded-pill px-2 shadow-sm" id="btnCrear">
-                            <i class="bi bi-plus-circle me-2"></i> <span data-i18n="buttons.create">Crear</span>
+                            <i class="bi bi-plus-circle me-2"></i> <span data-i18n="buttons.create"></span>
                         </button>
                         <button type="button" class="btn btn-outline-secondary rounded-pill px-2" id="btnEditar" disabled>
-                            <i class="bi bi-pencil me-2"></i> <span data-i18n="buttons.edit">Editar</span>
+                            <i class="bi bi-pencil me-2"></i> <span data-i18n="buttons.edit"></span>
                         </button>
                         <button type="button" class="btn btn-outline-danger rounded-pill px-2" id="btnEliminar" disabled>
-                            <i class="bi bi-trash me-2"></i> <span data-i18n="buttons.delete">Eliminar</span>
+                            <i class="bi bi-trash me-2"></i> <span data-i18n="buttons.delete"></span>
                         </button>
                         <button type="button" class="btn btn-outline-success rounded-pill px-2" id="btnReactivar" disabled>
-                            <i class="bi bi-arrow-clockwise me-2"></i> <span data-i18n="buttons.reactivate">Reactivar</span>
+                            <i class="bi bi-arrow-clockwise me-2"></i> <span data-i18n="buttons.reactivate"></span>
                         </button>
                     </div>
                     <div class="gap-2 flex-wrap d-none" id="filtros-globales">
-                        <input type="search" class="form-control" id="filtroTexto" data-i18n-ph="nav.filterList" placeholder="Filtrar listado">
+                        <input type="search" class="form-control" id="filtroTexto" data-i18n-ph="nav.filterList">
                         <div class="d-flex gap-2 flex-wrap" id="filtrosEspecificos"></div>
                     </div>
                 </div>
@@ -84,7 +84,7 @@
                         <div class="card-header bg-white border-bottom py-4">
                             <h5 class="fw-bold mb-0">
                                 <i class="me-2 text-primary"></i>
-                                <span data-i18n="admin.cardTitles.convivencias">Seguimiento de Convivencias</span>
+                                <span data-i18n="admin.cardTitles.convivencias"></span>
                             </h5>
                         </div>
                         <div class="card-body p-4">
@@ -92,10 +92,10 @@
                                 <table class="table table-hover align-middle">
                                     <thead class="table-light">
                                         <tr>
-                                            <th data-i18n="admin.table.host">Anfitrión</th>
-                                            <th data-i18n="admin.table.tenant">Inquilino</th>
-                                            <th data-i18n="admin.table.startDate">Inicio</th>
-                                            <th data-i18n="admin.table.status">Estado</th>
+                                            <th data-i18n="admin.table.host"></th>
+                                            <th data-i18n="admin.table.tenant"></th>
+                                            <th data-i18n="admin.table.startDate"></th>
+                                            <th data-i18n="admin.table.status"></th>
                                         </tr>
                                     </thead>
                                     <tbody id="tabla-convivencias"></tbody>
@@ -111,7 +111,7 @@
                         <div class="card-header bg-white border-bottom py-4">
                             <h5 class="fw-bold mb-0">
                                 <i class="bi bi-people me-2 text-primary"></i>
-                                <span data-i18n="admin.cardTitles.users">Gestión de Usuarios</span>
+                                <span data-i18n="admin.cardTitles.users"></span>
                             </h5>
                         </div>
                         <div class="card-body p-4">
@@ -119,12 +119,12 @@
                                 <table class="table table-hover align-middle">
                                     <thead class="table-light">
                                         <tr>
-                                            <th data-i18n="admin.table.user">Usuario</th>
-                                            <th data-i18n="admin.table.role">Rol</th>
-                                            <th data-i18n="admin.table.registerDate">Fecha Registro</th>
-                                            <th data-i18n="admin.table.dni">DNI</th>
-                                            <th data-i18n="admin.table.phone">Número teléfono</th>
-                                            <th data-i18n="admin.table.status">Estado</th>
+                                            <th data-i18n="admin.table.user"></th>
+                                            <th data-i18n="admin.table.role"></th>
+                                            <th data-i18n="admin.table.registerDate"></th>
+                                            <th data-i18n="admin.table.dni"></th>
+                                            <th data-i18n="admin.table.phone"></th>
+                                            <th data-i18n="admin.table.status"></th>
                                         </tr>
                                     </thead>
                                     <tbody id="tabla-usuarios"></tbody>
@@ -140,7 +140,7 @@
                         <div class="card-header bg-white border-bottom py-4">
                             <h5 class="fw-bold mb-0">
                                 <i class="bi bi-shield-lock me-2 text-primary"></i>
-                                <span data-i18n="admin.cardTitles.roles">Gestión de roles y permisos</span>
+                                <span data-i18n="admin.cardTitles.roles"></span>
                             </h5>
                         </div>
                         <div class="card-body p-4">
@@ -148,8 +148,8 @@
                                 <table class="table table-hover align-middle">
                                     <thead class="table-light">
                                         <tr>
-                                            <th data-i18n="admin.table.roleName">Rol</th>
-                                            <th data-i18n="admin.table.status">Estado</th>
+                                            <th data-i18n="admin.table.roleName"></th>
+                                            <th data-i18n="admin.table.status"></th>
                                         </tr>
                                     </thead>
                                     <tbody id="tabla-roles"></tbody>
@@ -165,7 +165,7 @@
                         <div class="card-header bg-white border-bottom py-4">
                             <h5 class="fw-bold mb-0">
                                 <i class="bi bi-houses me-2 text-primary"></i>
-                                <span data-i18n="admin.cardTitles.homes">Gestión de Viviendas</span>
+                                <span data-i18n="admin.cardTitles.homes"></span>
                             </h5>
                         </div>
                         <div class="card-body p-4">
@@ -173,11 +173,11 @@
                                 <table class="table table-hover align-middle">
                                     <thead class="table-light">
                                         <tr>
-                                            <th data-i18n="admin.table.address">Dirección</th>
-                                            <th data-i18n="admin.table.freeSlots">Plazas libres</th>
-                                            <th data-i18n="admin.table.totalSlots">Plazas totales</th>
-                                            <th data-i18n="admin.table.host">Anfitrión</th>
-                                            <th data-i18n="admin.table.status">Estado</th>
+                                            <th data-i18n="admin.table.address"></th>
+                                            <th data-i18n="admin.table.freeSlots"></th>
+                                            <th data-i18n="admin.table.totalSlots"></th>
+                                            <th data-i18n="admin.table.host"></th>
+                                            <th data-i18n="admin.table.status"></th>
                                         </tr>
                                     </thead>
                                     <tbody id="tabla-viviendas"></tbody>
@@ -193,7 +193,7 @@
                         <div class="card-header bg-white border-bottom py-4">
                             <h5 class="fw-bold mb-0">
                                 <i class="bi bi-diagram-3 me-2 text-primary"></i>
-                                <span data-i18n="admin.cardTitles.criteria">Gestión de Criterios de Compatibilidad</span>
+                                <span data-i18n="admin.cardTitles.criteria"></span>
                             </h5>
                         </div>
                         <div class="card-body p-4">
@@ -201,10 +201,10 @@
                                 <table class="table table-hover align-middle">
                                     <thead class="table-light">
                                         <tr>
-                                            <th data-i18n="admin.table.criteria">Criterios</th>
-                                            <th data-i18n="admin.table.options">Opciones</th>
-                                            <th data-i18n="admin.table.values">Valores</th>
-                                            <th data-i18n="admin.table.status">Estado</th>
+                                            <th data-i18n="admin.table.criteria"></th>
+                                            <th data-i18n="admin.table.options"></th>
+                                            <th data-i18n="admin.table.values"></th>
+                                            <th data-i18n="admin.table.status"></th>
                                         </tr>
                                     </thead>
                                     <tbody id="tabla-criterios"></tbody>
@@ -219,23 +219,23 @@
                     <div class="row g-4">
                         <div class="col-lg-4">
                             <div class="card border-0 shadow-sm rounded-4 text-center p-4 mb-4">
-                                <div class="avatar-iniciales avatar-iniciales-lg mx-auto mb-3">AD</div>
-                                <h5 class="fw-bold mb-1" id="perfil-display-nombre">Administrador</h5>
-                                <span class="badge bg-dark rounded-pill px-3 mb-3" data-i18n="admin.badge">Administrador</span>
+                                <div class="avatar-iniciales avatar-iniciales-lg mx-auto mb-3" id="perfil-avatar"></div>
+                                <h5 class="fw-bold mb-1" id="perfil-display-nombre"></h5>
+                                <span class="badge bg-dark rounded-pill px-3 mb-3" data-i18n="admin.badge"></span>
                                 <p class="text-muted small mb-0">
                                     <i class="bi bi-calendar3 me-1"></i>
-                                    <span data-i18n="profile.memberSince">Miembro desde</span> enero de 2024
+                                    <span data-i18n="profile.memberSince"></span> <span id="perfil-fecha-alta"></span>
                                 </p>
                             </div>
                             <div class="card border-0 shadow-sm rounded-4 p-4">
                                 <h6 class="fw-bold text-danger mb-2">
                                     <i class="bi bi-exclamation-triangle me-2"></i>
-                                    <span data-i18n="profile.dangerZone">Zona de peligro</span>
+                                    <span data-i18n="profile.dangerZone"></span>
                                 </h6>
-                                <p class="text-muted small mb-3" data-i18n="profile.dangerText">Esta acción es permanente e irreversible.</p>
+                                <p class="text-muted small mb-3" data-i18n="profile.dangerText"></p>
                                 <button class="btn btn-outline-danger rounded-pill w-100 btn-sm" id="btnEliminarCuenta">
                                     <i class="bi bi-trash me-2"></i>
-                                    <span data-i18n="profile.deleteMyAccount">Eliminar mi cuenta</span>
+                                    <span data-i18n="profile.deleteMyAccount"></span>
                                 </button>
                             </div>
                         </div>
@@ -245,42 +245,42 @@
                                 <div class="card-header bg-white border-bottom py-4 d-flex justify-content-between align-items-center">
                                     <h5 class="fw-bold mb-0">
                                         <i class="bi bi-person me-2 text-primary"></i>
-                                        <span data-i18n="profile.personalData">Datos Personales</span>
+                                        <span data-i18n="profile.personalData"></span>
                                     </h5>
                                     <button class="btn btn-primary-inverse rounded-pill btn-sm px-3" id="perfil-btnEditar">
                                         <i class="bi bi-pencil me-1"></i>
-                                        <span data-i18n="profile.edit">Editar</span>
+                                        <span data-i18n="profile.edit"></span>
                                     </button>
                                 </div>
                                 <div class="card-body p-4">
                                     <form id="perfil-form" novalidate>
                                         <div class="row g-3">
                                             <div class="col-md-6">
-                                                <label class="form-label fw-semibold text-muted small" data-i18n="profile.fullNameLabel">Nombre completo</label>
-                                                <input type="text" class="form-control" id="perfil-nombre" value="Administrador" disabled>
+                                                <label class="form-label fw-semibold text-muted small" data-i18n="profile.fullNameLabel"></label>
+                                                <input type="text" class="form-control" id="perfil-nombre" value="" disabled>
                                             </div>
                                             <div class="col-md-6">
-                                                <label class="form-label fw-semibold text-muted small" data-i18n="profile.dniLabel">DNI / NIE</label>
-                                                <input type="text" class="form-control" id="perfil-dni" value="11111111A" disabled>
+                                                <label class="form-label fw-semibold text-muted small" data-i18n="profile.dniLabel"></label>
+                                                <input type="text" class="form-control" id="perfil-dni" value="" disabled>
                                             </div>
                                             <div class="col-md-6">
-                                                <label class="form-label fw-semibold text-muted small" data-i18n="profile.emailLabel">Correo electrónico</label>
-                                                <input type="email" class="form-control" id="perfil-email" value="admin@semprenacasa.es" disabled>
+                                                <label class="form-label fw-semibold text-muted small" data-i18n="profile.emailLabel"></label>
+                                                <input type="email" class="form-control" id="perfil-email" value="" disabled>
                                             </div>
                                             <div class="col-md-6">
-                                                <label class="form-label fw-semibold text-muted small" data-i18n="profile.phoneLabel">Teléfono</label>
-                                                <input type="tel" class="form-control" id="perfil-telefono" value="+34 600 000 000" disabled>
+                                                <label class="form-label fw-semibold text-muted small" data-i18n="profile.phoneLabel"></label>
+                                                <input type="tel" class="form-control" id="perfil-telefono" value="" disabled>
                                             </div>
                                             <div class="col-12">
-                                                <label class="form-label fw-semibold text-muted small" data-i18n="profile.cityLabel">Ciudad</label>
-                                                <input type="text" class="form-control" id="perfil-ciudad" value="Santiago de Compostela" disabled>
+                                                <label class="form-label fw-semibold text-muted small" data-i18n="profile.cityLabel"></label>
+                                                <input type="text" class="form-control" id="perfil-ciudad" value="" disabled>
                                             </div>
                                         </div>
                                         <div class="d-none gap-2 justify-content-end mt-4" id="perfil-acciones">
-                                            <button type="button" class="btn btn-light rounded-pill px-4" id="perfil-btnCancelar" data-i18n="buttons.cancel">Cancelar</button>
+                                            <button type="button" class="btn btn-light rounded-pill px-4" id="perfil-btnCancelar" data-i18n="buttons.cancel"></button>
                                             <button type="submit" class="btn btn-primary rounded-pill px-4">
                                                 <i class="bi bi-check-circle me-1"></i>
-                                                <span data-i18n="buttons.saveChanges">Guardar Cambios</span>
+                                                <span data-i18n="buttons.saveChanges"></span>
                                             </button>
                                         </div>
                                     </form>
@@ -291,22 +291,22 @@
                                 <div class="card-header bg-white border-bottom py-4">
                                     <h5 class="fw-bold mb-0">
                                         <i class="bi bi-shield-lock me-2 text-primary"></i>
-                                        <span data-i18n="profile.changePasswordTitle">Cambiar Contraseña</span>
+                                        <span data-i18n="profile.changePasswordTitle"></span>
                                     </h5>
                                 </div>
                                 <div class="card-body p-4">
                                     <form id="perfil-form-pwd" novalidate>
                                         <div class="mb-4">
-                                            <label class="form-label fw-semibold text-muted small" data-i18n="profile.currentPassword">Contraseña actual</label>
+                                            <label class="form-label fw-semibold text-muted small" data-i18n="profile.currentPassword"></label>
                                             <div class="position-relative">
-                                                <input type="password" class="form-control pe-5" id="pwd-actual" data-i18n-ph="profile.currentPasswordPh" placeholder="Introduce tu contraseña actual">
+                                                <input type="password" class="form-control pe-5" id="pwd-actual" data-i18n-ph="profile.currentPasswordPh">
                                                 <button type="button" class="btn-pwd-toggle" data-toggle-pwd="pwd-actual" tabindex="-1"><i class="bi bi-eye"></i></button>
                                             </div>
                                         </div>
                                         <div class="mb-3">
-                                            <label class="form-label fw-semibold text-muted small" data-i18n="profile.newPassword">Nueva contraseña</label>
+                                            <label class="form-label fw-semibold text-muted small" data-i18n="profile.newPassword"></label>
                                             <div class="position-relative">
-                                                <input type="password" class="form-control pe-5" id="pwd-nueva" data-i18n-ph="profile.newPasswordPh" placeholder="Mínimo 8 caracteres">
+                                                <input type="password" class="form-control pe-5" id="pwd-nueva" data-i18n-ph="profile.newPasswordPh">
                                                 <button type="button" class="btn-pwd-toggle" data-toggle-pwd="pwd-nueva" tabindex="-1"><i class="bi bi-eye"></i></button>
                                             </div>
                                             <div id="pwd-strength-wrap" class="mt-2" style="display:none;">
@@ -317,9 +317,9 @@
                                             </div>
                                         </div>
                                         <div class="mb-4">
-                                            <label class="form-label fw-semibold text-muted small" data-i18n="profile.confirmPassword">Confirmar nueva contraseña</label>
+                                            <label class="form-label fw-semibold text-muted small" data-i18n="profile.confirmPassword"></label>
                                             <div class="position-relative">
-                                                <input type="password" class="form-control pe-5" id="pwd-confirmar" data-i18n-ph="profile.confirmPasswordPh" placeholder="Repite la nueva contraseña">
+                                                <input type="password" class="form-control pe-5" id="pwd-confirmar" data-i18n-ph="profile.confirmPasswordPh">
                                                 <button type="button" class="btn-pwd-toggle" data-toggle-pwd="pwd-confirmar" tabindex="-1"><i class="bi bi-eye"></i></button>
                                             </div>
                                         </div>
@@ -327,7 +327,7 @@
                                         <div class="text-end">
                                             <button type="submit" class="btn btn-primary rounded-pill px-4">
                                                 <i class="bi bi-lock me-1"></i>
-                                                <span data-i18n="buttons.updatePassword">Actualizar Contraseña</span>
+                                                <span data-i18n="buttons.updatePassword"></span>
                                             </button>
                                         </div>
                                     </form>

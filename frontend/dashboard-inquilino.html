@@ -15,23 +15,23 @@
             <div class="d-flex flex-column align-items-center mb-4">
                 <img src="assets/images/logo.JPG" width="60" class="rounded-circle mb-2" alt="Logo"
                      onerror="this.src='https://ui-avatars.com/api/?name=Inquilino&background=7A99DD&color=fff'">
-                <span class="badge bg-dark rounded-pill mb-2" data-i18n="inquilino.badge">Inquilino</span>
+                <span class="badge bg-dark rounded-pill mb-2" data-i18n="inquilino.badge"></span>
                 <h5 class="fw-bold mb-0" style="color: var(--color-primario);">Sempre na Casa</h5>
             </div>
             <nav class="nav flex-column gap-2 flex-grow-1">
                 <a href="#" class="nav-link active-custom transition section-link" data-section="general">
-                    <i class="bi bi-speedometer2 me-2"></i> <span data-i18n="inquilino.nav.general">Vista General</span>
+                    <i class="bi bi-speedometer2 me-2"></i> <span data-i18n="inquilino.nav.general"></span>
                 </a>
                 <a href="#" class="nav-link text-muted transition section-link" data-section="convivencia" id="nav-convivencia">
-                    <i class="bi bi-house-heart me-2"></i> <span data-i18n="inquilino.nav.convivencia">Mi Convivencia</span>
+                    <i class="bi bi-house-heart me-2"></i> <span data-i18n="inquilino.nav.convivencia"></span>
                 </a>
                 <a href="#" class="nav-link text-muted transition section-link" data-section="preferencias">
-                    <i class="bi bi-sliders me-2"></i> <span data-i18n="inquilino.nav.preferences">Mis Preferencias</span>
+                    <i class="bi bi-sliders me-2"></i> <span data-i18n="inquilino.nav.preferences"></span>
                 </a>
                 <a href="#" class="nav-link d-none section-link" data-section="perfil"></a>
                 <hr class="my-3">
                 <a href="public.html" class="nav-link text-danger transition">
-                    <i class="bi bi-box-arrow-left me-2"></i> <span data-i18n="nav.logout">Salir</span>
+                    <i class="bi bi-box-arrow-left me-2"></i> <span data-i18n="nav.logout"></span>
                 </a>
             </nav>
         </aside>
@@ -40,11 +40,11 @@
         <main class="flex-grow-1 p-4 p-md-3">
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <div>
-                    <h1 class="fw-bold mb-2" id="section-title" data-i18n="inquilino.sections.general.title">Panel de Inquilino</h1>
-                    <p class="text-muted" id="section-description" data-i18n="inquilino.sections.general.descriptionWithHome">Resumen de tu convivencia y estado de solicitud</p>
+                    <h1 class="fw-bold mb-2" id="section-title" data-i18n="inquilino.sections.general.title"></h1>
+                    <p class="text-muted" id="section-description" data-i18n="inquilino.sections.general.descriptionWithHome"></p>
                 </div>
                 <div class="d-flex align-items-center">
-                    <button id="btnPerfil" class="avatar-iniciales shadow-sm" title="Ver mi perfil">LM</button>
+                    <button id="btnPerfil" class="avatar-iniciales shadow-sm" title="Ver mi perfil"></button>
                 </div>
             </div>
 
@@ -52,20 +52,20 @@
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <div class="gap-2 d-none" id="acciones-globales">
                         <button type="button" class="btn btn-primary rounded-pill px-2 shadow-sm" id="btnCrear">
-                            <i class="bi bi-plus-circle me-2"></i> <span data-i18n="buttons.add">Añadir</span>
+                            <i class="bi bi-plus-circle me-2"></i> <span data-i18n="buttons.add"></span>
                         </button>
                         <button type="button" class="btn btn-primary-inverse rounded-pill px-2" id="btnEditar" disabled>
-                            <i class="bi bi-pencil me-2"></i> <span data-i18n="buttons.edit">Editar</span>
+                            <i class="bi bi-pencil me-2"></i> <span data-i18n="buttons.edit"></span>
                         </button>
                         <button type="button" class="btn btn-outline-danger rounded-pill px-2" id="btnEliminar" disabled>
-                            <i class="bi bi-x-circle me-2"></i> <span data-i18n="buttons.deactivate">Desactivar</span>
+                            <i class="bi bi-x-circle me-2"></i> <span data-i18n="buttons.deactivate"></span>
                         </button>
                         <button type="button" class="btn btn-outline-success rounded-pill px-2" id="btnReactivar" disabled>
-                            <i class="bi bi-check-circle me-2"></i> <span data-i18n="buttons.activate">Activar</span>
+                            <i class="bi bi-check-circle me-2"></i> <span data-i18n="buttons.activate"></span>
                         </button>
                     </div>
                     <div class="gap-2 flex-wrap d-none" id="filtros-globales">
-                        <input type="search" class="form-control" id="filtroTexto" data-i18n-ph="nav.filterList" placeholder="Filtrar listado">
+                        <input type="search" class="form-control" id="filtroTexto" data-i18n-ph="nav.filterList">
                         <div class="d-flex gap-2 flex-wrap" id="filtrosEspecificos"></div>
                     </div>
                 </div>
@@ -82,7 +82,7 @@
                                             <i class="bi bi-houses fs-4" style="color: var(--color-primario);"></i>
                                         </div>
                                         <div>
-                                            <p class="text-muted small mb-1" data-i18n="inquilino.summary.availableCandidates">Candidatos Disponibles</p>
+                                            <p class="text-muted small mb-1" data-i18n="inquilino.summary.availableCandidates"></p>
                                             <h5 class="fw-bold mb-0" id="total-candidatos">-</h5>
                                         </div>
                                     </div>
@@ -95,7 +95,7 @@
                                             <i class="bi bi-graph-up-arrow fs-4 text-success"></i>
                                         </div>
                                         <div>
-                                            <p class="text-muted small mb-1" data-i18n="inquilino.summary.maxCompatibility">Mayor Compatibilidad</p>
+                                            <p class="text-muted small mb-1" data-i18n="inquilino.summary.maxCompatibility"></p>
                                             <h5 class="fw-bold mb-0" id="max-compatibilidad">-</h5>
                                         </div>
                                     </div>
@@ -108,7 +108,7 @@
                                             <i class="bi bi-sliders fs-4 text-warning"></i>
                                         </div>
                                         <div>
-                                            <p class="text-muted small mb-1" data-i18n="inquilino.summary.activePreferences">Preferencias Activas</p>
+                                            <p class="text-muted small mb-1" data-i18n="inquilino.summary.activePreferences"></p>
                                             <h5 class="fw-bold mb-0" id="preferencias-activas">-</h5>
                                         </div>
                                     </div>
@@ -119,7 +119,7 @@
                             <div class="card-header bg-white border-bottom py-4">
                                 <h5 class="fw-bold mb-0">
                                     <i class="bi bi-star me-2 text-primary"></i>
-                                    <span data-i18n="inquilino.cardTitles.possibleHomes">Posibles Viviendas para Ti</span>
+                                    <span data-i18n="inquilino.cardTitles.possibleHomes"></span>
                                 </h5>
                             </div>
                             <div class="card-body p-4">
@@ -138,7 +138,7 @@
                                             <i class="bi bi-clipboard-check fs-4" style="color: var(--color-primario);"></i>
                                         </div>
                                         <div>
-                                            <p class="text-muted small mb-1" data-i18n="inquilino.summary.requestStatus">Estado Solicitud</p>
+                                            <p class="text-muted small mb-1" data-i18n="inquilino.summary.requestStatus"></p>
                                             <h5 class="fw-bold mb-0" id="estado-solicitud">-</h5>
                                         </div>
                                     </div>
@@ -151,7 +151,7 @@
                                             <i class="bi bi-graph-up-arrow fs-4 text-success"></i>
                                         </div>
                                         <div>
-                                            <p class="text-muted small mb-1" data-i18n="inquilino.summary.compatibility">Compatibilidad</p>
+                                            <p class="text-muted small mb-1" data-i18n="inquilino.summary.compatibility"></p>
                                             <h5 class="fw-bold mb-0" id="compatibilidad-score">-</h5>
                                         </div>
                                     </div>
@@ -164,7 +164,7 @@
                                             <i class="bi bi-calendar-check fs-4 text-warning"></i>
                                         </div>
                                         <div>
-                                            <p class="text-muted small mb-1" data-i18n="inquilino.summary.startDate">Fecha de Inicio</p>
+                                            <p class="text-muted small mb-1" data-i18n="inquilino.summary.startDate"></p>
                                             <h5 class="fw-bold mb-0" id="fecha-inicio">-</h5>
                                         </div>
                                     </div>
@@ -175,7 +175,7 @@
                             <div class="card-header bg-white border-bottom py-4">
                                 <h5 class="fw-bold mb-0">
                                     <i class="bi bi-house-heart me-2 text-primary"></i>
-                                    <span data-i18n="inquilino.cardTitles.currentConvivencia">Mi Convivencia Actual</span>
+                                    <span data-i18n="inquilino.cardTitles.currentConvivencia"></span>
                                 </h5>
                             </div>
                             <div class="card-body p-4">
@@ -183,10 +183,10 @@
                                     <table class="table table-hover align-middle">
                                         <thead class="table-light">
                                             <tr>
-                                                <th data-i18n="inquilino.table.host">Anfitrión</th>
-                                                <th data-i18n="inquilino.table.address">Dirección</th>
-                                                <th data-i18n="inquilino.table.startDate">Inicio</th>
-                                                <th data-i18n="inquilino.table.status">Estado</th>
+                                                <th data-i18n="inquilino.table.host"></th>
+                                                <th data-i18n="inquilino.table.address"></th>
+                                                <th data-i18n="inquilino.table.startDate"></th>
+                                                <th data-i18n="inquilino.table.status"></th>
                                             </tr>
                                         </thead>
                                         <tbody id="tabla-resumen-convivencia"></tbody>
@@ -202,8 +202,8 @@
                     <div id="sin-convivencia" class="d-none">
                         <div class="card border-0 shadow-sm rounded-4 text-center p-5">
                             <i class="bi bi-house-exclamation fs-1 mb-3" style="color: var(--color-primario);"></i>
-                            <h4 class="fw-bold mb-2" data-i18n="inquilino.cardTitles.noConvivencia">Todavía no tienes una convivencia asignada</h4>
-                            <p class="text-muted mb-0" data-i18n="inquilino.cardTitles.noConvivenciaSubtitle">El equipo de Sempre na Casa está buscando la mejor compatibilidad para ti.</p>
+                            <h4 class="fw-bold mb-2" data-i18n="inquilino.cardTitles.noConvivencia"></h4>
+                            <p class="text-muted mb-0" data-i18n="inquilino.cardTitles.noConvivenciaSubtitle"></p>
                         </div>
                     </div>
                     <div id="con-convivencia">
@@ -211,7 +211,7 @@
                             <div class="card-header bg-white border-bottom py-4">
                                 <h5 class="fw-bold mb-0">
                                     <i class="bi bi-house me-2 text-primary"></i>
-                                    <span data-i18n="inquilino.cardTitles.convivenciaDetails">Detalles de Mi Convivencia</span>
+                                    <span data-i18n="inquilino.cardTitles.convivenciaDetails"></span>
                                 </h5>
                             </div>
                             <div class="card-body p-4" id="ficha-convivencia"></div>
@@ -225,7 +225,7 @@
                         <div class="card-header bg-white border-bottom py-4">
                             <h5 class="fw-bold mb-0">
                                 <i class="bi bi-sliders me-2 text-primary"></i>
-                                <span data-i18n="inquilino.cardTitles.preferencesTitle">Mis Preferencias de Convivencia</span>
+                                <span data-i18n="inquilino.cardTitles.preferencesTitle"></span>
                             </h5>
                         </div>
                         <div class="card-body p-4">
@@ -233,9 +233,9 @@
                                 <table class="table table-hover align-middle">
                                     <thead class="table-light">
                                         <tr>
-                                            <th data-i18n="inquilino.table.preference">Preferencia</th>
-                                            <th data-i18n="inquilino.table.myValue">Mi Valor</th>
-                                            <th data-i18n="inquilino.table.status">Estado</th>
+                                            <th data-i18n="inquilino.table.preference"></th>
+                                            <th data-i18n="inquilino.table.myValue"></th>
+                                            <th data-i18n="inquilino.table.status"></th>
                                         </tr>
                                     </thead>
                                     <tbody id="tabla-preferencias"></tbody>
@@ -250,23 +250,23 @@
                     <div class="row g-4">
                         <div class="col-lg-4">
                             <div class="card border-0 shadow-sm rounded-4 text-center p-4 mb-4">
-                                <div class="avatar-iniciales avatar-iniciales-lg mx-auto mb-3">LM</div>
-                                <h5 class="fw-bold mb-1" id="perfil-display-nombre">Luis Martínez</h5>
-                                <span class="badge bg-dark rounded-pill px-3 mb-3" data-i18n="inquilino.badge">Inquilino</span>
+                                <div class="avatar-iniciales avatar-iniciales-lg mx-auto mb-3" id="perfil-avatar"></div>
+                                <h5 class="fw-bold mb-1" id="perfil-display-nombre"></h5>
+                                <span class="badge bg-dark rounded-pill px-3 mb-3" data-i18n="inquilino.badge"></span>
                                 <p class="text-muted small mb-0">
                                     <i class="bi bi-calendar3 me-1"></i>
-                                    <span data-i18n="profile.memberSince">Miembro desde</span> febrero de 2026
+                                    <span data-i18n="profile.memberSince"></span> <span id="perfil-fecha-alta"></span>
                                 </p>
                             </div>
                             <div class="card border-0 shadow-sm rounded-4 p-4">
                                 <h6 class="fw-bold text-danger mb-2">
                                     <i class="bi bi-exclamation-triangle me-2"></i>
-                                    <span data-i18n="profile.dangerZone">Zona de peligro</span>
+                                    <span data-i18n="profile.dangerZone"></span>
                                 </h6>
-                                <p class="text-muted small mb-3" data-i18n="profile.dangerText">Esta acción es permanente e irreversible.</p>
+                                <p class="text-muted small mb-3" data-i18n="profile.dangerText"></p>
                                 <button class="btn btn-outline-danger rounded-pill w-100 btn-sm" id="btnEliminarCuenta">
                                     <i class="bi bi-trash me-2"></i>
-                                    <span data-i18n="profile.deleteMyAccount">Eliminar mi cuenta</span>
+                                    <span data-i18n="profile.deleteMyAccount"></span>
                                 </button>
                             </div>
                         </div>
@@ -275,41 +275,41 @@
                                 <div class="card-header bg-white border-bottom py-4 d-flex justify-content-between align-items-center">
                                     <h5 class="fw-bold mb-0">
                                         <i class="bi bi-person me-2 text-primary"></i>
-                                        <span data-i18n="profile.personalData">Datos Personales</span>
+                                        <span data-i18n="profile.personalData"></span>
                                     </h5>
                                     <button class="btn btn-primary-inverse rounded-pill btn-sm px-3" id="perfil-btnEditar">
-                                        <i class="bi bi-pencil me-1"></i> <span data-i18n="profile.edit">Editar</span>
+                                        <i class="bi bi-pencil me-1"></i> <span data-i18n="profile.edit"></span>
                                     </button>
                                 </div>
                                 <div class="card-body p-4">
                                     <form id="perfil-form" novalidate>
                                         <div class="row g-3">
                                             <div class="col-md-6">
-                                                <label class="form-label fw-semibold text-muted small" data-i18n="profile.fullNameLabel">Nombre completo</label>
-                                                <input type="text" class="form-control" id="perfil-nombre" value="Luis Martínez" disabled>
+                                                <label class="form-label fw-semibold text-muted small" data-i18n="profile.fullNameLabel"></label>
+                                                <input type="text" class="form-control" id="perfil-nombre" value="" disabled>
                                             </div>
                                             <div class="col-md-6">
-                                                <label class="form-label fw-semibold text-muted small" data-i18n="profile.dniLabel">DNI / NIE</label>
-                                                <input type="text" class="form-control" id="perfil-dni" value="87654321B" disabled>
+                                                <label class="form-label fw-semibold text-muted small" data-i18n="profile.dniLabel"></label>
+                                                <input type="text" class="form-control" id="perfil-dni" value="" disabled>
                                             </div>
                                             <div class="col-md-6">
-                                                <label class="form-label fw-semibold text-muted small" data-i18n="profile.emailLabel">Correo electrónico</label>
-                                                <input type="email" class="form-control" id="perfil-email" value="luis.m@email.com" disabled>
+                                                <label class="form-label fw-semibold text-muted small" data-i18n="profile.emailLabel"></label>
+                                                <input type="email" class="form-control" id="perfil-email" value="" disabled>
                                             </div>
                                             <div class="col-md-6">
-                                                <label class="form-label fw-semibold text-muted small" data-i18n="profile.phoneLabel">Teléfono</label>
-                                                <input type="tel" class="form-control" id="perfil-telefono" value="666 111 222" disabled>
+                                                <label class="form-label fw-semibold text-muted small" data-i18n="profile.phoneLabel"></label>
+                                                <input type="tel" class="form-control" id="perfil-telefono" value="" disabled>
                                             </div>
                                             <div class="col-12">
-                                                <label class="form-label fw-semibold text-muted small" data-i18n="profile.cityLabel">Ciudad</label>
-                                                <input type="text" class="form-control" id="perfil-ciudad" value="Santiago de Compostela" disabled>
+                                                <label class="form-label fw-semibold text-muted small" data-i18n="profile.cityLabel"></label>
+                                                <input type="text" class="form-control" id="perfil-ciudad" value="" disabled>
                                             </div>
                                         </div>
                                         <div class="d-none gap-2 justify-content-end mt-4" id="perfil-acciones">
-                                            <button type="button" class="btn btn-light rounded-pill px-4" id="perfil-btnCancelar" data-i18n="buttons.cancel">Cancelar</button>
+                                            <button type="button" class="btn btn-light rounded-pill px-4" id="perfil-btnCancelar" data-i18n="buttons.cancel"></button>
                                             <button type="submit" class="btn btn-primary rounded-pill px-4">
                                                 <i class="bi bi-check-circle me-1"></i>
-                                                <span data-i18n="buttons.saveChanges">Guardar Cambios</span>
+                                                <span data-i18n="buttons.saveChanges"></span>
                                             </button>
                                         </div>
                                     </form>
@@ -319,22 +319,22 @@
                                 <div class="card-header bg-white border-bottom py-4">
                                     <h5 class="fw-bold mb-0">
                                         <i class="bi bi-shield-lock me-2 text-primary"></i>
-                                        <span data-i18n="profile.changePasswordTitle">Cambiar Contraseña</span>
+                                        <span data-i18n="profile.changePasswordTitle"></span>
                                     </h5>
                                 </div>
                                 <div class="card-body p-4">
                                     <form id="perfil-form-pwd" novalidate>
                                         <div class="mb-4">
-                                            <label class="form-label fw-semibold text-muted small" data-i18n="profile.currentPassword">Contraseña actual</label>
+                                            <label class="form-label fw-semibold text-muted small" data-i18n="profile.currentPassword"></label>
                                             <div class="position-relative">
-                                                <input type="password" class="form-control pe-5" id="pwd-actual" data-i18n-ph="profile.currentPasswordPh" placeholder="Introduce tu contraseña actual">
+                                                <input type="password" class="form-control pe-5" id="pwd-actual" data-i18n-ph="profile.currentPasswordPh">
                                                 <button type="button" class="btn-pwd-toggle" data-toggle-pwd="pwd-actual" tabindex="-1"><i class="bi bi-eye"></i></button>
                                             </div>
                                         </div>
                                         <div class="mb-3">
-                                            <label class="form-label fw-semibold text-muted small" data-i18n="profile.newPassword">Nueva contraseña</label>
+                                            <label class="form-label fw-semibold text-muted small" data-i18n="profile.newPassword"></label>
                                             <div class="position-relative">
-                                                <input type="password" class="form-control pe-5" id="pwd-nueva" data-i18n-ph="profile.newPasswordPh" placeholder="Mínimo 8 caracteres">
+                                                <input type="password" class="form-control pe-5" id="pwd-nueva" data-i18n-ph="profile.newPasswordPh">
                                                 <button type="button" class="btn-pwd-toggle" data-toggle-pwd="pwd-nueva" tabindex="-1"><i class="bi bi-eye"></i></button>
                                             </div>
                                             <div id="pwd-strength-wrap" class="mt-2" style="display:none;">
@@ -345,9 +345,9 @@
                                             </div>
                                         </div>
                                         <div class="mb-4">
-                                            <label class="form-label fw-semibold text-muted small" data-i18n="profile.confirmPassword">Confirmar nueva contraseña</label>
+                                            <label class="form-label fw-semibold text-muted small" data-i18n="profile.confirmPassword"></label>
                                             <div class="position-relative">
-                                                <input type="password" class="form-control pe-5" id="pwd-confirmar" data-i18n-ph="profile.confirmPasswordPh" placeholder="Repite la nueva contraseña">
+                                                <input type="password" class="form-control pe-5" id="pwd-confirmar" data-i18n-ph="profile.confirmPasswordPh">
                                                 <button type="button" class="btn-pwd-toggle" data-toggle-pwd="pwd-confirmar" tabindex="-1"><i class="bi bi-eye"></i></button>
                                             </div>
                                         </div>
@@ -355,7 +355,7 @@
                                         <div class="text-end">
                                             <button type="submit" class="btn btn-primary rounded-pill px-4">
                                                 <i class="bi bi-lock me-1"></i>
-                                                <span data-i18n="buttons.updatePassword">Actualizar Contraseña</span>
+                                                <span data-i18n="buttons.updatePassword"></span>
                                             </button>
                                         </div>
                                     </form>
