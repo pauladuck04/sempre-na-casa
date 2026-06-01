@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro - Sempre na Casa</title>
-    
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="css/main.css">
@@ -16,11 +16,14 @@
             <!-- Logo + título -->
             <div class="text-center mb-1">
                 <img src="./assets/images/logo.JPG" alt="Logo" width="70" height="70" class="rounded-circle mb-1 logo-shadow">
-                <h2 class="fw-bold mb-0">Crear cuenta</h2>
-                <p class="text-muted small">Únete como <span class="fw-semibold" id="rol-label">🎓 Inquilino/Estudiante</span></p>
+                <h2 class="fw-bold mb-0" data-i18n="register.pageTitle">Crear cuenta</h2>
+                <p class="text-muted small">
+                    <span data-i18n="register.joinAs">Únete como</span>
+                    <span class="fw-semibold" id="rol-label" data-i18n="register.studentRole">🎓 Inquilino/Estudiante</span>
+                </p>
             </div>
 
-            <!-- Mensajes de error -->
+            <!-- Mensajes de estado -->
             <div id="error-message" class="alert alert-danger d-none" role="alert"></div>
             <div id="success-message" class="alert alert-success d-none" role="alert"></div>
 
@@ -30,7 +33,7 @@
 
                 <!-- DNI -->
                 <div class="mb-2">
-                    <label for="dni" class="form-label fw-semibold">DNI / Pasaporte</label>
+                    <label for="dni" class="form-label fw-semibold" data-i18n="register.dniPassport">DNI / Pasaporte</label>
                     <div class="input-group">
                         <span class="input-group-text bg-light border-end-0">
                             <i class="bi bi-card-text text-muted"></i>
@@ -42,19 +45,19 @@
 
                 <!-- Nombre -->
                 <div class="mb-2">
-                    <label for="nombre" class="form-label fw-semibold">Nombre</label>
+                    <label for="nombre" class="form-label fw-semibold" data-i18n="register.firstName">Nombre</label>
                     <div class="input-group">
                         <span class="input-group-text bg-light border-end-0">
                             <i class="bi bi-person text-muted"></i>
                         </span>
                         <input type="text" class="form-control border-start-0 bg-light" id="nombre" name="nombre"
-                               placeholder="Tu nombre" maxlength="25" required>
+                               data-i18n-ph="register.firstName" placeholder="Tu nombre" maxlength="25" required>
                     </div>
                 </div>
 
                 <!-- Apellidos -->
                 <div class="mb-2">
-                    <label for="apellidos" class="form-label fw-semibold">Apellidos</label>
+                    <label for="apellidos" class="form-label fw-semibold" data-i18n="register.surnames">Apellidos</label>
                     <div class="input-group">
                         <span class="input-group-text bg-light border-end-0">
                             <i class="bi bi-person-lines-fill text-muted"></i>
@@ -66,7 +69,7 @@
 
                 <!-- Email -->
                 <div class="mb-2">
-                    <label for="email" class="form-label fw-semibold">Email</label>
+                    <label for="email" class="form-label fw-semibold" data-i18n="register.emailLabel">Email</label>
                     <div class="input-group">
                         <span class="input-group-text bg-light border-end-0">
                             <i class="bi bi-envelope text-muted"></i>
@@ -78,7 +81,7 @@
 
                 <!-- Teléfono -->
                 <div class="mb-2">
-                    <label for="telefono" class="form-label fw-semibold">Número de teléfono</label>
+                    <label for="telefono" class="form-label fw-semibold" data-i18n="register.phoneLabel">Número de teléfono</label>
                     <div class="input-group">
                         <span class="input-group-text bg-light border-end-0">
                             <i class="bi bi-telephone text-muted"></i>
@@ -90,7 +93,7 @@
 
                 <!-- Contraseña -->
                 <div class="mb-2">
-                    <label for="password" class="form-label fw-semibold">Contraseña</label>
+                    <label for="password" class="form-label fw-semibold" data-i18n="register.password">Contraseña</label>
                     <div class="input-group">
                         <span class="input-group-text bg-light border-end-0">
                             <i class="bi bi-lock text-muted"></i>
@@ -105,7 +108,7 @@
 
                 <!-- Repetir contraseña -->
                 <div class="mb-3">
-                    <label for="password2" class="form-label fw-semibold">Repetir contraseña</label>
+                    <label for="password2" class="form-label fw-semibold" data-i18n="register.repeatPassword">Repetir contraseña</label>
                     <div class="input-group">
                         <span class="input-group-text bg-light border-end-0">
                             <i class="bi bi-lock-fill text-muted"></i>
@@ -116,30 +119,28 @@
                             <i class="bi bi-eye text-muted" id="icon-pass2"></i>
                         </span>
                     </div>
-                    <div id="pass-error" class="text-danger small mt-1 d-none">Las contraseñas no coinciden.</div>
+                    <div id="pass-error" class="text-danger small mt-1 d-none" data-i18n="register.passwordMismatch">Las contraseñas no coinciden.</div>
                 </div>
 
                 <!-- Botón submit -->
                 <button type="submit" class="btn btn-primary w-100 fw-bold py-2 rounded-pill">
-                    Continuar <i class="bi bi-arrow-right ms-2"></i>
+                    <span data-i18n="register.continue">Continuar</span> <i class="bi bi-arrow-right ms-2"></i>
                 </button>
             </form>
 
             <!-- Divider -->
             <div class="divider my-4">
-                <span>¿Ya tienes cuenta?</span>
+                <span data-i18n="register.alreadyHaveAccount">¿Ya tienes cuenta?</span>
             </div>
 
-            <a href="index.html" class="btn btn-dark w-100 rounded-pill fw-semibold">
+            <a href="index.html" class="btn btn-dark w-100 rounded-pill fw-semibold" data-i18n="register.goToLogin">
                 Iniciar sesión
             </a>
 
         </div>
     </div>
 
-    <!-- Scripts -->
     <script src="js/api.js"></script>
-    <script src="js/utils.js"></script>
-    <script src="js/public/registro.js"></script>
+    <script type="module" src="js/public/registro.js"></script>
 </body>
 </html>

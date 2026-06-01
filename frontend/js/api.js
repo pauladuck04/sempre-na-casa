@@ -1,5 +1,5 @@
 // API Simulada - Sin backend real
-const api = {
+window.api = {
     login: async (email, password) => {
         // Simular respuesta exitosa
         return {
@@ -27,7 +27,7 @@ const api = {
 };
 
 // Autenticación simulada
-const auth = {
+window.auth = {
     login: async (email, password) => {
         localStorage.setItem('user_email', email);
         localStorage.setItem('user_role', email.includes('admin') ? 'anfitrion' : 'inquilino');

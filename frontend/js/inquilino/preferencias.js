@@ -1,40 +1,34 @@
-// js/inquilino/preferencias.js
+import { t } from '../i18n.js';
 
 export let listaPreferenciasMemoria = [];
 
 export function cargarPreferencias() {
     if (listaPreferenciasMemoria.length === 0) {
         listaPreferenciasMemoria = [
-            { id: 1, preferencia: 'Rango de edad anfitrión', valor: '50-70 años',   estado: 'activo'   },
-            { id: 2, preferencia: 'Ambiente de la vivienda', valor: 'Tranquilo',     estado: 'activo'   },
-            { id: 3, preferencia: 'Mascotas',                valor: 'Sin mascotas',  estado: 'inactivo' },
+            { id:1, preferencia:'Rango de edad anfitrión', valor:'50-70 años',  estado:'activo'   },
+            { id:2, preferencia:'Ambiente de la vivienda', valor:'Tranquilo',    estado:'activo'   },
+            { id:3, preferencia:'Mascotas',                valor:'Sin mascotas', estado:'inactivo' }
         ];
     }
     renderizarPreferencias(listaPreferenciasMemoria);
 }
 
 export function reactivarPreferencias(ids) {
-    listaPreferenciasMemoria.forEach(p => {
-        if (ids.includes(String(p.id))) p.estado = 'activo';
-    });
+    listaPreferenciasMemoria.forEach(p => { if (ids.includes(String(p.id))) p.estado = 'activo'; });
 }
 
 export function desactivarPreferencias(ids) {
-    listaPreferenciasMemoria.forEach(p => {
-        if (ids.includes(String(p.id))) p.estado = 'inactivo';
-    });
+    listaPreferenciasMemoria.forEach(p => { if (ids.includes(String(p.id))) p.estado = 'inactivo'; });
 }
 
 export function renderizarPreferencias(lista) {
     const tbody = document.getElementById('tabla-preferencias');
     if (!tbody) return;
-
     tbody.innerHTML = '';
 
     lista.forEach(p => {
-        const row = document.createElement('tr');
         const esActivo = p.estado === 'activo';
-
+        const row = document.createElement('tr');
         row.innerHTML = `
             <td>
                 <div class="d-flex align-items-center gap-2">
@@ -47,7 +41,7 @@ export function renderizarPreferencias(lista) {
             <td>${p.valor}</td>
             <td>
                 <span class="badge ${esActivo ? 'bg-success' : 'bg-secondary'} rounded-pill px-3">
-                    ${esActivo ? 'Activo' : 'Inactivo'}
+                    ${esActivo ? t('inquilino.preferences.active') : t('inquilino.preferences.inactive')}
                 </span>
             </td>
         `;

@@ -1,12 +1,12 @@
-// js/anfitrion/inquilinos.js
+import { t } from '../i18n.js';
 
 export let listaInquilinosMemoria = [];
 
 export function cargarInquilinos() {
     if (listaInquilinosMemoria.length === 0) {
         listaInquilinosMemoria = [
-            { id: 1, nombre: 'Luis Martínez', compatibilidad: 92, estado: 'activo',     email: 'luis.m@email.com',  telefono: '666 111 222', fechaIngreso: '01/02/2026' },
-            { id: 2, nombre: 'Marta Soto',    compatibilidad: 85, estado: 'entrevista', email: 'marta.s@email.com', telefono: '666 333 444', fechaIngreso: null         },
+            { id:1, nombre:'Luis Martínez', compatibilidad:92, estado:'activo',     email:'luis.m@email.com',  telefono:'666 111 222', fechaIngreso:'01/02/2026' },
+            { id:2, nombre:'Marta Soto',    compatibilidad:85, estado:'entrevista', email:'marta.s@email.com', telefono:'666 333 444', fechaIngreso: null        }
         ];
     }
     renderizarInquilinos(listaInquilinosMemoria);
@@ -15,13 +15,11 @@ export function cargarInquilinos() {
 export function renderizarInquilinos(lista) {
     const tbody = document.getElementById('tabla-inquilinos');
     if (!tbody) return;
-
     tbody.innerHTML = '';
 
     lista.forEach(i => {
-        const row = document.createElement('tr');
         const pctColor = i.compatibilidad >= 85 ? 'success' : i.compatibilidad >= 65 ? 'warning' : 'danger';
-
+        const row = document.createElement('tr');
         row.innerHTML = `
             <td>
                 <div class="d-flex align-items-center gap-2">
@@ -48,18 +46,24 @@ export function renderizarInquilinos(lista) {
     tbody.querySelectorAll('.inquilino-nombre').forEach(span => {
         span.addEventListener('click', function(e) {
             e.stopPropagation();
-            const id = Number(this.getAttribute('data-id'));
-            if (typeof verInquilino === 'function') verInquilino(id);
+            if (typeof verInquilino === 'function') verInquilino(Number(this.getAttribute('data-id')));
         });
     });
 }
 
 function badgeEstado(estado) {
-    const badges = {
-        activo:     `<span class="badge rounded-pill px-3" style="background-color:#D1E7DD;color:#0F5132;">✓ Activo</span>`,
-        entrevista: `<span class="badge rounded-pill px-3" style="background-color:#FFF3CD;color:#856404;">⏳ En Entrevista</span>`,
-        prueba:     `<span class="badge rounded-pill px-3" style="background-color:#CFE2FF;color:#084298;">⚠️ Prueba</span>`,
-        inactivo:   `<span class="badge rounded-pill px-3" style="background-color:#F8D7DA;color:#842029;">✕ Inactivo</span>`,
+    const labels = {
+        activo:     t('anfitrion.tenants.statusActive'),
+        entrevista: t('anfitrion.tenants.statusInterview'),
+        prueba:     t('anfitrion.tenants.statusTrial'),
+        inactivo:   t('anfitrion.tenants.statusInactive')
     };
-    return badges[estado] || `<span class="badge bg-secondary rounded-pill">${estado}</span>`;
+    const colors = {
+        activo:     ['#D1E7DD','#0F5132'],
+        entrevista: ['#FFF3CD','#856404'],
+        prueba:     ['#CFE2FF','#084298'],
+        inactivo:   ['#F8D7DA','#842029']
+    };
+    const [bg, fg] = colors[estado] || ['#e2e3e5','#383d41'];
+    return `<span class="badge rounded-pill px-3" style="background-color:${bg};color:${fg};">${labels[estado] || estado}</span>`;
 }

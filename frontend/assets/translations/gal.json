@@ -1,0 +1,309 @@
+{
+  "common": {
+    "cancel": "Cancelar",
+    "save": "Gardar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "create": "Crear",
+    "add": "Engadir",
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "pending": "Pendente",
+    "available": "Dispoñible",
+    "occupied": "Ocupada",
+    "name": "Nome",
+    "email": "Correo Electrónico",
+    "phone": "Teléfono",
+    "dni": "DNI",
+    "city": "Cidade",
+    "address": "Enderezo",
+    "status": "Estado",
+    "date": "Data",
+    "description": "Descrición",
+    "allStatuses": "Todos os estados",
+    "compatibility": "Compatibilidade",
+    "confirm": "Confirmar",
+    "deactivate": "Desactivar",
+    "activate": "Activar",
+    "viewProfile": "Ver Perfil",
+    "notifyLeave": "Notificar Baixa"
+  },
+  "nav": {
+    "overview": "Vista Xeral",
+    "logout": "Saír",
+    "filterList": "Filtrar listado"
+  },
+  "buttons": {
+    "create": "Crear",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "reactivate": "Reactivar",
+    "add": "Engadir",
+    "deactivate": "Desactivar",
+    "activate": "Activar",
+    "cancel": "Cancelar",
+    "saveChanges": "Gardar Cambios",
+    "close": "Pechar",
+    "updatePassword": "Actualizar Contrasinal",
+    "continue": "Continuar",
+    "createAccount": "Crear conta"
+  },
+  "modal": {
+    "newRecord": "Novo Rexistro",
+    "details": "Detalles",
+    "deleteAccountTitle": "Eliminar conta",
+    "deleteAccountBody": "Estás seguro de que queres eliminar a túa conta? Esta acción é permanente e irreversible.",
+    "deleteAccountData": "Eliminaranse todos os teus datos.",
+    "confirmDeleteBtn": "Si, eliminar conta"
+  },
+  "login": {
+    "welcomeTitle": "Benvido de novo",
+    "welcomeSubtitle": "Inicia sesión na túa conta de Sempre na Casa",
+    "emailLabel": "Email",
+    "password": "Contrasinal",
+    "submit": "Entrar",
+    "forgotPassword": "Esqueciche o teu contrasinal?",
+    "noAccount": "Aínda non tes conta?",
+    "isHost": "Son anfitrión",
+    "isTenant": "Son inquilino",
+    "error": "Erro ao iniciar sesión. Verifica as túas credenciais."
+  },
+  "register": {
+    "pageTitle": "Crear conta",
+    "joinAs": "Únete como",
+    "studentRole": "🎓 Inquilino/Estudante",
+    "roleAnfitrion": "🏠 Anfitrión",
+    "roleInquilino": "Inquilino",
+    "dniPassport": "DNI / Pasaporte",
+    "firstName": "Nome",
+    "surnames": "Apelidos",
+    "emailLabel": "Email",
+    "phoneLabel": "Número de teléfono",
+    "password": "Contrasinal",
+    "repeatPassword": "Repetir contrasinal",
+    "passwordMismatch": "Os contrasinais non coinciden.",
+    "continue": "Continuar",
+    "alreadyHaveAccount": "Xa tes conta?",
+    "goToLogin": "Iniciar sesión",
+    "submit": "Crear Conta"
+  },
+  "recoverPassword": {
+    "pageTitle": "Esqueciche o teu contrasinal?",
+    "subtitle": "Non te preocupes, introduce o teu email e enviarémosche as instrucións para restablecelo.",
+    "emailLabel": "Email",
+    "emailHelp": "Recibirás un email cun enlace para restablecer o teu contrasinal.",
+    "successText": "Email enviado correctamente. Comproba a túa bandexa de entrada.",
+    "backToLogin": "Volver ao inicio de sesión",
+    "emailRequired": "Por favor introduce o teu email.",
+    "sending": "Enviando...",
+    "submit": "Recuperar contrasinal",
+    "error": "Erro ao enviar o email. Tenta de novo."
+  },
+  "survey": {
+    "pageTitle": "Enquisa de convivencia",
+    "pageSubtitle": "Responde para atopar ao compañeiro ideal",
+    "allRequired": "Por favor responde todas as preguntas da enquisa.",
+    "processing": "Procesando...",
+    "finishBtn": "Crear conta",
+    "error": "Erro ao gardar a enquisa.",
+    "q1": { "title": "1. Nivel de ruído", "o1": "Silencio absoluto", "o2": "Ruído moderado (TV, música)", "o3": "Non me importa o ruído" },
+    "q2": { "title": "2. Hábito de tabaco", "o1": "Prohibido totalmente", "o2": "Só no exterior", "o3": "Permítese fumar" },
+    "q3": { "title": "3. Frecuencia de visitas", "o1": "Sen visitas", "o2": "Visitas ocasionais (avisando)", "o3": "Visitas libres" },
+    "q4": { "title": "4. Mascotas", "o1": "NON acepto mascotas", "o2": "Acepto só gatos/cans pequenos", "o3": "Adoro as mascotas" },
+    "q5": { "title": "5. Limpeza e orde", "o1": "Moi meticuloso (limpeza diaria)", "o2": "Estándar (limpeza semanal)", "o3": "Relaxado" },
+    "q6": { "title": "6. Horarios de vida", "o1": "Diúrno (madrugador)", "o2": "Mixto/flexible", "o3": "Nocturno (trasnochador)" },
+    "q7": { "title": "7. Uso da cociña", "o1": "Independencia total", "o2": "Compartir algunhas comidas", "o3": "Cociñar e comer sempre xuntos" },
+    "q8": { "title": "8. Nivel de interacción social", "o1": "Só saúdo e cortesía", "o2": "Conversas ocasionais", "o3": "Moita interacción" },
+    "q9": { "title": "9. Axuda en tecnoloxía", "o1": "Non necesito/podo axudar", "o2": "Axuda puntual", "o3": "Interese en aprender/ensinar tecnoloxía" },
+    "q10": { "title": "10. Uso de zonas comúns", "o1": "Uso compartido limitado", "o2": "Uso compartido baixo horario", "o3": "Uso libre total" }
+  },
+  "profile": {
+    "personalData": "Datos Persoais",
+    "fullNameLabel": "Nome completo",
+    "dniLabel": "DNI / NIE",
+    "emailLabel": "Correo electrónico",
+    "phoneLabel": "Teléfono",
+    "cityLabel": "Cidade",
+    "memberSince": "Membro desde",
+    "dangerZone": "Zona de perigo",
+    "dangerText": "Esta acción é permanente e irreversible.",
+    "deleteMyAccount": "Eliminar a miña conta",
+    "changePasswordTitle": "Cambiar Contrasinal",
+    "currentPasswordPh": "Introduce o teu contrasinal actual",
+    "newPasswordPh": "Mínimo 8 caracteres",
+    "confirmPasswordPh": "Repite o novo contrasinal",
+    "fullName": "Nome Completo",
+    "email": "Correo Electrónico",
+    "phone": "Teléfono",
+    "city": "Cidade",
+    "dni": "DNI",
+    "edit": "Editar",
+    "cancel": "Cancelar",
+    "save": "Gardar Cambios",
+    "savedSuccess": "Datos persoais actualizados correctamente.",
+    "nameRequired": "O nome non pode estar baleiro.",
+    "emailInvalid": "Introduce un correo válido.",
+    "changePassword": "Cambiar Contrasinal",
+    "currentPassword": "Contrasinal Actual",
+    "newPassword": "Novo Contrasinal",
+    "confirmPassword": "Confirmar Contrasinal",
+    "passwordRequired": "Introduce o teu contrasinal actual.",
+    "passwordTooShort": "O novo contrasinal debe ter polo menos 8 caracteres.",
+    "passwordMismatch": "Os contrasinais non coinciden.",
+    "passwordUpdated": "Contrasinal actualizado correctamente.",
+    "strengthVeryWeak": "Moi débil",
+    "strengthWeak": "Débil",
+    "strengthModerate": "Moderado",
+    "strengthStrong": "Forte",
+    "deleteAccount": "Eliminar Conta",
+    "deleteConfirm": "Estás seguro de que desexas eliminar a túa conta? Esta acción non se pode desfacer.",
+    "deleteSuccess": "Conta eliminada. Redirixindo..."
+  },
+  "admin": {
+    "badge": "Administrador",
+    "nav": {
+      "general": "Vista Xeral",
+      "users": "Xestión Usuarios",
+      "roles": "Roles e Permisos",
+      "homes": "Xestión Vivendas",
+      "criteria": "Criterios Match"
+    },
+    "table": {
+      "host": "Anfitrión",
+      "tenant": "Inquilino",
+      "startDate": "Inicio",
+      "status": "Estado",
+      "user": "Usuario",
+      "role": "Rol",
+      "registerDate": "Data Rexistro",
+      "dni": "DNI",
+      "phone": "Número teléfono",
+      "roleName": "Rol",
+      "address": "Enderezo",
+      "freeSlots": "Prazas libres",
+      "totalSlots": "Prazas totais",
+      "criteria": "Criterios",
+      "options": "Opcións",
+      "values": "Valores"
+    },
+    "cardTitles": {
+      "convivencias": "Seguimento de Convivencias",
+      "users": "Xestión de Usuarios",
+      "roles": "Xestión de roles e permisos",
+      "homes": "Xestión de Vivendas",
+      "criteria": "Xestión de Criterios de Compatibilidade"
+    },
+    "sections": {
+      "general": { "title": "Panel de Control", "description": "Xestión global de usuarios, vivendas e algoritmos de compatibilidade" },
+      "users": { "title": "Xestión de Usuarios", "description": "Administra e xestiona todos os usuarios do sistema" },
+      "roles": { "title": "Roles e Permisos", "description": "Configura roles e permisos de acceso" },
+      "homes": { "title": "Xestión de Vivendas", "description": "Xestiona o catálogo de vivendas dispoñibles" },
+      "criteria": { "title": "Criterios de Compatibilidade", "description": "Define criterios de compatibilidade para o matching" }
+    },
+    "convivencias": { "noActive": "Non hai convivencias activas" },
+    "users": {
+      "fullName": "Nome Completo", "email": "Correo Electrónico", "dni": "DNI", "phone": "Teléfono",
+      "role": "Rol de Usuario", "registerDate": "Data de Rexistro",
+      "roleAnfitrion": "Anfitrión", "roleInquilino": "Inquilino",
+      "statusActive": "Activo", "statusInactive": "Inactivo", "statusPending": "Pendente",
+      "filterActive": "Activos", "filterPending": "Pendentes", "filterInactive": "Inactivos",
+      "createTitle": "Crear Novo Usuario", "editTitle": "Editar Usuario", "detailTitle": "Detalles do Usuario",
+      "confirmDelete": "Estás seguro de que desexas eliminar"
+    },
+    "roles": {
+      "roleName": "Nome do Rol", "filterActive": "Activos", "filterInactive": "Inactivos",
+      "createTitle": "Crear Novo Rol", "editTitle": "Editar Rol", "detailTitle": "Detalles do Rol"
+    },
+    "homes": {
+      "address": "Enderezo", "city": "Cidade", "freeSlots": "Prazas Libres", "totalSlots": "Prazas Totais",
+      "host": "Anfitrión", "statusOccupied": "Ocupada", "statusInactive": "Inactiva", "statusAvailable": "Dispoñible",
+      "filterAvailable": "Dispoñibles", "filterOccupied": "Ocupadas", "filterInactive": "Inactivas",
+      "createTitle": "Nova Vivenda", "editTitle": "Editar Vivenda", "detailTitle": "Detalles da Vivenda"
+    },
+    "criteria": {
+      "criteriaName": "Nome do Criterio", "compatibilityCriteria": "Criterio de Compatibilidade",
+      "option": "Opción", "value": "Valor", "filterActive": "Activos", "filterInactive": "Inactivos",
+      "createTitle": "Novo Criterio de Match", "editTitle": "Editar Criterio", "detailTitle": "Detalles do Criterio"
+    }
+  },
+  "anfitrion": {
+    "badge": "Anfitrión",
+    "nav": { "general": "Vista Xeral", "home": "A Miña Vivenda", "criteria": "Criterios", "tenants": "Inquilinos" },
+    "summary": { "homeStatus": "Estado Vivenda", "occupiedSlots": "Prazas Ocupadas", "inInterview": "En Entrevista" },
+    "table": { "tenant": "Inquilino", "startDate": "Inicio", "status": "Estado", "criteria": "Criterio", "preferredValue": "Valor Preferido", "compatibility": "Compatibilidade" },
+    "cardTitles": {
+      "currentConvivencia": "A Miña Convivencia Actual", "homeDetails": "Detalles da Miña Vivenda",
+      "criteriaTitle": "Criterios da Vivenda", "tenantsTitle": "Inquilinos Asignados á Miña Vivenda",
+      "noHome": "Aínda non tes unha vivenda rexistrada", "noHomeSubtitle": "Da de alta a túa vivenda para empezar a recibir inquilinos.",
+      "registerHomeBtn": "Dar de Alta Vivenda"
+    },
+    "modalBaja": {
+      "title": "Notificar Baixa de Inquilino", "body": "Estás a punto de notificar a baixa de",
+      "leaveReason": "Motivo da baixa", "voluntaria": "Saída voluntaria do inquilino",
+      "incompatibilidad": "Incompatibilidade de convivencia", "fin_contrato": "Fin de contrato / período pactado",
+      "otro": "Outro motivo", "observations": "Observacións",
+      "observationsPh": "Engade detalles se o consideras necesario...", "confirmBaja": "Confirmar Baixa"
+    },
+    "sections": {
+      "general": { "title": "Panel de Anfitrión", "description": "Resumo da túa vivenda e inquilinos actuais" },
+      "home": { "title": "A Miña Vivenda", "description": "Xestiona os datos da túa vivenda" },
+      "criteria": { "title": "Criterios da Vivenda", "description": "Define as preferencias para os inquilinos" },
+      "tenants": { "title": "Inquilinos", "description": "Consulta perfís e xestiona as baixas" },
+      "profile": { "title": "O Meu Perfil", "description": "Xestiona a túa información persoal e configuración de conta" }
+    },
+    "home": {
+      "address": "Enderezo", "city": "Cidade", "description": "Descrición",
+      "totalSlots": "Prazas Totais", "freeSlots": "Prazas Libres", "status": "Estado",
+      "available": "Dispoñible", "complete": "Completa", "noHome": "Sen vivenda",
+      "registerHome": "Dar de Alta Vivenda", "editHome": "Editar Vivenda", "descriptionOptional": "Descrición (opcional)"
+    },
+    "criteria": {
+      "add": "Engadir Criterio", "criteriaLabel": "Criterio", "preferredValue": "Valor Preferido",
+      "active": "Activo", "inactive": "Inactivo", "filterActive": "Activos", "filterInactive": "Inactivos"
+    },
+    "tenants": {
+      "profileTitle": "Perfil do Inquilino", "email": "Correo Electrónico", "phone": "Teléfono",
+      "joinDate": "Data de Ingreso", "compatibility": "Compatibilidade", "pending": "Pendente",
+      "statusActive": "Activo", "statusInterview": "En Entrevista", "statusTrial": "Proba", "statusInactive": "Inactivo",
+      "filterActive": "Activos", "filterInterview": "En Entrevista", "filterTrial": "En Proba", "filterInactive": "Inactivos"
+    },
+    "convivencias": { "statusActive": "✓ Activa", "statusInterview": "⏳ En Entrevista", "statusTrial": "⚠️ Período de Proba", "noActive": "Non hai convivencias activas" }
+  },
+  "inquilino": {
+    "badge": "Inquilino",
+    "nav": { "general": "Vista Xeral", "convivencia": "A Miña Convivencia", "preferences": "As Miñas Preferencias" },
+    "summary": {
+      "availableCandidates": "Candidatos Dispoñibles", "maxCompatibility": "Mellor Compatibilidade",
+      "activePreferences": "Preferencias Activas", "requestStatus": "Estado Solicitude",
+      "compatibility": "Compatibilidade", "startDate": "Data de Inicio"
+    },
+    "cardTitles": {
+      "possibleHomes": "Posibles Vivendas para Ti", "currentConvivencia": "A Miña Convivencia Actual",
+      "noConvivencia": "Aínda non tes unha convivencia asignada",
+      "noConvivenciaSubtitle": "O equipo de Sempre na Casa está buscando a mellor compatibilidade para ti.",
+      "convivenciaDetails": "Detalles da Miña Convivencia", "preferencesTitle": "As Miñas Preferencias de Convivencia"
+    },
+    "table": { "host": "Anfitrión", "address": "Enderezo", "startDate": "Inicio", "status": "Estado", "preference": "Preferencia", "myValue": "O Meu Valor" },
+    "sections": {
+      "general": { "title": "Panel de Inquilino", "descriptionWithHome": "Resumo da túa convivencia e estado da solicitude", "descriptionWithoutHome": "Explora as vivendas con mellor compatibilidade para ti" },
+      "convivencia": { "title": "A Miña Convivencia", "description": "Consulta os detalles da túa vivenda e anfitrión" },
+      "preferences": { "title": "As Miñas Preferencias", "description": "Define as túas preferencias para o proceso de matching" },
+      "profile": { "title": "O Meu Perfil", "description": "Xestiona a túa información persoal e configuración de conta" }
+    },
+    "convivencia": {
+      "host": "Anfitrión", "address": "Enderezo", "city": "Cidade",
+      "hostEmail": "Correo anfitrión", "hostPhone": "Teléfono anfitrión",
+      "status": "Estado", "compatibility": "Compatibilidade", "totalSlots": "Prazas na Vivenda",
+      "startDate": "Data de Inicio", "roommates": "Compañeiros de Piso",
+      "noRoommates": "Non hai outros inquilinos nesta vivenda.", "since": "Desde",
+      "statusActive": "✓ Activa", "statusInterview": "⏳ En Entrevista",
+      "statusTrial": "⚠️ Período de Proba", "statusFinished": "✕ Rematada"
+    },
+    "preferences": {
+      "add": "Engadir Preferencia", "preferenceLabel": "Preferencia", "myValue": "O Meu Valor",
+      "active": "Activo", "inactive": "Inactivo", "filterActive": "Activos", "filterInactive": "Inactivos"
+    },
+    "candidates": { "compatibility": "Compatibilidade", "freeSlotsPlural": "prazas libres", "freeSlotsSingular": "praza libre" },
+    "summary_status": { "statusActive": "Activa", "statusInterview": "En Entrevista", "statusTrial": "Período de Proba", "statusFinished": "Rematada", "pending": "Pendente" }
+  }
+}
