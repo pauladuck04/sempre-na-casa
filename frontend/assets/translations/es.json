@@ -54,7 +54,13 @@
     "deleteAccountTitle": "Eliminar cuenta",
     "deleteAccountBody": "¿Estás seguro de que quieres eliminar tu cuenta? Esta acción es permanente e irreversible.",
     "deleteAccountData": "Se eliminarán todos tus datos.",
-    "confirmDeleteBtn": "Sí, eliminar cuenta"
+    "confirmDeleteBtn": "Sí, eliminar cuenta",
+    "confirmDeleteTitle": "Confirmar eliminación",
+    "confirmDeleteBody": "¿Estás seguro de que deseas eliminar los elementos seleccionados?",
+    "confirmDeleteActionBtn": "Sí, eliminar",
+    "confirmReactivateTitle": "Confirmar reactivación",
+    "confirmReactivateBody": "¿Estás seguro de que deseas reactivar los elementos seleccionados?",
+    "confirmReactivateBtn": "Sí, reactivar"
   },
   "login": {
     "welcomeTitle": "Bienvenido de nuevo",

@@ -54,7 +54,13 @@
     "deleteAccountTitle": "Delete account",
     "deleteAccountBody": "Are you sure you want to delete your account? This action is permanent and irreversible.",
     "deleteAccountData": "All your data will be deleted.",
-    "confirmDeleteBtn": "Yes, delete account"
+    "confirmDeleteBtn": "Yes, delete account",
+    "confirmDeleteTitle": "Confirm deletion",
+    "confirmDeleteBody": "Are you sure you want to delete the selected items?",
+    "confirmDeleteActionBtn": "Yes, delete",
+    "confirmReactivateTitle": "Confirm reactivation",
+    "confirmReactivateBody": "Are you sure you want to reactivate the selected items?",
+    "confirmReactivateBtn": "Yes, reactivate"
   },
   "login": {
     "welcomeTitle": "Welcome back",

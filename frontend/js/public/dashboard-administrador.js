@@ -141,24 +141,47 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     });
 
+    let _pendingEliminar = null;
+    let _pendingReactivar = null;
+
     document.getElementById('btnEliminar')?.addEventListener('click', () => {
         const seccion = document.querySelector('.section-link.active-custom').getAttribute('data-section');
         const seleccionados = obtenerIdsSeleccionados(seccion);
         if (seleccionados.length === 0) return;
-        if (confirm(`${t('admin.users.confirmDelete')} ${seleccionados.length} elemento(s)?`)) {
-            desactivarSeleccion(seccion, seleccionados);
+        _pendingEliminar = { seccion, seleccionados };
+        const msg = document.getElementById('modalConfirmarEliminarMsg');
+        if (msg) msg.textContent = `${t('modal.confirmDeleteBody')} (${seleccionados.length})`;
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('modalConfirmarEliminar')).show();
+    });
+
+    document.getElementById('btnConfirmarEliminar')?.addEventListener('click', () => {
+        if (_pendingEliminar) {
+            desactivarSeleccion(_pendingEliminar.seccion, _pendingEliminar.seleccionados);
             aplicarFiltros();
             actualizarBotones();
+            _pendingEliminar = null;
         }
+        bootstrap.Modal.getInstance(document.getElementById('modalConfirmarEliminar')).hide();
     });
 
     document.getElementById('btnReactivar')?.addEventListener('click', () => {
         const seccion = document.querySelector('.section-link.active-custom').getAttribute('data-section');
         const seleccionados = obtenerIdsSeleccionadosInactivos(seccion);
         if (seleccionados.length === 0) return;
-        reactivarSeleccion(seccion, seleccionados);
-        aplicarFiltros();
-        actualizarBotones();
+        _pendingReactivar = { seccion, seleccionados };
+        const msg = document.getElementById('modalConfirmarReactivarMsg');
+        if (msg) msg.textContent = `${t('modal.confirmReactivateBody')} (${seleccionados.length})`;
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('modalConfirmarReactivar')).show();
+    });
+
+    document.getElementById('btnConfirmarReactivar')?.addEventListener('click', () => {
+        if (_pendingReactivar) {
+            reactivarSeleccion(_pendingReactivar.seccion, _pendingReactivar.seleccionados);
+            aplicarFiltros();
+            actualizarBotones();
+            _pendingReactivar = null;
+        }
+        bootstrap.Modal.getInstance(document.getElementById('modalConfirmarReactivar')).hide();
     });
 
     document.getElementById('filtroTexto')?.addEventListener('input', aplicarFiltros);
