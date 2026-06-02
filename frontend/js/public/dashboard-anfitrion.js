@@ -477,7 +477,7 @@ function actualizarControlesSeccion(seccion) {
         if (btnReactivar) btnReactivar.innerHTML = `<i class="bi bi-check-circle me-2"></i> ${t('buttons.activate')}`;
     } else if (seccion === 'inquilinos') {
         btnCrear?.classList.add('d-none');
-        if (btnEditar)   btnEditar.innerHTML   = `<i class="bi bi-eye me-2"></i> ${t('common.viewProfile')}`;
+        btnEditar?.classList.add('d-none');
         if (btnEliminar) btnEliminar.innerHTML = `<i class="bi bi-box-arrow-right me-2"></i> ${t('common.notifyLeave')}`;
         btnReactivar?.classList.add('d-none');
     }

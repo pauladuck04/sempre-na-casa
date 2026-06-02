@@ -59,8 +59,24 @@ const CONFIG_MODALES = {
             </div>
             <div class="mb-3"><label class="form-label fw-bold">${t('admin.criteria.option')}</label><input name="opcion" class="form-control" required></div>
             <div class="mb-3"><label class="form-label fw-bold">${t('admin.criteria.value')}</label><input name="valor" class="form-control" required></div>`
+    },
+    convivencias: {
+        getTitulo: () => 'Editar Estado de Convivencia',
+        getHtml: () => `
+            <div class="mb-3">
+                <label class="form-label fw-bold">Estado</label>
+                <select name="estado" class="form-select">
+                    <option value="entrevista">⏳ En Entrevista</option>
+                    <option value="prueba">⚠️ Periodo de Prueba</option>
+                    <option value="activa">✓ Activa</option>
+                    <option value="finalizada">✕ Finalizada</option>
+                </select>
+            </div>
+            <input type="hidden" name="tipo" value="convivencia">`
     }
 };
+
+let listaConvivenciasMemoria = [];
 
 const sectionTitles = {
     general:  () => t('admin.sections.general.title'),
@@ -233,6 +249,13 @@ document.addEventListener('DOMContentLoaded', async function() {
     document.getElementById('formGenerico')?.addEventListener('submit', function(e) {
         e.preventDefault();
         const seccionActual = document.querySelector('.section-link.active-custom').getAttribute('data-section');
+        const data = Object.fromEntries(new FormData(this));
+
+        if (data.tipo === 'convivencia') {
+            const c = listaConvivenciasMemoria.find(x => x.id === parseInt(data.id_edit));
+            if (c) c.estado = data.estado;
+            renderizarConvivencias(listaConvivenciasMemoria);
+        }
 
         if (seccionActual === 'usuarios') usuarios.cargarUsuarios();
         if (seccionActual === 'roles')    roles.cargarRoles();
@@ -323,12 +346,14 @@ document.addEventListener('DOMContentLoaded', async function() {
 });
 
 function cargarSeguimientoConvivencias() {
-    const convivencias = [
-        { id:1, anfitrion:'Mercedes Rosas',  inquilino:'Luis Martínez', inicio:'01/02/2026', estado:'activa'     },
-        { id:2, anfitrion:'Ramón Vázquez',   inquilino:'Marta Soto',    inicio:null,          estado:'entrevista' },
-        { id:3, anfitrion:'Carmen Cid',      inquilino:'Javier López',  inicio:'15/03/2026', estado:'prueba'     }
-    ];
-    renderizarConvivencias(convivencias);
+    if (listaConvivenciasMemoria.length === 0) {
+        listaConvivenciasMemoria = [
+            { id:1, anfitrion:'Mercedes Rosas',  inquilino:'Luis Martínez', inicio:'01/02/2026', estado:'activa'     },
+            { id:2, anfitrion:'Ramón Vázquez',   inquilino:'Marta Soto',    inicio:null,          estado:'entrevista' },
+            { id:3, anfitrion:'Carmen Cid',      inquilino:'Javier López',  inicio:'15/03/2026', estado:'prueba'     }
+        ];
+    }
+    renderizarConvivencias(listaConvivenciasMemoria);
 }
 
 function renderizarConvivencias(convivencias) {
@@ -337,15 +362,16 @@ function renderizarConvivencias(convivencias) {
     tbody.innerHTML = '';
 
     if (convivencias.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" class="text-center">${t('admin.convivencias.noActive')}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center">${t('admin.convivencias.noActive')}</td></tr>`;
         return;
     }
 
     convivencias.forEach(c => {
         const badges = {
-            activa:     `<span class="badge rounded-pill px-3 py-2" style="background-color:#D1E7DD;color:#0F5132;">✓ ${t('anfitrion.convivencias.statusActive').replace('✓ ','')}</span>`,
-            entrevista: `<span class="badge rounded-pill px-3 py-2" style="background-color:#FFF3CD;color:#856404;">${t('anfitrion.convivencias.statusInterview')}</span>`,
-            prueba:     `<span class="badge rounded-pill px-3 py-2" style="background-color:#CFE2FF;color:#084298;">${t('anfitrion.convivencias.statusTrial')}</span>`
+            activa:      `<span class="badge rounded-pill px-3 py-2" style="background-color:#D1E7DD;color:#0F5132;">✓ ${t('anfitrion.convivencias.statusActive').replace('✓ ','')}</span>`,
+            entrevista:  `<span class="badge rounded-pill px-3 py-2" style="background-color:#FFF3CD;color:#856404;">${t('anfitrion.convivencias.statusInterview')}</span>`,
+            prueba:      `<span class="badge rounded-pill px-3 py-2" style="background-color:#CFE2FF;color:#084298;">${t('anfitrion.convivencias.statusTrial')}</span>`,
+            finalizada:  `<span class="badge rounded-pill px-3 py-2" style="background-color:#e2e3e5;color:#383d41;">✕ Finalizada</span>`
         };
         const row = document.createElement('tr');
         row.innerHTML = `
@@ -353,10 +379,28 @@ function renderizarConvivencias(convivencias) {
             <td>${c.inquilino}</td>
             <td>${c.inicio || '-'}</td>
             <td>${badges[c.estado] || c.estado}</td>
+            <td>
+                <button class="btn btn-sm btn-outline-secondary rounded-pill px-3"
+                        onclick="editarConvivencia(${c.id})">
+                    <i class="bi bi-pencil me-1"></i> Editar
+                </button>
+            </td>
         `;
         tbody.appendChild(row);
     });
 }
+
+window.editarConvivencia = function(id) {
+    const c = listaConvivenciasMemoria.find(x => x.id === id);
+    if (!c) return;
+
+    abrirModalGenerico('convivencias');
+
+    const form = document.getElementById('formGenerico');
+    form.querySelector('[name="estado"]').value = c.estado;
+    form.insertAdjacentHTML('beforeend', `<input type="hidden" name="id_edit" value="${id}">`);
+    document.getElementById('modalTitle').textContent = `Editar Convivencia: ${c.anfitrion} — ${c.inquilino}`;
+};
 
 function abrirModalGenerico(seccion) {
     const config = CONFIG_MODALES[seccion];
