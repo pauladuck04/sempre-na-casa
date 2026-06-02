@@ -420,19 +420,21 @@ window.verInquilino = function(id) {
 
     document.getElementById('modalDetalleTitle').textContent = `${t('anfitrion.tenants.profileTitle')}: ${i.nombre}`;
     document.getElementById('modalDetalleContent').innerHTML = `
-        <div class="text-center mb-4">
+        <div class="d-flex align-items-center gap-3 mb-4">
             <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(i.nombre)}&background=7A99DD&color=fff"
-                 width="80" class="rounded-circle shadow-sm mb-3">
-            <h5 class="fw-bold mb-1">${i.nombre}</h5>
-            <p class="mb-0">${estadoBadge}</p>
+                 width="72" class="rounded-circle shadow-sm flex-shrink-0">
+            <div>
+                <h5 class="fw-bold mb-1">${i.nombre}</h5>
+                <p class="mb-0">${estadoBadge}</p>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6"><h6 class="text-muted small mb-1">${t('anfitrion.tenants.email')}</h6><p class="fw-semibold mb-0">${i.email}</p></div>
+            <div class="col-md-6"><h6 class="text-muted small mb-1">${t('anfitrion.tenants.phone')}</h6><p class="fw-semibold mb-0">${i.telefono}</p></div>
         </div>
         <div class="row">
-            <div class="col-md-6"><h6 class="text-muted small mb-2">${t('anfitrion.tenants.email')}</h6><p class="fw-semibold">${i.email}</p></div>
-            <div class="col-md-6"><h6 class="text-muted small mb-2">${t('anfitrion.tenants.phone')}</h6><p class="fw-semibold">${i.telefono}</p></div>
-        </div>
-        <div class="row">
-            <div class="col-md-6"><h6 class="text-muted small mb-2">${t('anfitrion.tenants.joinDate')}</h6><p class="fw-semibold">${i.fechaIngreso || t('anfitrion.tenants.pending')}</p></div>
-            <div class="col-md-6"><h6 class="text-muted small mb-2">${t('anfitrion.tenants.compatibility')}</h6>
+            <div class="col-md-6"><h6 class="text-muted small mb-1">${t('anfitrion.tenants.joinDate')}</h6><p class="fw-semibold mb-0">${i.fechaIngreso || t('anfitrion.tenants.pending')}</p></div>
+            <div class="col-md-6"><h6 class="text-muted small mb-1">${t('anfitrion.tenants.compatibility')}</h6>
                 <div class="d-flex align-items-center gap-2 mt-1">
                     <div class="progress flex-grow-1" style="height:8px;"><div class="progress-bar bg-${pctColor}" style="width:${i.compatibilidad}%;"></div></div>
                     <span class="fw-bold text-${pctColor}">${i.compatibilidad}%</span>

@@ -509,13 +509,13 @@ window.verUsuario = function(id) {
 
     document.getElementById('modalDetalleTitle').textContent = `${t('admin.users.detailTitle')}: ${u.nombre}`;
     document.getElementById('modalDetalleContent').innerHTML = `
-        <div class="row"><div class="col-md-6"><h6 class="text-muted small mb-2">${t('admin.users.fullName')}</h6><p class="fw-semibold">${u.nombre}</p></div>
-        <div class="col-md-6"><h6 class="text-muted small mb-2">${t('admin.users.email')}</h6><p class="fw-semibold">${u.email}</p></div></div>
-        <div class="row"><div class="col-md-6"><h6 class="text-muted small mb-2">${t('admin.users.dni')}</h6><p class="fw-semibold">${u.dni}</p></div>
-        <div class="col-md-6"><h6 class="text-muted small mb-2">${t('admin.users.phone')}</h6><p class="fw-semibold">${u.telefono}</p></div></div>
-        <div class="row"><div class="col-md-6"><h6 class="text-muted small mb-2">${t('admin.users.role')}</h6><p>${rolBadge}</p></div>
-        <div class="col-md-6"><h6 class="text-muted small mb-2">${t('common.status')}</h6><p>${estadoBadge}</p></div></div>
-        <div class="row"><div class="col-md-12"><h6 class="text-muted small mb-2">${t('admin.users.registerDate')}</h6><p class="fw-semibold">${u.fechaRegistro}</p></div></div>
+        <div class="row mb-3"><div class="col-md-6"><h6 class="text-muted small mb-1">${t('admin.users.fullName')}</h6><p class="fw-semibold mb-0">${u.nombre}</p></div>
+        <div class="col-md-6"><h6 class="text-muted small mb-1">${t('admin.users.email')}</h6><p class="fw-semibold mb-0">${u.email}</p></div></div>
+        <div class="row mb-3"><div class="col-md-6"><h6 class="text-muted small mb-1">${t('admin.users.dni')}</h6><p class="fw-semibold mb-0">${u.dni}</p></div>
+        <div class="col-md-6"><h6 class="text-muted small mb-1">${t('admin.users.phone')}</h6><p class="fw-semibold mb-0">${u.telefono}</p></div></div>
+        <div class="row mb-3"><div class="col-md-6"><h6 class="text-muted small mb-1">${t('admin.users.role')}</h6><p class="mb-0">${rolBadge}</p></div>
+        <div class="col-md-6"><h6 class="text-muted small mb-1">${t('common.status')}</h6><p class="mb-0">${estadoBadge}</p></div></div>
+        <div class="row"><div class="col-md-12"><h6 class="text-muted small mb-1">${t('admin.users.registerDate')}</h6><p class="fw-semibold mb-0">${u.fechaRegistro}</p></div></div>
     `;
     bootstrap.Modal.getOrCreateInstance(document.getElementById('modalDetalle')).show();
 };
@@ -532,12 +532,12 @@ window.verVivienda = function(id) {
 
     document.getElementById('modalDetalleTitle').textContent = `${t('admin.homes.detailTitle')}: ${v.direccion}`;
     document.getElementById('modalDetalleContent').innerHTML = `
-        <div class="row"><div class="col-md-12"><h6 class="text-muted small mb-2">${t('admin.homes.address')}</h6><p class="fw-semibold">${v.direccion}</p></div></div>
-        <div class="row"><div class="col-md-6"><h6 class="text-muted small mb-2">${t('admin.homes.city')}</h6><p class="fw-semibold">${v.ciudad}</p></div>
-        <div class="col-md-6"><h6 class="text-muted small mb-2">${t('admin.homes.host')}</h6><p class="fw-semibold">${v.anfitrion}</p></div></div>
-        <div class="row"><div class="col-md-6"><h6 class="text-muted small mb-2">${t('admin.homes.totalSlots')}</h6><p class="fw-semibold">${v.plazas_totales}</p></div>
-        <div class="col-md-6"><h6 class="text-muted small mb-2">${t('admin.homes.freeSlots')}</h6><p class="fw-semibold text-success">${v.plazas_libres}</p></div></div>
-        <div class="row"><div class="col-md-12"><h6 class="text-muted small mb-2">${t('common.status')}</h6><p>${estadoBadge}</p></div></div>
+        <div class="row mb-3"><div class="col-md-12"><h6 class="text-muted small mb-1">${t('admin.homes.address')}</h6><p class="fw-semibold mb-0">${v.direccion}</p></div></div>
+        <div class="row mb-3"><div class="col-md-6"><h6 class="text-muted small mb-1">${t('admin.homes.city')}</h6><p class="fw-semibold mb-0">${v.ciudad}</p></div>
+        <div class="col-md-6"><h6 class="text-muted small mb-1">${t('admin.homes.host')}</h6><p class="fw-semibold mb-0">${v.anfitrion}</p></div></div>
+        <div class="row mb-3"><div class="col-md-6"><h6 class="text-muted small mb-1">${t('admin.homes.totalSlots')}</h6><p class="fw-semibold mb-0">${v.plazas_totales}</p></div>
+        <div class="col-md-6"><h6 class="text-muted small mb-1">${t('admin.homes.freeSlots')}</h6><p class="fw-semibold text-success mb-0">${v.plazas_libres}</p></div></div>
+        <div class="row"><div class="col-md-12"><h6 class="text-muted small mb-1">${t('common.status')}</h6><p class="mb-0">${estadoBadge}</p></div></div>
     `;
     bootstrap.Modal.getOrCreateInstance(document.getElementById('modalDetalle')).show();
 };
@@ -552,8 +552,8 @@ window.verRol = function(id) {
 
     document.getElementById('modalDetalleTitle').textContent = `${t('admin.roles.detailTitle')}: ${r.nombre}`;
     document.getElementById('modalDetalleContent').innerHTML = `
-        <div class="row"><div class="col-md-12"><h6 class="text-muted small mb-2">${t('admin.roles.roleName')}</h6><p class="fw-semibold">${r.nombre}</p></div></div>
-        <div class="row"><div class="col-md-12"><h6 class="text-muted small mb-2">${t('common.status')}</h6><p>${estadoBadge}</p></div></div>
+        <div class="row mb-3"><div class="col-md-12"><h6 class="text-muted small mb-1">${t('admin.roles.roleName')}</h6><p class="fw-semibold mb-0">${r.nombre}</p></div></div>
+        <div class="row"><div class="col-md-12"><h6 class="text-muted small mb-1">${t('common.status')}</h6><p class="mb-0">${estadoBadge}</p></div></div>
     `;
     bootstrap.Modal.getOrCreateInstance(document.getElementById('modalDetalle')).show();
 };
@@ -570,10 +570,10 @@ window.verCriterio = function(id) {
 
     document.getElementById('modalDetalleTitle').textContent = `${t('admin.criteria.detailTitle')}: ${c.nombre}`;
     document.getElementById('modalDetalleContent').innerHTML = `
-        <div class="row"><div class="col-md-12"><h6 class="text-muted small mb-2">${t('admin.criteria.criteriaName')}</h6><p class="fw-semibold">${c.nombre}</p></div></div>
-        <div class="row"><div class="col-md-12"><h6 class="text-muted small mb-2">${t('common.status')}</h6><p>${estadoBadge}</p></div></div>
+        <div class="row mb-3"><div class="col-md-12"><h6 class="text-muted small mb-1">${t('admin.criteria.criteriaName')}</h6><p class="fw-semibold mb-0">${c.nombre}</p></div></div>
+        <div class="row ${opcionesDelCriterio.length ? 'mb-3' : ''}"><div class="col-md-12"><h6 class="text-muted small mb-1">${t('common.status')}</h6><p class="mb-0">${estadoBadge}</p></div></div>
         ${opcionesDelCriterio.length ? `
-        <div class="row mt-2"><div class="col-md-12"><h6 class="text-muted small mb-2">${t('admin.criteria.tabOptions')}</h6>
+        <div class="row"><div class="col-md-12"><h6 class="text-muted small mb-1">${t('admin.criteria.tabOptions')}</h6>
             <ul class="list-unstyled mb-0">
                 ${opcionesDelCriterio.map(o => `<li><span class="fw-semibold">${o.opcion}</span> <span class="text-muted">(${t('admin.criteria.value')}: ${o.valor})</span></li>`).join('')}
             </ul>

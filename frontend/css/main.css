@@ -79,3 +79,15 @@ body {
 main {
     flex: 1;
 }
+
+.table-responsive {
+    max-height: 360px;
+    overflow-y: auto;
+}
+
+.table-responsive thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: var(--bs-table-bg, #f8f9fa);
+}
