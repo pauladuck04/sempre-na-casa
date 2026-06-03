@@ -161,8 +161,6 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     document.getElementById('btnConfirmarBaja')?.addEventListener('click', () => {
         if (!inquilinoBajaId) return;
-        const motivo = document.getElementById('baja-motivo').value;
-        const obs    = document.getElementById('baja-observaciones').value;
         const i = inquilinos.listaInquilinosMemoria.find(x => x.id === inquilinoBajaId);
         if (i) { i.estado = 'inactivo'; }
         bootstrap.Modal.getInstance(document.getElementById('modalBaja')).hide();
@@ -402,7 +400,6 @@ function abrirModalBaja(id) {
     if (!i) return;
     inquilinoBajaId = id;
     document.getElementById('baja-nombre').textContent  = i.nombre;
-    document.getElementById('baja-observaciones').value = '';
     bootstrap.Modal.getOrCreateInstance(document.getElementById('modalBaja')).show();
 }
 
