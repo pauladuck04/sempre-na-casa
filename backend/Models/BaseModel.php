@@ -54,7 +54,7 @@ abstract class BaseModel
         return new DateTimeImmutable((string) $data[$key]);
     }
 
-    protected static function assertIn(string $value, array $allowed, string $field): string
+    public static function assertIn(string $value, array $allowed, string $field): string
     {
         if (!in_array($value, $allowed, true)) {
             throw new InvalidArgumentException("Valor no valido para {$field}: {$value}.");
