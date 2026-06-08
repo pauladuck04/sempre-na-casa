@@ -2,44 +2,63 @@
 
 include_once './Base/appServiceBase.php';
 
-class usuario_SERVICE extends appServiceBase{
+class usuario_SERVICE extends appServiceBase {
 
-	public $modelo;
+    public $modelo;
 
-	//METODOS
+    function __construct() {
+        parent::__construct();
+    }
 
-	function __construct(){
+    function inicializarRest() {
 
-		parent::__construct();
+        $this->listaAtributos = array(
+            'dni',
+            'mail',
+            'nombre_usuario',
+            'apellidos',
+            'password',
+            'telefono',
+            'fecha_alta_usuario',
+            'activo_usuario',
+            'id_rol'
+        );
 
-	}
+        $this->listaAtributosSelect = array(
+            'dni',
+            'mail',
+            'nombre_usuario',
+            'apellidos',
+            'password',
+            'telefono',
+            'fecha_alta_usuario',
+            'activo_usuario',
+            'id_rol'
+        );
 
-	function inicializarRest(){
+        $this->notnull = array(
+            'ADD'  => array('dni', 'mail', 'nombre_usuario', 'apellidos', 'password', 'telefono', 'id_rol'),
+            'EDIT' => array('mail', 'nombre_usuario', 'apellidos', 'id_rol'),
+        );
 
-		$this->listaAtributos = array('dni', 'mail', 'nombre_usuario', 'apellidos', 'password', 'telefono', 'fecha_alta_usuario', 'activo_usuario', 'id_rol');
+        $this->modelo = $this->crearModelOne('usuario');
+    }
 
-		$this->listaAtributosSelect = array('dni', 'mail', 'nombre_usuario', 'apellidos', 'password', 'telefono', 'fecha_alta_usuario', 'activo_usuario', 'id_rol');
+    function getAll() {
+        $this->modelo->valores['dni']                = '';
+        $this->modelo->valores['mail']               = '';
+        $this->modelo->valores['nombre_usuario']     = '';
+        $this->modelo->valores['apellidos']          = '';
+        $this->modelo->valores['password']           = '';
+        $this->modelo->valores['telefono']           = '';
+        $this->modelo->valores['fecha_alta_usuario'] = '';
+        $this->modelo->valores['activo_usuario']     = '';
+        $this->modelo->valores['id_rol']             = '';
 
-		$this->notnull = array(
-						'ADD'=>array('dni', 'mail', 'nombre_usuario', 'apellidos', 'password', 'telefono', 'fecha_alta_usuario', 'activo_usuario', 'id_rol'),
-						'EDIT'=>array('dni', 'mail', 'nombre_usuario', 'apellidos', 'password', 'telefono', 'fecha_alta_usuario', 'activo_usuario', 'id_rol'),
-						'DELETE'=>array('mail'),
-						);
-
-		$this->modelo = $this->crearModelOne('usuario');
-
-
-
-	}
-
-
-	function modificacion_atributos(){
-		if ($_POST['action'] == 'ADD'){
-			$_POST['fecha_alta_usuario'] = date(time());
-		}
-	}
-	
-
+        $result = $this->modelo->SEARCH();
+        return $result;
+    }
 
 }
+
 ?>
