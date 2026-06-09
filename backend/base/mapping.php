@@ -231,7 +231,7 @@ class mapping extends MappingBase{
 
 			if (!empty($foraneas)){
 				foreach ($foraneas as $key => $value) {
-					$this->feedback['resource'] = $this->incluirforaneas($this->feedback['resource'], $key, $value);
+					$this->feedback['resource'] = $this->incluirforaneas($this->feedback['resource'], $value, $key);
 				}
 			}
 		}
@@ -408,7 +408,7 @@ class mapping extends MappingBase{
 
 				$aux = 	$this->feedback['resource'];
 				if (is_array($aux)){
-					$this->feedback['resource'] = $this->incluirforaneas($aux, $key, $value);
+					$this->feedback['resource'] = $this->incluirforaneas($aux, $value, $key);
 				}
 
 			}

@@ -55,6 +55,8 @@ class usuario_SERVICE extends appServiceBase {
         $this->modelo->valores['activo_usuario']     = '';
         $this->modelo->valores['id_rol']             = '';
 
+        $result = $this->modelo->foraneas  = [];
+
         $result = $this->modelo->SEARCH();
         return $result;
     }

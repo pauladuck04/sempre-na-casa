@@ -5,14 +5,14 @@ include_once './Base/ModelBase.php';
 class usuario_MODEL extends ModelBase{
 
 
-	protected $tabla = 'usuario';
-    protected $autoincrement = false;
-    protected $clave = ['mail'];
-    protected $foraneas = [
+	public $tabla = 'usuario';
+    public $autoincrement = false;
+    public $clave = ['mail'];
+    public $foraneas = [
         'id_rol' => 'rol'
     ];
 
-	protected $listaAtributos = [
+	public $listaAtributos = [
         'dni',
         'mail',
         'nombre_usuario',
@@ -24,7 +24,7 @@ class usuario_MODEL extends ModelBase{
         'id_rol'
     ];
 
-	protected $valores = [
+	public $valores = [
         'dni'                => null,
         'mail'               => null,
         'nombre_usuario'     => null,

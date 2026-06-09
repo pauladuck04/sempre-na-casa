@@ -1,9 +1,6 @@
 <?php
-
-	include_once './bd/DBCredentials.php';
-
-	include_once './Comun/FuncionesGenerales.php';
-
-	include_once './Comun/literalesbase.php';
-	
-?>
+define('host', 'db');
+define('user', '4740201_semprenacasa');
+define('pass', 'SempreNaCasa_2026');
+define('BD',   '4740201_semprenacasa');
+define('BD_test', '4740201_semprenacasa');
