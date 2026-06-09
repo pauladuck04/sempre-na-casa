@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: fdb1032.awardspace.net
--- Tiempo de generación: 09-06-2026 a las 07:20:36
+-- Tiempo de generación: 09-06-2026 a las 11:24:28
 -- Versión del servidor: 8.0.32
 -- Versión de PHP: 8.1.34
 
@@ -20,8 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `4740201_semprenacasa`
 --
-CREATE DATABASE IF NOT EXISTS `4740201_semprenacasa` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
-USE `4740201_semprenacasa`;
 
 -- --------------------------------------------------------
 
@@ -210,6 +208,7 @@ ALTER TABLE `usuario_vivienda`
 -- Indices de la tabla `vivienda`
 --
 ALTER TABLE `vivienda`
+  ADD PRIMARY KEY (`id_vivienda`),
   ADD KEY `id_usuario` (`id_anfitrion`);
 
 --
@@ -219,6 +218,34 @@ ALTER TABLE `vivienda_criterio_opcion`
   ADD PRIMARY KEY (`id_vivienda`,`id_criterio`),
   ADD KEY `id_opcion` (`id_opcion`),
   ADD KEY `id_vivienda` (`id_vivienda`,`id_criterio`);
+
+--
+-- AUTO_INCREMENT de las tablas volcadas
+--
+
+--
+-- AUTO_INCREMENT de la tabla `criterio`
+--
+ALTER TABLE `criterio`
+  MODIFY `id_criterio` int NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `opcion`
+--
+ALTER TABLE `opcion`
+  MODIFY `id_opcion` int NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `rol`
+--
+ALTER TABLE `rol`
+  MODIFY `id_rol` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de la tabla `vivienda`
+--
+ALTER TABLE `vivienda`
+  MODIFY `id_vivienda` int NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

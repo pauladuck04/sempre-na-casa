@@ -13,68 +13,46 @@ class vivienda_SERVICE extends appServiceBase {
     function inicializarRest() {
 
         $this->listaAtributos = array(
-            'id_vivienda',
-            'descripcion',
-            'plazas_libres',
-            'plazas_totales',
-            'direccion',
-            'ciudad',
-            'fecha_alta_vivienda',
-            'id_anfitrion',
-            'activo_vivienda'
+            'id_vivienda', 'id_usuario', 'direccion', 'ciudad', 'pais', 'codigo_postal', 'fecha_alta_vivienda', 'activo_vivienda'
         );
 
         $this->listaAtributosSelect = array(
-            'id_vivienda',
-            'descripcion',
-            'plazas_libres',
-            'plazas_totales',
-            'direccion',
-            'ciudad',
-            'fecha_alta_vivienda',
-            'id_anfitrion',
-            'activo_vivienda'
+            'id_usuario', 'direccion', 'ciudad', 'pais', 'codigo_postal', 'fecha_alta_vivienda', 'activo_vivienda'
         );
 
         $this->notnull = array(
-            'ADD'  => array('descripcion', 'plazas_totales', 'direccion', 'ciudad', 'fecha_alta_vivienda', 'id_anfitrion'),
-            'EDIT' => array('id_vivienda', 'descripcion', 'plazas_totales', 'direccion', 'ciudad', 'id_anfitrion'),
+            'ADD'    => array('direccion', 'ciudad', 'pais', 'codigo_postal', 'id_usuario'),
+            'EDIT'   => array('direccion', 'ciudad', 'pais', 'codigo_postal', 'id_usuario'),
+            'DELETE' => array('id_vivienda'),
         );
 
         $this->modelo = $this->crearModelOne('vivienda');
     }
 
-    function getAll() {
-        $this->modelo->valores['id_vivienda']         = '';
-        $this->modelo->valores['descripcion']         = '';
-        $this->modelo->valores['plazas_libres']       = '';
-        $this->modelo->valores['plazas_totales']      = '';
-        $this->modelo->valores['direccion']           = '';
-        $this->modelo->valores['ciudad']              = '';
-        $this->modelo->valores['fecha_alta_vivienda'] = '';
-        $this->modelo->valores['id_anfitrion']        = '';
-        $this->modelo->valores['activo_vivienda']     = '';
-
-        $result = $this->modelo->SEARCH();
-        return $result;
+    function modificacion_atributos() {
+        if (isset($_POST['action']) && $_POST['action'] == 'ADD') {
+            $_POST['fecha_alta_vivienda'] = date('Y-m-d H:i:s');
+            $_POST['activo_vivienda']     = 1;
+        }
     }
 
-    function getById() {
-        $id = $_POST['id'];
-
+    function getAll() {
         foreach ($this->modelo->valores as $key => $value) {
             $this->modelo->valores[$key] = '';
         }
-
-        $primaryKey = $this->modelo->clave[0];
-        $this->modelo->valores[$primaryKey] = $id;
-
         $this->modelo->foraneas = [];
-        $result = $this->modelo->SEARCH_BY();
+        return $this->modelo->SEARCH();
+    }
 
-        return $result;
+    function getById() {
+        foreach ($this->modelo->valores as $key => $value) {
+            $this->modelo->valores[$key] = '';
+        }
+        $primaryKey = $this->modelo->clave[0];
+        $this->modelo->valores[$primaryKey] = $_POST['id'];
+        $this->modelo->foraneas = [];
+        return $this->modelo->SEARCH_BY();
     }
 
 }
-
 ?>

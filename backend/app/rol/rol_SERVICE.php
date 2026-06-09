@@ -13,53 +13,46 @@ class rol_SERVICE extends appServiceBase {
     function inicializarRest() {
 
         $this->listaAtributos = array(
-            'id_rol',
-            'nombre_rol',
-            'fecha_alta_rol',
-            'activo_rol'
+            'id_rol', 'nombre_rol', 'fecha_alta_rol', 'activo_rol'
         );
 
         $this->listaAtributosSelect = array(
-            'id_rol',
-            'nombre_rol',
-            'fecha_alta_rol',
-            'activo_rol'
+            'nombre_rol', 'fecha_alta_rol', 'activo_rol'
         );
 
         $this->notnull = array(
-            'ADD'  => array('nombre_rol', 'fecha_alta_rol'),
-            'EDIT' => array('id_rol', 'nombre_rol'),
+            'ADD'    => array('nombre_rol'),
+            'EDIT'   => array('nombre_rol'),
+            'DELETE' => array('id_rol'),
         );
 
         $this->modelo = $this->crearModelOne('rol');
     }
 
-    function getAll() {
-        $this->modelo->valores['id_rol']         = '';
-        $this->modelo->valores['nombre_rol']     = '';
-        $this->modelo->valores['fecha_alta_rol'] = '';
-        $this->modelo->valores['activo_rol']     = '';
-
-        $result = $this->modelo->SEARCH();
-        return $result;
+    function modificacion_atributos() {
+        if (isset($_POST['action']) && $_POST['action'] == 'ADD') {
+            $_POST['fecha_alta_rol'] = date('Y-m-d H:i:s');
+            $_POST['activo_rol']     = 1;
+        }
     }
 
-    function getById() {
-        $id = $_POST['id'];
-
+    function getAll() {
         foreach ($this->modelo->valores as $key => $value) {
             $this->modelo->valores[$key] = '';
         }
-
-        $primaryKey = $this->modelo->clave[0];
-        $this->modelo->valores[$primaryKey] = $id;
-
         $this->modelo->foraneas = [];
-        $result = $this->modelo->SEARCH_BY();
+        return $this->modelo->SEARCH();
+    }
 
-        return $result;
+    function getById() {
+        foreach ($this->modelo->valores as $key => $value) {
+            $this->modelo->valores[$key] = '';
+        }
+        $primaryKey = $this->modelo->clave[0];
+        $this->modelo->valores[$primaryKey] = $_POST['id'];
+        $this->modelo->foraneas = [];
+        return $this->modelo->SEARCH_BY();
     }
 
 }
-
 ?>

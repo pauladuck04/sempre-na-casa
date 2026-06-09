@@ -13,59 +13,46 @@ class opcion_SERVICE extends appServiceBase {
     function inicializarRest() {
 
         $this->listaAtributos = array(
-            'id_opcion',
-            'id_criterio',
-            'nombre_opcion',
-            'valor',
-            'fecha_alta_opcion',
-            'activo_opcion'
+            'id_opcion', 'id_criterio', 'nombre_opcion', 'valor', 'fecha_alta_opcion', 'activo_opcion'
         );
 
         $this->listaAtributosSelect = array(
-            'id_opcion',
-            'id_criterio',
-            'nombre_opcion',
-            'valor',
-            'fecha_alta_opcion',
-            'activo_opcion'
+            'id_criterio', 'nombre_opcion', 'valor', 'fecha_alta_opcion', 'activo_opcion'
         );
 
         $this->notnull = array(
-            'ADD'  => array('id_criterio', 'nombre_opcion', 'valor'),
-            'EDIT' => array('id_opcion', 'id_criterio', 'nombre_opcion', 'valor'),
+            'ADD'    => array('nombre_opcion', 'valor' ,'id_criterio'),
+            'EDIT'   => array('nombre_opcion', 'valor' ,'id_criterio'),
+            'DELETE' => array('id_opcion'),
         );
 
         $this->modelo = $this->crearModelOne('opcion');
     }
 
-    function getAll() {
-        $this->modelo->valores['id_opcion']         = '';
-        $this->modelo->valores['id_criterio']       = '';
-        $this->modelo->valores['nombre_opcion']     = '';
-        $this->modelo->valores['valor']             = '';
-        $this->modelo->valores['fecha_alta_opcion'] = '';
-        $this->modelo->valores['activo_opcion']     = '';
-
-        $result = $this->modelo->SEARCH();
-        return $result;
+    function modificacion_atributos() {
+        if (isset($_POST['action']) && $_POST['action'] == 'ADD') {
+            $_POST['fecha_alta_opcion'] = date('Y-m-d H:i:s');
+            $_POST['activo_opcion']     = 1;
+        }
     }
 
-    function getById() {
-        $id = $_POST['id'];
-
+    function getAll() {
         foreach ($this->modelo->valores as $key => $value) {
             $this->modelo->valores[$key] = '';
         }
-
-        $primaryKey = $this->modelo->clave[0];
-        $this->modelo->valores[$primaryKey] = $id;
-
         $this->modelo->foraneas = [];
-        $result = $this->modelo->SEARCH_BY();
+        return $this->modelo->SEARCH();
+    }
 
-        return $result;
+    function getById() {
+        foreach ($this->modelo->valores as $key => $value) {
+            $this->modelo->valores[$key] = '';
+        }
+        $primaryKey = $this->modelo->clave[0];
+        $this->modelo->valores[$primaryKey] = $_POST['id'];
+        $this->modelo->foraneas = [];
+        return $this->modelo->SEARCH_BY();
     }
 
 }
-
 ?>

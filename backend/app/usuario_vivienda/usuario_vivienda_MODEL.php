@@ -1,38 +1,17 @@
 <?php
 
-include_once './base/ModelBase.php';
+include_once './Base/ModelBase.php';
 
 class usuario_vivienda_MODEL extends ModelBase {
 
-    public $tabla = 'usuario_vivienda';
-    public $autoincrement = false; // Tabla relacional sin PK explícita definida
-    public $clave = ['id_usuario', 'id_vivienda'];
-    public $foraneas = [
-        'id_usuario'  => 'usuario',
-        'id_vivienda' => 'vivienda'
-    ];
+    //revisar si hay que meter un campo para guardar la fecha de inicio y la de fin
+    //revisar añadir estado de la relacion (pendiente, aceptada, activa, inactiva)
+    function __construct() {
+        $this->tabla         = 'usuario_vivienda';
+        $this->clave         = array('id_usuario', 'id_vivienda');
+        $this->foraneas      = array('usuario' => 'id_usuario', 'vivienda' => 'id_vivienda');
+        $this->autoincrement = array();
+    }
 
-    public $listaAtributos = [
-        'id_usuario',
-        'id_vivienda',
-        'activo_usuario_vivienda'
-    ];
-
-    public $valores = [
-        'id_usuario'              => null,
-        'id_vivienda'             => null,
-        'activo_usuario_vivienda' => null
-    ];
-
-    // Setters
-    public function setIdUsuario($value)             { $this->valores['id_usuario']              = $value; }
-    public function setIdVivienda($value)            { $this->valores['id_vivienda']             = $value; }
-    public function setActivoUsuarioVivienda($value) { $this->valores['activo_usuario_vivienda'] = $value; }
-
-    // Getters
-    public function getIdUsuario()             { return $this->valores['id_usuario']; }
-    public function getIdVivienda()            { return $this->valores['id_vivienda']; }
-    public function getActivoUsuarioVivienda() { return $this->valores['activo_usuario_vivienda']; }
 }
-
 ?>
