@@ -4,23 +4,23 @@ include_once './base/ModelBase.php';
 
 class usuario_criterio_opcion_MODEL extends ModelBase {
 
-    protected $tabla = 'usuario_criterio_opcion';
-    protected $autoincrement = false; // PK compuesta, sin autoincremento
-    protected $clave = ['id_usuario', 'id_criterio'];
-    protected $foraneas = [
+    public $tabla = 'usuario_criterio_opcion';
+    public $autoincrement = false; // PK compuesta, sin autoincremento
+    public $clave = ['id_usuario', 'id_criterio'];
+    public $foraneas = [
         'id_criterio' => 'criterio',
         'id_opcion'   => 'opcion',
         'id_usuario'  => 'usuario'
     ];
 
-    protected $listaAtributos = [
+    public $listaAtributos = [
         'id_usuario',
         'id_criterio',
         'id_opcion',
         'activo_usuario_criterio_opcion'
     ];
 
-    protected $valores = [
+    public $valores = [
         'id_usuario'                     => null,
         'id_criterio'                    => null,
         'id_opcion'                      => null,

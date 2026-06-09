@@ -3,18 +3,18 @@
 include_once './Base/ModelBase.php';
 
 class criterio_MODEL extends ModelBase{
-    protected $tabla = 'criterio';
-    protected $autoincrement = true;
-    protected $clave = ['id_criterio'];
-    protected $foraneas = [];
+    public $tabla = 'criterio';
+    public $autoincrement = true;
+    public $clave = ['id_criterio'];
+    public $foraneas = [];
 
-    protected $listaAtributos = ['id_criterio', 'nombre_criterio', 'descripcion_criterio', 'peso_criterio'];
+    public $listaAtributos = ['id_criterio', 'nombre_criterio', 'fecha_alta_criterio', 'activo_criterio'];
 
-    protected $valores = [
+    public $valores = [
         'id_criterio' => null,
         'nombre_criterio' => null,
-        'descripcion_criterio' => null,
-        'peso_criterio' => null
+        'fecha_alta_criterio' => null,
+        'activo_criterio' => null
     ];
     
 

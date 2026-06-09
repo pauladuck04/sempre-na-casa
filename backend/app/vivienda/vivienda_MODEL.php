@@ -4,14 +4,14 @@ include_once './base/ModelBase.php';
 
 class vivienda_MODEL extends ModelBase {
 
-    protected $tabla = 'vivienda';
-    protected $autoincrement = true;
-    protected $clave = ['id_vivienda'];
-    protected $foraneas = [
+    public $tabla = 'vivienda';
+    public $autoincrement = true;
+    public $clave = ['id_vivienda'];
+    public $foraneas = [
         'id_anfitrion' => 'usuario'
     ];
 
-    protected $listaAtributos = [
+    public $listaAtributos = [
         'id_vivienda',
         'descripcion',
         'plazas_libres',
@@ -23,7 +23,7 @@ class vivienda_MODEL extends ModelBase {
         'activo_vivienda'
     ];
 
-    protected $valores = [
+    public $valores = [
         'id_vivienda'         => null,
         'descripcion'         => null,
         'plazas_libres'       => null,

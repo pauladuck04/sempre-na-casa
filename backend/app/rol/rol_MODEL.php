@@ -4,19 +4,19 @@ include_once './base/ModelBase.php';
  
 class rol_MODEL extends ModelBase {
  
-    protected $tabla = 'rol';
-    protected $autoincrement = true;
-    protected $clave = ['id_rol'];
-    protected $foraneas = [];
+    public $tabla = 'rol';
+    public $autoincrement = true;
+    public $clave = ['id_rol'];
+    public $foraneas = [];
  
-    protected $listaAtributos = [
+    public $listaAtributos = [
         'id_rol',
         'nombre_rol',
         'fecha_alta_rol',
         'activo_rol'
     ];
  
-    protected $valores = [
+    public $valores = [
         'id_rol'         => null,
         'nombre_rol'     => null,
         'fecha_alta_rol' => null,

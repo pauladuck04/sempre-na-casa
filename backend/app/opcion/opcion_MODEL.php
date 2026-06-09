@@ -12,7 +12,7 @@ class opcion_MODEL extends ModelBase{
     }
 
     
-    protected $listaAtributos = [
+    public $listaAtributos = [
         'id_opcion',
         'id_criterio',
         'nombre_opcion',
@@ -21,7 +21,7 @@ class opcion_MODEL extends ModelBase{
         'activo_opcion'
     ];
 
-    protected $valores = [
+    public $valores = [
         'id_opcion'        => null,
         'id_criterio'      => null,
         'nombre_opcion'    => null,
@@ -45,4 +45,6 @@ class opcion_MODEL extends ModelBase{
     public function getValor()            { return $this->valores['valor']; }
     public function getFechaAltaOpcion()  { return $this->valores['fecha_alta_opcion']; }
     public function getActivoOpcion()     { return $this->valores['activo_opcion']; }
+
+}
 ?>

@@ -16,17 +16,18 @@ class criterio_SERVICE extends appServiceBase{
 
     function inicializarRest(){
 
-        $this->listaAtributos = array('id_criterio', 'nombre_criterio', 'descripcion_criterio', 'peso_criterio');
+        $this->listaAtributos = array('id_criterio', 'nombre_criterio', 'fecha_alta_criterio', 'activo_criterio');
 
-        $this->listaAtributosSelect = array('id_criterio', 'nombre_criterio', 'descripcion_criterio', 'peso_criterio');
+        $this->listaAtributosSelect = array('id_criterio', 'nombre_criterio', 'fecha_alta_criterio', 'activo_criterio');
 
         $this->notnull = array(
-                        'ADD'=>array('nombre_criterio', 'descripcion_criterio', 'peso_criterio'),
-                        'EDIT'=>array('id_criterio', 'nombre_criterio', 'descripcion_criterio', 'peso_criterio'),
+                        'ADD'=>array('nombre_criterio', 'nombre_criterio'),
+                        'EDIT'=>array('id_criterio', 'nombre_criterio'),
                         'DELETE'=>array('id_criterio'),
                         );
 
         $this->modelo = $this->crearModelOne('criterio');
+    }
 
         function getAll() {
         // Limpia filtros para traer todos los registros activos

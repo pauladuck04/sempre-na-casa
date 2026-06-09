@@ -4,21 +4,21 @@ include_once './base/ModelBase.php';
 
 class usuario_vivienda_MODEL extends ModelBase {
 
-    protected $tabla = 'usuario_vivienda';
-    protected $autoincrement = false; // Tabla relacional sin PK explícita definida
-    protected $clave = ['id_usuario', 'id_vivienda'];
-    protected $foraneas = [
+    public $tabla = 'usuario_vivienda';
+    public $autoincrement = false; // Tabla relacional sin PK explícita definida
+    public $clave = ['id_usuario', 'id_vivienda'];
+    public $foraneas = [
         'id_usuario'  => 'usuario',
         'id_vivienda' => 'vivienda'
     ];
 
-    protected $listaAtributos = [
+    public $listaAtributos = [
         'id_usuario',
         'id_vivienda',
         'activo_usuario_vivienda'
     ];
 
-    protected $valores = [
+    public $valores = [
         'id_usuario'              => null,
         'id_vivienda'             => null,
         'activo_usuario_vivienda' => null

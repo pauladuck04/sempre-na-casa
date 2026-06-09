@@ -4,23 +4,23 @@ include_once './base/ModelBase.php';
 
 class vivienda_criterio_opcion_MODEL extends ModelBase {
 
-    protected $tabla = 'vivienda_criterio_opcion';
-    protected $autoincrement = false; // PK compuesta, sin autoincremento
-    protected $clave = ['id_vivienda', 'id_criterio'];
-    protected $foraneas = [
+    public $tabla = 'vivienda_criterio_opcion';
+    public $autoincrement = false; // PK compuesta, sin autoincremento
+    public $clave = ['id_vivienda', 'id_criterio'];
+    public $foraneas = [
         'id_vivienda' => 'vivienda',
         'id_criterio' => 'criterio',
         'id_opcion'   => 'opcion'
     ];
 
-    protected $listaAtributos = [
+    public $listaAtributos = [
         'id_vivienda',
         'id_criterio',
         'id_opcion',
         'activo_vivienda_criterio_opcion'
     ];
 
-    protected $valores = [
+    public $valores = [
         'id_vivienda'                     => null,
         'id_criterio'                     => null,
         'id_opcion'                       => null,
