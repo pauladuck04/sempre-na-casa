@@ -61,6 +61,35 @@ class usuario_SERVICE extends appServiceBase {
         return $result;
     }
 
+    function getById() {
+        $id = $_POST['id'];
+
+        foreach ($this->modelo->valores as $key => $value) {
+            $this->modelo->valores[$key] = '';
+        }
+
+        $primaryKey = $this->modelo->clave[0];
+        $this->modelo->valores[$primaryKey] = $id;
+
+        $this->modelo->foraneas = [];
+        $result = $this->modelo->SEARCH_BY();
+
+        return $result;
+    }
+
+    function ADD() {
+        $this->modelo->valores['fecha_alta_usuario'] = date('Y-m-d H:i:s');
+        $this->modelo->valores['activo_usuario'] = 1;
+        return $this->modelo->ADD();
+    }
+
+    function modificacion_atributos(){
+		if ($_POST['action'] == 'ADD'){
+			$_POST['fecha_alta_usuario'] = date(time());
+            $_POST['activo_usuario'] = 1;
+		}
+	}
+
 }
 
 ?>

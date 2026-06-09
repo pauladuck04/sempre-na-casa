@@ -6,7 +6,7 @@ class usuario_MODEL extends ModelBase{
 
 
 	public $tabla = 'usuario';
-    public $autoincrement = false;
+    public $autoincrement = [];
     public $clave = ['mail'];
     public $foraneas = [
         'id_rol' => 'rol'

@@ -44,6 +44,22 @@ class usuario_criterio_opcion_SERVICE extends appServiceBase {
         return $result;
     }
 
+    function getById() {
+        $id = $_POST['id'];
+
+        foreach ($this->modelo->valores as $key => $value) {
+            $this->modelo->valores[$key] = '';
+        }
+
+        $primaryKey = $this->modelo->clave[0];
+        $this->modelo->valores[$primaryKey] = $id;
+
+        $this->modelo->foraneas = [];
+        $result = $this->modelo->SEARCH_BY();
+
+        return $result;
+    }
+
 }
 
 ?>
