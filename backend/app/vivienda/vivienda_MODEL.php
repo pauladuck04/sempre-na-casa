@@ -8,7 +8,7 @@ class vivienda_MODEL extends ModelBase {
         $this->tabla         = 'vivienda';
         $this->clave         = array('id_vivienda');
         $this->foraneas      = array('id_anfitrion' => 'usuario');
-        $this->autoincrement = array();
+        $this->autoincrement = array('id_vivienda');
     }
 
 }

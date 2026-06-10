@@ -2,14 +2,16 @@ import { t } from '../i18n.js';
 
 export let listaRolesMemoria = [];
 
-export function cargarRoles() {
+export async function cargarRoles() {
     if (listaRolesMemoria.length === 0) {
-        listaRolesMemoria = [
-            { id:1, nombre:'Administrador', estado:'activo'   },
-            { id:2, nombre:'Anfitrion',     estado:'activo'   },
-            { id:3, nombre:'Inquilino',     estado:'activo'   },
-            { id:4, nombre:'Voluntario',    estado:'inactivo' }
-        ];
+        const res = await apiPost('rol', 'getAll');
+        if (res.ok && Array.isArray(res.resource)) {
+            listaRolesMemoria = res.resource.map(r => ({
+                id: r.id_rol,
+                nombre: r.nombre_rol,
+                estado: r.activo_rol == 1 ? 'activo' : 'inactivo'
+            }));
+        }
     }
     renderizarRoles(listaRolesMemoria);
 }

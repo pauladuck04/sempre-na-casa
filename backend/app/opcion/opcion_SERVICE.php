@@ -17,7 +17,7 @@ class opcion_SERVICE extends appServiceBase {
         );
 
         $this->listaAtributosSelect = array(
-            'id_criterio', 'nombre_opcion', 'valor', 'fecha_alta_opcion', 'activo_opcion'
+            'id_opcion', 'id_criterio', 'nombre_opcion', 'valor', 'fecha_alta_opcion', 'activo_opcion'
         );
 
         $this->notnull = array(

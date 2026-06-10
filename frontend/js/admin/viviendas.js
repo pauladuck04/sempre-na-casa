@@ -2,14 +2,21 @@ import { t } from '../i18n.js';
 
 export let listaViviendasMemoria = [];
 
-export function cargarViviendas() {
+export async function cargarViviendas() {
     if (listaViviendasMemoria.length === 0) {
-        listaViviendasMemoria = [
-            { id:1, direccion:'Rua da Paz, 45',                 ciudad:'Ourense', plazas_libres:0, plazas_totales:2, anfitrion:'Mercedes Rosas', estado:'ocupada'     },
-            { id:2, direccion:'Avenida Santa Clara, 78',        ciudad:'Ourense', plazas_libres:3, plazas_totales:4, anfitrion:'Ramon Vazquez',   estado:'disponible'  },
-            { id:3, direccion:'Rua Leopoldo Alas Clarin, 25',   ciudad:'Ourense', plazas_libres:2, plazas_totales:4, anfitrion:'Carmen Cid',      estado:'disponible'  },
-            { id:4, direccion:'Rua Progreso, 12',               ciudad:'Ourense', plazas_libres:0, plazas_totales:1, anfitrion:'Ana Prado',       estado:'inactivo'    }
-        ];
+        const res = await apiPost('vivienda', 'getAll');
+        if (res.ok && Array.isArray(res.resource)) {
+            listaViviendasMemoria = res.resource.map(v => ({
+                id: v.id_vivienda,
+                descripcion: v.descripcion,
+                direccion: v.direccion,
+                ciudad: v.ciudad,
+                plazas_libres: v.plazas_libres,
+                plazas_totales: v.plazas_totales,
+                anfitrion: v.id_anfitrion,
+                estado: v.activo_vivienda == 1 ? 'disponible' : 'inactivo'
+            }));
+        }
     }
     renderizarViviendas(listaViviendasMemoria);
 }

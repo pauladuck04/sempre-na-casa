@@ -35,9 +35,10 @@ const CONFIG_MODALES = {
         getHtml: () => `
             <div class="mb-3"><label class="form-label fw-bold">${t('admin.homes.address')}</label><input name="direccion" class="form-control" required></div>
             <div class="mb-3"><label class="form-label fw-bold">${t('admin.homes.city')}</label><input name="ciudad" class="form-control" required></div>
-            <div class="mb-3"><label class="form-label fw-bold">${t('admin.homes.freeSlots')}</label><input name="plazas_libres" class="form-control" required></div>
-            <div class="mb-3"><label class="form-label fw-bold">${t('admin.homes.totalSlots')}</label><input name="plazas_totales" class="form-control" required></div>
-            <div class="mb-3"><label class="form-label fw-bold">${t('admin.homes.host')}</label><input name="anfitrion" class="form-control" required></div>`
+            <div class="mb-3"><label class="form-label fw-bold">Descripción</label><input name="descripcion" class="form-control" required></div>
+            <div class="mb-3"><label class="form-label fw-bold">${t('admin.homes.freeSlots')}</label><input type="number" name="plazas_libres" class="form-control" required></div>
+            <div class="mb-3"><label class="form-label fw-bold">${t('admin.homes.totalSlots')}</label><input type="number" name="plazas_totales" class="form-control" required></div>
+            <div class="mb-3"><label class="form-label fw-bold">${t('admin.homes.host')}</label><input name="id_anfitrion" class="form-control" required></div>`
     },
     roles: {
         getTitulo: () => t('admin.roles.createTitle'),
@@ -183,11 +184,12 @@ document.addEventListener('DOMContentLoaded', async function() {
         } else if (efectiva === 'viviendas') {
             const v = viviendas.listaViviendasMemoria.find(x => x.id === id);
             if (v) {
-                form.querySelector('[name="direccion"]').value     = v.direccion;
-                form.querySelector('[name="ciudad"]').value        = v.ciudad;
-                form.querySelector('[name="plazas_libres"]').value = v.plazas_libres;
-                form.querySelector('[name="plazas_totales"]').value= v.plazas_totales;
-                form.querySelector('[name="anfitrion"]').value     = v.anfitrion;
+                form.querySelector('[name="direccion"]').value      = v.direccion;
+                form.querySelector('[name="ciudad"]').value         = v.ciudad;
+                form.querySelector('[name="descripcion"]').value    = v.descripcion;
+                form.querySelector('[name="plazas_libres"]').value  = v.plazas_libres;
+                form.querySelector('[name="plazas_totales"]').value = v.plazas_totales;
+                form.querySelector('[name="id_anfitrion"]').value   = v.anfitrion;
                 document.getElementById('modalTitle').textContent = `${t('admin.homes.editTitle')}: ${v.direccion}`;
             }
         }
@@ -246,7 +248,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (e.target.type === 'checkbox') actualizarBotones();
     });
 
-    document.getElementById('formGenerico')?.addEventListener('submit', function(e) {
+    document.getElementById('formGenerico')?.addEventListener('submit', async function(e) {
         e.preventDefault();
         const seccionActual = document.querySelector('.section-link.active-custom').getAttribute('data-section');
         const data = Object.fromEntries(new FormData(this));
@@ -257,10 +259,35 @@ document.addEventListener('DOMContentLoaded', async function() {
             renderizarConvivencias(listaConvivenciasMemoria);
         }
 
-        if (seccionActual === 'usuarios') usuarios.cargarUsuarios();
-        if (seccionActual === 'roles')    roles.cargarRoles();
-        if (seccionActual === 'criterios')criterios.cargarCriterios();
-        if (seccionActual === 'viviendas')viviendas.cargarViviendas();
+        if (seccionActual === 'viviendas') {
+            const params = {
+                descripcion:    data.descripcion,
+                plazas_libres:  data.plazas_libres,
+                plazas_totales: data.plazas_totales,
+                direccion:      data.direccion,
+                ciudad:         data.ciudad,
+                id_anfitrion:   data.id_anfitrion
+            };
+            if (data.id_edit) {
+                params.id_vivienda = data.id_edit;
+                await apiPost('vivienda', 'EDIT', params);
+            } else {
+                await apiPost('vivienda', 'ADD', params);
+            }
+            viviendas.listaViviendasMemoria.splice(0);
+            await viviendas.cargarViviendas();
+        } else if (seccionActual === 'usuarios') {
+            usuarios.listaUsuariosMemoria.splice(0);
+            await usuarios.cargarUsuarios();
+        } else if (seccionActual === 'roles') {
+            roles.listaRolesMemoria.splice(0);
+            await roles.cargarRoles();
+        } else if (seccionActual === 'criterios') {
+            criterios.listaCriteriosMemoria.splice(0);
+            criterios.listaOpcionesMemoria.splice(0);
+            await criterios.cargarCriterios();
+        }
+
         aplicarFiltros();
         bootstrap.Modal.getInstance(document.getElementById('modalGenerico')).hide();
     });

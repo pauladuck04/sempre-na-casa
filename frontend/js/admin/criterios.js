@@ -1,22 +1,35 @@
 import { t } from '../i18n.js';
 
-export let listaCriteriosMemoria = [
-    { id:1, nombre:'Nivel de Ruido',        estado:'activo'   },
-    { id:2, nombre:'Habito de Tabaco',       estado:'activo'   },
-    { id:3, nombre:'Frecuencia de Visitas',  estado:'activo'   },
-    { id:4, nombre:'Mascotas',               estado:'inactivo' },
-    { id:5, nombre:'Limpieza y Orden',       estado:'activo'   }
-];
+export let listaCriteriosMemoria = [];
+export let listaOpcionesMemoria = [];
 
-export let listaOpcionesMemoria = [
-    { id:1, criterio_id:1, criterio:'Nivel de Ruido',       opcion:'Silencio Absoluto',    valor:1, estado:'activo'   },
-    { id:2, criterio_id:2, criterio:'Habito de Tabaco',      opcion:'Prohibido Totalmente', valor:1, estado:'activo'   },
-    { id:3, criterio_id:3, criterio:'Frecuencia de Visitas', opcion:'Sin Visitas',          valor:1, estado:'activo'   },
-    { id:4, criterio_id:4, criterio:'Mascotas',              opcion:'No acepto mascotas',   valor:1, estado:'inactivo' },
-    { id:5, criterio_id:5, criterio:'Limpieza y Orden',      opcion:'Muy meticuloso',       valor:1, estado:'activo'   }
-];
-
-export function cargarCriterios() {
+export async function cargarCriterios() {
+    if (listaCriteriosMemoria.length === 0) {
+        const resCriterios = await apiPost('criterio', 'getAll');
+        if (resCriterios.ok && Array.isArray(resCriterios.resource)) {
+            listaCriteriosMemoria = resCriterios.resource.map(c => ({
+                id: c.id_criterio,
+                nombre: c.nombre_criterio,
+                estado: c.activo_criterio == 1 ? 'activo' : 'inactivo'
+            }));
+        }
+    }
+    if (listaOpcionesMemoria.length === 0) {
+        const resOpciones = await apiPost('opcion', 'getAll');
+        if (resOpciones.ok && Array.isArray(resOpciones.resource)) {
+            listaOpcionesMemoria = resOpciones.resource.map(o => {
+                const criterio = listaCriteriosMemoria.find(c => c.id == o.id_criterio);
+                return {
+                    id: o.id_opcion,
+                    criterio_id: o.id_criterio,
+                    criterio: criterio ? criterio.nombre : o.id_criterio,
+                    opcion: o.nombre_opcion,
+                    valor: o.valor,
+                    estado: o.activo_opcion == 1 ? 'activo' : 'inactivo'
+                };
+            });
+        }
+    }
     renderizarCriterios(listaCriteriosMemoria);
     renderizarOpciones(listaOpcionesMemoria);
 }

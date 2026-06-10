@@ -2,14 +2,21 @@ import { t } from '../i18n.js';
 
 export let listaUsuariosMemoria = [];
 
-export function cargarUsuarios() {
+export async function cargarUsuarios() {
     if (listaUsuariosMemoria.length === 0) {
-        listaUsuariosMemoria = [
-            { id:1, nombre:'Paula Gomez',   email:'paula@ejemplo.com', rol:'inquilino', fechaRegistro:'12/03/2026', dni:'12345678A', telefono:'609 875 321', estado:'activo'   },
-            { id:2, nombre:'Juan Martinez', email:'juan@ejemplo.com',  rol:'anfitrion', fechaRegistro:'10/03/2026', dni:'23456789B', telefono:'612 345 678', estado:'activo'   },
-            { id:3, nombre:'Marta Soto',    email:'marta@ejemplo.com', rol:'inquilino', fechaRegistro:'08/03/2026', dni:'34567890C', telefono:'613 456 789', estado:'pendiente'},
-            { id:4, nombre:'Luis Martinez', email:'luis@ejemplo.com',  rol:'inquilino', fechaRegistro:'01/02/2026', dni:'45678901D', telefono:'614 567 890', estado:'inactivo' }
-        ];
+        const res = await apiPost('usuario', 'getAll');
+        if (res.ok && Array.isArray(res.resource)) {
+            listaUsuariosMemoria = res.resource.map((u, i) => ({
+                id: i + 1,
+                nombre: `${u.nombre_usuario} ${u.apellidos}`.trim(),
+                email: u.mail,
+                rol: u.id_rol == 2 ? 'anfitrion' : 'inquilino',
+                fechaRegistro: u.fecha_alta_usuario ? u.fecha_alta_usuario.split(' ')[0] : '-',
+                dni: u.dni,
+                telefono: u.telefono,
+                estado: u.activo_usuario == 1 ? 'activo' : 'inactivo'
+            }));
+        }
     }
     renderizarUsuarios(listaUsuariosMemoria);
 }

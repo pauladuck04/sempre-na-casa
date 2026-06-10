@@ -13,16 +13,16 @@ class vivienda_SERVICE extends appServiceBase {
     function inicializarRest() {
 
         $this->listaAtributos = array(
-            'id_vivienda', 'id_usuario', 'direccion', 'ciudad', 'pais', 'codigo_postal', 'fecha_alta_vivienda', 'activo_vivienda'
+            'id_vivienda', 'descripcion', 'plazas_libres', 'plazas_totales', 'id_anfitrion', 'direccion', 'ciudad', 'fecha_alta_vivienda', 'activo_vivienda'
         );
 
         $this->listaAtributosSelect = array(
-            'id_usuario', 'direccion', 'ciudad', 'pais', 'codigo_postal', 'fecha_alta_vivienda', 'activo_vivienda'
+            'id_vivienda', 'descripcion', 'plazas_libres', 'plazas_totales', 'id_anfitrion', 'direccion', 'ciudad', 'fecha_alta_vivienda', 'activo_vivienda'
         );
 
         $this->notnull = array(
-            'ADD'    => array('direccion', 'ciudad', 'pais', 'codigo_postal', 'id_usuario'),
-            'EDIT'   => array('direccion', 'ciudad', 'pais', 'codigo_postal', 'id_usuario'),
+            'ADD'    => array('descripcion', 'plazas_libres', 'plazas_totales', 'id_anfitrion', 'direccion', 'ciudad'),
+            'EDIT'   => array('descripcion', 'plazas_libres', 'plazas_totales', 'id_anfitrion', 'direccion', 'ciudad'),
             'DELETE' => array('id_vivienda'),
         );
 

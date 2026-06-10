@@ -17,7 +17,7 @@ class rol_SERVICE extends appServiceBase {
         );
 
         $this->listaAtributosSelect = array(
-            'nombre_rol', 'fecha_alta_rol', 'activo_rol'
+            'id_rol', 'nombre_rol', 'fecha_alta_rol', 'activo_rol'
         );
 
         $this->notnull = array(

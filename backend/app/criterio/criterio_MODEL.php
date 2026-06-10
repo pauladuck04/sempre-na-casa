@@ -8,7 +8,7 @@ class criterio_MODEL extends ModelBase {
         $this->tabla         = 'criterio';
         $this->clave         = array('id_criterio');
         $this->foraneas      = array();
-        $this->autoincrement = array();
+        $this->autoincrement = array('id_criterio');
     }
 
 }

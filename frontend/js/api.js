@@ -1,30 +1,17 @@
-// API Simulada - Sin backend real
-window.api = {
-    login: async (email, password) => {
-        // Simular respuesta exitosa
-        return {
-            success: true,
-            userId: 'user123',
-            email: email,
-            role: email.includes('admin') ? 'anfitrion' : 'inquilino'
-        };
-    },
+const BASE_URL = 'http://localhost:8081/index.php';
 
-    register: async (data) => {
-        // Simular registro exitoso
-        return {
-            success: true,
-            userId: 'user' + Date.now(),
-            message: 'Registrado exitosamente'
-        };
-    },
+async function apiPost(controlador, action, params = {}) {
+    const body = new URLSearchParams({ controlador, action, ...params });
+    const response = await fetch(BASE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: body.toString()
+    });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return response.json();
+}
 
-    request: async (endpoint, options = {}) => {
-        // Simular peticiones genéricas
-        console.log(`API Request: ${endpoint}`, options);
-        return { success: true, data: {} };
-    }
-};
+window.apiPost = apiPost;
 
 // Autenticación simulada
 window.auth = {

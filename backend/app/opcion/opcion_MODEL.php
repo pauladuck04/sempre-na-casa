@@ -8,7 +8,7 @@ class opcion_MODEL extends ModelBase {
         $this->tabla         = 'opcion';
         $this->clave         = array('id_opcion');
         $this->foraneas      = array('criterio' => 'id_criterio');
-        $this->autoincrement = array();
+        $this->autoincrement = array('id_opcion');
     }
 
 }
