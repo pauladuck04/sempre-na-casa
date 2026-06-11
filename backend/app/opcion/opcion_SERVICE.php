@@ -22,7 +22,7 @@ class opcion_SERVICE extends appServiceBase {
 
         $this->notnull = array(
             'ADD'    => array('nombre_opcion', 'valor' ,'id_criterio'),
-            'EDIT'   => array('nombre_opcion', 'valor' ,'id_criterio'),
+            'EDIT'   => array('id_opcion', 'nombre_opcion', 'valor', 'id_criterio'),
             'DELETE' => array('id_opcion'),
         );
 
@@ -42,6 +42,12 @@ class opcion_SERVICE extends appServiceBase {
         }
         $this->modelo->foraneas = [];
         return $this->modelo->SEARCH();
+    }
+
+    function EDIT() {
+        unset($this->modelo->valores['fecha_alta_opcion']);
+        unset($this->modelo->valores['activo_opcion']);
+        return $this->modelo->EDIT();
     }
 
     function getById() {

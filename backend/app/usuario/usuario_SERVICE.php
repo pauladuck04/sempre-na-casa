@@ -16,14 +16,14 @@ class usuario_SERVICE extends appServiceBase{
 
 	function inicializarRest(){
 
-		$this->listaAtributos = array('dni','mail','nombre_usuario','apellidos','password','telefono','fecha_alta_usuario','activo_usuario','id_rol');
+		$this->listaAtributos = array('id_usuario','dni','mail','nombre_usuario','apellidos','password','telefono','fecha_alta_usuario','activo_usuario','id_rol');
 
-		$this->listaAtributosSelect = array('dni','mail','nombre_usuario','apellidos','telefono','fecha_alta_usuario','activo_usuario','id_rol');
+		$this->listaAtributosSelect = array('id_usuario','dni','mail','nombre_usuario','apellidos','telefono','fecha_alta_usuario','activo_usuario','id_rol');
 
 		$this->notnull = array(
-						'ADD' => array('dni','mail','nombre_usuario','apellidos','password','telefono','fecha_alta_usuario','activo_usuario','id_rol'),
-						'EDIT' => array('dni','mail','nombre_usuario','apellidos','password','telefono','fecha_alta_usuario','activo_usuario','id_rol'),
-						'DELETE' => array('mail')
+						'ADD' => array('dni','mail','nombre_usuario','apellidos','password','telefono','id_rol'),
+						'EDIT' => array('id_usuario','dni','mail','nombre_usuario','apellidos','telefono','id_rol'),
+						'DELETE' => array('id_usuario')
 						);
 
 		$this->modelo = $this->crearModelOne('usuario');
@@ -32,7 +32,7 @@ class usuario_SERVICE extends appServiceBase{
 
 	function modificacion_atributos() {
         if (isset($_POST['action']) && $_POST['action'] == 'ADD') {
-            $_POST['activo_usuario']     = 1;
+            $_POST['activo_usuario'] = 1;
         }
     }
 
@@ -49,7 +49,7 @@ class usuario_SERVICE extends appServiceBase{
             $this->modelo->valores[$key] = '';
         }
         $primaryKey = $this->modelo->clave[0];
-        $this->modelo->valores[$primaryKey] = $_POST['mail'];
+        $this->modelo->valores[$primaryKey] = $_POST['id_usuario'];
         $this->modelo->foraneas = [];
         return $this->modelo->SEARCH_BY();
     }

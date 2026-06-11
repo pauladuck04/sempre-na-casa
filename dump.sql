@@ -76,6 +76,7 @@ INSERT INTO `rol` (`id_rol`, `nombre_rol`, `fecha_alta_rol`, `activo_rol`) VALUE
 --
 
 CREATE TABLE `usuario` (
+  `id_usuario` int NOT NULL,
   `dni` varchar(9) NOT NULL,
   `mail` varchar(25) NOT NULL,
   `nombre_usuario` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
@@ -101,7 +102,7 @@ INSERT INTO `usuario` (`dni`, `mail`, `nombre_usuario`, `apellidos`, `password`,
 --
 
 CREATE TABLE `usuario_criterio_opcion` (
-  `id_usuario` varchar(25) NOT NULL,
+  `id_usuario` int NOT NULL,
   `id_criterio` int NOT NULL,
   `id_opcion` int NOT NULL,
   `activo_usuario_criterio_opcion` tinyint(1) NOT NULL DEFAULT '1'
@@ -114,7 +115,7 @@ CREATE TABLE `usuario_criterio_opcion` (
 --
 
 CREATE TABLE `usuario_vivienda` (
-  `id_usuario` varchar(25) NOT NULL,
+  `id_usuario` int NOT NULL,
   `id_vivienda` int NOT NULL,
   `activo_usuario_vivienda` tinyint(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -130,10 +131,10 @@ CREATE TABLE `vivienda` (
   `descripcion` varchar(100) NOT NULL,
   `plazas_libres` int NOT NULL,
   `plazas_totales` int NOT NULL,
-  `direccion` int NOT NULL,
-  `ciudad` int NOT NULL,
+  `direccion` varchar(150) NOT NULL,
+  `ciudad` varchar(100) NOT NULL,
   `fecha_alta_vivienda` datetime NOT NULL,
-  `id_anfitrion` varchar(25) NOT NULL,
+  `id_anfitrion` int NOT NULL,
   `activo_vivienda` tinyint(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -177,7 +178,8 @@ ALTER TABLE `rol`
 -- Indices de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  ADD PRIMARY KEY (`mail`),
+  ADD PRIMARY KEY (`id_usuario`),
+  ADD UNIQUE KEY `mail` (`mail`),
   ADD KEY `id_rol` (`id_rol`);
 
 --
@@ -201,7 +203,7 @@ ALTER TABLE `usuario_vivienda`
 --
 ALTER TABLE `vivienda`
   ADD PRIMARY KEY (`id_vivienda`),
-  ADD KEY `id_usuario` (`id_anfitrion`);
+  ADD KEY `id_anfitrion` (`id_anfitrion`);
 
 --
 -- Indices de la tabla `vivienda_criterio_opcion`
@@ -232,6 +234,12 @@ ALTER TABLE `opcion`
 --
 ALTER TABLE `rol`
   MODIFY `id_rol` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de la tabla `usuario`
+--
+ALTER TABLE `usuario`
+  MODIFY `id_usuario` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `vivienda`

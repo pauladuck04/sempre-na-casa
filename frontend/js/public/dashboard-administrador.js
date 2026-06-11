@@ -283,6 +283,28 @@ document.addEventListener('DOMContentLoaded', async function() {
             roles.listaRolesMemoria.splice(0);
             await roles.cargarRoles();
         } else if (seccionActual === 'criterios') {
+            const subTab = getActiveCriteriosSubTab();
+            if (subTab === 'opciones') {
+                const params = {
+                    nombre_opcion: data.opcion,
+                    valor:         data.valor,
+                    id_criterio:   data.criterio_id
+                };
+                if (data.id_edit) {
+                    params.id_opcion = data.id_edit;
+                    await apiPost('opcion', 'EDIT', params);
+                } else {
+                    await apiPost('opcion', 'ADD', params);
+                }
+            } else {
+                const params = { nombre_criterio: data.nombre };
+                if (data.id_edit) {
+                    params.id_criterio = data.id_edit;
+                    await apiPost('criterio', 'EDIT', params);
+                } else {
+                    await apiPost('criterio', 'ADD', params);
+                }
+            }
             criterios.listaCriteriosMemoria.splice(0);
             criterios.listaOpcionesMemoria.splice(0);
             await criterios.cargarCriterios();
@@ -383,9 +405,9 @@ async function cargarSeguimientoConvivencias() {
     const usuariosData  = (resU.ok && Array.isArray(resU.resource)) ? resU.resource : [];
     const relaciones    = (resUV.ok && Array.isArray(resUV.resource)) ? resUV.resource : [];
 
-    const nombreUsuario = mail => {
-        const u = usuariosData.find(u => u.mail === mail);
-        return u ? `${u.nombre_usuario} ${u.apellidos}`.trim() : mail;
+    const nombreUsuario = id => {
+        const u = usuariosData.find(u => u.id_usuario == id);
+        return u ? `${u.nombre_usuario} ${u.apellidos}`.trim() : String(id);
     };
 
     listaConvivenciasMemoria = relaciones.map((r, i) => {

@@ -44,6 +44,12 @@ class vivienda_SERVICE extends appServiceBase {
         return $this->modelo->SEARCH();
     }
 
+    function EDIT() {
+        unset($this->modelo->valores['fecha_alta_vivienda']);
+        unset($this->modelo->valores['activo_vivienda']);
+        return $this->modelo->EDIT();
+    }
+
     function getById() {
         foreach ($this->modelo->valores as $key => $value) {
             $this->modelo->valores[$key] = '';

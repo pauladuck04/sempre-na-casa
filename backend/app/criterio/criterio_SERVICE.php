@@ -22,7 +22,7 @@ class criterio_SERVICE extends appServiceBase {
 
         $this->notnull = array(
             'ADD'    => array('nombre_criterio'),            
-            'EDIT'   => array('nombre_criterio'),
+            'EDIT'   => array('id_criterio', 'nombre_criterio'),
             'DELETE' => array('id_criterio'),
         );
 
@@ -42,6 +42,12 @@ class criterio_SERVICE extends appServiceBase {
         }
         $this->modelo->foraneas = [];
         return $this->modelo->SEARCH();
+    }
+
+    function EDIT() {
+        unset($this->modelo->valores['fecha_alta_criterio']);
+        unset($this->modelo->valores['activo_criterio']);
+        return $this->modelo->EDIT();
     }
 
     function getById() {

@@ -6,8 +6,8 @@ export async function cargarUsuarios() {
     if (listaUsuariosMemoria.length === 0) {
         const res = await apiPost('usuario', 'getAll');
         if (res.ok && Array.isArray(res.resource)) {
-            listaUsuariosMemoria = res.resource.map((u, i) => ({
-                id: i + 1,
+            listaUsuariosMemoria = res.resource.map((u) => ({
+                id: u.id_usuario,
                 nombre: `${u.nombre_usuario} ${u.apellidos}`.trim(),
                 email: u.mail,
                 rol: u.id_rol == 2 ? 'anfitrion' : 'inquilino',
