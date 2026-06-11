@@ -101,7 +101,7 @@ INSERT INTO `usuario` (`dni`, `mail`, `nombre_usuario`, `apellidos`, `password`,
 --
 
 CREATE TABLE `usuario_criterio_opcion` (
-  `id_usuario` int NOT NULL,
+  `id_usuario` varchar(25) NOT NULL,
   `id_criterio` int NOT NULL,
   `id_opcion` int NOT NULL,
   `activo_usuario_criterio_opcion` tinyint(1) NOT NULL DEFAULT '1'
@@ -114,18 +114,10 @@ CREATE TABLE `usuario_criterio_opcion` (
 --
 
 CREATE TABLE `usuario_vivienda` (
-  `id_usuario` int NOT NULL,
+  `id_usuario` varchar(25) NOT NULL,
   `id_vivienda` int NOT NULL,
   `activo_usuario_vivienda` tinyint(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Volcado de datos para la tabla `usuario_vivienda`
---
-
-INSERT INTO `usuario_vivienda` (`id_usuario`, `id_vivienda`, `activo_usuario_vivienda`) VALUES
-(11111, 2222, 1),
-(11111, 2222, 1);
 
 -- --------------------------------------------------------
 
@@ -141,7 +133,7 @@ CREATE TABLE `vivienda` (
   `direccion` int NOT NULL,
   `ciudad` int NOT NULL,
   `fecha_alta_vivienda` datetime NOT NULL,
-  `id_anfitrion` int NOT NULL,
+  `id_anfitrion` varchar(25) NOT NULL,
   `activo_vivienda` tinyint(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 

@@ -372,14 +372,36 @@ document.addEventListener('DOMContentLoaded', async function() {
     });
 });
 
-function cargarSeguimientoConvivencias() {
-    if (listaConvivenciasMemoria.length === 0) {
-        listaConvivenciasMemoria = [
-            { id:1, anfitrion:'Mercedes Rosas',  inquilino:'Luis Martínez', inicio:'01/02/2026', estado:'activa'     },
-            { id:2, anfitrion:'Ramón Vázquez',   inquilino:'Marta Soto',    inicio:null,          estado:'entrevista' },
-            { id:3, anfitrion:'Carmen Cid',      inquilino:'Javier López',  inicio:'15/03/2026', estado:'prueba'     }
-        ];
-    }
+async function cargarSeguimientoConvivencias() {
+    const [resUV, resV, resU] = await Promise.all([
+        apiPost('usuario_vivienda', 'getAll'),
+        apiPost('vivienda', 'getAll'),
+        apiPost('usuario', 'getAll')
+    ]);
+
+    const viviendasData = (resV.ok && Array.isArray(resV.resource)) ? resV.resource : [];
+    const usuariosData  = (resU.ok && Array.isArray(resU.resource)) ? resU.resource : [];
+    const relaciones    = (resUV.ok && Array.isArray(resUV.resource)) ? resUV.resource : [];
+
+    const nombreUsuario = mail => {
+        const u = usuariosData.find(u => u.mail === mail);
+        return u ? `${u.nombre_usuario} ${u.apellidos}`.trim() : mail;
+    };
+
+    listaConvivenciasMemoria = relaciones.map((r, i) => {
+        const vivienda = viviendasData.find(v => v.id_vivienda == r.id_vivienda);
+        return {
+            id:          i,
+            id_usuario:  r.id_usuario,
+            id_vivienda: r.id_vivienda,
+            anfitrion:   vivienda ? nombreUsuario(vivienda.id_anfitrion) : '-',
+            inquilino:   nombreUsuario(r.id_usuario),
+            vivienda:    vivienda ? (vivienda.descripcion || String(r.id_vivienda)) : String(r.id_vivienda),
+            inicio:      '-',
+            estado:      r.activo_usuario_vivienda == 1 ? 'activa' : 'finalizada'
+        };
+    });
+
     renderizarConvivencias(listaConvivenciasMemoria);
 }
 
@@ -393,25 +415,21 @@ function renderizarConvivencias(convivencias) {
         return;
     }
 
+    const badges = {
+        activa:     `<span class="badge rounded-pill px-3 py-2" style="background-color:#D1E7DD;color:#0F5132;">✓ Activa</span>`,
+        finalizada: `<span class="badge rounded-pill px-3 py-2" style="background-color:#e2e3e5;color:#383d41;">✕ Finalizada</span>`,
+        entrevista: `<span class="badge rounded-pill px-3 py-2" style="background-color:#FFF3CD;color:#856404;">⏳ Entrevista</span>`,
+        prueba:     `<span class="badge rounded-pill px-3 py-2" style="background-color:#CFE2FF;color:#084298;">⚠️ Prueba</span>`
+    };
+
     convivencias.forEach(c => {
-        const badges = {
-            activa:      `<span class="badge rounded-pill px-3 py-2" style="background-color:#D1E7DD;color:#0F5132;">✓ ${t('anfitrion.convivencias.statusActive').replace('✓ ','')}</span>`,
-            entrevista:  `<span class="badge rounded-pill px-3 py-2" style="background-color:#FFF3CD;color:#856404;">${t('anfitrion.convivencias.statusInterview')}</span>`,
-            prueba:      `<span class="badge rounded-pill px-3 py-2" style="background-color:#CFE2FF;color:#084298;">${t('anfitrion.convivencias.statusTrial')}</span>`,
-            finalizada:  `<span class="badge rounded-pill px-3 py-2" style="background-color:#e2e3e5;color:#383d41;">✕ Finalizada</span>`
-        };
         const row = document.createElement('tr');
         row.innerHTML = `
             <td class="fw-semibold">${c.anfitrion}</td>
             <td>${c.inquilino}</td>
-            <td>${c.inicio || '-'}</td>
-            <td>${badges[c.estado] || c.estado}</td>
-            <td>
-                <button class="btn btn-sm btn-outline-secondary rounded-pill px-3"
-                        onclick="editarConvivencia(${c.id})">
-                    <i class="bi bi-pencil me-1"></i> Editar
-                </button>
-            </td>
+            <td class="text-muted small">${c.vivienda}</td>
+            <td>${c.inicio}</td>
+            <td>${badges[c.estado] ?? c.estado}</td>
         `;
         tbody.appendChild(row);
     });
