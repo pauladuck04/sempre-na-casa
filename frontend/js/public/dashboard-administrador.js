@@ -15,30 +15,49 @@ const FILTROS_POR_SECCION = {
 const CONFIG_MODALES = {
     usuarios: {
         getTitulo: () => t('admin.users.createTitle'),
-        getHtml: () => `
-            <div class="mb-3"><label class="form-label fw-bold">${t('admin.users.fullName')}</label><input name="nombre" class="form-control" placeholder="Ej: Juan Pérez" required></div>
-            <div class="mb-3"><label class="form-label fw-bold">${t('admin.users.email')}</label><input type="email" name="email" class="form-control" placeholder="usuario@ejemplo.com" required></div>
+        getHtml: () => {
+            const rolesOpts = roles.listaRolesMemoria.length > 0
+                ? roles.listaRolesMemoria.map(r => `<option value="${r.id}">${r.nombre}</option>`).join('')
+                : '<option value="" disabled>No hay roles disponibles</option>';
+            return `
+            <div class="row">
+                <div class="col-md-6 mb-3"><label class="form-label fw-bold">Nombre</label><input name="nombre_usuario" class="form-control" required></div>
+                <div class="col-md-6 mb-3"><label class="form-label fw-bold">Apellidos</label><input name="apellidos" class="form-control" required></div>
+            </div>
+            <div class="mb-3"><label class="form-label fw-bold">${t('admin.users.email')}</label><input type="email" name="mail" class="form-control" required></div>
             <div class="row">
                 <div class="col-md-6 mb-3"><label class="form-label fw-bold">${t('admin.users.dni')}</label><input name="dni" class="form-control" required></div>
-                <div class="col-md-6 mb-3"><label class="form-label fw-bold">${t('admin.users.phone')}</label><input name="tel" class="form-control" required></div>
+                <div class="col-md-6 mb-3"><label class="form-label fw-bold">${t('admin.users.phone')}</label><input name="telefono" class="form-control" required></div>
             </div>
+            <div class="mb-3"><label class="form-label fw-bold">Contraseña</label><input type="password" name="password" class="form-control"></div>
             <div class="mb-3">
                 <label class="form-label fw-bold">${t('admin.users.role')}</label>
-                <select name="rol" class="form-select">
-                    <option value="inquilino">${t('admin.users.roleInquilino')}</option>
-                    <option value="anfitrion">${t('admin.users.roleAnfitrion')}</option>
-                </select>
-            </div>`
+                <select name="id_rol" class="form-select">${rolesOpts}</select>
+            </div>`;
+        }
     },
     viviendas: {
         getTitulo: () => t('admin.homes.createTitle'),
-        getHtml: () => `
+        getHtml: (anfitrionActualId = null) => {
+            const tomados = new Set(viviendas.listaViviendasMemoria.map(v => Number(v.anfitrion)));
+            const optsAnfitrion = usuarios.listaUsuariosMemoria
+                .filter(u => u.id_rol == 2 && (!tomados.has(Number(u.id)) || Number(u.id) === Number(anfitrionActualId)))
+                .map(u => `<option value="${u.id}">${u.nombre} (${u.email})</option>`)
+                .join('');
+            return `
             <div class="mb-3"><label class="form-label fw-bold">${t('admin.homes.address')}</label><input name="direccion" class="form-control" required></div>
             <div class="mb-3"><label class="form-label fw-bold">${t('admin.homes.city')}</label><input name="ciudad" class="form-control" required></div>
             <div class="mb-3"><label class="form-label fw-bold">Descripción</label><input name="descripcion" class="form-control" required></div>
             <div class="mb-3"><label class="form-label fw-bold">${t('admin.homes.freeSlots')}</label><input type="number" name="plazas_libres" class="form-control" required></div>
             <div class="mb-3"><label class="form-label fw-bold">${t('admin.homes.totalSlots')}</label><input type="number" name="plazas_totales" class="form-control" required></div>
-            <div class="mb-3"><label class="form-label fw-bold">${t('admin.homes.host')}</label><input name="id_anfitrion" class="form-control" required></div>`
+            <div class="mb-3">
+                <label class="form-label fw-bold">${t('admin.homes.host')}</label>
+                <select name="id_anfitrion" class="form-select" required>
+                    <option value="">-- Selecciona anfitrión --</option>
+                    ${optsAnfitrion || '<option value="" disabled>No hay anfitriones disponibles</option>'}
+                </select>
+            </div>`;
+        }
     },
     roles: {
         getTitulo: () => t('admin.roles.createTitle'),
@@ -128,9 +147,15 @@ document.addEventListener('DOMContentLoaded', async function() {
         document.getElementById('filtros-globales').classList.add('d-none');
     });
 
-    document.getElementById('btnCrear')?.addEventListener('click', () => {
+    document.getElementById('btnCrear')?.addEventListener('click', async () => {
         const seccion = document.querySelector('.section-link.active-custom')?.getAttribute('data-section') || 'usuarios';
         const efectiva = seccion === 'criterios' ? getActiveCriteriosSubTab() : seccion;
+        if (efectiva === 'viviendas' && usuarios.listaUsuariosMemoria.length === 0) {
+            await usuarios.cargarUsuarios();
+        }
+        if (efectiva === 'usuarios' && roles.listaRolesMemoria.length === 0) {
+            await roles.cargarRoles();
+        }
         abrirModalGenerico(efectiva);
     });
 
@@ -154,11 +179,12 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (efectiva === 'usuarios') {
             const u = usuarios.listaUsuariosMemoria.find(x => x.id === id);
             if (u) {
-                form.querySelector('[name="nombre"]').value = u.nombre;
-                form.querySelector('[name="email"]').value  = u.email;
-                form.querySelector('[name="dni"]').value    = u.dni;
-                form.querySelector('[name="tel"]').value    = u.telefono;
-                form.querySelector('[name="rol"]').value    = u.rol;
+                form.querySelector('[name="nombre_usuario"]').value = u.nombre_usuario;
+                form.querySelector('[name="apellidos"]').value      = u.apellidos;
+                form.querySelector('[name="mail"]').value           = u.email;
+                form.querySelector('[name="dni"]').value            = u.dni;
+                form.querySelector('[name="telefono"]').value       = u.telefono;
+                form.querySelector('[name="id_rol"]').value         = String(u.id_rol);
                 document.getElementById('modalTitle').textContent = `${t('admin.users.editTitle')}: ${u.nombre}`;
             }
         } else if (efectiva === 'roles') {
@@ -184,12 +210,13 @@ document.addEventListener('DOMContentLoaded', async function() {
         } else if (efectiva === 'viviendas') {
             const v = viviendas.listaViviendasMemoria.find(x => x.id === id);
             if (v) {
+                document.getElementById('modalFormContent').innerHTML = CONFIG_MODALES.viviendas.getHtml(v.anfitrion);
                 form.querySelector('[name="direccion"]').value      = v.direccion;
                 form.querySelector('[name="ciudad"]').value         = v.ciudad;
                 form.querySelector('[name="descripcion"]').value    = v.descripcion;
                 form.querySelector('[name="plazas_libres"]').value  = v.plazas_libres;
                 form.querySelector('[name="plazas_totales"]').value = v.plazas_totales;
-                form.querySelector('[name="id_anfitrion"]').value   = v.anfitrion;
+                form.querySelector('[name="id_anfitrion"]').value   = String(v.anfitrion);
                 document.getElementById('modalTitle').textContent = `${t('admin.homes.editTitle')}: ${v.direccion}`;
             }
         }
@@ -250,6 +277,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     document.getElementById('formGenerico')?.addEventListener('submit', async function(e) {
         e.preventDefault();
+        try {
         const seccionActual = document.querySelector('.section-link.active-custom').getAttribute('data-section');
         const data = Object.fromEntries(new FormData(this));
 
@@ -270,16 +298,49 @@ document.addEventListener('DOMContentLoaded', async function() {
             };
             if (data.id_edit) {
                 params.id_vivienda = data.id_edit;
-                await apiPost('vivienda', 'EDIT', params);
+                const res = await apiPost('vivienda', 'EDIT', params);
+                if (!res.ok) { alert('Error al guardar vivienda: ' + (res.code || 'desconocido')); return; }
             } else {
-                await apiPost('vivienda', 'ADD', params);
+                const res = await apiPost('vivienda', 'ADD', params);
+                if (!res.ok) { alert('Error al crear vivienda: ' + (res.code || 'desconocido')); return; }
             }
             viviendas.listaViviendasMemoria.splice(0);
             await viviendas.cargarViviendas();
         } else if (seccionActual === 'usuarios') {
+            if (!data.id_edit && !data.password) {
+                alert('La contraseña es obligatoria para crear un nuevo usuario.');
+                return;
+            }
+            const params = {
+                nombre_usuario: data.nombre_usuario,
+                apellidos:      data.apellidos,
+                mail:           data.mail,
+                dni:            data.dni,
+                telefono:       data.telefono,
+                id_rol:         data.id_rol
+            };
+            if (data.id_edit) {
+                params.id_usuario = data.id_edit;
+                if (data.password) params.password = data.password;
+                const res = await apiPost('usuario', 'EDIT', params);
+                if (!res.ok) { alert('Error al guardar: ' + (res.code || 'desconocido')); return; }
+            } else {
+                params.password = data.password;
+                const res = await apiPost('usuario', 'ADD', params);
+                if (!res.ok) { alert('Error al crear usuario: ' + (res.code || 'desconocido')); return; }
+            }
             usuarios.listaUsuariosMemoria.splice(0);
             await usuarios.cargarUsuarios();
         } else if (seccionActual === 'roles') {
+            const params = { nombre_rol: data.nombre };
+            if (data.id_edit) {
+                params.id_rol = data.id_edit;
+                const res = await apiPost('rol', 'EDIT', params);
+                if (!res.ok) { alert('Error al guardar rol: ' + (res.code || 'desconocido')); return; }
+            } else {
+                const res = await apiPost('rol', 'ADD', params);
+                if (!res.ok) { alert('Error al crear rol: ' + (res.code || 'desconocido')); return; }
+            }
             roles.listaRolesMemoria.splice(0);
             await roles.cargarRoles();
         } else if (seccionActual === 'criterios') {
@@ -292,17 +353,21 @@ document.addEventListener('DOMContentLoaded', async function() {
                 };
                 if (data.id_edit) {
                     params.id_opcion = data.id_edit;
-                    await apiPost('opcion', 'EDIT', params);
+                    const res = await apiPost('opcion', 'EDIT', params);
+                    if (!res.ok) { alert('Error al guardar opción: ' + (res.code || 'desconocido')); return; }
                 } else {
-                    await apiPost('opcion', 'ADD', params);
+                    const res = await apiPost('opcion', 'ADD', params);
+                    if (!res.ok) { alert('Error al crear opción: ' + (res.code || 'desconocido')); return; }
                 }
             } else {
                 const params = { nombre_criterio: data.nombre };
                 if (data.id_edit) {
                     params.id_criterio = data.id_edit;
-                    await apiPost('criterio', 'EDIT', params);
+                    const res = await apiPost('criterio', 'EDIT', params);
+                    if (!res.ok) { alert('Error al guardar criterio: ' + (res.code || 'desconocido')); return; }
                 } else {
-                    await apiPost('criterio', 'ADD', params);
+                    const res = await apiPost('criterio', 'ADD', params);
+                    if (!res.ok) { alert('Error al crear criterio: ' + (res.code || 'desconocido')); return; }
                 }
             }
             criterios.listaCriteriosMemoria.splice(0);
@@ -312,6 +377,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         aplicarFiltros();
         bootstrap.Modal.getInstance(document.getElementById('modalGenerico')).hide();
+        } catch(err) { alert('ERROR en submit: ' + err.message); console.error(err); }
     });
 
     // Perfil
@@ -381,7 +447,9 @@ document.addEventListener('DOMContentLoaded', async function() {
 
             switch(sectionName) {
                 case 'general':   cargarSeguimientoConvivencias(); break;
-                case 'usuarios':  usuarios.cargarUsuarios();  break;
+                case 'usuarios':
+                    roles.cargarRoles().then(() => usuarios.cargarUsuarios());
+                    break;
                 case 'roles':     roles.cargarRoles();        break;
                 case 'viviendas': viviendas.cargarViviendas();break;
                 case 'criterios': criterios.cargarCriterios();break;

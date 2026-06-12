@@ -22,7 +22,7 @@ class rol_SERVICE extends appServiceBase {
 
         $this->notnull = array(
             'ADD'    => array('nombre_rol'),
-            'EDIT'   => array('nombre_rol'),
+            'EDIT'   => array('id_rol', 'nombre_rol'),
             'DELETE' => array('id_rol'),
         );
 
@@ -34,6 +34,12 @@ class rol_SERVICE extends appServiceBase {
             $_POST['fecha_alta_rol'] = date('Y-m-d H:i:s');
             $_POST['activo_rol']     = 1;
         }
+    }
+
+    function EDIT() {
+        unset($this->modelo->valores['fecha_alta_rol']);
+        unset($this->modelo->valores['activo_rol']);
+        return $this->modelo->EDIT();
     }
 
     function getAll() {

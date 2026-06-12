@@ -78,10 +78,10 @@ INSERT INTO `rol` (`id_rol`, `nombre_rol`, `fecha_alta_rol`, `activo_rol`) VALUE
 CREATE TABLE `usuario` (
   `id_usuario` int NOT NULL,
   `dni` varchar(9) NOT NULL,
-  `mail` varchar(25) NOT NULL,
-  `nombre_usuario` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `mail` varchar(100) NOT NULL,
+  `nombre_usuario` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `apellidos` varchar(50) NOT NULL,
-  `password` varchar(10) NOT NULL,
+  `password` varchar(255) NOT NULL,
   `telefono` varchar(9) NOT NULL,
   `fecha_alta_usuario` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `activo_usuario` tinyint(1) NOT NULL DEFAULT '1',
