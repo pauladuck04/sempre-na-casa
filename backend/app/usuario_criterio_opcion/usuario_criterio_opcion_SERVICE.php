@@ -23,17 +23,25 @@ class usuario_criterio_opcion_SERVICE extends appServiceBase {
         $this->notnull = array(
             'ADD'  => array('id_usuario', 'id_criterio', 'id_opcion'),
             'EDIT' => array('id_usuario', 'id_criterio', 'id_opcion'),
-            'DELETE' => array('id_usuario', 'id_criterio', 'id_opcion'),
+            'DELETE'    => array('id_usuario', 'id_criterio', 'id_opcion'),
+            'REACTIVAR' => array('id_usuario', 'id_criterio', 'id_opcion'),
         );
 
-        $this->modelo = $this->crearModelOne('opcion');
+        $this->modelo = $this->crearModelOne('usuario_criterio_opcion');
     }
 
     function modificacion_atributos() {
         if (isset($_POST['action']) && $_POST['action'] == 'ADD') {
-            $_POST['fecha_alta_opcion'] = date('Y-m-d H:i:s');
-            $_POST['activo_opcion']     = 1;
+            $_POST['activo_usuario_criterio_opcion'] = 1;
         }
+    }
+
+    function DELETE() {
+        return $this->softDelete('activo_usuario_criterio_opcion');
+    }
+
+    function REACTIVAR() {
+        return $this->reactivarRegistro('activo_usuario_criterio_opcion');
     }
 
     function getAll() {
@@ -48,8 +56,9 @@ class usuario_criterio_opcion_SERVICE extends appServiceBase {
         foreach ($this->modelo->valores as $key => $value) {
             $this->modelo->valores[$key] = '';
         }
-        $primaryKey = $this->modelo->clave[0];
-        $this->modelo->valores[$primaryKey] = $_POST['id'];
+        $this->modelo->valores['id_usuario']  = $_POST['id_usuario'];
+        $this->modelo->valores['id_criterio'] = $_POST['id_criterio'];
+        $this->modelo->valores['id_opcion']   = $_POST['id_opcion'];
         $this->modelo->foraneas = [];
         return $this->modelo->SEARCH_BY();
     }

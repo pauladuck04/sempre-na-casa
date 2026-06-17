@@ -23,7 +23,8 @@ class opcion_SERVICE extends appServiceBase {
         $this->notnull = array(
             'ADD'    => array('nombre_opcion', 'valor' ,'id_criterio'),
             'EDIT'   => array('id_opcion', 'nombre_opcion', 'valor', 'id_criterio'),
-            'DELETE' => array('id_opcion'),
+            'DELETE'    => array('id_opcion'),
+            'REACTIVAR' => array('id_opcion'),
         );
 
         $this->modelo = $this->crearModelOne('opcion');
@@ -44,6 +45,14 @@ class opcion_SERVICE extends appServiceBase {
         return $this->modelo->SEARCH();
     }
 
+    function DELETE() {
+        return $this->softDelete('activo_opcion');
+    }
+
+    function REACTIVAR() {
+        return $this->reactivarRegistro('activo_opcion');
+    }
+
     function EDIT() {
         unset($this->modelo->valores['fecha_alta_opcion']);
         unset($this->modelo->valores['activo_opcion']);
@@ -55,7 +64,7 @@ class opcion_SERVICE extends appServiceBase {
             $this->modelo->valores[$key] = '';
         }
         $primaryKey = $this->modelo->clave[0];
-        $this->modelo->valores[$primaryKey] = $_POST['id'];
+        $this->modelo->valores[$primaryKey] = $_POST['id_opcion'];
         $this->modelo->foraneas = [];
         return $this->modelo->SEARCH_BY();
     }

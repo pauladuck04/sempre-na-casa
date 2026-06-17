@@ -23,7 +23,8 @@ class vivienda_SERVICE extends appServiceBase {
         $this->notnull = array(
             'ADD'    => array('descripcion', 'plazas_libres', 'plazas_totales', 'id_anfitrion', 'direccion', 'ciudad'),
             'EDIT'   => array('descripcion', 'plazas_libres', 'plazas_totales', 'id_anfitrion', 'direccion', 'ciudad'),
-            'DELETE' => array('id_vivienda'),
+            'DELETE'    => array('id_vivienda'),
+            'REACTIVAR' => array('id_vivienda'),
         );
 
         $this->modelo = $this->crearModelOne('vivienda');
@@ -42,6 +43,14 @@ class vivienda_SERVICE extends appServiceBase {
         }
         $this->modelo->foraneas = [];
         return $this->modelo->SEARCH();
+    }
+
+    function DELETE() {
+        return $this->softDelete('activo_vivienda');
+    }
+
+    function REACTIVAR() {
+        return $this->reactivarRegistro('activo_vivienda');
     }
 
     function EDIT() {

@@ -23,7 +23,8 @@ class criterio_SERVICE extends appServiceBase {
         $this->notnull = array(
             'ADD'    => array('nombre_criterio'),            
             'EDIT'   => array('id_criterio', 'nombre_criterio'),
-            'DELETE' => array('id_criterio'),
+            'DELETE'    => array('id_criterio'),
+            'REACTIVAR' => array('id_criterio'),
         );
 
         $this->modelo = $this->crearModelOne('criterio');
@@ -42,6 +43,14 @@ class criterio_SERVICE extends appServiceBase {
         }
         $this->modelo->foraneas = [];
         return $this->modelo->SEARCH();
+    }
+
+    function DELETE() {
+        return $this->softDelete('activo_criterio');
+    }
+
+    function REACTIVAR() {
+        return $this->reactivarRegistro('activo_criterio');
     }
 
     function EDIT() {

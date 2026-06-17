@@ -23,7 +23,8 @@ class usuario_SERVICE extends appServiceBase{
 		$this->notnull = array(
 						'ADD'    => array('dni','mail','nombre_usuario','apellidos','password','telefono','id_rol'),
 						'EDIT'   => array('id_usuario','dni','mail','nombre_usuario','apellidos','telefono','id_rol'),
-						'DELETE' => array('id_usuario')
+						'DELETE'    => array('id_usuario'),
+						'REACTIVAR' => array('id_usuario')
 						);
 
 		$this->modelo = $this->crearModelOne('usuario');
@@ -38,6 +39,14 @@ class usuario_SERVICE extends appServiceBase{
         if (!empty($_POST['password'])) {
             $_POST['password'] = md5($_POST['password']);
         }
+    }
+
+    function DELETE() {
+        return $this->softDelete('activo_usuario');
+    }
+
+    function REACTIVAR() {
+        return $this->reactivarRegistro('activo_usuario');
     }
 
     function EDIT() {

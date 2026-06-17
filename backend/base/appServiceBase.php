@@ -215,6 +215,49 @@ abstract class appServiceBase{
 	function modificacion_atributos(){
 
 	}
+
+	function reactivarRegistro($campoActivo) {
+		$this->modelo->foraneas = [];
+		$resultado = $this->modelo->SEARCH_BY();
+
+		if ($resultado['code'] == 'RECORDSET_VACIO') {
+			return array('ok' => false, 'code' => 'REGISTRO_NO_ENCONTRADO_KO');
+		}
+
+		$registro = $resultado['resource'][0];
+
+		if ($registro[$campoActivo] == 1) {
+			return array('ok' => false, 'code' => 'REGISTRO_YA_ACTIVO_KO');
+		}
+
+		$tabla = $this->modelo->tabla;
+		$condiciones = array();
+		foreach ($this->modelo->clave as $pk) {
+			$condiciones[] = "`{$pk}` = " . intval($this->modelo->valores[$pk]);
+		}
+		$where = implode(' AND ', $condiciones);
+		$map = new mapping($tabla);
+		$res = $map->lanzarquery("UPDATE `{$tabla}` SET `{$campoActivo}` = 1 WHERE {$where}");
+		if ($res['ok']) {
+			$res['code'] = 'REACTIVACION_OK';
+		}
+		return $res;
+	}
+
+	function softDelete($campoActivo) {
+		$tabla  = $this->modelo->tabla;
+		$condiciones = array();
+		foreach ($this->modelo->clave as $pk) {
+			$condiciones[] = "`{$pk}` = " . intval($this->modelo->valores[$pk]);
+		}
+		$where = implode(' AND ', $condiciones);
+		$map = new mapping($tabla);
+		$res = $map->lanzarquery("UPDATE `{$tabla}` SET `{$campoActivo}` = 0 WHERE {$where}");
+		if ($res['ok']) {
+			$res['code'] = 'BAJA_LOGICA_OK';
+		}
+		return $res;
+	}
 	
 	function procesarfiles($ficheros){
 

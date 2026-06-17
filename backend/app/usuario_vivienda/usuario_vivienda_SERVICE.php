@@ -23,7 +23,8 @@ class usuario_vivienda_SERVICE extends appServiceBase {
         $this->notnull = array(
             'ADD'    => array('id_usuario', 'id_vivienda'),
             'EDIT'   => array('id_usuario', 'id_vivienda'),
-            'DELETE' => array('id_usuario', 'id_vivienda'),
+            'DELETE'    => array('id_usuario', 'id_vivienda'),
+            'REACTIVAR' => array('id_usuario', 'id_vivienda'),
         );
 
         $this->modelo = $this->crearModelOne('usuario_vivienda');
@@ -33,6 +34,14 @@ class usuario_vivienda_SERVICE extends appServiceBase {
         if (isset($_POST['action']) && $_POST['action'] == 'ADD') {
             $_POST['activo_usuario_vivienda']     = 1;
         }
+    }
+
+    function DELETE() {
+        return $this->softDelete('activo_usuario_vivienda');
+    }
+
+    function REACTIVAR() {
+        return $this->reactivarRegistro('activo_usuario_vivienda');
     }
 
     function getAll() {

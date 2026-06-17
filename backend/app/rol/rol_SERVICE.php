@@ -23,7 +23,8 @@ class rol_SERVICE extends appServiceBase {
         $this->notnull = array(
             'ADD'    => array('nombre_rol'),
             'EDIT'   => array('id_rol', 'nombre_rol'),
-            'DELETE' => array('id_rol'),
+            'DELETE'    => array('id_rol'),
+            'REACTIVAR' => array('id_rol'),
         );
 
         $this->modelo = $this->crearModelOne('rol');
@@ -34,6 +35,14 @@ class rol_SERVICE extends appServiceBase {
             $_POST['fecha_alta_rol'] = date('Y-m-d H:i:s');
             $_POST['activo_rol']     = 1;
         }
+    }
+
+    function DELETE() {
+        return $this->softDelete('activo_rol');
+    }
+
+    function REACTIVAR() {
+        return $this->reactivarRegistro('activo_rol');
     }
 
     function EDIT() {
@@ -55,7 +64,7 @@ class rol_SERVICE extends appServiceBase {
             $this->modelo->valores[$key] = '';
         }
         $primaryKey = $this->modelo->clave[0];
-        $this->modelo->valores[$primaryKey] = $_POST['id'];
+        $this->modelo->valores[$primaryKey] = $_POST['id_rol'];
         $this->modelo->foraneas = [];
         return $this->modelo->SEARCH_BY();
     }
