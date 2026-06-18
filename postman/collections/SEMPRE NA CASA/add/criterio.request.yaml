@@ -1,0 +1,10 @@
+$kind: http-request
+url: http://localhost:8081
+method: POST
+body:
+  type: urlencoded
+  content:
+    controlador: criterio
+    action: ADD
+    nombre_criterio: Tabaco
+order: 6000

@@ -1,0 +1,10 @@
+$kind: http-request
+url: http://localhost:8081
+method: POST
+body:
+  type: urlencoded
+  content:
+    controlador: usuario
+    action: DELETE
+    id_usuario: "5"
+order: 1000

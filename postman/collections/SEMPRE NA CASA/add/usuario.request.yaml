@@ -1,0 +1,16 @@
+$kind: http-request
+url: http://localhost:8081
+method: POST
+body:
+  type: urlencoded
+  content:
+    controlador: usuario
+    action: ADD
+    dni: 1234567E
+    mail: test@ejemplo.com
+    nombre_usuario: Pedro
+    apellidos: Gonzalez Rodriguez
+    password: "1234"
+    telefono: "123456789"
+    id_rol: "1"
+order: 1000

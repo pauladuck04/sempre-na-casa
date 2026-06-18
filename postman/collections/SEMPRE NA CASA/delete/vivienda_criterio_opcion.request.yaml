@@ -1,0 +1,12 @@
+$kind: http-request
+url: http://localhost:8081
+method: POST
+body:
+  type: urlencoded
+  content:
+    controlador: vivienda_criterio_opcion
+    action: DELETE
+    id_criterio: "1"
+    id_vivienda: "1"
+    id_opcion: "1"
+order: 7000

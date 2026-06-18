@@ -1,0 +1,12 @@
+$kind: http-request
+url: http://localhost:8081
+method: POST
+body:
+  type: urlencoded
+  content:
+    controlador: opcion
+    action: ADD
+    id_criterio: "1"
+    nombre_opcion: Intolerante
+    valor: "10"
+order: 7000

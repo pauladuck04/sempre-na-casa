@@ -1,0 +1,9 @@
+$kind: http-request
+url: http://localhost:8081
+method: POST
+body:
+  type: urlencoded
+  content:
+    controlador: criterio
+    action: getAll
+order: 4000

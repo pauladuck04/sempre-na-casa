@@ -6,154 +6,206 @@ class AUTH_SERVICE extends appServiceBase{
 
 	public $modelo;
 
-	//METODOS
-
 	function __construct(){
-
 		parent::__construct();
-
 	}
 
 	function inicializarRest(){
 
-		$this->listaAtributos = array('dni', 'nombre_persona', 'apellidos_persona','fechaNacimiento_persona', 'direccion_persona','telefono_persona','email_persona','usuario','contrasena','id_rol');
+		$this->normalizarAtributos();
 
-		$this->listaAtributosSelect = array('dni', 'nombre_persona', 'apellidos_persona','fechaNacimiento_persona', 'direccion_persona','telefono_persona','email_persona','usuario','contrasena','id_rol');
+		$this->listaAtributos = array(
+			'id_usuario','dni','mail','nombre_usuario','apellidos','password',
+			'telefono','fecha_alta_usuario','activo_usuario','id_rol'
+		);
+
+		$this->listaAtributosSelect = array(
+			'id_usuario','dni','mail','nombre_usuario','apellidos','telefono',
+			'fecha_alta_usuario','activo_usuario','id_rol'
+		);
 
 		$this->notnull = array(
-						'LOGIN'=>array('usuario', 'contrasena'),
-						'DESCONECTAR'=>array('usuario'),
-						'CAMBIAR_CONTRASENA'=>array('dni','contrasena'),
-						'REGISTRAR'=>array('dni', 'nombre_persona', 'apellidos_persona','fechaNacimiento_persona', 'direccion_persona','telefono_persona','email_persona','usuario','contrasena')
-						);
+			'LOGIN' => array('mail', 'password'),
+			'DESCONECTAR' => array('mail'),
+			'CAMBIAR_CONTRASENA' => array('id_usuario', 'password'),
+			'CAMBIAR_PASSWORD' => array('id_usuario', 'password'),
+			'REGISTRAR' => array('dni','mail','nombre_usuario','apellidos','password','telefono')
+		);
 
 		$this->modelo = $this->crearModelOne('usuario');
-
 	}
 
+	function normalizarAtributos(){
+
+		if (isset($_POST['email']) && !isset($_POST['mail'])){
+			$_POST['mail'] = $_POST['email'];
+		}
+
+		if (isset($_POST['nombre']) && !isset($_POST['nombre_usuario'])){
+			$_POST['nombre_usuario'] = $_POST['nombre'];
+		}
+
+		if (isset($_POST['contrasena']) && !isset($_POST['password'])){
+			$_POST['password'] = $_POST['contrasena'];
+		}
+
+		if (isset($_POST['usuario']) && !isset($_POST['mail'])){
+			$_POST['mail'] = $_POST['usuario'];
+		}
+
+		if (!isset($_POST['id_rol']) && isset($_POST['rol'])){
+			$_POST['id_rol'] = ($_POST['rol'] == 'anfitrion') ? 2 : 1;
+		}
+	}
 
 	function cargarTokenCabecera(){
 
-		$tokenFront = '';	
+		$tokenFront = '';
 
-		foreach(apache_request_headers() as $header =>$value){
-			if($header == 'Authorization')
-				$tokenFront = $value;
-		}	
-		
+		if (function_exists('apache_request_headers')){
+			foreach(apache_request_headers() as $header => $value){
+				if(strtolower($header) == 'authorization'){
+					$tokenFront = $value;
+				}
+			}
+		}
+
 		return $tokenFront;
-
 	}
 
 	function LOGIN(){
 
+		$mail = $_POST['mail'];
+		$password = $_POST['password'];
+		$postOriginal = $_POST;
+
 		include_once './app/usuario/usuario_SERVICE.php';
-		$_POST['controlador'] = 'usuario';
-		$_POST['action'] = 'SEARCH_BY'; 
+		$_POST = array(
+			'controlador' => 'usuario',
+			'action' => 'SEARCH_BY',
+			'mail' => $mail
+		);
+
 		$usuario = new usuario_SERVICE;
 		$respuesta = $usuario->ejecutar();
+		$_POST = $postOriginal;
 
-		if (!(empty($respuesta['resource']))){
-
-			$fila = $respuesta['resource'][0];
-			if ($fila['contrasena'] == $_POST['contrasena']){
-
-				//$usuarioDatos = ['usuario' => $_POST['usuario'],'contrasena' => $_POST['contrasena']];
-				include_once "./Base/JWT/token.php";
-				$token = MiToken::creaToken($_POST['usuario'],$_POST['contrasena'] );
-
-				$feedback['ok'] = true;
-				$feedback['code'] = literal['LOGIN_OK'];
-				$feedback['resource'] = $token;
-
-			}
-			else{
-				$feedback['ok'] = false;
-				$feedback['code'] = literal['USUARIO_PASS_KO'];
-				$feedback['resource'] = array($_POST['usuario'],$_POST['contrasena']);
-			}
-		}
-		else{
-			$feedback['ok'] = false;
-			$feedback['code'] = literal['USUARIO_LOGIN_KO'];
-			$feedback['resource'] = array($_POST['usuario'],$_POST['contrasena']);
+		if (empty($respuesta['resource'])){
+			return array(
+				'ok' => false,
+				'code' => 'USUARIO_LOGIN_KO',
+				'resource' => array('mail' => $mail)
+			);
 		}
 
+		$fila = $respuesta['resource'][0];
 
-		return $feedback;
+		if ($fila['password'] != md5($password)){
+			return array(
+				'ok' => false,
+				'code' => 'USUARIO_PASS_KO',
+				'resource' => array('mail' => $mail)
+			);
+		}
 
-	} 
+		if (isset($fila['activo_usuario']) && $fila['activo_usuario'] != 1){
+			return array(
+				'ok' => false,
+				'code' => 'USUARIO_INACTIVO_KO',
+				'resource' => array('mail' => $mail)
+			);
+		}
+
+		include_once './Base/JWT/token.php';
+		$datosUsuario = array(
+			'id_usuario' => $fila['id_usuario'],
+			'mail' => $fila['mail'],
+			'nombre_usuario' => $fila['nombre_usuario'],
+			'apellidos' => $fila['apellidos'],
+			'id_rol' => $fila['id_rol']
+		);
+		$token = MiToken::creaToken($fila['mail'], '', $datosUsuario);
+
+		return array(
+			'ok' => true,
+			'code' => 'LOGIN_OK',
+			'resource' => array(
+				'token' => $token,
+				'usuario' => array(
+					'id_usuario' => $fila['id_usuario'],
+					'dni' => $fila['dni'],
+					'mail' => $fila['mail'],
+					'nombre_usuario' => $fila['nombre_usuario'],
+					'apellidos' => $fila['apellidos'],
+					'telefono' => $fila['telefono'],
+					'id_rol' => $fila['id_rol']
+				)
+			)
+		);
+	}
 
 	function REGISTRAR(){
 
-		include_once './app/persona/persona_SERVICE.php';
-		$persona = new persona_SERVICE;
-		$_POST['controlador'] = 'persona';
+		if (!isset($_POST['id_rol']) || $_POST['id_rol'] == ''){
+			$_POST['id_rol'] = 1;
+		}
+
+		$postOriginal = $_POST;
+
+		include_once './app/usuario/usuario_SERVICE.php';
+		$_POST['controlador'] = 'usuario';
 		$_POST['action'] = 'ADD';
-		$res = $persona->ejecutar();
 
-		if ($res['ok'] === true){ //no hay error insertando persona
-			include_once './app/usuario/usuario_SERVICE.php';
-			$_POST['controlador'] = 'usuario';
-			$_POST['id_rol'] = 1; //inicializar el valor del id_rol al por defecto
-			$usuario = new usuario_SERVICE;
-			$res = $usuario->ejecutar();
+		$usuario = new usuario_SERVICE;
+		$res = $usuario->ejecutar();
+		$_POST = $postOriginal;
 
-			if ($res['ok'] === true){ // no hay error insertando usuario
-				$res = $usuario->cambiar_contrasena();
-				if ($res['ok'] === true){ // no hay error cambiando la contraseña
-					$res['code'] = literal['REGISTRAR_OK'];
-				}
-				else //error cambiando contraseña
-				{
-					$res['code'] = literal['CAMBIAR_contrasena_KO'];
-				}
-			}
-			else{ //hay error insertando usuario
-				$_POST['action'] = 'DELETE';
-				$persona->ejecutar();
-			}
-		}
-		else{ //hay error al insertar la persona
+		if ($res['ok'] === true){
+			$res['code'] = 'REGISTRAR_OK';
 		}
 
-		$res['resource'] = '';
 		return $res;
 	}
 
 	function CAMBIAR_CONTRASENA(){
+		return $this->CAMBIAR_PASSWORD();
+	}
 
-		if ($_POST['dni']=='11111111H'){
-			$respuesta['ok'] = false;
-			$respuesta['code'] = literal['admin_no_se_puede_modificar_KO'];
-			return $respuesta;
+	function CAMBIAR_PASSWORD(){
+
+		if (isset($_POST['dni']) && $_POST['dni'] == '11111111H'){
+			return array(
+				'ok' => false,
+				'code' => 'admin_no_se_puede_modificar_KO',
+				'resource' => ''
+			);
 		}
-		
-		include_once './app/usuario/usuario_SERVICE.php';
-		$_POST['controlador'] = 'usuario';
-		$usuario = new usuario_SERVICE;
-		$res = $usuario->cambiar_contrasena();
-		if ($res['ok'] === true){ // no hay error cambiando la contraseña
-			$res['code'] = literal['CAMBIAR_contrasena_OK'];
+
+		$idUsuario = intval($_POST['id_usuario']);
+		$password = md5($_POST['password']);
+
+		include_once './Base/mapping.php';
+		$map = new mapping('usuario');
+		$res = $map->lanzarquery("UPDATE usuario SET password = '".$password."' WHERE id_usuario = ".$idUsuario);
+
+		if ($res['ok'] === true){
+			$res['code'] = 'CAMBIAR_PASSWORD_OK';
 		}
-		else //error cambiando contraseña
-		{
-			$res['code'] = literal['CAMBIAR_contrasena_KO'];
+		else{
+			$res['code'] = 'CAMBIAR_PASSWORD_KO';
 		}
+
 		return $res;
-	
 	}
 
 	function validar_token(){
 
-		include_once "./Base/JWT/token.php";
-		$current_token = cargarTokenCabecera();
+		include_once './Base/JWT/token.php';
+		$current_token = $this->cargarTokenCabecera();
 		$resultado = MiToken::devuelveToken($current_token);
-		$password = $resultado->data->id;
-		$login = $resultado->data->name;
-		//echo 'comprobar en la bd si son correctos';
-	}
 
+		return $resultado->data;
+	}
 }
 
 ?>

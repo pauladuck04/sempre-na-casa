@@ -1,0 +1,10 @@
+$kind: http-request
+url: http://localhost:8081
+method: POST
+body:
+  type: urlencoded
+  content:
+    controlador: rol
+    action: DELETE
+    id_rol: "1"
+order: 8000

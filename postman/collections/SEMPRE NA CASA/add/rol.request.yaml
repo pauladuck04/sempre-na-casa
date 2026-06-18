@@ -1,0 +1,10 @@
+$kind: http-request
+url: http://localhost:8081
+method: POST
+body:
+  type: urlencoded
+  content:
+    controlador: rol
+    action: ADD
+    nombre_rol: SuperAdmin
+order: 8000
