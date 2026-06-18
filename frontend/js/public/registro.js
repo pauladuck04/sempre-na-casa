@@ -52,9 +52,32 @@ password2.addEventListener('input', () => {
     }
 });
 
+
+function mostrarError(msg) {
+    errorMessage.textContent = msg;
+    errorMessage.classList.remove('d-none');
+}
+
 form.addEventListener('submit', (e) => {
     e.preventDefault();
+    errorMessage.classList.add('d-none');
 
+    const dni      = document.getElementById('dni').value;
+    const telefono = document.getElementById('telefono').value;
+    const email    = document.getElementById('email').value;
+
+    if (!/^[0-9]{8}[A-Z]$/.test(dni)) {
+        mostrarError('El DNI debe tener 8 dígitos seguidos de una letra mayúscula (ej: 12345678A).');
+        return;
+    }
+    if (!/^[0-9]{9}$/.test(telefono)) {
+        mostrarError('El teléfono debe tener exactamente 9 dígitos.');
+        return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        mostrarError('El formato del email no es válido.');
+        return;
+    }
     if (password.value !== password2.value) {
         passError.classList.remove('d-none');
         return;

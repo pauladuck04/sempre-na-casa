@@ -26,8 +26,14 @@ const CONFIG_MODALES = {
             </div>
             <div class="mb-3"><label class="form-label fw-bold">${t('admin.users.email')}</label><input type="email" name="mail" class="form-control" required></div>
             <div class="row">
-                <div class="col-md-6 mb-3"><label class="form-label fw-bold">${t('admin.users.dni')}</label><input name="dni" class="form-control" required></div>
-                <div class="col-md-6 mb-3"><label class="form-label fw-bold">${t('admin.users.phone')}</label><input name="telefono" class="form-control" required></div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">${t('admin.users.dni')}</label>
+                    <input name="dni" class="form-control" required maxlength="9">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">${t('admin.users.phone')}</label>
+                    <input name="telefono" class="form-control" required maxlength="9">
+                </div>
             </div>
             <div class="mb-3"><label class="form-label fw-bold">Contraseña</label><input type="password" name="password" class="form-control"></div>
             <div class="mb-3">
@@ -346,6 +352,18 @@ document.addEventListener('DOMContentLoaded', async function() {
             viviendas.listaViviendasMemoria.splice(0);
             await viviendas.cargarViviendas();
         } else if (seccionActual === 'usuarios') {
+            if (!/^[0-9]{8}[A-Z]$/.test(data.dni)) {
+                mostrarToast('El DNI debe tener 8 dígitos seguidos de una letra mayúscula (ej: 12345678A).');
+                return;
+            }
+            if (!/^[0-9]{9}$/.test(data.telefono)) {
+                mostrarToast('El teléfono debe tener exactamente 9 dígitos.');
+                return;
+            }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.mail)) {
+                mostrarToast('El formato del email no es válido.');
+                return;
+            }
             if (!data.id_edit && !data.password) {
                 alert('La contraseña es obligatoria para crear un nuevo usuario.');
                 return;
