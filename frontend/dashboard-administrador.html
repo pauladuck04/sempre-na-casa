@@ -92,11 +92,11 @@
                                 <table class="table table-hover align-middle">
                                     <thead class="table-light">
                                         <tr>
-                                            <th data-i18n="admin.table.host"></th>
-                                            <th data-i18n="admin.table.tenant"></th>
-                                            <th data-i18n="admin.table.home"></th>
-                                            <th data-i18n="admin.table.startDate"></th>
-                                            <th data-i18n="admin.table.status"></th>
+                                            <th>Anfitrión</th>
+                                            <th>Inquilino</th>
+                                            <th>Estado</th>
+                                            <th>Fecha inicio</th>
+                                            <th>Fecha fin</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tabla-convivencias"></tbody>
@@ -477,10 +477,10 @@
 
     <!-- Toast -->
     <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100;">
-        <div id="toastDashboard" class="toast align-items-center border-0" role="alert" aria-atomic="true">
+        <div id="toastDashboard" class="toast align-items-center border-0" role="alert" aria-atomic="true" style="max-width: none; width: max-content;">
             <div class="d-flex">
                 <div class="toast-body fw-semibold" id="toastDashboardMsg"></div>
-                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
             </div>
         </div>
     </div>

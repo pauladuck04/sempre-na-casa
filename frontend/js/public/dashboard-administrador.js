@@ -5,7 +5,7 @@ import * as criterios from '../admin/criterios.js';
 import * as viviendas from '../admin/viviendas.js';
 
 const FILTROS_POR_SECCION = {
-    usuarios: [{ campo: 'estado', opciones: [['activo','filterActive'],['pendiente','filterPending'],['inactivo','filterInactive']] }],
+    usuarios: [{ campo: 'estado', opciones: [['activo','filterActive'],['inactivo','filterInactive']] }],
     roles:    [{ campo: 'estado', opciones: [['activo','filterActive'],['inactivo','filterInactive']] }],
     viviendas:[{ campo: 'estado', opciones: [['disponible','filterAvailable'],['ocupada','filterOccupied'],['inactivo','filterInactive']] }],
     criterios:[{ campo: 'estado', opciones: [['activo','filterActive'],['inactivo','filterInactive']] }],
@@ -39,9 +39,9 @@ const CONFIG_MODALES = {
     viviendas: {
         getTitulo: () => t('admin.homes.createTitle'),
         getHtml: (anfitrionActualId = null) => {
-            const tomados = new Set(viviendas.listaViviendasMemoria.map(v => Number(v.anfitrion)));
+            const tomados = new Set(viviendas.listaViviendasMemoria.filter(v => v.estado !== 'inactivo').map(v => Number(v.anfitrion)));
             const optsAnfitrion = usuarios.listaUsuariosMemoria
-                .filter(u => u.id_rol == 2 && (!tomados.has(Number(u.id)) || Number(u.id) === Number(anfitrionActualId)))
+                .filter(u => !tomados.has(Number(u.id)) || Number(u.id) === Number(anfitrionActualId))
                 .map(u => `<option value="${u.id}">${u.nombre} (${u.email})</option>`)
                 .join('');
             return `
@@ -159,9 +159,16 @@ document.addEventListener('DOMContentLoaded', async function() {
         abrirModalGenerico(efectiva);
     });
 
-    document.getElementById('btnEditar')?.addEventListener('click', () => {
+    document.getElementById('btnEditar')?.addEventListener('click', async () => {
         const seccion = document.querySelector('.section-link.active-custom').getAttribute('data-section');
         const efectiva = seccion === 'criterios' ? getActiveCriteriosSubTab() : seccion;
+
+        if (efectiva === 'viviendas' && usuarios.listaUsuariosMemoria.length === 0) {
+            await usuarios.cargarUsuarios();
+        }
+        if (efectiva === 'usuarios' && roles.listaRolesMemoria.length === 0) {
+            await roles.cargarRoles();
+        }
 
         let seleccionado;
         if (efectiva === 'usuarios')  seleccionado = document.querySelector('tbody .usuario-checkbox:checked');
@@ -171,44 +178,46 @@ document.addEventListener('DOMContentLoaded', async function() {
         else if (efectiva === 'viviendas') seleccionado = document.querySelector('tbody .vivienda-checkbox:checked');
         if (!seleccionado) return;
 
-        const id   = parseInt(seleccionado.value);
+        const id = seleccionado.value;
         abrirModalGenerico(efectiva);
         const form = document.getElementById('formGenerico');
         form.insertAdjacentHTML('beforeend', `<input type="hidden" name="id_edit" value="${id}">`);
 
         if (efectiva === 'usuarios') {
-            const u = usuarios.listaUsuariosMemoria.find(x => x.id === id);
+            const u = usuarios.listaUsuariosMemoria.find(x => String(x.id) === id);
             if (u) {
                 form.querySelector('[name="nombre_usuario"]').value = u.nombre_usuario;
                 form.querySelector('[name="apellidos"]').value      = u.apellidos;
                 form.querySelector('[name="mail"]').value           = u.email;
                 form.querySelector('[name="dni"]').value            = u.dni;
                 form.querySelector('[name="telefono"]').value       = u.telefono;
-                form.querySelector('[name="id_rol"]').value         = String(u.id_rol);
+                const selRol = form.querySelector('[name="id_rol"]');
+                if (selRol) Array.from(selRol.options).forEach(o => { o.selected = String(o.value) === String(u.id_rol); });
                 document.getElementById('modalTitle').textContent = `${t('admin.users.editTitle')}: ${u.nombre}`;
             }
         } else if (efectiva === 'roles') {
-            const r = roles.listaRolesMemoria.find(x => x.id === id);
+            const r = roles.listaRolesMemoria.find(x => String(x.id) === id);
             if (r) {
                 form.querySelector('[name="nombre"]').value = r.nombre;
                 document.getElementById('modalTitle').textContent = `${t('admin.roles.editTitle')}: ${r.nombre}`;
             }
         } else if (efectiva === 'criterios') {
-            const c = criterios.listaCriteriosMemoria.find(x => x.id === id);
+            const c = criterios.listaCriteriosMemoria.find(x => String(x.id) === id);
             if (c) {
                 form.querySelector('[name="nombre"]').value = c.nombre;
                 document.getElementById('modalTitle').textContent = `${t('admin.criteria.editTitle')}: ${c.nombre}`;
             }
         } else if (efectiva === 'opciones') {
-            const o = criterios.listaOpcionesMemoria.find(x => x.id === id);
+            const o = criterios.listaOpcionesMemoria.find(x => String(x.id) === id);
             if (o) {
-                form.querySelector('[name="criterio_id"]').value = String(o.criterio_id);
+                const selCrit = form.querySelector('[name="criterio_id"]');
+                if (selCrit) Array.from(selCrit.options).forEach(opt => { opt.selected = String(opt.value) === String(o.criterio_id); });
                 form.querySelector('[name="opcion"]').value = o.opcion;
                 form.querySelector('[name="valor"]').value  = o.valor;
                 document.getElementById('modalTitle').textContent = `${t('admin.criteria.editOptionTitle')}: ${o.opcion}`;
             }
         } else if (efectiva === 'viviendas') {
-            const v = viviendas.listaViviendasMemoria.find(x => x.id === id);
+            const v = viviendas.listaViviendasMemoria.find(x => String(x.id) === id);
             if (v) {
                 document.getElementById('modalFormContent').innerHTML = CONFIG_MODALES.viviendas.getHtml(v.anfitrion);
                 form.querySelector('[name="direccion"]').value      = v.direccion;
@@ -216,7 +225,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                 form.querySelector('[name="descripcion"]').value    = v.descripcion;
                 form.querySelector('[name="plazas_libres"]').value  = v.plazas_libres;
                 form.querySelector('[name="plazas_totales"]').value = v.plazas_totales;
-                form.querySelector('[name="id_anfitrion"]').value   = String(v.anfitrion);
+                const selAnf = form.querySelector('[name="id_anfitrion"]');
+                if (selAnf) Array.from(selAnf.options).forEach(opt => { opt.selected = String(opt.value) === String(v.anfitrion); });
                 document.getElementById('modalTitle').textContent = `${t('admin.homes.editTitle')}: ${v.direccion}`;
             }
         }
@@ -225,20 +235,49 @@ document.addEventListener('DOMContentLoaded', async function() {
     let _pendingEliminar = null;
     let _pendingReactivar = null;
 
-    document.getElementById('btnEliminar')?.addEventListener('click', () => {
+    document.getElementById('btnEliminar')?.addEventListener('click', async () => {
         const seccion = document.querySelector('.section-link.active-custom').getAttribute('data-section');
         const efectiva = seccion === 'criterios' ? getActiveCriteriosSubTab() : seccion;
         const seleccionados = obtenerIdsSeleccionados(efectiva);
         if (seleccionados.length === 0) return;
+
+        if (efectiva === 'usuarios' || efectiva === 'viviendas') {
+            const [resUV, resV] = await Promise.all([
+                apiPost('usuario_vivienda', 'getAll'),
+                efectiva === 'usuarios' ? apiPost('vivienda', 'getAll') : Promise.resolve({ ok: false })
+            ]);
+            const uvActivas = (resUV.ok && Array.isArray(resUV.resource))
+                ? resUV.resource.filter(r => r.activo_usuario_vivienda == 1)
+                : [];
+
+            let bloqueado = false;
+            if (efectiva === 'viviendas') {
+                bloqueado = seleccionados.some(id => uvActivas.some(r => String(r.id_vivienda) === String(id)));
+            } else {
+                const viviendasData = (resV.ok && Array.isArray(resV.resource)) ? resV.resource : [];
+                bloqueado = seleccionados.some(id => {
+                    const esInquilino = uvActivas.some(r => String(r.id_usuario) === String(id));
+                    const viviendasPropias = viviendasData.filter(v => String(v.id_anfitrion) === String(id));
+                    const esAnfitrion = viviendasPropias.some(v => uvActivas.some(r => String(r.id_vivienda) === String(v.id_vivienda)));
+                    return esInquilino || esAnfitrion;
+                });
+            }
+
+            if (bloqueado) {
+                mostrarToast('No se puede eliminar: hay convivencias activas asociadas.');
+                return;
+            }
+        }
+
         _pendingEliminar = { seccion: efectiva, seleccionados };
         const msg = document.getElementById('modalConfirmarEliminarMsg');
         if (msg) msg.textContent = `${t('modal.confirmDeleteBody')} (${seleccionados.length})`;
         bootstrap.Modal.getOrCreateInstance(document.getElementById('modalConfirmarEliminar')).show();
     });
 
-    document.getElementById('btnConfirmarEliminar')?.addEventListener('click', () => {
+    document.getElementById('btnConfirmarEliminar')?.addEventListener('click', async () => {
         if (_pendingEliminar) {
-            desactivarSeleccion(_pendingEliminar.seccion, _pendingEliminar.seleccionados);
+            await desactivarSeleccion(_pendingEliminar.seccion, _pendingEliminar.seleccionados);
             aplicarFiltros();
             actualizarBotones();
             _pendingEliminar = null;
@@ -257,9 +296,9 @@ document.addEventListener('DOMContentLoaded', async function() {
         bootstrap.Modal.getOrCreateInstance(document.getElementById('modalConfirmarReactivar')).show();
     });
 
-    document.getElementById('btnConfirmarReactivar')?.addEventListener('click', () => {
+    document.getElementById('btnConfirmarReactivar')?.addEventListener('click', async () => {
         if (_pendingReactivar) {
-            reactivarSeleccion(_pendingReactivar.seccion, _pendingReactivar.seleccionados);
+            await reactivarSeleccion(_pendingReactivar.seccion, _pendingReactivar.seleccionados);
             aplicarFiltros();
             actualizarBotones();
             _pendingReactivar = null;
@@ -473,22 +512,20 @@ async function cargarSeguimientoConvivencias() {
     const usuariosData  = (resU.ok && Array.isArray(resU.resource)) ? resU.resource : [];
     const relaciones    = (resUV.ok && Array.isArray(resUV.resource)) ? resUV.resource : [];
 
-    const nombreUsuario = id => {
+    const nombreCompleto = id => {
         const u = usuariosData.find(u => u.id_usuario == id);
-        return u ? `${u.nombre_usuario} ${u.apellidos}`.trim() : String(id);
+        return u ? `${u.nombre_usuario} ${u.apellidos}`.trim() : `Usuario ${id}`;
     };
 
-    listaConvivenciasMemoria = relaciones.map((r, i) => {
+    listaConvivenciasMemoria = relaciones.map(r => {
         const vivienda = viviendasData.find(v => v.id_vivienda == r.id_vivienda);
         return {
-            id:          i,
-            id_usuario:  r.id_usuario,
-            id_vivienda: r.id_vivienda,
-            anfitrion:   vivienda ? nombreUsuario(vivienda.id_anfitrion) : '-',
-            inquilino:   nombreUsuario(r.id_usuario),
-            vivienda:    vivienda ? (vivienda.descripcion || String(r.id_vivienda)) : String(r.id_vivienda),
-            inicio:      '-',
-            estado:      r.activo_usuario_vivienda == 1 ? 'activa' : 'finalizada'
+            id:           `${r.id_usuario}_${r.id_vivienda}`,
+            anfitrion:    vivienda ? nombreCompleto(vivienda.id_anfitrion) : '-',
+            inquilino:    nombreCompleto(r.id_usuario),
+            estado:       r.activo_usuario_vivienda == 1 ? 'activo' : 'inactivo',
+            fecha_inicio: r.fecha_inicio || '-',
+            fecha_fin:    r.fecha_fin    || '-'
         };
     });
 
@@ -501,25 +538,23 @@ function renderizarConvivencias(convivencias) {
     tbody.innerHTML = '';
 
     if (convivencias.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" class="text-center">${t('admin.convivencias.noActive')}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted py-3">${t('admin.convivencias.noActive')}</td></tr>`;
         return;
     }
 
-    const badges = {
-        activa:     `<span class="badge rounded-pill px-3 py-2" style="background-color:#D1E7DD;color:#0F5132;">✓ Activa</span>`,
-        finalizada: `<span class="badge rounded-pill px-3 py-2" style="background-color:#e2e3e5;color:#383d41;">✕ Finalizada</span>`,
-        entrevista: `<span class="badge rounded-pill px-3 py-2" style="background-color:#FFF3CD;color:#856404;">⏳ Entrevista</span>`,
-        prueba:     `<span class="badge rounded-pill px-3 py-2" style="background-color:#CFE2FF;color:#084298;">⚠️ Prueba</span>`
-    };
-
     convivencias.forEach(c => {
+        const activo = c.estado === 'activo';
         const row = document.createElement('tr');
         row.innerHTML = `
             <td class="fw-semibold">${c.anfitrion}</td>
             <td>${c.inquilino}</td>
-            <td class="text-muted small">${c.vivienda}</td>
-            <td>${c.inicio}</td>
-            <td>${badges[c.estado] ?? c.estado}</td>
+            <td>
+                <span class="badge rounded-pill px-3 ${activo ? 'bg-success' : 'bg-secondary'}">
+                    ${activo ? 'Activo' : 'Inactivo'}
+                </span>
+            </td>
+            <td class="text-muted small">${c.fecha_inicio}</td>
+            <td class="text-muted small">${c.fecha_fin}</td>
         `;
         tbody.appendChild(row);
     });
@@ -653,8 +688,16 @@ function aplicarFiltros() {
     actualizarBotones();
 }
 
-function reactivarSeleccion(seccion, ids) { obtenerConfigSeccion(seccion)?.reactivar?.(ids); }
-function desactivarSeleccion(seccion, ids) { obtenerConfigSeccion(seccion)?.desactivar?.(ids); }
+async function reactivarSeleccion(seccion, ids) { await obtenerConfigSeccion(seccion)?.reactivar?.(ids); }
+async function desactivarSeleccion(seccion, ids) { await obtenerConfigSeccion(seccion)?.desactivar?.(ids); }
+
+function mostrarToast(mensaje, bgClass = 'bg-danger text-white') {
+    const el = document.getElementById('toastDashboard');
+    if (!el) return;
+    el.className = `toast align-items-center border-0 ${bgClass}`;
+    document.getElementById('toastDashboardMsg').textContent = mensaje;
+    bootstrap.Toast.getOrCreateInstance(el).show();
+}
 
 function actualizarBotones() {
     const seccion = document.querySelector('.section-link.active-custom')?.getAttribute('data-section');
@@ -666,8 +709,14 @@ function actualizarBotones() {
     const btnEliminar  = document.getElementById('btnEliminar');
     const btnReactivar = document.getElementById('btnReactivar');
     if (btnEditar && btnEliminar && btnReactivar) {
+        const config = obtenerConfigSeccion(efectiva);
+        const idsSeleccionados = obtenerIdsSeleccionados(efectiva);
+        const hayInactivoSeleccionado = idsSeleccionados.some(id => {
+            const item = config?.lista.find(el => String(el.id) === id);
+            return item?.estado === 'inactivo';
+        });
         btnEditar.disabled    = (seleccionados !== 1);
-        btnEliminar.disabled  = (seleccionados === 0);
+        btnEliminar.disabled  = (seleccionados === 0) || hayInactivoSeleccionado;
         btnReactivar.disabled = (obtenerIdsSeleccionadosInactivos(efectiva).length === 0);
     }
 }

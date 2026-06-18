@@ -24,12 +24,24 @@ export async function cargarUsuarios() {
     renderizarUsuarios(listaUsuariosMemoria);
 }
 
-export function reactivarUsuarios(ids) {
-    listaUsuariosMemoria.forEach(u => { if (ids.includes(String(u.id))) u.estado = 'activo'; });
+export async function reactivarUsuarios(ids) {
+    for (const id of ids) {
+        const res = await apiPost('usuario', 'REACTIVAR', { id_usuario: id });
+        if (res.ok) {
+            const u = listaUsuariosMemoria.find(u => String(u.id) === String(id));
+            if (u) u.estado = 'activo';
+        }
+    }
 }
 
-export function desactivarUsuarios(ids) {
-    listaUsuariosMemoria.forEach(u => { if (ids.includes(String(u.id))) u.estado = 'inactivo'; });
+export async function desactivarUsuarios(ids) {
+    for (const id of ids) {
+        const res = await apiPost('usuario', 'DELETE', { id_usuario: id });
+        if (res.ok) {
+            const u = listaUsuariosMemoria.find(u => String(u.id) === String(id));
+            if (u) u.estado = 'inactivo';
+        }
+    }
 }
 
 export function renderizarUsuarios(usuarios) {

@@ -4,29 +4,49 @@ export let listaViviendasMemoria = [];
 
 export async function cargarViviendas() {
     if (listaViviendasMemoria.length === 0) {
-        const res = await apiPost('vivienda', 'getAll');
-        if (res.ok && Array.isArray(res.resource)) {
-            listaViviendasMemoria = res.resource.map(v => ({
-                id: v.id_vivienda,
-                descripcion: v.descripcion,
-                direccion: v.direccion,
-                ciudad: v.ciudad,
-                plazas_libres: v.plazas_libres,
-                plazas_totales: v.plazas_totales,
-                anfitrion: v.id_anfitrion,
-                estado: v.activo_vivienda == 1 ? 'disponible' : 'inactivo'
-            }));
+        const [resV, resU] = await Promise.all([
+            apiPost('vivienda', 'getAll'),
+            apiPost('usuario', 'getAll')
+        ]);
+        const usuariosData = (resU.ok && Array.isArray(resU.resource)) ? resU.resource : [];
+        if (resV.ok && Array.isArray(resV.resource)) {
+            listaViviendasMemoria = resV.resource.map(v => {
+                const u = usuariosData.find(u => u.id_usuario == v.id_anfitrion);
+                return {
+                    id: v.id_vivienda,
+                    descripcion: v.descripcion,
+                    direccion: v.direccion,
+                    ciudad: v.ciudad,
+                    plazas_libres: v.plazas_libres,
+                    plazas_totales: v.plazas_totales,
+                    anfitrion: v.id_anfitrion,
+                    anfitrionNombre: u ? `${u.nombre_usuario} ${u.apellidos}`.trim() : String(v.id_anfitrion),
+                    estado: v.activo_vivienda == 1 ? 'disponible' : 'inactivo'
+                };
+            });
         }
     }
     renderizarViviendas(listaViviendasMemoria);
 }
 
-export function reactivarViviendas(ids) {
-    listaViviendasMemoria.forEach(v => { if (ids.includes(String(v.id))) v.estado = 'disponible'; });
+export async function reactivarViviendas(ids) {
+    for (const id of ids) {
+        const res = await apiPost('vivienda', 'REACTIVAR', { id_vivienda: id });
+        if (res.ok) {
+            const v = listaViviendasMemoria.find(v => String(v.id) === String(id));
+            if (v) v.estado = 'disponible';
+        }
+    }
 }
 
-export function desactivarViviendas(ids) {
-    listaViviendasMemoria.forEach(v => { if (ids.includes(String(v.id))) v.estado = 'inactivo'; });
+export async function desactivarViviendas(ids) {
+    for (const id of ids) {
+        const res = await apiPost('vivienda', 'DELETE', { id_vivienda: id });
+        if (res.ok) {
+            const v = listaViviendasMemoria.find(v => String(v.id) === String(id));
+            if (v) v.estado = 'inactivo';
+        }
+    }
 }
 
 export function renderizarViviendas(viviendas) {
@@ -55,7 +75,7 @@ export function renderizarViviendas(viviendas) {
             </td>
             <td>${vivienda.plazas_libres}</td>
             <td>${vivienda.plazas_totales}</td>
-            <td>${vivienda.anfitrion}</td>
+            <td>${vivienda.anfitrionNombre || vivienda.anfitrion}</td>
             <td><span class="badge ${badgeEstado} rounded-pill px-3">${textoEstado}</span></td>
         `;
         tbody.appendChild(row);

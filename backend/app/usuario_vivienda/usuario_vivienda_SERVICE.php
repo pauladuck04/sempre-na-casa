@@ -17,7 +17,7 @@ class usuario_vivienda_SERVICE extends appServiceBase {
         );
 
         $this->listaAtributosSelect = array(
-            'id_usuario', 'id_vivienda', 'activo_usuario_vivienda'
+            'id_usuario', 'id_vivienda', 'activo_usuario_vivienda', 'fecha_inicio', 'fecha_fin'
         );
 
         $this->notnull = array(

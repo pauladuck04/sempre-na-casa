@@ -16,12 +16,24 @@ export async function cargarRoles() {
     renderizarRoles(listaRolesMemoria);
 }
 
-export function reactivarRoles(ids) {
-    listaRolesMemoria.forEach(r => { if (ids.includes(String(r.id))) r.estado = 'activo'; });
+export async function reactivarRoles(ids) {
+    for (const id of ids) {
+        const res = await apiPost('rol', 'REACTIVAR', { id_rol: id });
+        if (res.ok) {
+            const r = listaRolesMemoria.find(r => String(r.id) === String(id));
+            if (r) r.estado = 'activo';
+        }
+    }
 }
 
-export function desactivarRoles(ids) {
-    listaRolesMemoria.forEach(r => { if (ids.includes(String(r.id))) r.estado = 'inactivo'; });
+export async function desactivarRoles(ids) {
+    for (const id of ids) {
+        const res = await apiPost('rol', 'DELETE', { id_rol: id });
+        if (res.ok) {
+            const r = listaRolesMemoria.find(r => String(r.id) === String(id));
+            if (r) r.estado = 'inactivo';
+        }
+    }
 }
 
 export function renderizarRoles(roles) {

@@ -35,11 +35,23 @@ export async function cargarCriterios() {
 }
 
 // --- CRITERIOS ---
-export function reactivarCriterios(ids) {
-    listaCriteriosMemoria.forEach(c => { if (ids.includes(String(c.id))) c.estado = 'activo'; });
+export async function reactivarCriterios(ids) {
+    for (const id of ids) {
+        const res = await apiPost('criterio', 'REACTIVAR', { id_criterio: id });
+        if (res.ok) {
+            const c = listaCriteriosMemoria.find(c => String(c.id) === String(id));
+            if (c) c.estado = 'activo';
+        }
+    }
 }
-export function desactivarCriterios(ids) {
-    listaCriteriosMemoria.forEach(c => { if (ids.includes(String(c.id))) c.estado = 'inactivo'; });
+export async function desactivarCriterios(ids) {
+    for (const id of ids) {
+        const res = await apiPost('criterio', 'DELETE', { id_criterio: id });
+        if (res.ok) {
+            const c = listaCriteriosMemoria.find(c => String(c.id) === String(id));
+            if (c) c.estado = 'inactivo';
+        }
+    }
 }
 export function renderizarCriterios(lista) {
     const tbody = document.getElementById('tabla-criterios');
@@ -72,11 +84,23 @@ export function renderizarCriterios(lista) {
 }
 
 // --- OPCIONES ---
-export function reactivarOpciones(ids) {
-    listaOpcionesMemoria.forEach(o => { if (ids.includes(String(o.id))) o.estado = 'activo'; });
+export async function reactivarOpciones(ids) {
+    for (const id of ids) {
+        const res = await apiPost('opcion', 'REACTIVAR', { id_opcion: id });
+        if (res.ok) {
+            const o = listaOpcionesMemoria.find(o => String(o.id) === String(id));
+            if (o) o.estado = 'activo';
+        }
+    }
 }
-export function desactivarOpciones(ids) {
-    listaOpcionesMemoria.forEach(o => { if (ids.includes(String(o.id))) o.estado = 'inactivo'; });
+export async function desactivarOpciones(ids) {
+    for (const id of ids) {
+        const res = await apiPost('opcion', 'DELETE', { id_opcion: id });
+        if (res.ok) {
+            const o = listaOpcionesMemoria.find(o => String(o.id) === String(id));
+            if (o) o.estado = 'inactivo';
+        }
+    }
 }
 export function renderizarOpciones(lista) {
     const tbody = document.getElementById('tabla-opciones');
