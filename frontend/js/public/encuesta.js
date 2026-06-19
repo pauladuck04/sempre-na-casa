@@ -48,49 +48,66 @@ form.addEventListener('submit', async (e) => {
     });
 
     if (!allAnswered) {
-        errorMessage.textContent = t('survey.allRequired');
+        errorMessage.textContent = t('survey.allRequired') || 'Debes responder todas las preguntas.';
         errorMessage.classList.remove('d-none');
         window.scrollTo(0, 0);
         return;
     }
 
-    const encuestaData = {
-        userId:    userData.userId,
-        rol:       userData.rol,
-        respuestas: {}
-    };
-
-    nombres.forEach(nombre => {
-        encuestaData.respuestas[nombre] = parseInt(
-            document.querySelector(`input[name="${nombre}"]:checked`).value
-        );
-    });
-
-    btnFinalizar.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span> ${t('survey.processing')}`;
+    btnFinalizar.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span> ${t('survey.processing') || 'Procesando...'}`;
     btnFinalizar.disabled  = true;
 
     try {
-        await api.request('/auth/survey', {
-            method: 'POST',
-            body: JSON.stringify(encuestaData)
+        // 1. Registrar el usuario
+        const resRegistro = await apiPost('auth', 'REGISTRAR', {
+            nombre:    userData.nombre,
+            apellidos: userData.apellidos,
+            email:     userData.email,
+            telefono:  userData.telefono,
+            dni:       userData.dni,
+            password:  userData.password,
+            rol:       userData.rol
         });
 
-        sessionStorage.removeItem('newUser');
+        if (!resRegistro.ok) {
+            throw new Error(resRegistro.code === 'USUARIO_YA_EXISTE_KO'
+                ? 'Ya existe una cuenta con ese email o DNI.'
+                : 'Error al crear la cuenta. Inténtalo de nuevo.');
+        }
 
-        setTimeout(() => {
-            window.location.href = userData.rol === 'anfitrion'
-                ? 'dashboard-administrador.html'
-                : 'dashboard-administrador.html';
-        }, 1500);
+        const idUsuario = resRegistro.resource;
+
+        // 2. Guardar respuestas de la encuesta
+        const secciones = document.querySelectorAll('[data-criterio]');
+        const promesas = [];
+
+        secciones.forEach(seccion => {
+            const idCriterio = seccion.getAttribute('data-criterio');
+            const radioMarcado = seccion.querySelector('.btn-check:checked');
+            if (radioMarcado) {
+                promesas.push(
+                    apiPost('usuario_criterio_opcion', 'ADD', {
+                        id_usuario:  idUsuario,
+                        id_criterio: idCriterio,
+                        id_opcion:   radioMarcado.value
+                    })
+                );
+            }
+        });
+
+        await Promise.all(promesas);
+
+        // 3. Limpiar sesión y redirigir al login
+        sessionStorage.removeItem('newUser');
+        window.location.href = 'login.html';
 
     } catch (error) {
-        console.error('Error guardando encuesta:', error);
-        errorMessage.textContent = error.message || t('survey.error');
+        console.error('Error en registro:', error);
+        errorMessage.textContent = error.message || t('survey.error') || 'Error al completar el registro.';
         errorMessage.classList.remove('d-none');
-
-        btnFinalizar.textContent = t('survey.finishBtn');
-        btnFinalizar.disabled    = false;
-
         window.scrollTo(0, 0);
+
+        btnFinalizar.textContent = t('survey.finishBtn') || 'Crear cuenta';
+        btnFinalizar.disabled    = false;
     }
 });
