@@ -42,22 +42,45 @@ form.addEventListener('submit', async (e) => {
     const email    = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
+    errorMessage.classList.add('d-none');
+    errorMessage.textContent = '';
+
     try {
-        errorMessage.classList.add('d-none');
-        errorMessage.textContent = '';
+        const res = await apiPost('auth', 'LOGIN', { usuario: email, contrasena: password });
 
-        await api.login(email, password);
-        await auth.login(email, password);
-
-        const role = auth.getRole();
-        if (role === 'anfitrion') {
-            window.location.href = 'dashboard-administrador.html';
-        } else if (role === 'inquilino') {
-            window.location.href = 'dashboard-administrador.html';
+        if (!res.ok) {
+            const mensajes = {
+                'USUARIO_LOGIN_KO': t('login.userNotFound') || 'Usuario no encontrado.',
+                'USUARIO_PASS_KO':  t('login.wrongPassword') || 'Contraseña incorrecta.',
+                'USUARIO_INACTIVO_KO': t('login.inactiveUser') || 'La cuenta está desactivada.'
+            };
+            errorMessage.textContent = mensajes[res.code] || t('login.error') || 'Error al iniciar sesión.';
+            errorMessage.classList.remove('d-none');
+            return;
         }
+
+        const usuario = res.resource.usuario;
+        localStorage.setItem('user_token',    res.resource.token);
+        localStorage.setItem('user_id',       usuario.id_usuario);
+        localStorage.setItem('user_email',    usuario.mail);
+        localStorage.setItem('user_nombre',   usuario.nombre_usuario + ' ' + usuario.apellidos);
+        localStorage.setItem('user_id_rol',   usuario.id_rol);
+        localStorage.setItem('user_rol',      usuario.nombre_rol || '');
+
+        const rol = (usuario.nombre_rol || '').toLowerCase()
+            .normalize('NFD').replace(/[̀-ͯ]/g, '');
+
+        if (rol.includes('admin')) {
+            window.location.href = 'dashboard-administrador.html';
+        } else if (rol.includes('anfitrion')) {
+            window.location.href = 'dashboard-anfitrion.html';
+        } else {
+            window.location.href = 'dashboard-inquilino.html';
+        }
+
     } catch (error) {
         console.error('Error en login:', error);
-        errorMessage.textContent = error.message || t('login.error');
+        errorMessage.textContent = 'Error técnico: ' + error.message;
         errorMessage.classList.remove('d-none');
     }
 });

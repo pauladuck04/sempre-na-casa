@@ -116,6 +116,17 @@ class AUTH_SERVICE extends appServiceBase{
 			);
 		}
 
+		// Obtener nombre del rol
+		$nombreRol = '';
+		include_once './Base/mapping.php';
+		$mapRol = new mapping('rol');
+		$resRol = $mapRol->lanzarqueryconresults(
+			"SELECT nombre_rol FROM rol WHERE id_rol = " . intval($fila['id_rol']) . " LIMIT 1"
+		);
+		if ($resRol['ok'] && !empty($resRol['resource'])) {
+			$nombreRol = $resRol['resource'][0]['nombre_rol'];
+		}
+
 		include_once './Base/JWT/token.php';
 		$datosUsuario = array(
 			'id_usuario' => $fila['id_usuario'],
@@ -138,7 +149,8 @@ class AUTH_SERVICE extends appServiceBase{
 					'nombre_usuario' => $fila['nombre_usuario'],
 					'apellidos' => $fila['apellidos'],
 					'telefono' => $fila['telefono'],
-					'id_rol' => $fila['id_rol']
+					'id_rol' => $fila['id_rol'],
+					'nombre_rol' => $nombreRol
 				)
 			)
 		);
