@@ -54,7 +54,7 @@ class AUTH_SERVICE extends appServiceBase{
 		}
 
 		if (!isset($_POST['id_rol']) && isset($_POST['rol'])){
-			$_POST['id_rol'] = ($_POST['rol'] == 'anfitrion') ? 2 : 1;
+			$_POST['id_rol'] = ($_POST['rol'] == 'anfitrion') ? 4 : 5;
 		}
 	}
 
@@ -159,7 +159,7 @@ class AUTH_SERVICE extends appServiceBase{
 	function REGISTRAR(){
 
 		if (!isset($_POST['id_rol']) || $_POST['id_rol'] == ''){
-			$_POST['id_rol'] = 1;
+			$_POST['id_rol'] = 5;
 		}
 
 		$postOriginal = $_POST;
