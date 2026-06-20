@@ -17,7 +17,7 @@ window.apiPost = apiPost;
 window.auth = {
     login: async (email, password) => {
         localStorage.setItem('user_email', email);
-        localStorage.setItem('user_role', email.includes('admin') ? 'anfitrion' : 'inquilino');
+        localStorage.setItem('user_role', email.includes('admin') ? 'anfitrion' : 'huesped');
         localStorage.setItem('user_token', 'token_' + Date.now());
     },
 
@@ -28,7 +28,7 @@ window.auth = {
     },
 
     getRole: () => {
-        return localStorage.getItem('user_role') || 'inquilino';
+        return localStorage.getItem('user_role') || 'huesped';
     },
 
     getEmail: () => {

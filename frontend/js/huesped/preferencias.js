@@ -41,7 +41,7 @@ export function renderizarPreferencias(lista) {
             <td>${p.valor}</td>
             <td>
                 <span class="badge ${esActivo ? 'bg-success' : 'bg-secondary'} rounded-pill px-3">
-                    ${esActivo ? t('inquilino.preferences.active') : t('inquilino.preferences.inactive')}
+                    ${esActivo ? t('huesped.preferences.active') : t('huesped.preferences.inactive')}
                 </span>
             </td>
         `;

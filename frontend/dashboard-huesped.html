@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Inquilino - Sempre na Casa</title>
+    <title>Panel huesped - Sempre na Casa</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="css/main.css">
@@ -14,19 +14,19 @@
         <aside class="sidebar bg-white shadow-sm d-none d-lg-block flex-column p-4" style="width: 280px; position: sticky; top: 0; align-self: stretch;">
             <div class="d-flex flex-column align-items-center mb-4">
                 <img src="assets/images/logo.JPG" width="60" class="rounded-circle mb-2" alt="Logo"
-                     onerror="this.src='https://ui-avatars.com/api/?name=Inquilino&background=7A99DD&color=fff'">
-                <span class="badge bg-dark rounded-pill mb-2" data-i18n="inquilino.badge"></span>
+                     onerror="this.src='https://ui-avatars.com/api/?name=huesped&background=7A99DD&color=fff'">
+                <span class="badge bg-dark rounded-pill mb-2" data-i18n="huesped.badge"></span>
                 <h5 class="fw-bold mb-0" style="color: var(--color-primario);">Sempre na Casa</h5>
             </div>
             <nav class="nav flex-column gap-2 flex-grow-1">
                 <a href="#" class="nav-link active-custom transition section-link" data-section="general">
-                    <i class="bi bi-speedometer2 me-2"></i> <span data-i18n="inquilino.nav.general"></span>
+                    <i class="bi bi-speedometer2 me-2"></i> <span data-i18n="huesped.nav.general"></span>
                 </a>
                 <a href="#" class="nav-link text-muted transition section-link" data-section="convivencia" id="nav-convivencia">
-                    <i class="bi bi-house-heart me-2"></i> <span data-i18n="inquilino.nav.convivencia"></span>
+                    <i class="bi bi-house-heart me-2"></i> <span data-i18n="huesped.nav.convivencia"></span>
                 </a>
                 <a href="#" class="nav-link text-muted transition section-link" data-section="preferencias">
-                    <i class="bi bi-sliders me-2"></i> <span data-i18n="inquilino.nav.preferences"></span>
+                    <i class="bi bi-sliders me-2"></i> <span data-i18n="huesped.nav.preferences"></span>
                 </a>
                 <a href="#" class="nav-link d-none section-link" data-section="perfil"></a>
                 <hr class="my-3">
@@ -40,8 +40,8 @@
         <main class="flex-grow-1 p-4 p-md-3">
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <div>
-                    <h1 class="fw-bold mb-2" id="section-title" data-i18n="inquilino.sections.general.title"></h1>
-                    <p class="text-muted" id="section-description" data-i18n="inquilino.sections.general.descriptionWithHome"></p>
+                    <h1 class="fw-bold mb-2" id="section-title" data-i18n="huesped.sections.general.title"></h1>
+                    <p class="text-muted" id="section-description" data-i18n="huesped.sections.general.descriptionWithHome"></p>
                 </div>
                 <div class="d-flex align-items-center">
                     <button id="btnPerfil" class="avatar-iniciales shadow-sm" title="Ver mi perfil"></button>
@@ -82,7 +82,7 @@
                                             <i class="bi bi-houses fs-4" style="color: var(--color-primario);"></i>
                                         </div>
                                         <div>
-                                            <p class="text-muted small mb-1" data-i18n="inquilino.summary.availableCandidates"></p>
+                                            <p class="text-muted small mb-1" data-i18n="huesped.summary.availableCandidates"></p>
                                             <h5 class="fw-bold mb-0" id="total-candidatos">-</h5>
                                         </div>
                                     </div>
@@ -95,7 +95,7 @@
                                             <i class="bi bi-graph-up-arrow fs-4 text-success"></i>
                                         </div>
                                         <div>
-                                            <p class="text-muted small mb-1" data-i18n="inquilino.summary.maxCompatibility"></p>
+                                            <p class="text-muted small mb-1" data-i18n="huesped.summary.maxCompatibility"></p>
                                             <h5 class="fw-bold mb-0" id="max-compatibilidad">-</h5>
                                         </div>
                                     </div>
@@ -108,7 +108,7 @@
                                             <i class="bi bi-sliders fs-4 text-warning"></i>
                                         </div>
                                         <div>
-                                            <p class="text-muted small mb-1" data-i18n="inquilino.summary.activePreferences"></p>
+                                            <p class="text-muted small mb-1" data-i18n="huesped.summary.activePreferences"></p>
                                             <h5 class="fw-bold mb-0" id="preferencias-activas">-</h5>
                                         </div>
                                     </div>
@@ -119,7 +119,7 @@
                             <div class="card-header bg-white border-bottom py-4">
                                 <h5 class="fw-bold mb-0">
                                     <i class="bi bi-star me-2 text-primary"></i>
-                                    <span data-i18n="inquilino.cardTitles.possibleHomes"></span>
+                                    <span data-i18n="huesped.cardTitles.possibleHomes"></span>
                                 </h5>
                             </div>
                             <div class="card-body p-4">
@@ -138,7 +138,7 @@
                                             <i class="bi bi-clipboard-check fs-4" style="color: var(--color-primario);"></i>
                                         </div>
                                         <div>
-                                            <p class="text-muted small mb-1" data-i18n="inquilino.summary.requestStatus"></p>
+                                            <p class="text-muted small mb-1" data-i18n="huesped.summary.requestStatus"></p>
                                             <h5 class="fw-bold mb-0" id="estado-solicitud">-</h5>
                                         </div>
                                     </div>
@@ -151,7 +151,7 @@
                                             <i class="bi bi-graph-up-arrow fs-4 text-success"></i>
                                         </div>
                                         <div>
-                                            <p class="text-muted small mb-1" data-i18n="inquilino.summary.compatibility"></p>
+                                            <p class="text-muted small mb-1" data-i18n="huesped.summary.compatibility"></p>
                                             <h5 class="fw-bold mb-0" id="compatibilidad-score">-</h5>
                                         </div>
                                     </div>
@@ -164,7 +164,7 @@
                                             <i class="bi bi-calendar-check fs-4 text-warning"></i>
                                         </div>
                                         <div>
-                                            <p class="text-muted small mb-1" data-i18n="inquilino.summary.startDate"></p>
+                                            <p class="text-muted small mb-1" data-i18n="huesped.summary.startDate"></p>
                                             <h5 class="fw-bold mb-0" id="fecha-inicio">-</h5>
                                         </div>
                                     </div>
@@ -175,7 +175,7 @@
                             <div class="card-header bg-white border-bottom py-4">
                                 <h5 class="fw-bold mb-0">
                                     <i class="bi bi-house-heart me-2 text-primary"></i>
-                                    <span data-i18n="inquilino.cardTitles.currentConvivencia"></span>
+                                    <span data-i18n="huesped.cardTitles.currentConvivencia"></span>
                                 </h5>
                             </div>
                             <div class="card-body p-4">
@@ -183,10 +183,10 @@
                                     <table class="table table-hover align-middle">
                                         <thead class="table-light">
                                             <tr>
-                                                <th data-i18n="inquilino.table.host"></th>
-                                                <th data-i18n="inquilino.table.address"></th>
-                                                <th data-i18n="inquilino.table.startDate"></th>
-                                                <th data-i18n="inquilino.table.status"></th>
+                                                <th data-i18n="huesped.table.host"></th>
+                                                <th data-i18n="huesped.table.address"></th>
+                                                <th data-i18n="huesped.table.startDate"></th>
+                                                <th data-i18n="huesped.table.status"></th>
                                             </tr>
                                         </thead>
                                         <tbody id="tabla-resumen-convivencia"></tbody>
@@ -202,8 +202,8 @@
                     <div id="sin-convivencia" class="d-none">
                         <div class="card border-0 shadow-sm rounded-4 text-center p-5">
                             <i class="bi bi-house-exclamation fs-1 mb-3" style="color: var(--color-primario);"></i>
-                            <h4 class="fw-bold mb-2" data-i18n="inquilino.cardTitles.noConvivencia"></h4>
-                            <p class="text-muted mb-0" data-i18n="inquilino.cardTitles.noConvivenciaSubtitle"></p>
+                            <h4 class="fw-bold mb-2" data-i18n="huesped.cardTitles.noConvivencia"></h4>
+                            <p class="text-muted mb-0" data-i18n="huesped.cardTitles.noConvivenciaSubtitle"></p>
                         </div>
                     </div>
                     <div id="con-convivencia">
@@ -211,7 +211,7 @@
                             <div class="card-header bg-white border-bottom py-4">
                                 <h5 class="fw-bold mb-0">
                                     <i class="bi bi-house me-2 text-primary"></i>
-                                    <span data-i18n="inquilino.cardTitles.convivenciaDetails"></span>
+                                    <span data-i18n="huesped.cardTitles.convivenciaDetails"></span>
                                 </h5>
                             </div>
                             <div class="card-body p-4" id="ficha-convivencia"></div>
@@ -225,7 +225,7 @@
                         <div class="card-header bg-white border-bottom py-4">
                             <h5 class="fw-bold mb-0">
                                 <i class="bi bi-sliders me-2 text-primary"></i>
-                                <span data-i18n="inquilino.cardTitles.preferencesTitle"></span>
+                                <span data-i18n="huesped.cardTitles.preferencesTitle"></span>
                             </h5>
                         </div>
                         <div class="card-body p-4">
@@ -233,9 +233,9 @@
                                 <table class="table table-hover align-middle">
                                     <thead class="table-light">
                                         <tr>
-                                            <th data-i18n="inquilino.table.preference"></th>
-                                            <th data-i18n="inquilino.table.myValue"></th>
-                                            <th data-i18n="inquilino.table.status"></th>
+                                            <th data-i18n="huesped.table.preference"></th>
+                                            <th data-i18n="huesped.table.myValue"></th>
+                                            <th data-i18n="huesped.table.status"></th>
                                         </tr>
                                     </thead>
                                     <tbody id="tabla-preferencias"></tbody>
@@ -252,7 +252,7 @@
                             <div class="card border-0 shadow-sm rounded-4 text-center p-4 mb-4">
                                 <div class="avatar-iniciales avatar-iniciales-lg mx-auto mb-3" id="perfil-avatar"></div>
                                 <h5 class="fw-bold mb-1" id="perfil-display-nombre"></h5>
-                                <span class="badge bg-dark rounded-pill px-3 mb-3" data-i18n="inquilino.badge"></span>
+                                <span class="badge bg-dark rounded-pill px-3 mb-3" data-i18n="huesped.badge"></span>
                                 <p class="text-muted small mb-0">
                                     <i class="bi bi-calendar3 me-1"></i>
                                     <span data-i18n="profile.memberSince"></span> <span id="perfil-fecha-alta"></span>
@@ -441,6 +441,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/api.js"></script>
-    <script type="module" src="js/public/dashboard-inquilino.js"></script>
+    <script type="module" src="js/public/dashboard-huesped.js"></script>
 </body>
 </html>

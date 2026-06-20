@@ -262,10 +262,10 @@ document.addEventListener('DOMContentLoaded', async function() {
             } else {
                 const viviendasData = (resV.ok && Array.isArray(resV.resource)) ? resV.resource : [];
                 bloqueado = seleccionados.some(id => {
-                    const esInquilino = uvActivas.some(r => String(r.id_usuario) === String(id));
+                    const eshuesped = uvActivas.some(r => String(r.id_usuario) === String(id));
                     const viviendasPropias = viviendasData.filter(v => String(v.id_anfitrion) === String(id));
                     const esAnfitrion = viviendasPropias.some(v => uvActivas.some(r => String(r.id_vivienda) === String(v.id_vivienda)));
-                    return esInquilino || esAnfitrion;
+                    return eshuesped || esAnfitrion;
                 });
             }
 
@@ -540,7 +540,7 @@ async function cargarSeguimientoConvivencias() {
         return {
             id:           `${r.id_usuario}_${r.id_vivienda}`,
             anfitrion:    vivienda ? nombreCompleto(vivienda.id_anfitrion) : '-',
-            inquilino:    nombreCompleto(r.id_usuario),
+            huesped:    nombreCompleto(r.id_usuario),
             estado:       r.activo_usuario_vivienda == 1 ? 'activo' : 'inactivo',
             fecha_inicio: r.fecha_inicio || '-',
             fecha_fin:    r.fecha_fin    || '-'
@@ -565,7 +565,7 @@ function renderizarConvivencias(convivencias) {
         const row = document.createElement('tr');
         row.innerHTML = `
             <td class="fw-semibold">${c.anfitrion}</td>
-            <td>${c.inquilino}</td>
+            <td>${c.huesped}</td>
             <td>
                 <span class="badge rounded-pill px-3 ${activo ? 'bg-success' : 'bg-secondary'}">
                     ${activo ? 'Activo' : 'Inactivo'}
@@ -587,7 +587,7 @@ window.editarConvivencia = function(id) {
     const form = document.getElementById('formGenerico');
     form.querySelector('[name="estado"]').value = c.estado;
     form.insertAdjacentHTML('beforeend', `<input type="hidden" name="id_edit" value="${id}">`);
-    document.getElementById('modalTitle').textContent = `Editar Convivencia: ${c.anfitrion} — ${c.inquilino}`;
+    document.getElementById('modalTitle').textContent = `Editar Convivencia: ${c.anfitrion} — ${c.huesped}`;
 };
 
 function abrirModalGenerico(seccion) {
@@ -751,7 +751,7 @@ window.verUsuario = function(id) {
 
     const rolBadge = u.rol === 'anfitrion'
         ? `<span class="badge bg-success-subtle text-success">${t('admin.users.roleAnfitrion')}</span>`
-        : `<span class="badge bg-info-subtle text-info">${t('admin.users.roleInquilino')}</span>`;
+        : `<span class="badge bg-info-subtle text-info">${t('admin.users.rolehuesped')}</span>`;
 
     document.getElementById('modalDetalleTitle').textContent = `${t('admin.users.detailTitle')}: ${u.nombre}`;
     document.getElementById('modalDetalleContent').innerHTML = `

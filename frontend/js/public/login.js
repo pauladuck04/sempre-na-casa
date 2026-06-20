@@ -75,7 +75,7 @@ form.addEventListener('submit', async (e) => {
         } else if (rol.includes('anfitrion')) {
             window.location.href = 'dashboard-anfitrion.html';
         } else {
-            window.location.href = 'dashboard-inquilino.html';
+            window.location.href = 'dashboard-huesped.html';
         }
 
     } catch (error) {

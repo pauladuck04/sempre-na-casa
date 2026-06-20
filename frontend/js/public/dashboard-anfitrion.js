@@ -1,10 +1,10 @@
 import { initI18n, t, applyTranslations } from '../i18n.js';
 import * as criterios  from '../anfitrion/criterios.js';
-import * as inquilinos from '../anfitrion/inquilinos.js';
+import * as huespedes from '../anfitrion/huespedes.js';
 
 const FILTROS_POR_SECCION = {
     criterios:  [{ campo: 'estado', opciones: [['activo','filterActive'],['inactivo','filterInactive']] }],
-    inquilinos: [{ campo: 'estado', opciones: [['activo','filterActive'],['entrevista','filterInterview'],['prueba','filterTrial'],['inactivo','filterInactive']] }]
+    huespedes: [{ campo: 'estado', opciones: [['activo','filterActive'],['entrevista','filterInterview'],['prueba','filterTrial'],['inactivo','filterInactive']] }]
 };
 
 const CONFIG_MODALES = {
@@ -33,7 +33,7 @@ const SECTION_TITLES = {
     general:    () => t('anfitrion.sections.general.title'),
     vivienda:   () => t('anfitrion.sections.home.title'),
     criterios:  () => t('anfitrion.sections.criteria.title'),
-    inquilinos: () => t('anfitrion.sections.tenants.title'),
+    huespedes: () => t('anfitrion.sections.tenants.title'),
     perfil:     () => t('anfitrion.sections.profile.title')
 };
 
@@ -41,7 +41,7 @@ const SECTION_DESCRIPTIONS = {
     general:    () => t('anfitrion.sections.general.description'),
     vivienda:   () => t('anfitrion.sections.home.description'),
     criterios:  () => t('anfitrion.sections.criteria.description'),
-    inquilinos: () => t('anfitrion.sections.tenants.description'),
+    huespedes: () => t('anfitrion.sections.tenants.description'),
     perfil:     () => t('anfitrion.sections.profile.description')
 };
 
@@ -55,7 +55,7 @@ let viviendaActual = {
     estado: 'disponible'
 };
 
-let inquilinoBajaId = null;
+let huespedBajaId = null;
 
 const usuarioActual = {
     nombre: 'Ana García López', iniciales: 'AG',
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     await initI18n();
     applyTranslations();
 
-    inquilinos.cargarInquilinos();
+    huespedes.cargarHuespedes();
     const seccionActiva = document.querySelector('.section-link.active-custom')?.getAttribute('data-section');
     actualizarControlesSeccion(seccionActiva);
     cargarSeguimientoConvivencias();
@@ -93,10 +93,10 @@ document.addEventListener('DOMContentLoaded', async function() {
             form.querySelector('[name="valor"]').value    = c.valor;
             form.insertAdjacentHTML('beforeend', `<input type="hidden" name="id_edit" value="${id}">`);
             document.getElementById('modalTitle').textContent = `${t('anfitrion.criteria.add')}: ${c.criterio}`;
-        } else if (seccion === 'inquilinos') {
-            const seleccionado = document.querySelector('tbody .inquilino-checkbox:checked');
+        } else if (seccion === 'huespedes') {
+            const seleccionado = document.querySelector('tbody .huesped-checkbox:checked');
             if (!seleccionado) return;
-            verInquilino(parseInt(seleccionado.value));
+            huespedes.verHuesped(parseInt(seleccionado.value));
         }
     });
 
@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 criterios.desactivarCriterios(seleccionados);
                 aplicarFiltros(); actualizarBotones();
             }
-        } else if (seccion === 'inquilinos') {
+        } else if (seccion === 'huespedes') {
             abrirModalBaja(parseInt(seleccionados[0]));
         }
     });
@@ -160,11 +160,11 @@ document.addEventListener('DOMContentLoaded', async function() {
     });
 
     document.getElementById('btnConfirmarBaja')?.addEventListener('click', () => {
-        if (!inquilinoBajaId) return;
-        const i = inquilinos.listaInquilinosMemoria.find(x => x.id === inquilinoBajaId);
+        if (!huespedBajaId) return;
+        const i = huespedes.listaHuespedesMemoria.find(x => x.id === huespedBajaId);
         if (i) { i.estado = 'inactivo'; }
         bootstrap.Modal.getInstance(document.getElementById('modalBaja')).hide();
-        inquilinoBajaId = null;
+        huespedBajaId = null;
         aplicarFiltros(); actualizarBotones(); cargarSeguimientoConvivencias();
     });
 
@@ -292,7 +292,7 @@ function navegarASeccion(sectionName) {
         case 'general':    cargarSeguimientoConvivencias(); break;
         case 'vivienda':   renderizarVivienda();            break;
         case 'criterios':  criterios.cargarCriterios();     break;
-        case 'inquilinos': inquilinos.cargarInquilinos();   break;
+        case 'huespedes': huespedes.cargarHuespedes();   break;
     }
 
     aplicarFiltros();
@@ -303,7 +303,7 @@ function navegarASeccion(sectionName) {
 function cargarSeguimientoConvivencias() {
     const v = viviendaActual;
     const plazasOcupadas = v ? v.plazas_totales - v.plazas_libres : 0;
-    const enEntrevista   = inquilinos.listaInquilinosMemoria.filter(i => i.estado === 'entrevista').length;
+    const enEntrevista   = huespedes.listaHuespedesMemoria.filter(i => i.estado === 'entrevista').length;
 
     const estadoEl = document.getElementById('estado-vivienda');
     if (estadoEl) estadoEl.textContent = v
@@ -323,7 +323,7 @@ function renderizarConvivencias() {
     const tbody = document.getElementById('tabla-convivencias');
     if (!tbody) return;
 
-    const visibles = inquilinos.listaInquilinosMemoria.filter(i => i.estado !== 'inactivo');
+    const visibles = huespedes.listaHuespedesMemoria.filter(i => i.estado !== 'inactivo');
     if (visibles.length === 0) {
         tbody.innerHTML = `<tr><td colspan="3" class="text-center text-muted py-3">${t('anfitrion.convivencias.noActive')}</td></tr>`;
         return;
@@ -396,15 +396,15 @@ function abrirModalGenerico(seccion) {
 }
 
 function abrirModalBaja(id) {
-    const i = inquilinos.listaInquilinosMemoria.find(x => x.id === id);
+    const i = huespedes.listaHuespedesMemoria.find(x => x.id === id);
     if (!i) return;
-    inquilinoBajaId = id;
+    huespedBajaId = id;
     document.getElementById('baja-nombre').textContent  = i.nombre;
     bootstrap.Modal.getOrCreateInstance(document.getElementById('modalBaja')).show();
 }
 
-window.verInquilino = function(id) {
-    const i = inquilinos.listaInquilinosMemoria.find(x => x.id === id);
+window.verHuesped = function(id) {
+    const i = huespedes.listaHuespedesMemoria.find(x => x.id === id);
     if (!i) return;
 
     const pctColor   = i.compatibilidad >= 85 ? 'success' : i.compatibilidad >= 65 ? 'warning' : 'danger';
@@ -472,7 +472,7 @@ function actualizarControlesSeccion(seccion) {
         if (btnEliminar) btnEliminar.innerHTML = `<i class="bi bi-x-circle me-2"></i> ${t('buttons.deactivate')}`;
         btnReactivar?.classList.remove('d-none');
         if (btnReactivar) btnReactivar.innerHTML = `<i class="bi bi-check-circle me-2"></i> ${t('buttons.activate')}`;
-    } else if (seccion === 'inquilinos') {
+    } else if (seccion === 'huespedes') {
         btnCrear?.classList.add('d-none');
         btnEditar?.classList.add('d-none');
         if (btnEliminar) btnEliminar.innerHTML = `<i class="bi bi-box-arrow-right me-2"></i> ${t('common.notifyLeave')}`;
@@ -522,12 +522,12 @@ function aplicarFiltros() {
 function obtenerConfigSeccion(seccion) {
     return {
         criterios:  { lista: criterios.listaCriteriosMemoria,  renderizar: criterios.renderizarCriterios },
-        inquilinos: { lista: inquilinos.listaInquilinosMemoria, renderizar: inquilinos.renderizarInquilinos }
+        huespedes: { lista: huespedes.listaHuespedesMemoria, renderizar: huespedes.renderizarHuespedes }
     }[seccion];
 }
 
 function obtenerIdsSeleccionados(seccion) {
-    const s = { criterios: '.criterio-checkbox', inquilinos: '.inquilino-checkbox' }[seccion];
+    const s = { criterios: '.criterio-checkbox', huespedes: '.huesped-checkbox' }[seccion];
     if (!s) return [];
     return Array.from(document.querySelectorAll(`tbody ${s}:checked`)).map(cb => cb.value);
 }
@@ -543,7 +543,7 @@ function obtenerIdsSeleccionadosInactivos(seccion) {
 
 function actualizarBotones() {
     const seccion = document.querySelector('.section-link.active-custom')?.getAttribute('data-section');
-    const s = { criterios: '.criterio-checkbox', inquilinos: '.inquilino-checkbox' }[seccion];
+    const s = { criterios: '.criterio-checkbox', huespedes: '.huesped-checkbox' }[seccion];
     const seleccionados = s ? document.querySelectorAll(`tbody ${s}:checked`).length : 0;
 
     const btnEditar    = document.getElementById('btnEditar');
@@ -554,9 +554,9 @@ function actualizarBotones() {
     if (btnEliminar) btnEliminar.disabled = (seleccionados === 0);
     if (seccion === 'criterios' && btnReactivar) {
         btnReactivar.disabled = (obtenerIdsSeleccionadosInactivos(seccion).length === 0);
-    } else if (seccion === 'inquilinos' && btnEliminar) {
+    } else if (seccion === 'huespedes' && btnEliminar) {
         const puedeBaja = obtenerIdsSeleccionados(seccion).filter(id => {
-            const i = inquilinos.listaInquilinosMemoria.find(x => String(x.id) === id);
+            const i = huespedes.listaHuespedesMemoria.find(x => String(x.id) === id);
             return i?.estado === 'activo' || i?.estado === 'prueba';
         }).length;
         btnEliminar.disabled = (puedeBaja === 0);

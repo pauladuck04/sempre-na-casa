@@ -79,7 +79,7 @@
     "joinAs": "Join as",
     "studentRole": "🎓 Tenant/Student",
     "roleAnfitrion": "🏠 Host",
-    "roleInquilino": "Tenant",
+    "rolehuesped": "Tenant",
     "dniPassport": "ID / Passport",
     "firstName": "First Name",
     "surnames": "Last Name",
@@ -215,7 +215,7 @@
       "role": "User Role",
       "registerDate": "Registration Date",
       "roleAnfitrion": "Host",
-      "roleInquilino": "Tenant",
+      "rolehuesped": "Tenant",
       "statusActive": "Active",
       "statusInactive": "Inactive",
       "statusPending": "Pending",
@@ -362,7 +362,7 @@
       "noActive": "No active cohabitations"
     }
   },
-  "inquilino": {
+  "huesped": {
     "badge": "Tenant",
     "nav": {
       "general": "Overview",

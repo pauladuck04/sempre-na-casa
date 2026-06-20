@@ -1,19 +1,19 @@
 import { t } from '../i18n.js';
 
-export let listaInquilinosMemoria = [];
+export let listaHuespedesMemoria = [];
 
-export function cargarInquilinos() {
-    if (listaInquilinosMemoria.length === 0) {
-        listaInquilinosMemoria = [
+export function cargarhuespedes() {
+    if (listaHuespedesMemoria.length === 0) {
+        listaHuespedesMemoria = [
             { id:1, nombre:'Luis Martínez', compatibilidad:92, estado:'activo',     email:'luis.m@email.com',  telefono:'666 111 222', fechaIngreso:'01/02/2026' },
             { id:2, nombre:'Marta Soto',    compatibilidad:85, estado:'entrevista', email:'marta.s@email.com', telefono:'666 333 444', fechaIngreso: null        }
         ];
     }
-    renderizarInquilinos(listaInquilinosMemoria);
+    renderizarHuespedes(listaHuespedesMemoria);
 }
 
-export function renderizarInquilinos(lista) {
-    const tbody = document.getElementById('tabla-inquilinos');
+export function renderizarHuespedes(lista) {
+    const tbody = document.getElementById('tabla-huespedes');
     if (!tbody) return;
     tbody.innerHTML = '';
 
@@ -23,9 +23,9 @@ export function renderizarInquilinos(lista) {
         row.innerHTML = `
             <td>
                 <div class="d-flex align-items-center gap-2">
-                    <input class="form-check-input inquilino-checkbox align-self-start mt-1" type="checkbox" value="${i.id}">
+                    <input class="form-check-input huesped-checkbox align-self-start mt-1" type="checkbox" value="${i.id}">
                     <div>
-                        <span class="fw-semibold d-block inquilino-nombre" data-id="${i.id}" style="cursor:pointer;">${i.nombre}</span>
+                        <span class="fw-semibold d-block huesped-nombre" data-id="${i.id}" style="cursor:pointer;">${i.nombre}</span>
                         <span class="text-muted small d-block">${i.email}</span>
                     </div>
                 </div>
@@ -43,10 +43,10 @@ export function renderizarInquilinos(lista) {
         tbody.appendChild(row);
     });
 
-    tbody.querySelectorAll('.inquilino-nombre').forEach(span => {
+    tbody.querySelectorAll('.huesped-nombre').forEach(span => {
         span.addEventListener('click', function(e) {
             e.stopPropagation();
-            if (typeof verInquilino === 'function') verInquilino(Number(this.getAttribute('data-id')));
+            if (typeof verHuesped === 'function') verHuesped(Number(this.getAttribute('data-id')));
         });
     });
 }

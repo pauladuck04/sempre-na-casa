@@ -1,6 +1,6 @@
 import { initI18n, t, applyTranslations } from '../i18n.js';
-import * as convivencia  from '../inquilino/convivencia.js';
-import * as preferencias from '../inquilino/preferencias.js';
+import * as convivencia  from '../huesped/convivencia.js';
+import * as preferencias from '../huesped/preferencias.js';
 
 const FILTROS_POR_SECCION = {
     preferencias: [{ campo: 'estado', opciones: [['activo','filterActive'],['inactivo','filterInactive']] }]
@@ -8,20 +8,20 @@ const FILTROS_POR_SECCION = {
 
 const CONFIG_MODALES = {
     preferencias: {
-        getTitulo: () => t('inquilino.preferences.add'),
+        getTitulo: () => t('huesped.preferences.add'),
         getHtml: () => `
-            <div class="mb-3"><label class="form-label fw-bold">${t('inquilino.preferences.preferenceLabel')}</label>
+            <div class="mb-3"><label class="form-label fw-bold">${t('huesped.preferences.preferenceLabel')}</label>
             <input name="preferencia" class="form-control" placeholder="Ej: Ambiente de la vivienda" required></div>
-            <div class="mb-3"><label class="form-label fw-bold">${t('inquilino.preferences.myValue')}</label>
+            <div class="mb-3"><label class="form-label fw-bold">${t('huesped.preferences.myValue')}</label>
             <input name="valor" class="form-control" placeholder="Ej: Tranquilo" required></div>`
     }
 };
 
 const SECTION_TITLES = {
-    general:      () => t('inquilino.sections.general.title'),
-    convivencia:  () => t('inquilino.sections.convivencia.title'),
-    preferencias: () => t('inquilino.sections.preferences.title'),
-    perfil:       () => t('inquilino.sections.profile.title')
+    general:      () => t('huesped.sections.general.title'),
+    convivencia:  () => t('huesped.sections.convivencia.title'),
+    preferencias: () => t('huesped.sections.preferences.title'),
+    perfil:       () => t('huesped.sections.profile.title')
 };
 
 const usuarioActual = {
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         form.querySelector('[name="preferencia"]').value = p.preferencia;
         form.querySelector('[name="valor"]').value       = p.valor;
         form.insertAdjacentHTML('beforeend', `<input type="hidden" name="id_edit" value="${id}">`);
-        document.getElementById('modalTitle').textContent = `${t('inquilino.preferences.add')}: ${p.preferencia}`;
+        document.getElementById('modalTitle').textContent = `${t('huesped.preferences.add')}: ${p.preferencia}`;
     });
 
     document.getElementById('btnEliminar')?.addEventListener('click', () => {
@@ -224,8 +224,8 @@ function navegarASeccion(sectionName) {
 
     aplicarFiltros();
     const descriptions = convivencia.convivenciaMemoria
-        ? { general: () => t('inquilino.sections.general.descriptionWithHome'), convivencia: () => t('inquilino.sections.convivencia.description'), preferencias: () => t('inquilino.sections.preferences.description'), perfil: () => t('inquilino.sections.profile.description') }
-        : { general: () => t('inquilino.sections.general.descriptionWithoutHome'), preferencias: () => t('inquilino.sections.preferences.description'), perfil: () => t('inquilino.sections.profile.description') };
+        ? { general: () => t('huesped.sections.general.descriptionWithHome'), convivencia: () => t('huesped.sections.convivencia.description'), preferencias: () => t('huesped.sections.preferences.description'), perfil: () => t('huesped.sections.profile.description') }
+        : { general: () => t('huesped.sections.general.descriptionWithoutHome'), preferencias: () => t('huesped.sections.preferences.description'), perfil: () => t('huesped.sections.profile.description') };
 
     document.getElementById('section-title').textContent       = SECTION_TITLES[sectionName]?.()  || '';
     document.getElementById('section-description').textContent = descriptions[sectionName]?.()     || '';
@@ -263,7 +263,7 @@ function renderizarCandidatos() {
     grid.innerHTML = candidatos.map(cand => {
         const pctColor = cand.compatibilidad >= 85 ? 'success' : cand.compatibilidad >= 65 ? 'warning' : 'danger';
         const inis = cand.anfitrion.split(' ').slice(0, 2).map(n => n[0]).join('').toUpperCase();
-        const slotsKey = cand.plazasLibres !== 1 ? t('inquilino.candidates.freeSlotsPlural') : t('inquilino.candidates.freeSlotsSingular');
+        const slotsKey = cand.plazasLibres !== 1 ? t('huesped.candidates.freeSlotsPlural') : t('huesped.candidates.freeSlotsSingular');
         return `
             <div class="col-md-6 col-xl-3">
                 <div class="card border-0 shadow-sm rounded-4 h-100 p-3">
@@ -279,7 +279,7 @@ function renderizarCandidatos() {
                     <p class="text-muted small mb-3"><i class="bi bi-door-open me-1"></i>${cand.plazasLibres} ${slotsKey}</p>
                     <div class="mt-auto">
                         <div class="d-flex justify-content-between align-items-center mb-1">
-                            <small class="text-muted">${t('inquilino.candidates.compatibility')}</small>
+                            <small class="text-muted">${t('huesped.candidates.compatibility')}</small>
                             <small class="fw-bold text-${pctColor}">${cand.compatibilidad}%</small>
                         </div>
                         <div class="progress" style="height:6px;">
@@ -294,24 +294,24 @@ function renderizarCandidatos() {
 
 function renderizarResumenConvivencia(c) {
     const textos = {
-        activo:     t('inquilino.summary_status.statusActive'),
-        entrevista: t('inquilino.summary_status.statusInterview'),
-        prueba:     t('inquilino.summary_status.statusTrial'),
-        inactivo:   t('inquilino.summary_status.statusFinished')
+        activo:     t('huesped.summary_status.statusActive'),
+        entrevista: t('huesped.summary_status.statusInterview'),
+        prueba:     t('huesped.summary_status.statusTrial'),
+        inactivo:   t('huesped.summary_status.statusFinished')
     };
     const estadoEl = document.getElementById('estado-solicitud');
     const compatEl = document.getElementById('compatibilidad-score');
     const fechaEl  = document.getElementById('fecha-inicio');
     if (estadoEl) estadoEl.textContent = textos[c.estado] || c.estado;
     if (compatEl) compatEl.textContent = `${c.compatibilidad}%`;
-    if (fechaEl)  fechaEl.textContent  = c.fechaInicio || t('inquilino.summary_status.pending');
+    if (fechaEl)  fechaEl.textContent  = c.fechaInicio || t('huesped.summary_status.pending');
 
     const tbody = document.getElementById('tabla-resumen-convivencia');
     if (!tbody) return;
     const badges = {
-        activo:     `<span class="badge rounded-pill px-3 py-2" style="background-color:#D1E7DD;color:#0F5132;">${t('inquilino.convivencia.statusActive')}</span>`,
-        entrevista: `<span class="badge rounded-pill px-3 py-2" style="background-color:#FFF3CD;color:#856404;">${t('inquilino.convivencia.statusInterview')}</span>`,
-        prueba:     `<span class="badge rounded-pill px-3 py-2" style="background-color:#CFE2FF;color:#084298;">${t('inquilino.convivencia.statusTrial')}</span>`
+        activo:     `<span class="badge rounded-pill px-3 py-2" style="background-color:#D1E7DD;color:#0F5132;">${t('huesped.convivencia.statusActive')}</span>`,
+        entrevista: `<span class="badge rounded-pill px-3 py-2" style="background-color:#FFF3CD;color:#856404;">${t('huesped.convivencia.statusInterview')}</span>`,
+        prueba:     `<span class="badge rounded-pill px-3 py-2" style="background-color:#CFE2FF;color:#084298;">${t('huesped.convivencia.statusTrial')}</span>`
     };
     tbody.innerHTML = `
         <tr>
@@ -381,7 +381,7 @@ function configurarFiltros(seccion) {
         select.dataset.filtroCampo = filtro.campo;
         select.innerHTML = `
             <option value="">${t('common.allStatuses')}</option>
-            ${filtro.opciones.map(([val, key]) => `<option value="${val}">${t(`inquilino.preferences.${key}`)}</option>`).join('')}
+            ${filtro.opciones.map(([val, key]) => `<option value="${val}">${t(`huesped.preferences.${key}`)}</option>`).join('')}
         `;
         contenedor.appendChild(select);
     });

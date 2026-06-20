@@ -71,15 +71,15 @@
     "forgotPassword": "¿Has olvidado tu contraseña?",
     "noAccount": "¿Aún no tienes cuenta?",
     "isHost": "Soy anfitrión",
-    "isTenant": "Soy inquilino",
+    "isTenant": "Soy huesped",
     "error": "Error al iniciar sesión. Verifica tus credenciales."
   },
   "register": {
     "pageTitle": "Crear cuenta",
     "joinAs": "Únete como",
-    "studentRole": "🎓 Inquilino/Estudiante",
+    "studentRole": "🎓 huesped/Estudiante",
     "roleAnfitrion": "🏠 Anfitrión",
-    "roleInquilino": "Inquilino",
+    "rolehuesped": "huesped",
     "dniPassport": "DNI / Pasaporte",
     "firstName": "Nombre",
     "surnames": "Apellidos",
@@ -176,7 +176,7 @@
     },
     "table": {
       "host": "Anfitrión",
-      "tenant": "Inquilino",
+      "tenant": "huesped",
       "startDate": "Inicio",
       "status": "Estado",
       "user": "Usuario",
@@ -215,7 +215,7 @@
       "role": "Rol de Usuario",
       "registerDate": "Fecha de Registro",
       "roleAnfitrion": "Anfitrión",
-      "roleInquilino": "Inquilino",
+      "rolehuesped": "huesped",
       "statusActive": "Activo",
       "statusInactive": "Inactivo",
       "statusPending": "Pendiente",
@@ -273,7 +273,7 @@
       "general": "Vista General",
       "home": "Mi Vivienda",
       "criteria": "Criterios",
-      "tenants": "Inquilinos"
+      "tenants": "Huespedes"
     },
     "summary": {
       "homeStatus": "Estado Vivienda",
@@ -281,7 +281,7 @@
       "inInterview": "En Entrevista"
     },
     "table": {
-      "tenant": "Inquilino",
+      "tenant": "huesped",
       "startDate": "Inicio",
       "status": "Estado",
       "criteria": "Criterio",
@@ -292,16 +292,16 @@
       "currentConvivencia": "Mi Convivencia Actual",
       "homeDetails": "Detalles de Mi Vivienda",
       "criteriaTitle": "Criterios de la Vivienda",
-      "tenantsTitle": "Inquilinos Asignados a Mi Vivienda",
+      "tenantsTitle": "huespedes Asignados a Mi Vivienda",
       "noHome": "Todavía no tienes una vivienda registrada",
-      "noHomeSubtitle": "Da de alta tu vivienda para empezar a recibir inquilinos.",
+      "noHomeSubtitle": "Da de alta tu vivienda para empezar a recibir huespedes.",
       "registerHomeBtn": "Dar de Alta Vivienda"
     },
     "modalBaja": {
-      "title": "Notificar Baja de Inquilino",
+      "title": "Notificar Baja de huesped",
       "body": "Estás a punto de notificar la baja de",
       "leaveReason": "Motivo de la baja",
-      "voluntaria": "Salida voluntaria del inquilino",
+      "voluntaria": "Salida voluntaria del huesped",
       "incompatibilidad": "Incompatibilidad de convivencia",
       "fin_contrato": "Fin de contrato / periodo pactado",
       "otro": "Otro motivo",
@@ -310,10 +310,10 @@
       "confirmBaja": "Confirmar Baja"
     },
     "sections": {
-      "general": { "title": "Panel de Anfitrión", "description": "Resumen de tu vivienda e inquilinos actuales" },
+      "general": { "title": "Panel de Anfitrión", "description": "Resumen de tu vivienda e huespedes actuales" },
       "home": { "title": "Mi Vivienda", "description": "Gestiona los datos de tu vivienda" },
-      "criteria": { "title": "Criterios de la Vivienda", "description": "Define las preferencias para los inquilinos" },
-      "tenants": { "title": "Inquilinos", "description": "Consulta perfiles y gestiona las bajas" },
+      "criteria": { "title": "Criterios de la Vivienda", "description": "Define las preferencias para los huespedes" },
+      "tenants": { "title": "huespedes", "description": "Consulta perfiles y gestiona las bajas" },
       "profile": { "title": "Mi Perfil", "description": "Gestiona tu información personal y configuración de cuenta" }
     },
     "home": {
@@ -340,7 +340,7 @@
       "filterInactive": "Inactivos"
     },
     "tenants": {
-      "profileTitle": "Perfil del Inquilino",
+      "profileTitle": "Perfil del huesped",
       "email": "Correo Electrónico",
       "phone": "Teléfono",
       "joinDate": "Fecha de Ingreso",
@@ -362,8 +362,8 @@
       "noActive": "No hay convivencias activas"
     }
   },
-  "inquilino": {
-    "badge": "Inquilino",
+  "huesped": {
+    "badge": "huesped",
     "nav": {
       "general": "Vista General",
       "convivencia": "Mi Convivencia",
@@ -394,7 +394,7 @@
       "myValue": "Mi Valor"
     },
     "sections": {
-      "general": { "title": "Panel de Inquilino", "descriptionWithHome": "Resumen de tu convivencia y estado de solicitud", "descriptionWithoutHome": "Explora las viviendas con mejor compatibilidad para ti" },
+      "general": { "title": "Panel de huesped", "descriptionWithHome": "Resumen de tu convivencia y estado de solicitud", "descriptionWithoutHome": "Explora las viviendas con mejor compatibilidad para ti" },
       "convivencia": { "title": "Mi Convivencia", "description": "Consulta los detalles de tu vivienda y anfitrión" },
       "preferences": { "title": "Mis Preferencias", "description": "Define tus preferencias para el proceso de matching" },
       "profile": { "title": "Mi Perfil", "description": "Gestiona tu información personal y configuración de cuenta" }
@@ -410,7 +410,7 @@
       "totalSlots": "Plazas en Vivienda",
       "startDate": "Fecha de Inicio",
       "roommates": "Compañeros de Piso",
-      "noRoommates": "No hay otros inquilinos en esta vivienda.",
+      "noRoommates": "No hay otros huespedes en esta vivienda.",
       "since": "Desde",
       "statusActive": "✓ Activa",
       "statusInterview": "⏳ En Entrevista",

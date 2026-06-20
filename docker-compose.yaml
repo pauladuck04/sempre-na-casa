@@ -16,7 +16,7 @@ services:
       MYSQL_USER: 4740201_semprenacasa
       MYSQL_PASSWORD: SempreNaCasa_2026
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - db_data:/var/lib/mysql
       - ./dump.sql:/docker-entrypoint-initdb.d/dump.sql

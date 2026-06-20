@@ -35,30 +35,30 @@ export function renderizarConvivencia() {
     document.getElementById('ficha-convivencia').innerHTML = `
         <div class="row g-4">
             <div class="col-md-7">
-                <h6 class="text-muted small mb-1">${t('inquilino.convivencia.host')}</h6>
+                <h6 class="text-muted small mb-1">${t('huesped.convivencia.host')}</h6>
                 <p class="fw-semibold mb-3">${c.anfitrion}</p>
-                <h6 class="text-muted small mb-1">${t('inquilino.convivencia.address')}</h6>
+                <h6 class="text-muted small mb-1">${t('huesped.convivencia.address')}</h6>
                 <p class="fw-semibold mb-3">${c.direccion}</p>
-                <h6 class="text-muted small mb-1">${t('inquilino.convivencia.city')}</h6>
+                <h6 class="text-muted small mb-1">${t('huesped.convivencia.city')}</h6>
                 <p class="fw-semibold mb-3">${c.ciudad}</p>
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <h6 class="text-muted small mb-1">${t('inquilino.convivencia.hostEmail')}</h6>
+                        <h6 class="text-muted small mb-1">${t('huesped.convivencia.hostEmail')}</h6>
                         <p class="fw-semibold mb-0">${c.emailAnfitrion}</p>
                     </div>
                     <div class="col-md-6">
-                        <h6 class="text-muted small mb-1">${t('inquilino.convivencia.hostPhone')}</h6>
+                        <h6 class="text-muted small mb-1">${t('huesped.convivencia.hostPhone')}</h6>
                         <p class="fw-semibold mb-0">${c.telefonoAnfitrion}</p>
                     </div>
                 </div>
             </div>
             <div class="col-md-5">
                 <div class="card border-0 bg-light rounded-3 p-3 mb-3">
-                    <p class="text-muted small mb-1">${t('inquilino.convivencia.status')}</p>
+                    <p class="text-muted small mb-1">${t('huesped.convivencia.status')}</p>
                     <div>${badgeHtml}</div>
                 </div>
                 <div class="card border-0 bg-light rounded-3 p-3 mb-3">
-                    <p class="text-muted small mb-1">${t('inquilino.convivencia.compatibility')}</p>
+                    <p class="text-muted small mb-1">${t('huesped.convivencia.compatibility')}</p>
                     <div class="d-flex align-items-center gap-2 mt-1">
                         <div class="progress flex-grow-1" style="height:8px;">
                             <div class="progress-bar bg-${pctColor}" style="width:${c.compatibilidad}%;"></div>
@@ -67,18 +67,18 @@ export function renderizarConvivencia() {
                     </div>
                 </div>
                 <div class="card border-0 bg-light rounded-3 p-3 mb-3">
-                    <p class="text-muted small mb-1">${t('inquilino.convivencia.totalSlots')}</p>
+                    <p class="text-muted small mb-1">${t('huesped.convivencia.totalSlots')}</p>
                     <h4 class="fw-bold mb-0">${c.plazasTotales}</h4>
                 </div>
                 <div class="card border-0 bg-light rounded-3 p-3">
-                    <p class="text-muted small mb-1">${t('inquilino.convivencia.startDate')}</p>
+                    <p class="text-muted small mb-1">${t('huesped.convivencia.startDate')}</p>
                     <h5 class="fw-bold mb-0">${c.fechaInicio}</h5>
                 </div>
             </div>
         </div>
         <hr class="my-4">
         <h6 class="fw-bold mb-3">
-            <i class="bi bi-people me-2 text-primary"></i>${t('inquilino.convivencia.roommates')}
+            <i class="bi bi-people me-2 text-primary"></i>${t('huesped.convivencia.roommates')}
         </h6>
         ${companerosHtml}
     `;
@@ -86,7 +86,7 @@ export function renderizarConvivencia() {
 
 function companerosList(companeros) {
     if (!companeros || companeros.length === 0) {
-        return `<p class="text-muted small mb-0">${t('inquilino.convivencia.noRoommates')}</p>`;
+        return `<p class="text-muted small mb-0">${t('huesped.convivencia.noRoommates')}</p>`;
     }
     const items = companeros.map(p => `
         <div class="d-flex align-items-center gap-3 py-2 border-bottom">
@@ -96,7 +96,7 @@ function companerosList(companeros) {
             </div>
             <div>
                 <span class="fw-semibold d-block">${p.nombre}</span>
-                <span class="text-muted small">${t('inquilino.convivencia.since')} ${p.fechaIngreso}</span>
+                <span class="text-muted small">${t('huesped.convivencia.since')} ${p.fechaIngreso}</span>
             </div>
         </div>
     `).join('');
@@ -109,10 +109,10 @@ function iniciales(nombre) {
 
 function badgeEstadoHtml(estado) {
     const badges = {
-        activo:     `<span class="badge rounded-pill px-3" style="background-color:#D1E7DD;color:#0F5132;">${t('inquilino.convivencia.statusActive')}</span>`,
-        entrevista: `<span class="badge rounded-pill px-3" style="background-color:#FFF3CD;color:#856404;">${t('inquilino.convivencia.statusInterview')}</span>`,
-        prueba:     `<span class="badge rounded-pill px-3" style="background-color:#CFE2FF;color:#084298;">${t('inquilino.convivencia.statusTrial')}</span>`,
-        inactivo:   `<span class="badge rounded-pill px-3" style="background-color:#F8D7DA;color:#842029;">${t('inquilino.convivencia.statusFinished')}</span>`
+        activo:     `<span class="badge rounded-pill px-3" style="background-color:#D1E7DD;color:#0F5132;">${t('huesped.convivencia.statusActive')}</span>`,
+        entrevista: `<span class="badge rounded-pill px-3" style="background-color:#FFF3CD;color:#856404;">${t('huesped.convivencia.statusInterview')}</span>`,
+        prueba:     `<span class="badge rounded-pill px-3" style="background-color:#CFE2FF;color:#084298;">${t('huesped.convivencia.statusTrial')}</span>`,
+        inactivo:   `<span class="badge rounded-pill px-3" style="background-color:#F8D7DA;color:#842029;">${t('huesped.convivencia.statusFinished')}</span>`
     };
     return badges[estado] || `<span class="badge bg-secondary rounded-pill px-3">${estado}</span>`;
 }
