@@ -292,7 +292,7 @@
       "currentConvivencia": "Mi Convivencia Actual",
       "homeDetails": "Detalles de Mi Vivienda",
       "criteriaTitle": "Criterios de la Vivienda",
-      "tenantsTitle": "huespedes Asignados a Mi Vivienda",
+      "tenantsTitle": "Huespedes Asignados a Mi Vivienda",
       "noHome": "Todavía no tienes una vivienda registrada",
       "noHomeSubtitle": "Da de alta tu vivienda para empezar a recibir huespedes.",
       "registerHomeBtn": "Dar de Alta Vivienda"
@@ -313,7 +313,7 @@
       "general": { "title": "Panel de Anfitrión", "description": "Resumen de tu vivienda e huespedes actuales" },
       "home": { "title": "Mi Vivienda", "description": "Gestiona los datos de tu vivienda" },
       "criteria": { "title": "Criterios de la Vivienda", "description": "Define las preferencias para los huespedes" },
-      "tenants": { "title": "huespedes", "description": "Consulta perfiles y gestiona las bajas" },
+      "tenants": { "title": "Huespedes", "description": "Consulta perfiles y gestiona las bajas" },
       "profile": { "title": "Mi Perfil", "description": "Gestiona tu información personal y configuración de cuenta" }
     },
     "home": {

@@ -2,7 +2,7 @@ import { t } from '../i18n.js';
 
 export let listaHuespedesMemoria = [];
 
-export function cargarhuespedes() {
+export function cargarHuespedes() {
     if (listaHuespedesMemoria.length === 0) {
         listaHuespedesMemoria = [
             { id:1, nombre:'Luis Martínez', compatibilidad:92, estado:'activo',     email:'luis.m@email.com',  telefono:'666 111 222', fechaIngreso:'01/02/2026' },
