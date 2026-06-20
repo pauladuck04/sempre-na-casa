@@ -71,15 +71,15 @@
     "forgotPassword": "Esqueciche o teu contrasinal?",
     "noAccount": "Aínda non tes conta?",
     "isHost": "Son anfitrión",
-    "isTenant": "Son huesped",
+    "isTenant": "Son convidado",
     "error": "Erro ao iniciar sesión. Verifica as túas credenciais."
   },
   "register": {
     "pageTitle": "Crear conta",
     "joinAs": "Únete como",
-    "studentRole": "🎓 huesped/Estudante",
+    "studentRole": "🎓 Convidado/Estudante",
     "roleAnfitrion": "🏠 Anfitrión",
-    "rolehuesped": "huesped",
+    "roleHuesped": "Convidado",
     "dniPassport": "DNI / Pasaporte",
     "firstName": "Nome",
     "surnames": "Apelidos",
@@ -176,7 +176,7 @@
     },
     "table": {
       "host": "Anfitrión",
-      "tenant": "huesped",
+      "tenant": "Convidado",
       "startDate": "Inicio",
       "status": "Estado",
       "user": "Usuario",
@@ -210,7 +210,7 @@
     "users": {
       "fullName": "Nome Completo", "email": "Correo Electrónico", "dni": "DNI", "phone": "Teléfono",
       "role": "Rol de Usuario", "registerDate": "Data de Rexistro",
-      "roleAnfitrion": "Anfitrión", "rolehuesped": "huesped",
+      "roleAnfitrion": "Anfitrión", "roleHuesped": "Convidado",
       "statusActive": "Activo", "statusInactive": "Inactivo", "statusPending": "Pendente",
       "filterActive": "Activos", "filterPending": "Pendentes", "filterInactive": "Inactivos",
       "createTitle": "Crear Novo Usuario", "editTitle": "Editar Usuario", "detailTitle": "Detalles do Usuario",
@@ -238,7 +238,7 @@
     "badge": "Anfitrión",
     "nav": { "general": "Vista Xeral", "home": "A Miña Vivenda", "criteria": "Criterios", "tenants": "Convidades" },
     "summary": { "homeStatus": "Estado Vivenda", "occupiedSlots": "Prazas Ocupadas", "inInterview": "En Entrevista" },
-    "table": { "tenant": "huesped", "startDate": "Inicio", "status": "Estado", "criteria": "Criterio", "preferredValue": "Valor Preferido", "compatibility": "Compatibilidade" },
+    "table": { "tenant": "Convidado", "startDate": "Inicio", "status": "Estado", "criteria": "Criterio", "preferredValue": "Valor Preferido", "compatibility": "Compatibilidade" },
     "cardTitles": {
       "currentConvivencia": "A Miña Convivencia Actual", "homeDetails": "Detalles da Miña Vivenda",
       "criteriaTitle": "Criterios da Vivenda", "tenantsTitle": "Convidades Asignadas á Miña Vivenda",
@@ -246,8 +246,8 @@
       "registerHomeBtn": "Dar de Alta Vivenda"
     },
     "modalBaja": {
-      "title": "Notificar Baixa de huesped", "body": "Estás a punto de notificar a baixa de",
-      "leaveReason": "Motivo da baixa", "voluntaria": "Saída voluntaria do huesped",
+      "title": "Notificar Baixa de convidado", "body": "Estás a punto de notificar a baixa de",
+      "leaveReason": "Motivo da baixa", "voluntaria": "Saída voluntaria do convidado",
       "incompatibilidad": "Incompatibilidade de convivencia", "fin_contrato": "Fin de contrato / período pactado",
       "otro": "Outro motivo", "observations": "Observacións",
       "observationsPh": "Engade detalles se o consideras necesario...", "confirmBaja": "Confirmar Baixa"
@@ -270,15 +270,15 @@
       "active": "Activo", "inactive": "Inactivo", "filterActive": "Activos", "filterInactive": "Inactivos"
     },
     "tenants": {
-      "profileTitle": "Perfil do huesped", "email": "Correo Electrónico", "phone": "Teléfono",
+      "profileTitle": "Perfil do convidado", "email": "Correo Electrónico", "phone": "Teléfono",
       "joinDate": "Data de Ingreso", "compatibility": "Compatibilidade", "pending": "Pendente",
       "statusActive": "Activo", "statusInterview": "En Entrevista", "statusTrial": "Proba", "statusInactive": "Inactivo",
       "filterActive": "Activos", "filterInterview": "En Entrevista", "filterTrial": "En Proba", "filterInactive": "Inactivos"
     },
     "convivencias": { "statusActive": "✓ Activa", "statusInterview": "⏳ En Entrevista", "statusTrial": "⚠️ Período de Proba", "noActive": "Non hai convivencias activas" }
   },
-  "huesped": {
-    "badge": "huesped",
+  "convidado": {
+    "badge": "convidado",
     "nav": { "general": "Vista Xeral", "convivencia": "A Miña Convivencia", "preferences": "As Miñas Preferencias" },
     "summary": {
       "availableCandidates": "Candidatos Dispoñibles", "maxCompatibility": "Mellor Compatibilidade",
@@ -293,7 +293,7 @@
     },
     "table": { "host": "Anfitrión", "address": "Enderezo", "startDate": "Inicio", "status": "Estado", "preference": "Preferencia", "myValue": "O Meu Valor" },
     "sections": {
-      "general": { "title": "Panel de huesped", "descriptionWithHome": "Resumo da túa convivencia e estado da solicitude", "descriptionWithoutHome": "Explora as vivendas con mellor compatibilidade para ti" },
+      "general": { "title": "Panel de convidado", "descriptionWithHome": "Resumo da túa convivencia e estado da solicitude", "descriptionWithoutHome": "Explora as vivendas con mellor compatibilidade para ti" },
       "convivencia": { "title": "A Miña Convivencia", "description": "Consulta os detalles da túa vivenda e anfitrión" },
       "preferences": { "title": "As Miñas Preferencias", "description": "Define as túas preferencias para o proceso de matching" },
       "profile": { "title": "O Meu Perfil", "description": "Xestiona a túa información persoal e configuración de conta" }
