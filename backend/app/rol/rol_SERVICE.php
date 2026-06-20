@@ -13,11 +13,11 @@ class rol_SERVICE extends appServiceBase {
     function inicializarRest() {
 
         $this->listaAtributos = array(
-            'id_rol', 'nombre_rol', 'fecha_alta_rol', 'activo_rol'
+            'id_rol', 'nombre_rol', 'fecha_alta_rol', 'fecha_modificacion_rol', 'activo_rol'
         );
 
         $this->listaAtributosSelect = array(
-            'id_rol', 'nombre_rol', 'fecha_alta_rol', 'activo_rol'
+            'id_rol', 'nombre_rol', 'fecha_alta_rol', 'fecha_modificacion_rol', 'activo_rol'
         );
 
         $this->notnull = array(
@@ -33,21 +33,23 @@ class rol_SERVICE extends appServiceBase {
     function modificacion_atributos() {
         if (isset($_POST['action']) && $_POST['action'] == 'ADD') {
             $_POST['fecha_alta_rol'] = date('Y-m-d H:i:s');
+            $_POST['fecha_modificacion_rol'] = date('Y-m-d H:i:s');
             $_POST['activo_rol']     = 1;
         }
     }
 
     function DELETE() {
-        return $this->softDelete('activo_rol');
+        return $this->softDelete('activo_rol', 'fecha_modificacion_rol');
     }
 
     function REACTIVAR() {
-        return $this->reactivarRegistro('activo_rol');
+        return $this->reactivarRegistro('activo_rol', 'fecha_modificacion_rol');
     }
 
     function EDIT() {
         unset($this->modelo->valores['fecha_alta_rol']);
         unset($this->modelo->valores['activo_rol']);
+        $this->modelo->valores['fecha_modificacion_rol'] = date('Y-m-d H:i:s');
         return $this->modelo->EDIT();
     }
 

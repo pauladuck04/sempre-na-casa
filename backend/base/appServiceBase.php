@@ -216,7 +216,7 @@ abstract class appServiceBase{
 
 	}
 
-	function reactivarRegistro($campoActivo) {
+	function reactivarRegistro($campoActivo, $campoFechaModificacion = null) {
 		$this->modelo->foraneas = [];
 		$resultado = $this->modelo->SEARCH_BY();
 
@@ -236,23 +236,31 @@ abstract class appServiceBase{
 			$condiciones[] = "`{$pk}` = " . intval($this->modelo->valores[$pk]);
 		}
 		$where = implode(' AND ', $condiciones);
+		$set = "`{$campoActivo}` = 1";
+		if ($campoFechaModificacion !== null) {
+			$set .= ", `{$campoFechaModificacion}` = '" . date('Y-m-d H:i:s') . "'";
+		}
 		$map = new mapping($tabla);
-		$res = $map->lanzarquery("UPDATE `{$tabla}` SET `{$campoActivo}` = 1 WHERE {$where}");
+		$res = $map->lanzarquery("UPDATE `{$tabla}` SET {$set} WHERE {$where}");
 		if ($res['ok']) {
 			$res['code'] = 'REACTIVACION_OK';
 		}
 		return $res;
 	}
 
-	function softDelete($campoActivo) {
+	function softDelete($campoActivo, $campoFechaModificacion = null) {
 		$tabla  = $this->modelo->tabla;
 		$condiciones = array();
 		foreach ($this->modelo->clave as $pk) {
 			$condiciones[] = "`{$pk}` = " . intval($this->modelo->valores[$pk]);
 		}
 		$where = implode(' AND ', $condiciones);
+		$set = "`{$campoActivo}` = 0";
+		if ($campoFechaModificacion !== null) {
+			$set .= ", `{$campoFechaModificacion}` = '" . date('Y-m-d H:i:s') . "'";
+		}
 		$map = new mapping($tabla);
-		$res = $map->lanzarquery("UPDATE `{$tabla}` SET `{$campoActivo}` = 0 WHERE {$where}");
+		$res = $map->lanzarquery("UPDATE `{$tabla}` SET {$set} WHERE {$where}");
 		if ($res['ok']) {
 			$res['code'] = 'BAJA_LOGICA_OK';
 		}

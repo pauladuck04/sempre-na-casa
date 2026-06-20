@@ -13,11 +13,11 @@ class vivienda_SERVICE extends appServiceBase {
     function inicializarRest() {
 
         $this->listaAtributos = array(
-            'id_vivienda', 'descripcion', 'plazas_libres', 'plazas_totales', 'id_anfitrion', 'direccion', 'ciudad', 'fecha_alta_vivienda', 'activo_vivienda'
+            'id_vivienda', 'descripcion', 'plazas_libres', 'plazas_totales', 'id_anfitrion', 'direccion', 'ciudad', 'fecha_alta_vivienda', 'fecha_modificacion_vivienda', 'activo_vivienda'
         );
 
         $this->listaAtributosSelect = array(
-            'id_vivienda', 'descripcion', 'plazas_libres', 'plazas_totales', 'id_anfitrion', 'direccion', 'ciudad', 'fecha_alta_vivienda', 'activo_vivienda'
+            'id_vivienda', 'descripcion', 'plazas_libres', 'plazas_totales', 'id_anfitrion', 'direccion', 'ciudad', 'fecha_alta_vivienda', 'fecha_modificacion_vivienda', 'activo_vivienda'
         );
 
         $this->notnull = array(
@@ -33,6 +33,7 @@ class vivienda_SERVICE extends appServiceBase {
     function modificacion_atributos() {
         if (isset($_POST['action']) && $_POST['action'] == 'ADD') {
             $_POST['fecha_alta_vivienda'] = date('Y-m-d H:i:s');
+            $_POST['fecha_modificacion_vivienda'] = date('Y-m-d H:i:s');
             $_POST['activo_vivienda']     = 1;
         }
     }
@@ -46,16 +47,17 @@ class vivienda_SERVICE extends appServiceBase {
     }
 
     function DELETE() {
-        return $this->softDelete('activo_vivienda');
+        return $this->softDelete('activo_vivienda', 'fecha_modificacion_vivienda');
     }
 
     function REACTIVAR() {
-        return $this->reactivarRegistro('activo_vivienda');
+        return $this->reactivarRegistro('activo_vivienda', 'fecha_modificacion_vivienda');
     }
 
     function EDIT() {
         unset($this->modelo->valores['fecha_alta_vivienda']);
         unset($this->modelo->valores['activo_vivienda']);
+        $this->modelo->valores['fecha_modificacion_vivienda'] = date('Y-m-d H:i:s');
         return $this->modelo->EDIT();
     }
 

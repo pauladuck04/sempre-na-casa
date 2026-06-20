@@ -16,12 +16,12 @@ class AUTH_SERVICE extends appServiceBase{
 
 		$this->listaAtributos = array(
 			'id_usuario','dni','mail','nombre_usuario','apellidos','password',
-			'telefono','fecha_alta_usuario','activo_usuario','id_rol'
+			'telefono','fecha_alta_usuario','fecha_modificacion_usuario','activo_usuario','id_rol'
 		);
 
 		$this->listaAtributosSelect = array(
 			'id_usuario','dni','mail','nombre_usuario','apellidos','telefono',
-			'fecha_alta_usuario','activo_usuario','id_rol'
+			'fecha_alta_usuario','fecha_modificacion_usuario','activo_usuario','id_rol'
 		);
 
 		$this->notnull = array(
@@ -198,7 +198,7 @@ class AUTH_SERVICE extends appServiceBase{
 
 		include_once './Base/mapping.php';
 		$map = new mapping('usuario');
-		$res = $map->lanzarquery("UPDATE usuario SET password = '".$password."' WHERE id_usuario = ".$idUsuario);
+		$res = $map->lanzarquery("UPDATE usuario SET password = '".$password."', fecha_modificacion_usuario = '".date('Y-m-d H:i:s')."' WHERE id_usuario = ".$idUsuario);
 
 		if ($res['ok'] === true){
 			$res['code'] = 'CAMBIAR_PASSWORD_OK';

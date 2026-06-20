@@ -16,9 +16,9 @@ class usuario_SERVICE extends appServiceBase{
 
 	function inicializarRest(){
 
-		$this->listaAtributos = array('id_usuario','dni','mail','nombre_usuario','apellidos','password','telefono','fecha_alta_usuario','activo_usuario','id_rol');
+		$this->listaAtributos = array('id_usuario','dni','mail','nombre_usuario','apellidos','password','telefono','fecha_alta_usuario','fecha_modificacion_usuario','activo_usuario','id_rol');
 
-		$this->listaAtributosSelect = array('id_usuario','dni','mail','nombre_usuario','apellidos','telefono','fecha_alta_usuario','activo_usuario','id_rol');
+		$this->listaAtributosSelect = array('id_usuario','dni','mail','nombre_usuario','apellidos','telefono','fecha_alta_usuario','fecha_modificacion_usuario','activo_usuario','id_rol');
 
 		$this->notnull = array(
 						'ADD'    => array('dni','mail','nombre_usuario','apellidos','password','telefono','id_rol'),
@@ -35,6 +35,7 @@ class usuario_SERVICE extends appServiceBase{
         if (isset($_POST['action']) && $_POST['action'] == 'ADD') {
             $_POST['activo_usuario']     = 1;
             $_POST['fecha_alta_usuario'] = date('Y-m-d H:i:s');
+            $_POST['fecha_modificacion_usuario'] = date('Y-m-d H:i:s');
         }
         if (!empty($_POST['password'])) {
             $_POST['password'] = md5($_POST['password']);
@@ -42,16 +43,17 @@ class usuario_SERVICE extends appServiceBase{
     }
 
     function DELETE() {
-        return $this->softDelete('activo_usuario');
+        return $this->softDelete('activo_usuario', 'fecha_modificacion_usuario');
     }
 
     function REACTIVAR() {
-        return $this->reactivarRegistro('activo_usuario');
+        return $this->reactivarRegistro('activo_usuario', 'fecha_modificacion_usuario');
     }
 
     function EDIT() {
         unset($this->modelo->valores['fecha_alta_usuario']);
         unset($this->modelo->valores['activo_usuario']);
+        $this->modelo->valores['fecha_modificacion_usuario'] = date('Y-m-d H:i:s');
         if (empty($this->modelo->valores['password'])) {
             unset($this->modelo->valores['password']);
         }

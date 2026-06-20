@@ -31,6 +31,7 @@ CREATE TABLE `criterio` (
   `id_criterio` int NOT NULL,
   `nombre_criterio` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `fecha_alta_criterio` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `fecha_modificacion_criterio` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `activo_criterio` tinyint(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -46,6 +47,7 @@ CREATE TABLE `opcion` (
   `nombre_opcion` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `valor` varchar(25) NOT NULL,
   `fecha_alta_opcion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `fecha_modificacion_opcion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `activo_opcion` tinyint(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -58,7 +60,8 @@ CREATE TABLE `opcion` (
 CREATE TABLE `rol` (
   `id_rol` int NOT NULL,
   `nombre_rol` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `fecha_alta_rol` date NOT NULL,
+  `fecha_alta_rol` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `fecha_modificacion_rol` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `activo_rol` tinyint(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -66,8 +69,8 @@ CREATE TABLE `rol` (
 -- Volcado de datos para la tabla `rol`
 --
 
-INSERT INTO `rol` (`id_rol`, `nombre_rol`, `fecha_alta_rol`, `activo_rol`) VALUES
-(1, '1', '2026-06-03', 1);
+INSERT INTO `rol` (`id_rol`, `nombre_rol`, `fecha_alta_rol`, `fecha_modificacion_rol`, `activo_rol`) VALUES
+(1, '1', '2026-06-03 00:00:00', '2026-06-03 00:00:00', 1);
 
 -- --------------------------------------------------------
 
@@ -84,6 +87,7 @@ CREATE TABLE `usuario` (
   `password` varchar(255) NOT NULL,
   `telefono` varchar(9) NOT NULL,
   `fecha_alta_usuario` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `fecha_modificacion_usuario` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `activo_usuario` tinyint(1) NOT NULL DEFAULT '1',
   `id_rol` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -92,8 +96,8 @@ CREATE TABLE `usuario` (
 -- Volcado de datos para la tabla `usuario`
 --
 
-INSERT INTO `usuario` (`dni`, `mail`, `nombre_usuario`, `apellidos`, `password`, `telefono`, `fecha_alta_usuario`, `activo_usuario`, `id_rol`) VALUES
-('1', '1', '1', '1', '1', '1', '2026-06-03 17:58:11', 1, 1);
+INSERT INTO `usuario` (`dni`, `mail`, `nombre_usuario`, `apellidos`, `password`, `telefono`, `fecha_alta_usuario`, `fecha_modificacion_usuario`, `activo_usuario`, `id_rol`) VALUES
+('1', '1', '1', '1', '1', '1', '2026-06-03 17:58:11', '2026-06-03 17:58:11', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -134,6 +138,7 @@ CREATE TABLE `vivienda` (
   `direccion` varchar(150) NOT NULL,
   `ciudad` varchar(100) NOT NULL,
   `fecha_alta_vivienda` datetime NOT NULL,
+  `fecha_modificacion_vivienda` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `id_anfitrion` int NOT NULL,
   `activo_vivienda` tinyint(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
