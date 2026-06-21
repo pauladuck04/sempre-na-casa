@@ -2,8 +2,8 @@ import { t } from '../i18n.js';
 
 export let listaRolesMemoria = [];
 
-export async function cargarRoles() {
-    if (listaRolesMemoria.length === 0) {
+export async function cargarRoles(forzarRecarga = false) {
+    if (forzarRecarga || listaRolesMemoria.length === 0) {
         const res = await apiPost('rol', 'getAll');
         if (res.ok && Array.isArray(res.resource)) {
             listaRolesMemoria = res.resource.map(r => ({

@@ -4,6 +4,8 @@ abstract class appServiceBase{
 
 
 	public $listaAtributos = array();
+	public $listaAtributosSelect = array();
+	public $notnull = array();
 	public $modelo = '';
 	private $default_search_init = 0;
 	private $default_page_size = 250;

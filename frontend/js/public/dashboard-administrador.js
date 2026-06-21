@@ -16,9 +16,10 @@ const CONFIG_MODALES = {
     usuarios: {
         getTitulo: () => t('admin.users.createTitle'),
         getHtml: () => {
-            const rolesOpts = roles.listaRolesMemoria.length > 0
-                ? roles.listaRolesMemoria.map(r => `<option value="${r.id}">${r.nombre}</option>`).join('')
-                : '<option value="" disabled>No hay roles disponibles</option>';
+            const rolesActivos = roles.listaRolesMemoria.filter(r => r.estado === 'activo');
+            const rolesOpts = rolesActivos.length > 0
+                ? rolesActivos.map(r => `<option value="${r.id}">${r.nombre}</option>`).join('')
+                : '<option value="" disabled>No hay roles activos disponibles</option>';
             return `
             <div class="row">
                 <div class="col-md-6 mb-3"><label class="form-label fw-bold">Nombre</label><input name="nombre_usuario" class="form-control" required></div>
@@ -38,7 +39,7 @@ const CONFIG_MODALES = {
             <div class="mb-3"><label class="form-label fw-bold">Contraseña</label><input type="password" name="password" class="form-control"></div>
             <div class="mb-3">
                 <label class="form-label fw-bold">${t('admin.users.role')}</label>
-                <select name="id_rol" class="form-select">${rolesOpts}</select>
+                <select name="id_rol" class="form-select" required>${rolesOpts}</select>
             </div>`;
         }
     },
@@ -128,6 +129,50 @@ function getActiveCriteriosSubTab() {
 document.addEventListener('DOMContentLoaded', async function() {
     await initI18n();
     applyTranslations();
+    // Cargar datos del perfil del usuario logueado por email desde backend
+    async function cargarPerfilPorMail() {
+        const email = (window.auth && typeof window.auth.getEmail === 'function') ? window.auth.getEmail() : localStorage.getItem('user_email');
+        const initialsFrom = name => (name || '').split(' ').map(n => n[0] || '').join('').toUpperCase().slice(0,2);
+        if (!email) return;
+        try {
+            const res = await apiPost('usuario', 'getByMail', { mail: email });
+            if (res.ok && Array.isArray(res.resource) && res.resource.length > 0) {
+                const ures = res.resource[0];
+                const u = {
+                    id: ures.id_usuario,
+                    nombre: `${ures.nombre_usuario} ${ures.apellidos}`.trim(),
+                    email: ures.mail,
+                    dni: ures.dni,
+                    telefono: ures.telefono,
+                    id_rol: ures.id_rol,
+                    fechaRegistro: ures.fecha_alta_usuario ? ures.fecha_alta_usuario.split(' ')[0] : '-'
+                };
+                document.getElementById('perfil-display-nombre').textContent = u.nombre || '';
+                const inpNombre = document.getElementById('perfil-nombre'); if (inpNombre) inpNombre.value = u.nombre || '';
+                const inpEmail = document.getElementById('perfil-email'); if (inpEmail) inpEmail.value = u.email || '';
+                const inpDni = document.getElementById('perfil-dni'); if (inpDni) inpDni.value = u.dni || '';
+                const inpTel = document.getElementById('perfil-telefono'); if (inpTel) inpTel.value = u.telefono || '';
+                const fecha = document.getElementById('perfil-fecha-alta'); if (fecha) fecha.textContent = u.fechaRegistro || '-';
+                const initials = initialsFrom(u.nombre);
+                const avatar = document.getElementById('perfil-avatar');
+                if (avatar) { avatar.textContent = initials; avatar.style.backgroundColor = (u.id_rol == 2) ? 'var(--color-secundario)' : 'var(--color-primario)'; }
+                const btn = document.getElementById('btnPerfil');
+                if (btn) { btn.textContent = initials; btn.style.backgroundColor = avatar?.style?.backgroundColor || 'var(--color-primario)'; }
+                return;
+            }
+        } catch (err) {
+            console.warn('Error cargando perfil por mail:', err);
+        }
+        // Fallback local
+        const fallbackName = email ? email.split('@')[0] : 'Usuario';
+        document.getElementById('perfil-display-nombre').textContent = fallbackName;
+        const inpNombre = document.getElementById('perfil-nombre'); if (inpNombre) inpNombre.value = fallbackName;
+        const inpEmail = document.getElementById('perfil-email'); if (inpEmail) inpEmail.value = email || '';
+        const initials = initialsFrom(fallbackName);
+        const avatar = document.getElementById('perfil-avatar'); if (avatar) { avatar.textContent = initials; avatar.style.backgroundColor = 'var(--color-primario)'; }
+        const btn = document.getElementById('btnPerfil'); if (btn) { btn.textContent = initials; btn.style.backgroundColor = 'var(--color-primario)'; }
+    }
+    cargarPerfilPorMail();
 
     const seccionActiva = document.querySelector('.section-link.active-custom')?.getAttribute('data-section');
     actualizarControlesSeccion(seccionActiva);
@@ -162,7 +207,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (efectiva === 'usuarios' && roles.listaRolesMemoria.length === 0) {
             await roles.cargarRoles();
         }
-        abrirModalGenerico(efectiva);
+        await abrirModalGenerico(efectiva);
     });
 
     document.getElementById('btnEditar')?.addEventListener('click', async () => {
@@ -185,7 +230,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (!seleccionado) return;
 
         const id = seleccionado.value;
-        abrirModalGenerico(efectiva);
+        await abrirModalGenerico(efectiva);
         const form = document.getElementById('formGenerico');
         form.insertAdjacentHTML('beforeend', `<input type="hidden" name="id_edit" value="${id}">`);
 
@@ -341,13 +386,15 @@ document.addEventListener('DOMContentLoaded', async function() {
                 ciudad:         data.ciudad,
                 id_anfitrion:   data.id_anfitrion
             };
-            if (data.id_edit) {
+                if (data.id_edit) {
                 params.id_vivienda = data.id_edit;
                 const res = await apiPost('vivienda', 'EDIT', params);
-                if (!res.ok) { alert('Error al guardar vivienda: ' + (res.code || 'desconocido')); return; }
+                if (!res.ok) { mostrarToast('Error al guardar vivienda: ' + (res.code || 'desconocido')); return; }
+                mostrarToast('Modificado correctamente', 'success');
             } else {
                 const res = await apiPost('vivienda', 'ADD', params);
-                if (!res.ok) { alert('Error al crear vivienda: ' + (res.code || 'desconocido')); return; }
+                if (!res.ok) { mostrarToast('Error al crear vivienda: ' + (res.code || 'desconocido')); return; }
+                mostrarToast('Guardado correctamente', 'success');
             }
             viviendas.listaViviendasMemoria.splice(0);
             await viviendas.cargarViviendas();
@@ -365,7 +412,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 return;
             }
             if (!data.id_edit && !data.password) {
-                alert('La contraseña es obligatoria para crear un nuevo usuario.');
+                mostrarToast('La contraseña es obligatoria para crear un nuevo usuario.', 'danger');
                 return;
             }
             const params = {
@@ -376,15 +423,17 @@ document.addEventListener('DOMContentLoaded', async function() {
                 telefono:       data.telefono,
                 id_rol:         data.id_rol
             };
-            if (data.id_edit) {
+                if (data.id_edit) {
                 params.id_usuario = data.id_edit;
                 if (data.password) params.password = data.password;
                 const res = await apiPost('usuario', 'EDIT', params);
-                if (!res.ok) { alert('Error al guardar: ' + (res.code || 'desconocido')); return; }
+                if (!res.ok) { mostrarToast('Error al guardar: ' + (res.code || 'desconocido')); return; }
+                mostrarToast('Modificado correctamente', 'success');
             } else {
                 params.password = data.password;
                 const res = await apiPost('usuario', 'ADD', params);
-                if (!res.ok) { alert('Error al crear usuario: ' + (res.code || 'desconocido')); return; }
+                if (!res.ok) { mostrarToast('Error al crear usuario: ' + (res.code || 'desconocido')); return; }
+                mostrarToast('Guardado correctamente', 'success');
             }
             usuarios.listaUsuariosMemoria.splice(0);
             await usuarios.cargarUsuarios();
@@ -393,10 +442,12 @@ document.addEventListener('DOMContentLoaded', async function() {
             if (data.id_edit) {
                 params.id_rol = data.id_edit;
                 const res = await apiPost('rol', 'EDIT', params);
-                if (!res.ok) { alert('Error al guardar rol: ' + (res.code || 'desconocido')); return; }
+                if (!res.ok) { mostrarToast('Error al guardar rol: ' + (res.code || 'desconocido')); return; }
+                mostrarToast('Modificado correctamente', 'success');
             } else {
                 const res = await apiPost('rol', 'ADD', params);
-                if (!res.ok) { alert('Error al crear rol: ' + (res.code || 'desconocido')); return; }
+                if (!res.ok) { mostrarToast('Error al crear rol: ' + (res.code || 'desconocido')); return; }
+                mostrarToast('Guardado correctamente', 'success');
             }
             roles.listaRolesMemoria.splice(0);
             await roles.cargarRoles();
@@ -411,20 +462,24 @@ document.addEventListener('DOMContentLoaded', async function() {
                 if (data.id_edit) {
                     params.id_opcion = data.id_edit;
                     const res = await apiPost('opcion', 'EDIT', params);
-                    if (!res.ok) { alert('Error al guardar opción: ' + (res.code || 'desconocido')); return; }
+                    if (!res.ok) { mostrarToast('Error al guardar opción: ' + (res.code || 'desconocido')); return; }
+                    mostrarToast('Modificado correctamente', 'success');
                 } else {
                     const res = await apiPost('opcion', 'ADD', params);
-                    if (!res.ok) { alert('Error al crear opción: ' + (res.code || 'desconocido')); return; }
+                    if (!res.ok) { mostrarToast('Error al crear opción: ' + (res.code || 'desconocido')); return; }
+                    mostrarToast('Guardado correctamente', 'success');
                 }
             } else {
                 const params = { nombre_criterio: data.nombre };
                 if (data.id_edit) {
                     params.id_criterio = data.id_edit;
                     const res = await apiPost('criterio', 'EDIT', params);
-                    if (!res.ok) { alert('Error al guardar criterio: ' + (res.code || 'desconocido')); return; }
+                    if (!res.ok) { mostrarToast('Error al guardar criterio: ' + (res.code || 'desconocido')); return; }
+                    mostrarToast('Modificado correctamente', 'success');
                 } else {
                     const res = await apiPost('criterio', 'ADD', params);
-                    if (!res.ok) { alert('Error al crear criterio: ' + (res.code || 'desconocido')); return; }
+                    if (!res.ok) { mostrarToast('Error al crear criterio: ' + (res.code || 'desconocido')); return; }
+                    mostrarToast('Guardado correctamente', 'success');
                 }
             }
             criterios.listaCriteriosMemoria.splice(0);
@@ -434,7 +489,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         aplicarFiltros();
         bootstrap.Modal.getInstance(document.getElementById('modalGenerico')).hide();
-        } catch(err) { alert('ERROR en submit: ' + err.message); console.error(err); }
+        } catch(err) { mostrarToast('ERROR en submit: ' + err.message); console.error(err); }
     });
 
     // Perfil
@@ -464,17 +519,17 @@ document.addEventListener('DOMContentLoaded', async function() {
         Array.from(document.querySelectorAll('#perfil-form input')).forEach(inp => inp.disabled = true);
         document.getElementById('perfil-btnEditar').classList.remove('d-none');
         document.getElementById('perfil-acciones').classList.add('d-none');
-        alert(t('profile.savedSuccess'));
+        mostrarToast(t('profile.savedSuccess'), 'success');
     });
 
     document.getElementById('perfil-form-pwd')?.addEventListener('submit', (e) => {
         e.preventDefault();
         const nueva    = document.getElementById('pwd-nueva').value;
         const confirma = document.getElementById('pwd-confirmar').value;
-        if (nueva.length < 8) { alert(t('profile.passwordTooShort')); return; }
-        if (nueva !== confirma) { alert(t('profile.passwordMismatch')); return; }
+        if (nueva.length < 8) { mostrarToast(t('profile.passwordTooShort'), 'danger'); return; }
+        if (nueva !== confirma) { mostrarToast(t('profile.passwordMismatch'), 'danger'); return; }
         document.getElementById('perfil-form-pwd').reset();
-        alert(t('profile.passwordUpdated'));
+        mostrarToast(t('profile.passwordUpdated'), 'success');
     });
 
     document.getElementById('btnEliminarCuenta')?.addEventListener('click', () => {
@@ -483,7 +538,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     document.getElementById('btnConfirmarEliminarCuenta')?.addEventListener('click', () => {
         bootstrap.Modal.getInstance(document.getElementById('modalEliminarCuenta')).hide();
-        alert(t('profile.deleteSuccess'));
+        mostrarToast(t('profile.deleteSuccess'), 'success');
         setTimeout(() => { window.location.href = 'public.html'; }, 2000);
     });
 
@@ -578,11 +633,11 @@ function renderizarConvivencias(convivencias) {
     });
 }
 
-window.editarConvivencia = function(id) {
+window.editarConvivencia = async function(id) {
     const c = listaConvivenciasMemoria.find(x => x.id === id);
     if (!c) return;
 
-    abrirModalGenerico('convivencias');
+    await abrirModalGenerico('convivencias');
 
     const form = document.getElementById('formGenerico');
     form.querySelector('[name="estado"]').value = c.estado;
@@ -590,9 +645,14 @@ window.editarConvivencia = function(id) {
     document.getElementById('modalTitle').textContent = `Editar Convivencia: ${c.anfitrion} — ${c.huesped}`;
 };
 
-function abrirModalGenerico(seccion) {
+async function abrirModalGenerico(seccion) {
     const config = CONFIG_MODALES[seccion];
     if (!config) return;
+
+    // Ensure roles are loaded when showing usuarios modal
+    if (seccion === 'usuarios' && Array.isArray(roles.listaRolesMemoria) && roles.listaRolesMemoria.length === 0) {
+        try { await roles.cargarRoles(); } catch (err) { console.warn('No se pudieron cargar roles antes de abrir modal:', err); }
+    }
 
     document.getElementById('modalTitle').textContent    = config.getTitulo();
     document.getElementById('modalFormContent').innerHTML = config.getHtml();

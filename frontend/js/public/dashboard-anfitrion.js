@@ -68,6 +68,48 @@ document.addEventListener('DOMContentLoaded', async function() {
     applyTranslations();
 
     huespedes.cargarHuespedes();
+    // Cargar perfil del usuario logueado por email
+    (async function cargarPerfilPorMail() {
+        const email = (window.auth && typeof window.auth.getEmail === 'function') ? window.auth.getEmail() : localStorage.getItem('user_email');
+        const initialsFrom = name => (name || '').split(' ').map(n => n[0] || '').join('').toUpperCase().slice(0,2);
+        if (!email) return;
+        try {
+            const res = await apiPost('usuario', 'getByMail', { mail: email });
+            if (res.ok && Array.isArray(res.resource) && res.resource.length > 0) {
+                const ures = res.resource[0];
+                const u = {
+                    id: ures.id_usuario,
+                    nombre: `${ures.nombre_usuario} ${ures.apellidos}`.trim(),
+                    email: ures.mail,
+                    dni: ures.dni,
+                    telefono: ures.telefono,
+                    ciudad: ures.ciudad || '',
+                    fechaRegistro: ures.fecha_alta_usuario ? ures.fecha_alta_usuario.split(' ')[0] : '-'
+                };
+                // Guardar en usuarioActual
+                usuarioActual.id = u.id;
+                usuarioActual.nombre = u.nombre;
+                usuarioActual.email = u.email;
+                usuarioActual.dni = u.dni;
+                usuarioActual.telefono = u.telefono;
+                usuarioActual.ciudad = u.ciudad;
+                usuarioActual.fechaAlta = u.fechaRegistro;
+
+                document.getElementById('perfil-display-nombre').textContent = u.nombre || '';
+                const inpNombre = document.getElementById('perfil-nombre'); if (inpNombre) inpNombre.value = u.nombre || '';
+                const inpEmail = document.getElementById('perfil-email'); if (inpEmail) inpEmail.value = u.email || '';
+                const inpDni = document.getElementById('perfil-dni'); if (inpDni) inpDni.value = u.dni || '';
+                const inpTel = document.getElementById('perfil-telefono'); if (inpTel) inpTel.value = u.telefono || '';
+                const fecha = document.getElementById('perfil-fecha-alta'); if (fecha) fecha.textContent = u.fechaRegistro || '-';
+                const initials = initialsFrom(u.nombre);
+                const avatar = document.getElementById('perfil-avatar'); if (avatar) { avatar.textContent = initials; avatar.style.backgroundColor = 'var(--color-primario)'; }
+                const btn = document.getElementById('btnPerfil'); if (btn) { btn.textContent = initials; btn.style.backgroundColor = 'var(--color-primario)'; }
+                return;
+            }
+        } catch (err) {
+            console.warn('Error cargando perfil por mail (anfitrion):', err);
+        }
+    })();
     const seccionActiva = document.querySelector('.section-link.active-custom')?.getAttribute('data-section');
     actualizarControlesSeccion(seccionActiva);
     cargarSeguimientoConvivencias();
@@ -272,10 +314,25 @@ document.addEventListener('DOMContentLoaded', async function() {
         bootstrap.Modal.getOrCreateInstance(document.getElementById('modalEliminarCuenta')).show();
     });
 
-    document.getElementById('btnConfirmarEliminarCuenta')?.addEventListener('click', () => {
+    document.getElementById('btnConfirmarEliminarCuenta')?.addEventListener('click', async () => {
         bootstrap.Modal.getInstance(document.getElementById('modalEliminarCuenta')).hide();
-        mostrarToast(t('profile.deleteSuccess'), 'danger');
-        setTimeout(() => { window.location.href = 'public.html'; }, 2000);
+        const id = usuarioActual.id;
+        if (!id) { mostrarToast('No se pudo eliminar: id de usuario desconocido', 'danger'); return; }
+        try {
+            const res = await apiPost('usuario', 'DELETE', { id_usuario: id });
+            if (res.ok) {
+                localStorage.removeItem('user_email');
+                localStorage.removeItem('user_token');
+                localStorage.removeItem('user_role');
+                mostrarToast(t('profile.deleteSuccess'), 'danger');
+                setTimeout(() => { window.location.href = 'login.html'; }, 1500);
+            } else {
+                mostrarToast('Error al eliminar cuenta: ' + (res.error || res.code || 'desconocido'), 'danger');
+            }
+        } catch (err) {
+            console.error(err);
+            mostrarToast('Error al eliminar cuenta: ' + err.message, 'danger');
+        }
     });
 });
 

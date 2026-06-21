@@ -34,10 +34,13 @@ const iconPass2       = document.getElementById('icon-pass2');
 
 // Obtener rol de URL
 const urlParams = new URLSearchParams(window.location.search);
-const rolParam  = urlParams.get('rol');
+const rolParam  = (urlParams.get('rol') || '').toLowerCase();
 if (rolParam === 'anfitrion') {
-    rolInput.value     = 'anfitrion';
+    rolInput.value = 'anfitrion';
     rolLabel.textContent = t('register.roleAnfitrion');
+} else {
+    rolInput.value = 'huesped';
+    rolLabel.textContent = t('register.studentRole');
 }
 
 // Toggle mostrar/ocultar contraseña
@@ -100,6 +103,9 @@ form.addEventListener('submit', (e) => {
         return;
     }
 
+    const rolSeleccionado = rolInput.value === 'anfitrion' ? 'anfitrion' : 'huesped';
+    const idRolSeleccionado = rolSeleccionado === 'anfitrion' ? 4 : 5;
+
     const formData = {
         dni:       document.getElementById('dni').value,
         nombre:    document.getElementById('nombre').value,
@@ -107,7 +113,8 @@ form.addEventListener('submit', (e) => {
         email:     document.getElementById('email').value,
         telefono:  document.getElementById('telefono').value,
         password:  password.value,
-        rol:       rolInput.value
+        rol:       rolSeleccionado,
+        id_rol:    idRolSeleccionado
     };
 
     sessionStorage.setItem('newUser', JSON.stringify(formData));

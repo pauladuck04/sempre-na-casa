@@ -29,7 +29,7 @@ class AUTH_SERVICE extends appServiceBase{
 			'DESCONECTAR' => array('mail'),
 			'CAMBIAR_CONTRASENA' => array('id_usuario', 'password'),
 			'CAMBIAR_PASSWORD' => array('id_usuario', 'password'),
-			'REGISTRAR' => array('dni','mail','nombre_usuario','apellidos','password','telefono')
+			'REGISTRAR' => array('dni','mail','nombre_usuario','apellidos','password','telefono','id_rol')
 		);
 
 		$this->modelo = $this->crearModelOne('usuario');
@@ -53,9 +53,39 @@ class AUTH_SERVICE extends appServiceBase{
 			$_POST['mail'] = $_POST['usuario'];
 		}
 
-		if (!isset($_POST['id_rol']) && isset($_POST['rol'])){
-			$_POST['id_rol'] = ($_POST['rol'] == 'anfitrion') ? 4 : 5;
+if ((!isset($_POST['id_rol']) || $_POST['id_rol'] === '') && isset($_POST['rol'])){
+		$_POST['id_rol'] = $this->mapRolToId($_POST['rol']);
+	}
+}
+
+function mapRolToId($rol){
+	if (is_numeric($rol)){
+		return intval($rol);
+	}
+
+	$rolLower = mb_strtolower(trim($rol), 'UTF-8');
+	include_once './Base/mapping.php';
+	$mapRol = new mapping('rol');
+	$query = "SELECT id_rol, nombre_rol FROM rol";
+	$resRole = $mapRol->lanzarqueryconresults($query);
+
+	if ($resRole['ok'] && !empty($resRole['resource'])) {
+		foreach ($resRole['resource'] as $row) {
+			if (mb_strtolower(trim($row['nombre_rol']), 'UTF-8') === $rolLower) {
+				return intval($row['id_rol']);
+			}
 		}
+	}
+
+	if ($rolLower === 'anfitrion' || $rolLower === 'host') {
+		return 3;
+	}
+
+	if ($rolLower === 'huesped' || $rolLower === 'huésped' || $rolLower === 'guest') {
+		return 4;
+	}
+
+	return 4;
 	}
 
 	function cargarTokenCabecera(){
@@ -125,6 +155,13 @@ class AUTH_SERVICE extends appServiceBase{
 		);
 		if ($resRol['ok'] && !empty($resRol['resource'])) {
 			$nombreRol = $resRol['resource'][0]['nombre_rol'];
+		}
+		if (empty($nombreRol)) {
+			if (intval($fila['id_rol']) === 4) {
+				$nombreRol = 'anfitrion';
+			} elseif (intval($fila['id_rol']) === 5) {
+				$nombreRol = 'huesped';
+			}
 		}
 
 		include_once './Base/JWT/token.php';

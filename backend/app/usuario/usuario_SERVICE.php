@@ -78,4 +78,16 @@ class usuario_SERVICE extends appServiceBase{
         return $this->modelo->SEARCH_BY();
     }
 
+    function getByMail() {
+        foreach ($this->modelo->valores as $key => $value) {
+            $this->modelo->valores[$key] = '';
+        }
+        $this->modelo->foraneas = [];
+        if (isset($_POST['mail'])) {
+            $this->modelo->valores['mail'] = $_POST['mail'];
+            return $this->modelo->SEARCH();
+        }
+        return array('ok' => false, 'error' => 'mail_not_provided');
+    }
+
 }

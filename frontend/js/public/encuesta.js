@@ -66,7 +66,8 @@ form.addEventListener('submit', async (e) => {
             telefono:  userData.telefono,
             dni:       userData.dni,
             password:  userData.password,
-            rol:       userData.rol
+            rol:       userData.rol,
+            id_rol:    userData.id_rol
         });
 
         if (!resRegistro.ok) {
