@@ -2,13 +2,30 @@ import { t } from '../i18n.js';
 
 export let listaHuespedesMemoria = [];
 
-export function cargarHuespedes() {
-    if (listaHuespedesMemoria.length === 0) {
-        listaHuespedesMemoria = [
-            { id:1, nombre:'Luis Martínez', compatibilidad:92, estado:'activo',     email:'luis.m@email.com',  telefono:'666 111 222', fechaIngreso:'01/02/2026' },
-            { id:2, nombre:'Marta Soto',    compatibilidad:85, estado:'entrevista', email:'marta.s@email.com', telefono:'666 333 444', fechaIngreso: null        }
-        ];
+export async function cargarHuespedes(idVivienda) {
+    const tbody = document.getElementById('tabla-huespedes');
+    if (!tbody) return;
+
+    if (!idVivienda) {
+        tbody.innerHTML = `<tr><td colspan="3" class="text-center text-muted py-3">${t('anfitrion.tenants.noVivienda')}</td></tr>`;
+        return;
     }
+
+    tbody.innerHTML = `<tr><td colspan="3" class="text-center text-muted py-3"><span class="spinner-border spinner-border-sm me-2"></span></td></tr>`;
+
+    const res = await apiPost('usuario_vivienda', 'getHuespedesByVivienda', { id_vivienda: idVivienda });
+
+    listaHuespedesMemoria = (res.ok && Array.isArray(res.resource))
+        ? res.resource.map(r => ({
+            id:          String(r.id_usuario),
+            nombre:      `${r.nombre_usuario || ''} ${r.apellidos || ''}`.trim(),
+            email:       r.mail || '',
+            telefono:    r.telefono || '-',
+            fechaIngreso: r.fecha_inicio ? r.fecha_inicio.split(' ')[0] : null,
+            estado:      r.activo_usuario_vivienda == 1 ? 'activo' : 'inactivo'
+          }))
+        : [];
+
     renderizarHuespedes(listaHuespedesMemoria);
 }
 
@@ -17,8 +34,12 @@ export function renderizarHuespedes(lista) {
     if (!tbody) return;
     tbody.innerHTML = '';
 
+    if (!lista || lista.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" class="text-center text-muted py-3">${t('anfitrion.tenants.noTenants')}</td></tr>`;
+        return;
+    }
+
     lista.forEach(i => {
-        const pctColor = i.compatibilidad >= 85 ? 'success' : i.compatibilidad >= 65 ? 'warning' : 'danger';
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>
@@ -30,14 +51,7 @@ export function renderizarHuespedes(lista) {
                     </div>
                 </div>
             </td>
-            <td style="min-width:140px;">
-                <div class="d-flex align-items-center gap-2">
-                    <div class="progress flex-grow-1" style="height:6px;">
-                        <div class="progress-bar bg-${pctColor}" style="width:${i.compatibilidad}%;"></div>
-                    </div>
-                    <small class="fw-bold text-${pctColor}">${i.compatibilidad}%</small>
-                </div>
-            </td>
+            <td>${i.fechaIngreso || '-'}</td>
             <td>${badgeEstado(i.estado)}</td>
         `;
         tbody.appendChild(row);
@@ -46,24 +60,20 @@ export function renderizarHuespedes(lista) {
     tbody.querySelectorAll('.huesped-nombre').forEach(span => {
         span.addEventListener('click', function(e) {
             e.stopPropagation();
-            if (typeof verHuesped === 'function') verHuesped(Number(this.getAttribute('data-id')));
+            if (typeof verHuesped === 'function') verHuesped(this.getAttribute('data-id'));
         });
     });
 }
 
 function badgeEstado(estado) {
     const labels = {
-        activo:     t('anfitrion.tenants.statusActive'),
-        entrevista: t('anfitrion.tenants.statusInterview'),
-        prueba:     t('anfitrion.tenants.statusTrial'),
-        inactivo:   t('anfitrion.tenants.statusInactive')
+        activo:   t('anfitrion.tenants.statusActive'),
+        inactivo: t('anfitrion.tenants.statusInactive')
     };
     const colors = {
-        activo:     ['#D1E7DD','#0F5132'],
-        entrevista: ['#FFF3CD','#856404'],
-        prueba:     ['#CFE2FF','#084298'],
-        inactivo:   ['#F8D7DA','#842029']
+        activo:   ['#D1E7DD', '#0F5132'],
+        inactivo: ['#F8D7DA', '#842029']
     };
-    const [bg, fg] = colors[estado] || ['#e2e3e5','#383d41'];
+    const [bg, fg] = colors[estado] || ['#e2e3e5', '#383d41'];
     return `<span class="badge rounded-pill px-3" style="background-color:${bg};color:${fg};">${labels[estado] || estado}</span>`;
 }

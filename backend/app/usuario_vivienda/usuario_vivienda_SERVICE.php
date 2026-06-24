@@ -25,6 +25,8 @@ class usuario_vivienda_SERVICE extends appServiceBase {
             'EDIT'   => array('id_usuario', 'id_vivienda'),
             'DELETE'    => array('id_usuario', 'id_vivienda'),
             'REACTIVAR' => array('id_usuario', 'id_vivienda'),
+            'getHuespedesByAnfitrion' => array('id_anfitrion'),
+            'getHuespedesByVivienda'  => array('id_vivienda'),
         );
 
         $this->modelo = $this->crearModelOne('usuario_vivienda');
@@ -45,11 +47,39 @@ class usuario_vivienda_SERVICE extends appServiceBase {
     }
 
     function getAll() {
-        foreach ($this->modelo->valores as $key => $value) {
-            $this->modelo->valores[$key] = '';
-        }
+        $this->modelo->listaAtributos = [];
         $this->modelo->foraneas = [];
         return $this->modelo->SEARCH();
+    }
+
+    function getHuespedesByVivienda() {
+        $idVivienda = intval($_POST['id_vivienda']);
+        include_once './Base/mapping.php';
+        $map = new mapping('usuario_vivienda');
+        return $map->lanzarqueryconresults(
+            "SELECT uv.id_usuario, uv.activo_usuario_vivienda, uv.fecha_inicio,
+                    u.nombre_usuario, u.apellidos, u.mail, u.telefono
+             FROM usuario_vivienda uv
+             JOIN usuario u ON u.id_usuario = uv.id_usuario
+             WHERE uv.id_vivienda = {$idVivienda}
+             ORDER BY uv.activo_usuario_vivienda DESC, uv.fecha_inicio"
+        );
+    }
+
+    function getHuespedesByAnfitrion() {
+        $idAnfitrion = intval($_POST['id_anfitrion']);
+        include_once './Base/mapping.php';
+        $map = new mapping('usuario_vivienda');
+        return $map->lanzarqueryconresults(
+            "SELECT uv.id_usuario, uv.fecha_inicio,
+                    u.nombre_usuario, u.apellidos, u.mail, u.telefono
+             FROM usuario_vivienda uv
+             JOIN usuario u  ON u.id_usuario   = uv.id_usuario
+             JOIN vivienda v ON v.id_vivienda   = uv.id_vivienda
+             WHERE v.id_anfitrion = {$idAnfitrion}
+               AND uv.activo_usuario_vivienda = 1
+             ORDER BY uv.fecha_inicio"
+        );
     }
 
     function getById() {

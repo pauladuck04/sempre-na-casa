@@ -3,8 +3,8 @@ import * as criterios  from '../anfitrion/criterios.js';
 import * as huespedes from '../anfitrion/huespedes.js';
 
 const FILTROS_POR_SECCION = {
-    criterios:  [{ campo: 'estado', opciones: [['activo','filterActive'],['inactivo','filterInactive']] }],
-    huespedes: [{ campo: 'estado', opciones: [['activo','filterActive'],['entrevista','filterInterview'],['prueba','filterTrial'],['inactivo','filterInactive']] }]
+    criterios:  [],
+    huespedes: [{ campo: 'estado', opciones: [['activo','filterActive'],['inactivo','filterInactive']] }]
 };
 
 const CONFIG_MODALES = {
@@ -45,15 +45,8 @@ const SECTION_DESCRIPTIONS = {
     perfil:     () => t('anfitrion.sections.profile.description')
 };
 
-let viviendaActual = {
-    id: 1,
-    direccion: 'Calle Mayor 12, 3º B',
-    ciudad: 'Santiago de Compostela',
-    plazas_totales: 3,
-    plazas_libres: 1,
-    descripcion: 'Piso amplio en el centro histórico, con jardín comunitario.',
-    estado: 'disponible'
-};
+let viviendaActual = null;
+let pendingViviendaId = null;
 
 let huespedBajaId = null;
 
@@ -67,7 +60,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     await initI18n();
     applyTranslations();
 
-    huespedes.cargarHuespedes();
+    // La carga de huéspedes se hace al navegar a esa sección
     // Cargar perfil del usuario logueado por email
     (async function cargarPerfilPorMail() {
         const email = (window.auth && typeof window.auth.getEmail === 'function') ? window.auth.getEmail() : localStorage.getItem('user_email');
@@ -126,19 +119,28 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (seccion === 'criterios') {
             const seleccionado = document.querySelector('tbody .criterio-checkbox:checked');
             if (!seleccionado) return;
-            const id = parseInt(seleccionado.value);
-            const c  = criterios.listaCriteriosMemoria.find(x => x.id === id);
+            const c = criterios.listaCriteriosMemoria.find(x => String(x.id) === String(seleccionado.value));
             if (!c) return;
-            abrirModalGenerico('criterios');
-            const form = document.getElementById('formGenerico');
-            form.querySelector('[name="criterio"]').value = c.criterio;
-            form.querySelector('[name="valor"]').value    = c.valor;
-            form.insertAdjacentHTML('beforeend', `<input type="hidden" name="id_edit" value="${id}">`);
-            document.getElementById('modalTitle').textContent = `${t('anfitrion.criteria.add')}: ${c.criterio}`;
+
+            const opciones = criterios.listaOpcionesMemoria.filter(o => String(o.id_criterio) === String(c.id_criterio));
+            document.getElementById('modalTitle').textContent = `${t('anfitrion.criteria.editTitle')}: ${c.criterio}`;
+            document.getElementById('modalFormContent').innerHTML = `
+                <input type="hidden" name="id_criterio" value="${c.id_criterio}">
+                <input type="hidden" name="id_vivienda"  value="${c.id_vivienda}">
+                <p class="text-muted small mb-3">${t('anfitrion.criteria.preferredValue')}</p>
+                ${opciones.map(o => `
+                    <div class="mb-2">
+                        <input type="radio" class="btn-check" name="id_opcion" id="copt-${o.id_opcion}" value="${o.id_opcion}">
+                        <label class="btn btn-outline-secondary w-100 p-3 text-start rounded-3" for="copt-${o.id_opcion}">${o.nombre_opcion}</label>
+                    </div>`).join('')}
+            `;
+            const currentRadio = document.getElementById(`copt-${c.id_opcion}`);
+            if (currentRadio) currentRadio.checked = true;
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('modalGenerico')).show();
         } else if (seccion === 'huespedes') {
             const seleccionado = document.querySelector('tbody .huesped-checkbox:checked');
             if (!seleccionado) return;
-            huespedes.verHuesped(parseInt(seleccionado.value));
+            huespedes.verHuesped(seleccionado.value);
         }
     });
 
@@ -152,7 +154,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 aplicarFiltros(); actualizarBotones();
             }
         } else if (seccion === 'huespedes') {
-            abrirModalBaja(parseInt(seleccionados[0]));
+            abrirModalBaja(seleccionados[0]);
         }
     });
 
@@ -178,13 +180,24 @@ document.addEventListener('DOMContentLoaded', async function() {
         const data    = Object.fromEntries(new FormData(this));
 
         if (seccion === 'criterios') {
-            if (data.id_edit) {
-                const c = criterios.listaCriteriosMemoria.find(x => x.id === parseInt(data.id_edit));
-                if (c) { c.criterio = data.criterio; c.valor = data.valor; }
-            } else {
-                criterios.listaCriteriosMemoria.push({ id: Date.now(), criterio: data.criterio, valor: data.valor, estado: 'activo' });
+            if (!data.id_opcion) {
+                mostrarToast(t('anfitrion.criteria.selectOption'), 'warning');
+                return;
             }
-            criterios.cargarCriterios();
+            bootstrap.Modal.getInstance(document.getElementById('modalGenerico')).hide();
+            apiPost('vivienda_criterio_opcion', 'updateOpcion', {
+                id_vivienda: data.id_vivienda,
+                id_criterio: data.id_criterio,
+                id_opcion:   data.id_opcion
+            }).then(res => {
+                if (res.ok) {
+                    mostrarToast(t('anfitrion.criteria.updateSuccess'), 'success');
+                    criterios.cargarCriterios(viviendaActual?.id);
+                } else {
+                    mostrarToast(t('anfitrion.criteria.updateError'), 'danger');
+                }
+            });
+            return;
         } else if (seccion === 'vivienda') {
             viviendaActual = {
                 id: viviendaActual?.id || Date.now(),
@@ -201,16 +214,125 @@ document.addEventListener('DOMContentLoaded', async function() {
         bootstrap.Modal.getInstance(document.getElementById('modalGenerico')).hide();
     });
 
-    document.getElementById('btnConfirmarBaja')?.addEventListener('click', () => {
+    document.getElementById('btnConfirmarBaja')?.addEventListener('click', async () => {
         if (!huespedBajaId) return;
-        const i = huespedes.listaHuespedesMemoria.find(x => x.id === huespedBajaId);
-        if (i) { i.estado = 'inactivo'; }
         bootstrap.Modal.getInstance(document.getElementById('modalBaja')).hide();
+        const res = await apiPost('usuario_vivienda', 'DELETE', {
+            id_usuario:  huespedBajaId,
+            id_vivienda: viviendaActual?.id
+        });
         huespedBajaId = null;
-        aplicarFiltros(); actualizarBotones(); cargarSeguimientoConvivencias();
+        await cargarSeguimientoConvivencias();
+        await huespedes.cargarHuespedes(viviendaActual?.id);
+        aplicarFiltros(); actualizarBotones();
     });
 
-    document.getElementById('btnDarDeAlta')?.addEventListener('click', () => abrirModalGenerico('vivienda'));
+    document.getElementById('btnDarDeAlta')?.addEventListener('click', () => mostrarPanelVivienda('form-alta-vivienda'));
+
+    document.getElementById('btnCancelarAltaVivienda')?.addEventListener('click', () => mostrarPanelVivienda('sin-vivienda'));
+
+    document.getElementById('formAltaVivienda')?.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const data = Object.fromEntries(new FormData(this));
+        const errorEl = document.getElementById('formAltaVivienda-error');
+        const btn = document.getElementById('btnSiguienteEncuesta');
+
+        if (!data.direccion.trim() || !data.ciudad.trim() || !data.plazas_totales || !data.plazas_libres) {
+            errorEl.textContent = t('survey.allRequired');
+            errorEl.classList.remove('d-none');
+            return;
+        }
+        errorEl.classList.add('d-none');
+        btn.disabled = true;
+        btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>${t('survey.processing')}`;
+
+        const idAnfitrion = localStorage.getItem('user_id') || usuarioActual.id;
+        const res = await apiPost('vivienda', 'ADD', {
+            direccion:      data.direccion.trim(),
+            ciudad:         data.ciudad.trim(),
+            plazas_totales: data.plazas_totales,
+            plazas_libres:  data.plazas_libres,
+            descripcion:    data.descripcion || '',
+            id_anfitrion:   idAnfitrion
+        });
+
+        btn.disabled = false;
+        btn.innerHTML = `<i class="bi bi-arrow-right me-1"></i><span>${t('anfitrion.home.next')}</span>`;
+
+        if (!res.ok) {
+            errorEl.textContent = t('anfitrion.home.savingError');
+            errorEl.classList.remove('d-none');
+            return;
+        }
+
+        pendingViviendaId = res.resource;
+        viviendaActual = {
+            id:             pendingViviendaId,
+            direccion:      data.direccion.trim(),
+            ciudad:         data.ciudad.trim(),
+            plazas_totales: Number(data.plazas_totales),
+            plazas_libres:  Number(data.plazas_libres),
+            descripcion:    data.descripcion || '',
+            estado:         Number(data.plazas_libres) > 0 ? 'disponible' : 'completa'
+        };
+
+        // Iniciar encuesta de criterios
+        const form2 = document.getElementById('formEncuestaVivienda');
+        if (form2) { form2.reset(); actualizarProgresoEncuestaVivienda(); }
+        mostrarPanelVivienda('encuesta-alta-vivienda');
+    });
+
+    // Progreso de la encuesta de criterios de vivienda
+    document.getElementById('formEncuestaVivienda')?.querySelectorAll('.btn-check').forEach(input =>
+        input.addEventListener('change', actualizarProgresoEncuestaVivienda)
+    );
+
+    document.getElementById('formEncuestaVivienda')?.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const errorEl = document.getElementById('encuesta-vivienda-error');
+        const btn = document.getElementById('btnGuardarEncuestaVivienda');
+
+        const secciones = this.querySelectorAll('[data-criterio]');
+        let allAnswered = true;
+        secciones.forEach(sec => {
+            if (!sec.querySelector('.btn-check:checked')) allAnswered = false;
+        });
+
+        if (!allAnswered) {
+            errorEl.textContent = t('anfitrion.home.criteriaRequired');
+            errorEl.classList.remove('d-none');
+            window.scrollTo(0, 0);
+            return;
+        }
+        errorEl.classList.add('d-none');
+        btn.disabled = true;
+        btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>${t('survey.processing')}`;
+
+        const promesas = [];
+        secciones.forEach(sec => {
+            const idCriterio = sec.getAttribute('data-criterio');
+            const checked = sec.querySelector('.btn-check:checked');
+            if (checked) {
+                promesas.push(apiPost('vivienda_criterio_opcion', 'ADD', {
+                    id_vivienda:  pendingViviendaId,
+                    id_criterio:  idCriterio,
+                    id_opcion:    checked.value
+                }));
+            }
+        });
+
+        try {
+            await Promise.all(promesas);
+            pendingViviendaId = null;
+            mostrarToast(t('anfitrion.home.criteriaSuccess'), 'success');
+            renderizarVivienda();
+        } catch (err) {
+            errorEl.textContent = t('anfitrion.home.savingError');
+            errorEl.classList.remove('d-none');
+            btn.disabled = false;
+            btn.innerHTML = `<i class="bi bi-check-circle me-2"></i><span>${t('anfitrion.home.savePreferences')}</span>`;
+        }
+    });
 
     document.getElementById('btnEditarVivienda')?.addEventListener('click', () => {
         abrirModalGenerico('vivienda');
@@ -370,8 +492,8 @@ function navegarASeccion(sectionName) {
     switch(sectionName) {
         case 'general':    cargarSeguimientoConvivencias(); break;
         case 'vivienda':   renderizarVivienda();            break;
-        case 'criterios':  criterios.cargarCriterios();     break;
-        case 'huespedes': huespedes.cargarHuespedes();   break;
+        case 'criterios':  criterios.cargarCriterios(viviendaActual?.id); break;
+        case 'huespedes': huespedes.cargarHuespedes(viviendaActual?.id); break;
     }
 
     aplicarFiltros();
@@ -379,57 +501,116 @@ function navegarASeccion(sectionName) {
     document.getElementById('section-description').textContent = SECTION_DESCRIPTIONS[sectionName]?.() || '';
 }
 
-function cargarSeguimientoConvivencias() {
-    const v = viviendaActual;
-    const plazasOcupadas = v ? v.plazas_totales - v.plazas_libres : 0;
-    const enEntrevista   = huespedes.listaHuespedesMemoria.filter(i => i.estado === 'entrevista').length;
+async function cargarSeguimientoConvivencias() {
+    const idUsuario = localStorage.getItem('user_id');
 
+    // Cargar vivienda del anfitrión
+    if (idUsuario) {
+        const resV = await apiPost('vivienda', 'getAll');
+        if (resV.ok && Array.isArray(resV.resource)) {
+            const v = resV.resource.find(v => String(v.id_anfitrion) === String(idUsuario));
+            if (v) {
+                viviendaActual = {
+                    id:             v.id_vivienda,
+                    direccion:      v.direccion,
+                    ciudad:         v.ciudad,
+                    plazas_totales: Number(v.plazas_totales),
+                    plazas_libres:  Number(v.plazas_libres),
+                    descripcion:    v.descripcion || '',
+                    estado:         v.activo_vivienda == 1 ? 'disponible' : 'inactivo'
+                };
+            }
+        }
+    }
+
+    // Actualizar tarjeta de estado
     const estadoEl = document.getElementById('estado-vivienda');
-    if (estadoEl) estadoEl.textContent = v
-        ? (v.estado === 'disponible' ? t('anfitrion.home.available') : t('anfitrion.home.complete'))
+    if (estadoEl) estadoEl.textContent = viviendaActual
+        ? (viviendaActual.estado === 'disponible' ? t('anfitrion.home.available') : t('anfitrion.home.complete'))
         : t('anfitrion.home.noHome');
 
+    // Cargar TODOS los huéspedes históricos de la vivienda
+    let todosHuespedes = [];
+    if (viviendaActual?.id) {
+        const resH = await apiPost('usuario_vivienda', 'getHuespedesByVivienda', { id_vivienda: viviendaActual.id });
+        todosHuespedes = (resH.ok && Array.isArray(resH.resource)) ? resH.resource : [];
+    }
+
+    const activos = todosHuespedes.filter(r => r.activo_usuario_vivienda == 1);
     const plazasEl = document.getElementById('plazas-ocupadas');
-    if (plazasEl) plazasEl.textContent = v ? `${plazasOcupadas} / ${v.plazas_totales}` : '-';
+    if (plazasEl) plazasEl.textContent = viviendaActual
+        ? `${activos.length} / ${viviendaActual.plazas_totales}`
+        : '-';
 
-    const pendientesEl = document.getElementById('solicitudes-pendientes');
-    if (pendientesEl) pendientesEl.textContent = enEntrevista;
-
-    renderizarConvivencias();
+    renderizarConvivencias(todosHuespedes);
 }
 
-function renderizarConvivencias() {
+function renderizarConvivencias(lista) {
     const tbody = document.getElementById('tabla-convivencias');
     if (!tbody) return;
 
-    const visibles = huespedes.listaHuespedesMemoria.filter(i => i.estado !== 'inactivo');
-    if (visibles.length === 0) {
+    if (!lista || lista.length === 0) {
         tbody.innerHTML = `<tr><td colspan="3" class="text-center text-muted py-3">${t('anfitrion.convivencias.noActive')}</td></tr>`;
         return;
     }
 
-    tbody.innerHTML = visibles.map(i => {
-        const badges = {
-            activo:     `<span class="badge rounded-pill px-3 py-2" style="background-color:#D1E7DD;color:#0F5132;">${t('anfitrion.convivencias.statusActive')}</span>`,
-            entrevista: `<span class="badge rounded-pill px-3 py-2" style="background-color:#FFF3CD;color:#856404;">${t('anfitrion.convivencias.statusInterview')}</span>`,
-            prueba:     `<span class="badge rounded-pill px-3 py-2" style="background-color:#CFE2FF;color:#084298;">${t('anfitrion.convivencias.statusTrial')}</span>`
-        };
-        return `<tr><td class="fw-semibold">${i.nombre}</td><td>${i.fechaIngreso || '-'}</td><td>${badges[i.estado] || i.estado}</td></tr>`;
+    tbody.innerHTML = lista.map(r => {
+        const nombre = `${r.nombre_usuario || ''} ${r.apellidos || ''}`.trim();
+        const fecha  = r.fecha_inicio ? r.fecha_inicio.split(' ')[0] : '-';
+        const badge  = r.activo_usuario_vivienda == 1
+            ? `<span class="badge rounded-pill px-3 py-2" style="background-color:#D1E7DD;color:#0F5132;">${t('anfitrion.convivencias.statusActive')}</span>`
+            : `<span class="badge rounded-pill px-3 py-2" style="background-color:#F8D7DA;color:#842029;">${t('anfitrion.convivencias.statusInactive')}</span>`;
+        return `<tr><td class="fw-semibold">${nombre}</td><td>${fecha}</td><td>${badge}</td></tr>`;
     }).join('');
 }
 
-function renderizarVivienda() {
-    const sinVivienda = document.getElementById('sin-vivienda');
-    const conVivienda = document.getElementById('con-vivienda');
+function mostrarPanelVivienda(panelId) {
+    ['sin-vivienda', 'form-alta-vivienda', 'encuesta-alta-vivienda', 'con-vivienda'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.toggle('d-none', id !== panelId);
+    });
+}
+
+function actualizarProgresoEncuestaVivienda() {
+    const form = document.getElementById('formEncuestaVivienda');
+    if (!form) return;
+    const secciones = form.querySelectorAll('[data-criterio]');
+    let respondidas = 0;
+    secciones.forEach(sec => { if (sec.querySelector('.btn-check:checked')) respondidas++; });
+    const pct = Math.round((respondidas / secciones.length) * 100);
+    const barra = document.getElementById('progreso-encuesta-vivienda');
+    if (barra) barra.style.width = pct + '%';
+}
+
+async function renderizarVivienda() {
+    // Si no hay vivienda cargada aún, intentar cargar del backend
+    if (!viviendaActual) {
+        const idUsuario = localStorage.getItem('user_id');
+        if (idUsuario) {
+            const resV = await apiPost('vivienda', 'getAll');
+            if (resV.ok && Array.isArray(resV.resource)) {
+                const v = resV.resource.find(v => String(v.id_anfitrion) === String(idUsuario));
+                if (v) {
+                    viviendaActual = {
+                        id:             v.id_vivienda,
+                        direccion:      v.direccion,
+                        ciudad:         v.ciudad,
+                        plazas_totales: Number(v.plazas_totales),
+                        plazas_libres:  Number(v.plazas_libres),
+                        descripcion:    v.descripcion || '',
+                        estado:         v.activo_vivienda == 1 ? 'disponible' : 'inactivo'
+                    };
+                }
+            }
+        }
+    }
 
     if (!viviendaActual) {
-        sinVivienda.classList.remove('d-none');
-        conVivienda.classList.add('d-none');
+        mostrarPanelVivienda('sin-vivienda');
         return;
     }
 
-    sinVivienda.classList.add('d-none');
-    conVivienda.classList.remove('d-none');
+    mostrarPanelVivienda('con-vivienda');
 
     const badgeHtml = viviendaActual.estado === 'disponible'
         ? `<span class="badge bg-success rounded-pill px-3">${t('anfitrion.home.available')}</span>`
@@ -475,7 +656,7 @@ function abrirModalGenerico(seccion) {
 }
 
 function abrirModalBaja(id) {
-    const i = huespedes.listaHuespedesMemoria.find(x => x.id === id);
+    const i = huespedes.listaHuespedesMemoria.find(x => String(x.id) === String(id));
     if (!i) return;
     huespedBajaId = id;
     document.getElementById('baja-nombre').textContent  = i.nombre;
@@ -483,16 +664,12 @@ function abrirModalBaja(id) {
 }
 
 window.verHuesped = function(id) {
-    const i = huespedes.listaHuespedesMemoria.find(x => x.id === id);
+    const i = huespedes.listaHuespedesMemoria.find(x => String(x.id) === String(id));
     if (!i) return;
 
-    const pctColor   = i.compatibilidad >= 85 ? 'success' : i.compatibilidad >= 65 ? 'warning' : 'danger';
-    const estadoBadge = {
-        activo:     `<span class="badge bg-success">${t('anfitrion.tenants.statusActive')}</span>`,
-        entrevista: `<span class="badge bg-warning text-dark">${t('anfitrion.tenants.statusInterview')}</span>`,
-        prueba:     `<span class="badge bg-info text-dark">${t('anfitrion.tenants.statusTrial')}</span>`,
-        inactivo:   `<span class="badge bg-secondary">${t('anfitrion.tenants.statusInactive')}</span>`
-    }[i.estado] || `<span class="badge bg-secondary">${i.estado}</span>`;
+    const estadoBadge = i.estado === 'activo'
+        ? `<span class="badge bg-success">${t('anfitrion.tenants.statusActive')}</span>`
+        : `<span class="badge bg-secondary">${t('anfitrion.tenants.statusInactive')}</span>`;
 
     document.getElementById('modalDetalleTitle').textContent = `${t('anfitrion.tenants.profileTitle')}: ${i.nombre}`;
     document.getElementById('modalDetalleContent').innerHTML = `
@@ -510,12 +687,6 @@ window.verHuesped = function(id) {
         </div>
         <div class="row">
             <div class="col-md-6"><h6 class="text-muted small mb-1">${t('anfitrion.tenants.joinDate')}</h6><p class="fw-semibold mb-0">${i.fechaIngreso || t('anfitrion.tenants.pending')}</p></div>
-            <div class="col-md-6"><h6 class="text-muted small mb-1">${t('anfitrion.tenants.compatibility')}</h6>
-                <div class="d-flex align-items-center gap-2 mt-1">
-                    <div class="progress flex-grow-1" style="height:8px;"><div class="progress-bar bg-${pctColor}" style="width:${i.compatibilidad}%;"></div></div>
-                    <span class="fw-bold text-${pctColor}">${i.compatibilidad}%</span>
-                </div>
-            </div>
         </div>
     `;
     bootstrap.Modal.getOrCreateInstance(document.getElementById('modalDetalle')).show();
@@ -545,12 +716,10 @@ function actualizarControlesSeccion(seccion) {
     const btnReactivar = document.getElementById('btnReactivar');
 
     if (seccion === 'criterios') {
-        btnCrear?.classList.remove('d-none');
-        if (btnCrear)    btnCrear.innerHTML    = `<i class="bi bi-plus-circle me-2"></i> ${t('buttons.add')}`;
-        if (btnEditar)   btnEditar.innerHTML   = `<i class="bi bi-pencil me-2"></i> ${t('buttons.edit')}`;
-        if (btnEliminar) btnEliminar.innerHTML = `<i class="bi bi-x-circle me-2"></i> ${t('buttons.deactivate')}`;
-        btnReactivar?.classList.remove('d-none');
-        if (btnReactivar) btnReactivar.innerHTML = `<i class="bi bi-check-circle me-2"></i> ${t('buttons.activate')}`;
+        btnCrear?.classList.add('d-none');
+        btnEliminar?.classList.add('d-none');
+        btnReactivar?.classList.add('d-none');
+        if (btnEditar) btnEditar.innerHTML = `<i class="bi bi-pencil me-2"></i> ${t('buttons.edit')}`;
     } else if (seccion === 'huespedes') {
         btnCrear?.classList.add('d-none');
         btnEditar?.classList.add('d-none');
@@ -600,7 +769,7 @@ function aplicarFiltros() {
 
 function obtenerConfigSeccion(seccion) {
     return {
-        criterios:  { lista: criterios.listaCriteriosMemoria,  renderizar: criterios.renderizarCriterios },
+        criterios:  { lista: criterios.listaCriteriosMemoria,  renderizar: criterios.renderizarConPaginacion },
         huespedes: { lista: huespedes.listaHuespedesMemoria, renderizar: huespedes.renderizarHuespedes }
     }[seccion];
 }
@@ -636,7 +805,7 @@ function actualizarBotones() {
     } else if (seccion === 'huespedes' && btnEliminar) {
         const puedeBaja = obtenerIdsSeleccionados(seccion).filter(id => {
             const i = huespedes.listaHuespedesMemoria.find(x => String(x.id) === id);
-            return i?.estado === 'activo' || i?.estado === 'prueba';
+            return i?.estado === 'activo';
         }).length;
         btnEliminar.disabled = (puedeBaja === 0);
     }

@@ -21,10 +21,12 @@ class vivienda_criterio_opcion_SERVICE extends appServiceBase {
         );
 
         $this->notnull = array(
-            'ADD'    => array('id_vivienda', 'id_criterio', 'id_opcion'),
-            'EDIT'   => array('id_vivienda', 'id_criterio', 'id_opcion'),
-            'DELETE'    => array('id_vivienda', 'id_criterio', 'id_opcion'),
-            'REACTIVAR' => array('id_vivienda', 'id_criterio', 'id_opcion'),
+            'ADD'          => array('id_vivienda', 'id_criterio', 'id_opcion'),
+            'EDIT'         => array('id_vivienda', 'id_criterio', 'id_opcion'),
+            'DELETE'       => array('id_vivienda', 'id_criterio', 'id_opcion'),
+            'REACTIVAR'    => array('id_vivienda', 'id_criterio', 'id_opcion'),
+            'getByVivienda' => array('id_vivienda'),
+            'updateOpcion'  => array('id_vivienda', 'id_criterio', 'id_opcion'),
         );
 
         $this->modelo = $this->crearModelOne('vivienda_criterio_opcion');
@@ -45,11 +47,43 @@ class vivienda_criterio_opcion_SERVICE extends appServiceBase {
     }
 
     function getAll() {
-        foreach ($this->modelo->valores as $key => $value) {
-            $this->modelo->valores[$key] = '';
-        }
+        $this->modelo->listaAtributos = [];
         $this->modelo->foraneas = [];
         return $this->modelo->SEARCH();
+    }
+
+    function getByVivienda() {
+        $idVivienda = intval($_POST['id_vivienda']);
+        include_once './Base/mapping.php';
+        $map = new mapping('vivienda_criterio_opcion');
+        return $map->lanzarqueryconresults(
+            "SELECT vco.id_vivienda, vco.id_criterio, vco.id_opcion,
+                    c.nombre_criterio,
+                    o.nombre_opcion
+             FROM vivienda_criterio_opcion vco
+             JOIN criterio c ON c.id_criterio = vco.id_criterio
+             JOIN opcion   o ON o.id_opcion   = vco.id_opcion
+             WHERE vco.id_vivienda = {$idVivienda}
+               AND vco.activo_vivienda_criterio_opcion = 1
+             ORDER BY c.id_criterio"
+        );
+    }
+
+    function updateOpcion() {
+        $idVivienda = intval($_POST['id_vivienda']);
+        $idCriterio = intval($_POST['id_criterio']);
+        $idOpcion   = intval($_POST['id_opcion']);
+        include_once './Base/mapping.php';
+        $map = new mapping('vivienda_criterio_opcion');
+        $map->lanzarquery(
+            "DELETE FROM vivienda_criterio_opcion
+             WHERE id_vivienda = {$idVivienda} AND id_criterio = {$idCriterio}"
+        );
+        return $map->lanzarquery(
+            "INSERT INTO vivienda_criterio_opcion
+                (id_vivienda, id_criterio, id_opcion, activo_vivienda_criterio_opcion)
+             VALUES ({$idVivienda}, {$idCriterio}, {$idOpcion}, 1)"
+        );
     }
 
     function getById() {

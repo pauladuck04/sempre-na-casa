@@ -102,19 +102,6 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="card border-0 shadow-sm rounded-4 h-100">
-                                <div class="card-body p-4 d-flex align-items-center gap-3">
-                                    <div class="rounded-3 p-3" style="background-color: #FFF8E1;">
-                                        <i class="bi bi-clock-history fs-4 text-warning"></i>
-                                    </div>
-                                    <div>
-                                        <p class="text-muted small mb-1" data-i18n="anfitrion.summary.inInterview"></p>
-                                        <h5 class="fw-bold mb-0" id="solicitudes-pendientes">-</h5>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                     <div class="card border-0 shadow-sm rounded-4">
                         <div class="card-header bg-white border-bottom py-4">
@@ -155,7 +142,167 @@
                             </div>
                         </div>
                     </div>
-                    <div id="con-vivienda">
+
+                    <!-- Panel paso 1: datos de la vivienda -->
+                    <div id="form-alta-vivienda" class="d-none">
+                        <div class="card border-0 shadow-sm rounded-4">
+                            <div class="card-header bg-white border-bottom py-4">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="fw-bold mb-0">
+                                        <i class="bi bi-house-add me-2 text-primary"></i>
+                                        <span data-i18n="anfitrion.home.registerStep1"></span>
+                                    </h5>
+                                    <span class="badge rounded-pill px-3 py-2" style="background-color:#EBF0FF;color:var(--color-primario);">1 / 2</span>
+                                </div>
+                            </div>
+                            <div class="card-body p-4">
+                                <form id="formAltaVivienda" novalidate>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold" data-i18n="anfitrion.home.address"></label>
+                                        <input name="direccion" class="form-control" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold" data-i18n="anfitrion.home.city"></label>
+                                        <input name="ciudad" class="form-control" required>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label fw-bold" data-i18n="anfitrion.home.totalSlots"></label>
+                                            <input type="number" name="plazas_totales" class="form-control" min="1" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label fw-bold" data-i18n="anfitrion.home.freeSlots"></label>
+                                            <input type="number" name="plazas_libres" class="form-control" min="0" required>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="form-label fw-bold" data-i18n="anfitrion.home.descriptionOptional"></label>
+                                        <textarea name="descripcion" class="form-control" rows="2"></textarea>
+                                    </div>
+                                    <div id="formAltaVivienda-error" class="alert alert-danger d-none mb-3"></div>
+                                    <div class="d-flex gap-2 justify-content-end">
+                                        <button type="button" class="btn btn-light rounded-pill px-4" id="btnCancelarAltaVivienda" data-i18n="buttons.cancel"></button>
+                                        <button type="submit" class="btn btn-primary rounded-pill px-4" id="btnSiguienteEncuesta">
+                                            <i class="bi bi-arrow-right me-1"></i>
+                                            <span data-i18n="anfitrion.home.next"></span>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Panel paso 2: encuesta de criterios -->
+                    <div id="encuesta-alta-vivienda" class="d-none">
+                        <div class="card border-0 shadow-sm rounded-4">
+                            <div class="card-header bg-white border-bottom py-4">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="fw-bold mb-0">
+                                        <i class="bi bi-sliders me-2 text-primary"></i>
+                                        <span data-i18n="anfitrion.home.registerStep2"></span>
+                                    </h5>
+                                    <span class="badge rounded-pill px-3 py-2" style="background-color:#EBF0FF;color:var(--color-primario);">2 / 2</span>
+                                </div>
+                                <p class="text-muted small mb-0 mt-1" data-i18n="survey.pageSubtitle"></p>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="progress mb-4" style="height:6px;">
+                                    <div class="progress-bar" id="progreso-encuesta-vivienda" style="width:0%;background-color:var(--color-primario);transition:width .3s;"></div>
+                                </div>
+                                <div id="encuesta-vivienda-error" class="alert alert-danger d-none mb-3"></div>
+                                <form id="formEncuestaVivienda">
+                                    <div class="mb-4" data-criterio="1">
+                                        <h6 class="fw-bold mb-3" data-i18n="survey.q1.title"></h6>
+                                        <div class="row g-2">
+                                            <div class="col-md-4"><input type="radio" class="btn-check" name="v-q1" id="v-q1-1" value="1"><label class="btn btn-outline-light-custom w-100 p-3" for="v-q1-1" data-i18n="survey.q1.o1"></label></div>
+                                            <div class="col-md-4"><input type="radio" class="btn-check" name="v-q1" id="v-q1-2" value="2"><label class="btn btn-outline-light-custom w-100 p-3" for="v-q1-2" data-i18n="survey.q1.o2"></label></div>
+                                            <div class="col-md-4"><input type="radio" class="btn-check" name="v-q1" id="v-q1-3" value="3"><label class="btn btn-outline-light-custom w-100 p-3" for="v-q1-3" data-i18n="survey.q1.o3"></label></div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4" data-criterio="2">
+                                        <h6 class="fw-bold mb-3" data-i18n="survey.q2.title"></h6>
+                                        <div class="row g-2">
+                                            <div class="col-md-4"><input type="radio" class="btn-check" name="v-q2" id="v-q2-1" value="4"><label class="btn btn-outline-light-custom w-100 p-3" for="v-q2-1" data-i18n="survey.q2.o1"></label></div>
+                                            <div class="col-md-4"><input type="radio" class="btn-check" name="v-q2" id="v-q2-2" value="5"><label class="btn btn-outline-light-custom w-100 p-3" for="v-q2-2" data-i18n="survey.q2.o2"></label></div>
+                                            <div class="col-md-4"><input type="radio" class="btn-check" name="v-q2" id="v-q2-3" value="6"><label class="btn btn-outline-light-custom w-100 p-3" for="v-q2-3" data-i18n="survey.q2.o3"></label></div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4" data-criterio="3">
+                                        <h6 class="fw-bold mb-3" data-i18n="survey.q3.title"></h6>
+                                        <div class="row g-2">
+                                            <div class="col-md-4"><input type="radio" class="btn-check" name="v-q3" id="v-q3-1" value="7"><label class="btn btn-outline-light-custom w-100 p-3" for="v-q3-1" data-i18n="survey.q3.o1"></label></div>
+                                            <div class="col-md-4"><input type="radio" class="btn-check" name="v-q3" id="v-q3-2" value="8"><label class="btn btn-outline-light-custom w-100 p-3" for="v-q3-2" data-i18n="survey.q3.o2"></label></div>
+                                            <div class="col-md-4"><input type="radio" class="btn-check" name="v-q3" id="v-q3-3" value="9"><label class="btn btn-outline-light-custom w-100 p-3" for="v-q3-3" data-i18n="survey.q3.o3"></label></div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4" data-criterio="4">
+                                        <h6 class="fw-bold mb-3" data-i18n="survey.q4.title"></h6>
+                                        <div class="row g-2">
+                                            <div class="col-md-4"><input type="radio" class="btn-check" name="v-q4" id="v-q4-1" value="10"><label class="btn btn-outline-light-custom w-100 p-3" for="v-q4-1" data-i18n="survey.q4.o1"></label></div>
+                                            <div class="col-md-4"><input type="radio" class="btn-check" name="v-q4" id="v-q4-2" value="11"><label class="btn btn-outline-light-custom w-100 p-3" for="v-q4-2" data-i18n="survey.q4.o2"></label></div>
+                                            <div class="col-md-4"><input type="radio" class="btn-check" name="v-q4" id="v-q4-3" value="12"><label class="btn btn-outline-light-custom w-100 p-3" for="v-q4-3" data-i18n="survey.q4.o3"></label></div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4" data-criterio="5">
+                                        <h6 class="fw-bold mb-3" data-i18n="survey.q5.title"></h6>
+                                        <div class="row g-2">
+                                            <div class="col-md-4"><input type="radio" class="btn-check" name="v-q5" id="v-q5-1" value="13"><label class="btn btn-outline-light-custom w-100 p-3" for="v-q5-1" data-i18n="survey.q5.o1"></label></div>
+                                            <div class="col-md-4"><input type="radio" class="btn-check" name="v-q5" id="v-q5-2" value="14"><label class="btn btn-outline-light-custom w-100 p-3" for="v-q5-2" data-i18n="survey.q5.o2"></label></div>
+                                            <div class="col-md-4"><input type="radio" class="btn-check" name="v-q5" id="v-q5-3" value="15"><label class="btn btn-outline-light-custom w-100 p-3" for="v-q5-3" data-i18n="survey.q5.o3"></label></div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4" data-criterio="6">
+                                        <h6 class="fw-bold mb-3" data-i18n="survey.q6.title"></h6>
+                                        <div class="row g-2">
+                                            <div class="col-md-4"><input type="radio" class="btn-check" name="v-q6" id="v-q6-1" value="16"><label class="btn btn-outline-light-custom w-100 p-3" for="v-q6-1" data-i18n="survey.q6.o1"></label></div>
+                                            <div class="col-md-4"><input type="radio" class="btn-check" name="v-q6" id="v-q6-2" value="17"><label class="btn btn-outline-light-custom w-100 p-3" for="v-q6-2" data-i18n="survey.q6.o2"></label></div>
+                                            <div class="col-md-4"><input type="radio" class="btn-check" name="v-q6" id="v-q6-3" value="18"><label class="btn btn-outline-light-custom w-100 p-3" for="v-q6-3" data-i18n="survey.q6.o3"></label></div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4" data-criterio="7">
+                                        <h6 class="fw-bold mb-3" data-i18n="survey.q7.title"></h6>
+                                        <div class="row g-2">
+                                            <div class="col-md-4"><input type="radio" class="btn-check" name="v-q7" id="v-q7-1" value="19"><label class="btn btn-outline-light-custom w-100 p-3" for="v-q7-1" data-i18n="survey.q7.o1"></label></div>
+                                            <div class="col-md-4"><input type="radio" class="btn-check" name="v-q7" id="v-q7-2" value="20"><label class="btn btn-outline-light-custom w-100 p-3" for="v-q7-2" data-i18n="survey.q7.o2"></label></div>
+                                            <div class="col-md-4"><input type="radio" class="btn-check" name="v-q7" id="v-q7-3" value="21"><label class="btn btn-outline-light-custom w-100 p-3" for="v-q7-3" data-i18n="survey.q7.o3"></label></div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4" data-criterio="8">
+                                        <h6 class="fw-bold mb-3" data-i18n="survey.q8.title"></h6>
+                                        <div class="row g-2">
+                                            <div class="col-md-4"><input type="radio" class="btn-check" name="v-q8" id="v-q8-1" value="22"><label class="btn btn-outline-light-custom w-100 p-3" for="v-q8-1" data-i18n="survey.q8.o1"></label></div>
+                                            <div class="col-md-4"><input type="radio" class="btn-check" name="v-q8" id="v-q8-2" value="23"><label class="btn btn-outline-light-custom w-100 p-3" for="v-q8-2" data-i18n="survey.q8.o2"></label></div>
+                                            <div class="col-md-4"><input type="radio" class="btn-check" name="v-q8" id="v-q8-3" value="24"><label class="btn btn-outline-light-custom w-100 p-3" for="v-q8-3" data-i18n="survey.q8.o3"></label></div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4" data-criterio="9">
+                                        <h6 class="fw-bold mb-3" data-i18n="survey.q9.title"></h6>
+                                        <div class="row g-2">
+                                            <div class="col-md-4"><input type="radio" class="btn-check" name="v-q9" id="v-q9-1" value="25"><label class="btn btn-outline-light-custom w-100 p-3" for="v-q9-1" data-i18n="survey.q9.o1"></label></div>
+                                            <div class="col-md-4"><input type="radio" class="btn-check" name="v-q9" id="v-q9-2" value="26"><label class="btn btn-outline-light-custom w-100 p-3" for="v-q9-2" data-i18n="survey.q9.o2"></label></div>
+                                            <div class="col-md-4"><input type="radio" class="btn-check" name="v-q9" id="v-q9-3" value="27"><label class="btn btn-outline-light-custom w-100 p-3" for="v-q9-3" data-i18n="survey.q9.o3"></label></div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4" data-criterio="10">
+                                        <h6 class="fw-bold mb-3" data-i18n="survey.q10.title"></h6>
+                                        <div class="row g-2">
+                                            <div class="col-md-4"><input type="radio" class="btn-check" name="v-q10" id="v-q10-1" value="28"><label class="btn btn-outline-light-custom w-100 p-3" for="v-q10-1" data-i18n="survey.q10.o1"></label></div>
+                                            <div class="col-md-4"><input type="radio" class="btn-check" name="v-q10" id="v-q10-2" value="29"><label class="btn btn-outline-light-custom w-100 p-3" for="v-q10-2" data-i18n="survey.q10.o2"></label></div>
+                                            <div class="col-md-4"><input type="radio" class="btn-check" name="v-q10" id="v-q10-3" value="30"><label class="btn btn-outline-light-custom w-100 p-3" for="v-q10-3" data-i18n="survey.q10.o3"></label></div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-end mt-4">
+                                        <button type="submit" class="btn btn-primary rounded-pill px-5" id="btnGuardarEncuestaVivienda">
+                                            <i class="bi bi-check-circle me-2"></i>
+                                            <span data-i18n="anfitrion.home.savePreferences"></span>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="con-vivienda" class="d-none">
                         <div class="card border-0 shadow-sm rounded-4">
                             <div class="card-header bg-white border-bottom py-4 d-flex justify-content-between align-items-center">
                                 <h5 class="fw-bold mb-0">
@@ -193,6 +340,7 @@
                                     <tbody id="tabla-criterios"></tbody>
                                 </table>
                             </div>
+                            <div id="paginacion-tabla-criterios" class="d-flex justify-content-between align-items-center px-3 py-2 border-top flex-wrap gap-2"></div>
                         </div>
                     </div>
                 </div>
@@ -212,7 +360,7 @@
                                     <thead class="table-light">
                                         <tr>
                                             <th data-i18n="anfitrion.table.tenant"></th>
-                                            <th data-i18n="anfitrion.table.compatibility"></th>
+                                            <th data-i18n="anfitrion.table.startDate"></th>
                                             <th data-i18n="anfitrion.table.status"></th>
                                         </tr>
                                     </thead>
@@ -277,10 +425,6 @@
                                             <div class="col-md-6">
                                                 <label class="form-label fw-semibold text-muted small" data-i18n="profile.phoneLabel"></label>
                                                 <input type="tel" class="form-control" id="perfil-telefono" value="" disabled>
-                                            </div>
-                                            <div class="col-12">
-                                                <label class="form-label fw-semibold text-muted small" data-i18n="profile.cityLabel"></label>
-                                                <input type="text" class="form-control" id="perfil-ciudad" value="" disabled>
                                             </div>
                                         </div>
                                         <div class="d-none gap-2 justify-content-end mt-4" id="perfil-acciones">

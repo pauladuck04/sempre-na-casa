@@ -179,7 +179,7 @@
     },
     "table": {
       "host": "Anfitrión",
-      "tenant": "huesped",
+      "tenant": "Huesped",
       "startDate": "Inicio",
       "status": "Estado",
       "user": "Usuario",
@@ -284,7 +284,7 @@
       "inInterview": "En Entrevista"
     },
     "table": {
-      "tenant": "huesped",
+      "tenant": "Huesped",
       "startDate": "Inicio",
       "status": "Estado",
       "criteria": "Criterio",
@@ -331,7 +331,14 @@
       "noHome": "Sin vivienda",
       "registerHome": "Dar de Alta Vivienda",
       "editHome": "Editar Vivienda",
-      "descriptionOptional": "Descripción (opcional)"
+      "descriptionOptional": "Descripción (opcional)",
+      "registerStep1": "Alta de Vivienda (Paso 1 de 2)",
+      "registerStep2": "Preferencias de Convivencia (Paso 2 de 2)",
+      "next": "Siguiente",
+      "savePreferences": "Guardar Preferencias",
+      "criteriaRequired": "Debes responder todas las preguntas antes de continuar.",
+      "criteriaSuccess": "Preferencias guardadas. ¡Tu vivienda ya está activa!",
+      "savingError": "Error al guardar. Inténtalo de nuevo."
     },
     "criteria": {
       "add": "Añadir Criterio",
@@ -340,29 +347,31 @@
       "active": "Activo",
       "inactive": "Inactivo",
       "filterActive": "Activos",
-      "filterInactive": "Inactivos"
+      "filterInactive": "Inactivos",
+      "noVivienda": "Registra tu vivienda para ver los criterios.",
+      "noData": "Sin criterios definidos.",
+      "editTitle": "Cambiar preferencia",
+      "updateSuccess": "Preferencia actualizada correctamente.",
+      "updateError": "Error al actualizar. Inténtalo de nuevo.",
+      "selectOption": "Selecciona una opción para guardar."
     },
     "tenants": {
       "profileTitle": "Perfil del huesped",
       "email": "Correo Electrónico",
       "phone": "Teléfono",
       "joinDate": "Fecha de Ingreso",
-      "compatibility": "Compatibilidad",
       "pending": "Pendiente",
+      "noVivienda": "Registra tu vivienda para ver los huéspedes.",
+      "noTenants": "No hay huéspedes asignados a tu vivienda.",
       "statusActive": "Activo",
-      "statusInterview": "En Entrevista",
-      "statusTrial": "Prueba",
       "statusInactive": "Inactivo",
       "filterActive": "Activos",
-      "filterInterview": "En Entrevista",
-      "filterTrial": "En Prueba",
       "filterInactive": "Inactivos"
     },
     "convivencias": {
       "statusActive": "✓ Activa",
-      "statusInterview": "⏳ En Entrevista",
-      "statusTrial": "⚠️ Periodo de Prueba",
-      "noActive": "No hay convivencias activas"
+      "statusInactive": "✕ Baja",
+      "noActive": "No hay huéspedes registrados en esta vivienda."
     }
   },
   "huesped": {
