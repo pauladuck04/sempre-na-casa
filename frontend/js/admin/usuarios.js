@@ -1,5 +1,6 @@
 import { t } from '../i18n.js';
 import { listaRolesMemoria } from './roles.js';
+import { aplicarPaginacion } from './paginacion.js';
 
 export let listaUsuariosMemoria = [];
 
@@ -45,11 +46,15 @@ export async function desactivarUsuarios(ids) {
 }
 
 export function renderizarUsuarios(usuarios) {
+    aplicarPaginacion('tabla-usuarios', usuarios, _renderFilasUsuarios);
+}
+
+function _renderFilasUsuarios(pagina) {
     const tbody = document.getElementById('tabla-usuarios');
     if (!tbody) return;
     tbody.innerHTML = '';
 
-    usuarios.forEach(usuario => {
+    pagina.forEach(usuario => {
         const rolObj    = listaRolesMemoria.find(r => r.id == usuario.id_rol);
         const rolNombre = rolObj ? rolObj.nombre : `Rol ${usuario.id_rol}`;
         const iniciales = usuario.nombre.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
@@ -91,7 +96,7 @@ export function renderizarUsuarios(usuarios) {
     tbody.querySelectorAll('.usuario-nombre').forEach(span => {
         span.addEventListener('click', function(e) {
             e.stopPropagation();
-            if (typeof verUsuario === 'function') verUsuario(Number(this.getAttribute('data-id')), e);
+            if (typeof verUsuario === 'function') verUsuario(this.getAttribute('data-id'), e);
         });
     });
 }

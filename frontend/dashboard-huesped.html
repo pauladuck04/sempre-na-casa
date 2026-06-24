@@ -11,7 +11,7 @@
 <body class="bg-light">
     <div class="d-flex" style="min-height: 100vh;">
         <!-- SIDEBAR -->
-        <aside class="sidebar bg-white shadow-sm d-none d-lg-block flex-column p-4" style="width: 280px; position: sticky; top: 0; align-self: stretch;">
+        <aside class="sidebar bg-white shadow-sm d-none d-lg-flex flex-column p-4" style="position: fixed; left: 0; top: 0; height: 100vh; width: 280px; overflow-y: auto;">
             <div class="d-flex flex-column align-items-center mb-4">
                 <img src="assets/images/logo.JPG" width="60" class="rounded-circle mb-2" alt="Logo"
                      onerror="this.src='https://ui-avatars.com/api/?name=huesped&background=7A99DD&color=fff'">
@@ -37,7 +37,7 @@
         </aside>
 
         <!-- CONTENIDO PRINCIPAL -->
-        <main class="flex-grow-1 p-4 p-md-3">
+        <main class="flex-grow-1 p-4 p-md-3" style="margin-left: 280px;">
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <div>
                     <h1 class="fw-bold mb-2" id="section-title" data-i18n="huesped.sections.general.title"></h1>
@@ -179,19 +179,18 @@
                                 </h5>
                             </div>
                             <div class="card-body p-4">
-                                <div class="table-responsive">
-                                    <table class="table table-hover align-middle">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th data-i18n="huesped.table.host"></th>
-                                                <th data-i18n="huesped.table.address"></th>
-                                                <th data-i18n="huesped.table.startDate"></th>
-                                                <th data-i18n="huesped.table.status"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="tabla-resumen-convivencia"></tbody>
-                                    </table>
-                                </div>
+                                <table class="table table-hover align-middle">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th data-i18n="huesped.table.host"></th>
+                                            <th data-i18n="huesped.table.address"></th>
+                                            <th data-i18n="huesped.table.startDate"></th>
+                                            <th data-i18n="huesped.table.status"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tabla-resumen-convivencia"></tbody>
+                                </table>
+                                <div id="paginacion-tabla-resumen-convivencia" class="d-flex justify-content-between align-items-center px-3 py-2 border-top"></div>
                             </div>
                         </div>
                     </div>
@@ -229,18 +228,16 @@
                             </h5>
                         </div>
                         <div class="card-body p-4">
-                            <div class="table-responsive">
-                                <table class="table table-hover align-middle">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th data-i18n="huesped.table.preference"></th>
-                                            <th data-i18n="huesped.table.myValue"></th>
-                                            <th data-i18n="huesped.table.status"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tabla-preferencias"></tbody>
-                                </table>
-                            </div>
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th data-i18n="huesped.table.preference"></th>
+                                        <th data-i18n="huesped.table.myValue"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabla-preferencias"></tbody>
+                            </table>
+                            <div id="paginacion-tabla-preferencias" class="d-flex justify-content-between align-items-center px-3 py-2 border-top"></div>
                         </div>
                     </div>
                 </div>
@@ -300,10 +297,7 @@
                                                 <label class="form-label fw-semibold text-muted small" data-i18n="profile.phoneLabel"></label>
                                                 <input type="tel" class="form-control" id="perfil-telefono" value="" disabled>
                                             </div>
-                                            <div class="col-12">
-                                                <label class="form-label fw-semibold text-muted small" data-i18n="profile.cityLabel"></label>
-                                                <input type="text" class="form-control" id="perfil-ciudad" value="" disabled>
-                                            </div>
+
                                         </div>
                                         <div class="d-none gap-2 justify-content-end mt-4" id="perfil-acciones">
                                             <button type="button" class="btn btn-light rounded-pill px-4" id="perfil-btnCancelar" data-i18n="buttons.cancel"></button>
@@ -423,6 +417,31 @@
                     <button type="button" class="btn btn-danger rounded-pill px-4" id="btnConfirmarEliminarCuenta">
                         <i class="bi bi-trash me-1"></i>
                         <span data-i18n="modal.confirmDeleteBtn">Sí, eliminar cuenta</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Confirmar Cambio Contraseña -->
+    <div class="modal fade" id="modalConfirmarPassword" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-primary text-white border-0">
+                    <h5 class="modal-title fw-bold">
+                        <i class="bi bi-lock me-2"></i>
+                        <span data-i18n="modal.confirmPasswordTitle">Confirmar cambio de contraseña</span>
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <p class="mb-0" data-i18n="modal.confirmPasswordBody">¿Estás seguro de que deseas cambiar tu contraseña?</p>
+                </div>
+                <div class="modal-footer border-0 p-4">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal" data-i18n="buttons.cancel">Cancelar</button>
+                    <button type="button" class="btn btn-primary rounded-pill px-4" id="btnConfirmarPassword">
+                        <i class="bi bi-lock me-1"></i>
+                        <span data-i18n="modal.confirmPasswordBtn">Sí, cambiar contraseña</span>
                     </button>
                 </div>
             </div>

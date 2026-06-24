@@ -435,6 +435,31 @@
         </div>
     </div>
 
+    <!-- Modal Confirmar Cambio Contraseña -->
+    <div class="modal fade" id="modalConfirmarPassword" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-primary text-white border-0">
+                    <h5 class="modal-title fw-bold">
+                        <i class="bi bi-lock me-2"></i>
+                        <span data-i18n="modal.confirmPasswordTitle">Confirmar cambio de contraseña</span>
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <p class="mb-0" data-i18n="modal.confirmPasswordBody">¿Estás seguro de que deseas cambiar tu contraseña?</p>
+                </div>
+                <div class="modal-footer border-0 p-4">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal" data-i18n="buttons.cancel">Cancelar</button>
+                    <button type="button" class="btn btn-primary rounded-pill px-4" id="btnConfirmarPassword">
+                        <i class="bi bi-lock me-1"></i>
+                        <span data-i18n="modal.confirmPasswordBtn">Sí, cambiar contraseña</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast -->
     <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100;">
         <div id="toastDashboard" class="toast align-items-center border-0" role="alert" aria-atomic="true">

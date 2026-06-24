@@ -60,7 +60,10 @@
     "confirmDeleteActionBtn": "Si, eliminar",
     "confirmReactivateTitle": "Confirmar reactivación",
     "confirmReactivateBody": "Estás seguro de que desexas reactivar os elementos seleccionados?",
-    "confirmReactivateBtn": "Si, reactivar"
+    "confirmReactivateBtn": "Si, reactivar",
+    "confirmPasswordTitle": "Confirmar cambio de contrasinal",
+    "confirmPasswordBody": "Estás seguro de que desexas cambiar o teu contrasinal?",
+    "confirmPasswordBtn": "Si, cambiar contrasinal"
   },
   "login": {
     "welcomeTitle": "Benvido de novo",
@@ -277,7 +280,7 @@
     },
     "convivencias": { "statusActive": "✓ Activa", "statusInterview": "⏳ En Entrevista", "statusTrial": "⚠️ Período de Proba", "noActive": "Non hai convivencias activas" }
   },
-  "convidado": {
+  "huesped": {
     "badge": "convidado",
     "nav": { "general": "Vista Xeral", "convivencia": "A Miña Convivencia", "preferences": "As Miñas Preferencias" },
     "summary": {

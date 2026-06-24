@@ -102,6 +102,7 @@
                                     <tbody id="tabla-convivencias"></tbody>
                                 </table>
                             </div>
+                            <div id="paginacion-tabla-convivencias" class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3"></div>
                         </div>
                     </div>
                 </div>
@@ -131,6 +132,7 @@
                                     <tbody id="tabla-usuarios"></tbody>
                                 </table>
                             </div>
+                            <div id="paginacion-tabla-usuarios" class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3"></div>
                         </div>
                     </div>
                 </div>
@@ -156,6 +158,7 @@
                                     <tbody id="tabla-roles"></tbody>
                                 </table>
                             </div>
+                            <div id="paginacion-tabla-roles" class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3"></div>
                         </div>
                     </div>
                 </div>
@@ -184,6 +187,7 @@
                                     <tbody id="tabla-viviendas"></tbody>
                                 </table>
                             </div>
+                            <div id="paginacion-tabla-viviendas" class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3"></div>
                         </div>
                     </div>
                 </div>
@@ -202,36 +206,34 @@
                         <div class="tab-pane fade show active" id="tab-criterios" role="tabpanel">
                             <div class="card border-0 shadow-sm rounded-4">
                                 <div class="card-body p-4">
-                                    <div class="table-responsive">
-                                        <table class="table table-hover align-middle">
-                                            <thead class="table-light">
-                                                <tr>
-                                                    <th data-i18n="admin.table.criteria"></th>
-                                                    <th data-i18n="admin.table.status"></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="tabla-criterios"></tbody>
-                                        </table>
-                                    </div>
+                                    <table class="table table-hover align-middle">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th data-i18n="admin.table.criteria"></th>
+                                                <th data-i18n="admin.table.status"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tabla-criterios"></tbody>
+                                    </table>
+                                    <div id="paginacion-tabla-criterios" class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3"></div>
                                 </div>
                             </div>
                         </div>
                         <div class="tab-pane fade" id="tab-opciones" role="tabpanel">
                             <div class="card border-0 shadow-sm rounded-4">
                                 <div class="card-body p-4">
-                                    <div class="table-responsive">
-                                        <table class="table table-hover align-middle">
-                                            <thead class="table-light">
-                                                <tr>
-                                                    <th data-i18n="admin.table.options"></th>
-                                                    <th data-i18n="admin.table.criteria"></th>
-                                                    <th data-i18n="admin.table.values"></th>
-                                                    <th data-i18n="admin.table.status"></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="tabla-opciones"></tbody>
-                                        </table>
-                                    </div>
+                                    <table class="table table-hover align-middle">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th data-i18n="admin.table.options"></th>
+                                                <th data-i18n="admin.table.criteria"></th>
+                                                <th data-i18n="admin.table.values"></th>
+                                                <th data-i18n="admin.table.status"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tabla-opciones"></tbody>
+                                    </table>
+                                    <div id="paginacion-tabla-opciones" class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3"></div>
                                 </div>
                             </div>
                         </div>
@@ -469,6 +471,31 @@
                     <button type="button" class="btn btn-success rounded-pill px-4" id="btnConfirmarReactivar">
                         <i class="bi bi-arrow-clockwise me-1"></i>
                         <span data-i18n="modal.confirmReactivateBtn">Sí, reactivar</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Confirmar Cambio Contraseña -->
+    <div class="modal fade" id="modalConfirmarPassword" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-primary text-white border-0">
+                    <h5 class="modal-title fw-bold">
+                        <i class="bi bi-lock me-2"></i>
+                        <span data-i18n="modal.confirmPasswordTitle">Confirmar cambio de contraseña</span>
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <p class="mb-0" data-i18n="modal.confirmPasswordBody">¿Estás seguro de que deseas cambiar tu contraseña?</p>
+                </div>
+                <div class="modal-footer border-0 p-4">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal" data-i18n="buttons.cancel">Cancelar</button>
+                    <button type="button" class="btn btn-primary rounded-pill px-4" id="btnConfirmarPassword">
+                        <i class="bi bi-lock me-1"></i>
+                        <span data-i18n="modal.confirmPasswordBtn">Sí, cambiar contraseña</span>
                     </button>
                 </div>
             </div>

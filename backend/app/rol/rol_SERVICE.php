@@ -39,7 +39,16 @@ class rol_SERVICE extends appServiceBase {
     }
 
     function DELETE() {
-        return $this->softDelete('activo_rol', 'fecha_modificacion_rol');
+        $res = $this->softDelete('activo_rol', 'fecha_modificacion_rol');
+        if ($res['ok']) {
+            $id_rol = intval($this->modelo->valores['id_rol']);
+            $fecha  = date('Y-m-d H:i:s');
+            $map    = new mapping('usuario');
+            $map->lanzarquery(
+                "UPDATE `usuario` SET `activo_usuario` = 0, `fecha_modificacion_usuario` = '{$fecha}' WHERE `id_rol` = {$id_rol} AND `activo_usuario` = 1"
+            );
+        }
+        return $res;
     }
 
     function REACTIVAR() {
@@ -54,9 +63,7 @@ class rol_SERVICE extends appServiceBase {
     }
 
     function getAll() {
-        foreach ($this->modelo->valores as $key => $value) {
-            $this->modelo->valores[$key] = '';
-        }
+        $this->modelo->listaAtributos = [];
         $this->modelo->foraneas = [];
         return $this->modelo->SEARCH();
     }

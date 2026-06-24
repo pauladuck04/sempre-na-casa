@@ -27,7 +27,7 @@ class AUTH_SERVICE extends appServiceBase{
 		$this->notnull = array(
 			'LOGIN' => array('mail', 'password'),
 			'DESCONECTAR' => array('mail'),
-			'CAMBIAR_CONTRASENA' => array('id_usuario', 'password'),
+			'CAMBIAR_CONTRASENA' => array('mail', 'password_actual', 'password'),
 			'CAMBIAR_PASSWORD' => array('id_usuario', 'password'),
 			'REGISTRAR' => array('dni','mail','nombre_usuario','apellidos','password','telefono','id_rol')
 		);
@@ -217,7 +217,34 @@ function mapRolToId($rol){
 	}
 
 	function CAMBIAR_CONTRASENA(){
-		return $this->CAMBIAR_PASSWORD();
+		$mail           = addslashes($_POST['mail']);
+		$passwordActual = $_POST['password_actual'];
+
+		include_once './Base/mapping.php';
+		$map = new mapping('usuario');
+
+		$res = $map->lanzarqueryconresults(
+			"SELECT id_usuario, password FROM usuario WHERE mail = '{$mail}' LIMIT 1"
+		);
+
+		if (!$res['ok'] || empty($res['resource'])) {
+			return array('ok' => false, 'code' => 'USUARIO_NO_ENCONTRADO_KO');
+		}
+
+		if ($res['resource'][0]['password'] !== md5($passwordActual)) {
+			return array('ok' => false, 'code' => 'PASSWORD_ACTUAL_INCORRECTA_KO');
+		}
+
+		$idUsuario = intval($res['resource'][0]['id_usuario']);
+		$nuevaHash = md5($_POST['password']);
+		$res2 = $map->lanzarquery(
+			"UPDATE usuario SET password = '{$nuevaHash}', fecha_modificacion_usuario = '" . date('Y-m-d H:i:s') . "' WHERE id_usuario = {$idUsuario}"
+		);
+
+		if ($res2['ok']) {
+			return array('ok' => true, 'code' => 'CAMBIAR_PASSWORD_OK');
+		}
+		return array('ok' => false, 'code' => 'CAMBIAR_PASSWORD_KO');
 	}
 
 	function CAMBIAR_PASSWORD(){

@@ -23,8 +23,9 @@ class opcion_SERVICE extends appServiceBase {
         $this->notnull = array(
             'ADD'    => array('nombre_opcion', 'valor' ,'id_criterio'),
             'EDIT'   => array('id_opcion', 'nombre_opcion', 'valor', 'id_criterio'),
-            'DELETE'    => array('id_opcion'),
-            'REACTIVAR' => array('id_opcion'),
+            'DELETE'       => array('id_opcion'),
+            'REACTIVAR'    => array('id_opcion'),
+            'getByCriterio' => array('id_criterio'),
         );
 
         $this->modelo = $this->crearModelOne('opcion');
@@ -39,11 +40,19 @@ class opcion_SERVICE extends appServiceBase {
     }
 
     function getAll() {
+        $this->modelo->listaAtributos = [];
+        $this->modelo->foraneas = [];
+        return $this->modelo->SEARCH();
+    }
+
+    function getByCriterio() {
         foreach ($this->modelo->valores as $key => $value) {
             $this->modelo->valores[$key] = '';
         }
+        $this->modelo->valores['id_criterio']  = $_POST['id_criterio'];
+        $this->modelo->valores['activo_opcion'] = '1';
         $this->modelo->foraneas = [];
-        return $this->modelo->SEARCH();
+        return $this->modelo->SEARCH_BY();
     }
 
     function DELETE() {

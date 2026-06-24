@@ -75,7 +75,9 @@ form.addEventListener('submit', async (e) => {
         } else if (rol.includes('anfitrion')) {
             window.location.href = 'dashboard-anfitrion.html';
         } else {
-            window.location.href = 'dashboard-huesped.html';
+            const resRespuestas = await apiPost('usuario_criterio_opcion', 'getByUsuario', { id_usuario: usuario.id_usuario });
+            const tieneRespuestas = resRespuestas.ok && Array.isArray(resRespuestas.resource) && resRespuestas.resource.length > 0;
+            window.location.href = tieneRespuestas ? 'dashboard-huesped.html' : 'encuesta.html';
         }
 
     } catch (error) {

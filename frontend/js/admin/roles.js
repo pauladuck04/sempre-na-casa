@@ -1,4 +1,5 @@
 import { t } from '../i18n.js';
+import { aplicarPaginacion } from './paginacion.js';
 
 export let listaRolesMemoria = [];
 
@@ -37,11 +38,15 @@ export async function desactivarRoles(ids) {
 }
 
 export function renderizarRoles(roles) {
+    aplicarPaginacion('tabla-roles', roles, _renderFilasRoles);
+}
+
+function _renderFilasRoles(pagina) {
     const tbody = document.getElementById('tabla-roles');
     if (!tbody) return;
     tbody.innerHTML = '';
 
-    roles.forEach(rol => {
+    pagina.forEach(rol => {
         const esActivo = rol.estado === 'activo';
         const row = document.createElement('tr');
         row.innerHTML = `
@@ -65,7 +70,7 @@ export function renderizarRoles(roles) {
     tbody.querySelectorAll('.rol-nombre').forEach(span => {
         span.addEventListener('click', function(e) {
             e.stopPropagation();
-            if (typeof verRol === 'function') verRol(Number(this.getAttribute('data-id')), e);
+            if (typeof verRol === 'function') verRol(this.getAttribute('data-id'), e);
         });
     });
 }

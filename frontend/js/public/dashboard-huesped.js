@@ -1,21 +1,11 @@
 import { initI18n, t, applyTranslations } from '../i18n.js';
 import * as convivencia  from '../huesped/convivencia.js';
 import * as preferencias from '../huesped/preferencias.js';
+import { aplicarPaginacion, resetPagina } from '../admin/paginacion.js';
 
-const FILTROS_POR_SECCION = {
-    preferencias: [{ campo: 'estado', opciones: [['activo','filterActive'],['inactivo','filterInactive']] }]
-};
+const FILTROS_POR_SECCION = {};
 
-const CONFIG_MODALES = {
-    preferencias: {
-        getTitulo: () => t('huesped.preferences.add'),
-        getHtml: () => `
-            <div class="mb-3"><label class="form-label fw-bold">${t('huesped.preferences.preferenceLabel')}</label>
-            <input name="preferencia" class="form-control" placeholder="Ej: Ambiente de la vivienda" required></div>
-            <div class="mb-3"><label class="form-label fw-bold">${t('huesped.preferences.myValue')}</label>
-            <input name="valor" class="form-control" placeholder="Ej: Tranquilo" required></div>`
-    }
-};
+const CONFIG_MODALES = {};
 
 const SECTION_TITLES = {
     general:      () => t('huesped.sections.general.title'),
@@ -35,7 +25,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     applyTranslations();
 
     convivencia.cargarConvivencia();
-    preferencias.cargarPreferencias();
 
     // Cargar perfil del usuario logueado por email
     (async function cargarPerfilPorMail() {
@@ -96,41 +85,37 @@ document.addEventListener('DOMContentLoaded', async function() {
         abrirModalGenerico(seccion);
     });
 
-    document.getElementById('btnEditar')?.addEventListener('click', () => {
+    document.getElementById('btnEditar')?.addEventListener('click', async () => {
         const seccion = document.querySelector('.section-link.active-custom')?.getAttribute('data-section');
         if (seccion !== 'preferencias') return;
         const seleccionado = document.querySelector('tbody .preferencia-checkbox:checked');
         if (!seleccionado) return;
-        const id = parseInt(seleccionado.value);
-        const p  = preferencias.listaPreferenciasMemoria.find(x => x.id === id);
-        if (!p) return;
-        abrirModalGenerico('preferencias');
-        const form = document.getElementById('formGenerico');
-        form.querySelector('[name="preferencia"]').value = p.preferencia;
-        form.querySelector('[name="valor"]').value       = p.valor;
-        form.insertAdjacentHTML('beforeend', `<input type="hidden" name="id_edit" value="${id}">`);
-        document.getElementById('modalTitle').textContent = `${t('huesped.preferences.add')}: ${p.preferencia}`;
+
+        const criterioId = seleccionado.value;
+        const respActual = preferencias.listaRespuestasMemoria.find(r => String(r.id_criterio) === String(criterioId));
+
+        const resOpciones = await apiPost('opcion', 'getByCriterio', { id_criterio: criterioId });
+        const opciones = (resOpciones.ok && Array.isArray(resOpciones.resource)) ? resOpciones.resource : [];
+
+        const optsHtml = opciones.map(o =>
+            `<option value="${o.id_opcion}" ${respActual && String(respActual.id_opcion) === String(o.id_opcion) ? 'selected' : ''}>${o.nombre_opcion}</option>`
+        ).join('');
+
+        document.getElementById('modalTitle').textContent    = t('huesped.modal.editPreference') || 'Editar respuesta';
+        document.getElementById('modalFormContent').innerHTML = `
+            <p class="fw-semibold mb-3">${respActual?.nombre_criterio || ''}</p>
+            <div class="mb-3">
+                <label class="form-label fw-bold">${t('huesped.table.myValue') || 'Mi respuesta'}</label>
+                <select name="id_opcion" class="form-select" required>
+                    <option value="">-- Selecciona una opción --</option>
+                    ${optsHtml}
+                </select>
+            </div>
+            <input type="hidden" name="id_criterio" value="${criterioId}">
+        `;
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('modalGenerico')).show();
     });
 
-    document.getElementById('btnEliminar')?.addEventListener('click', () => {
-        const seccion = document.querySelector('.section-link.active-custom')?.getAttribute('data-section');
-        if (seccion !== 'preferencias') return;
-        const seleccionados = obtenerIdsSeleccionados(seccion);
-        if (seleccionados.length === 0) return;
-        if (confirm(`¿${t('common.deactivate')} ${seleccionados.length} preferencia(s)?`)) {
-            preferencias.desactivarPreferencias(seleccionados);
-            aplicarFiltros(); actualizarBotones();
-        }
-    });
-
-    document.getElementById('btnReactivar')?.addEventListener('click', () => {
-        const seccion = document.querySelector('.section-link.active-custom')?.getAttribute('data-section');
-        if (seccion !== 'preferencias') return;
-        const seleccionados = obtenerIdsSeleccionadosInactivos(seccion);
-        if (seleccionados.length === 0) return;
-        preferencias.reactivarPreferencias(seleccionados);
-        aplicarFiltros(); actualizarBotones();
-    });
 
     document.getElementById('filtroTexto')?.addEventListener('input', aplicarFiltros);
     document.getElementById('filtros-globales')?.addEventListener('change', (e) => {
@@ -138,19 +123,25 @@ document.addEventListener('DOMContentLoaded', async function() {
     });
     document.addEventListener('change', (e) => { if (e.target.type === 'checkbox') actualizarBotones(); });
 
-    document.getElementById('formGenerico')?.addEventListener('submit', function(e) {
+    document.getElementById('formGenerico')?.addEventListener('submit', async function(e) {
         e.preventDefault();
         const seccion = document.querySelector('.section-link.active-custom')?.getAttribute('data-section');
         const data    = Object.fromEntries(new FormData(this));
 
         if (seccion === 'preferencias') {
-            if (data.id_edit) {
-                const p = preferencias.listaPreferenciasMemoria.find(x => x.id === parseInt(data.id_edit));
-                if (p) { p.preferencia = data.preferencia; p.valor = data.valor; }
-            } else {
-                preferencias.listaPreferenciasMemoria.push({ id: Date.now(), preferencia: data.preferencia, valor: data.valor, estado: 'activo' });
-            }
-            preferencias.cargarPreferencias();
+            const idUsuario = usuarioActual.id || localStorage.getItem('user_id');
+            if (!idUsuario) { mostrarToast('Error: usuario no identificado.', 'danger'); return; }
+            const res = await apiPost('usuario_criterio_opcion', 'UPSERT_RESPUESTA', {
+                id_usuario:  idUsuario,
+                id_criterio: data.id_criterio,
+                id_opcion:   data.id_opcion
+            });
+            if (!res.ok) { mostrarToast('Error al guardar la respuesta.', 'danger'); return; }
+            bootstrap.Modal.getInstance(document.getElementById('modalGenerico')).hide();
+            await preferencias.cargarPreferencias(idUsuario);
+            actualizarBotones();
+            mostrarToast('Respuesta actualizada correctamente.', 'success');
+            return;
         }
 
         aplicarFiltros();
@@ -214,7 +205,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (!email.includes('@')) { marcarInvalidoPerfil('perfil-email', t('profile.emailInvalid')); return; }
         usuarioActual.nombre   = nombre; usuarioActual.email = email;
         usuarioActual.telefono = document.getElementById('perfil-telefono').value.trim();
-        usuarioActual.ciudad   = document.getElementById('perfil-ciudad').value.trim();
         usuarioActual.dni      = document.getElementById('perfil-dni').value.trim();
         perfilInputs().forEach(inp => { inp.disabled = true; inp.classList.remove('is-invalid'); });
         document.getElementById('perfil-btnEditar').classList.remove('d-none');
@@ -234,8 +224,30 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (!actual) { feedback.innerHTML = pwdErrorHtml(t('profile.passwordRequired')); return; }
         if (nueva.length < 8) { feedback.innerHTML = pwdErrorHtml(t('profile.passwordTooShort')); return; }
         if (nueva !== confirma) { feedback.innerHTML = pwdErrorHtml(t('profile.passwordMismatch')); return; }
-        this.reset();
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('modalConfirmarPassword')).show();
+    });
+
+    document.getElementById('btnConfirmarPassword')?.addEventListener('click', async () => {
+        const mail   = usuarioActual.email || localStorage.getItem('user_email');
+        const actual = document.getElementById('pwd-actual').value;
+        const nueva  = document.getElementById('pwd-nueva').value;
+
+        const res = await apiPost('auth', 'CAMBIAR_CONTRASENA', { mail, password_actual: actual, password: nueva });
+
+        bootstrap.Modal.getInstance(document.getElementById('modalConfirmarPassword')).hide();
+
+        if (!res.ok) {
+            const msg = res.code === 'PASSWORD_ACTUAL_INCORRECTA_KO'
+                ? 'La contraseña actual no es correcta.'
+                : 'Error al cambiar la contraseña.';
+            const feedback = document.getElementById('pwd-feedback');
+            if (feedback) feedback.innerHTML = pwdErrorHtml(msg);
+            return;
+        }
+
+        document.getElementById('perfil-form-pwd').reset();
         document.getElementById('pwd-strength-wrap').style.display = 'none';
+        document.getElementById('pwd-feedback').innerHTML = '';
         mostrarToast(t('profile.passwordUpdated'), 'success');
     });
 
@@ -245,8 +257,8 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     document.getElementById('btnConfirmarEliminarCuenta')?.addEventListener('click', async () => {
         bootstrap.Modal.getInstance(document.getElementById('modalEliminarCuenta')).hide();
-        const id = usuarioActual.id;
-        if (!id) { mostrarToast('No se pudo eliminar: id de usuario desconocido', 'danger'); return; }
+        const id = usuarioActual.id || localStorage.getItem('user_id');
+        if (!id) { mostrarToast('No se pudo desactivar: id de usuario desconocido', 'danger'); return; }
         try {
             const res = await apiPost('usuario', 'DELETE', { id_usuario: id });
             if (res.ok) {
@@ -254,13 +266,13 @@ document.addEventListener('DOMContentLoaded', async function() {
                 localStorage.removeItem('user_token');
                 localStorage.removeItem('user_role');
                 mostrarToast(t('profile.deleteSuccess'), 'danger');
-                setTimeout(() => { window.location.href = 'login.html'; }, 1500);
+                setTimeout(() => { window.location.href = 'public.html'; }, 1500);
             } else {
-                mostrarToast('Error al eliminar cuenta: ' + (res.error || res.code || 'desconocido'), 'danger');
+                mostrarToast('Error al desactivar cuenta: ' + (res.error || res.code || 'desconocido'), 'danger');
             }
         } catch (err) {
             console.error(err);
-            mostrarToast('Error al eliminar cuenta: ' + err.message, 'danger');
+            mostrarToast('Error al desactivar cuenta: ' + err.message, 'danger');
         }
     });
 });
@@ -274,10 +286,12 @@ function navegarASeccion(sectionName) {
     const matchingLink = document.querySelector(`.section-link[data-section="${sectionName}"]`);
     if (matchingLink) { matchingLink.classList.add('active-custom'); matchingLink.classList.remove('text-muted'); }
 
+    resetPagina('tabla-resumen-convivencia');
+    resetPagina('tabla-preferencias');
     switch(sectionName) {
         case 'general':      cargarResumenGeneral();                   break;
         case 'convivencia':  convivencia.renderizarConvivencia();      break;
-        case 'preferencias': preferencias.cargarPreferencias();        break;
+        case 'preferencias': preferencias.cargarPreferencias(usuarioActual.id || localStorage.getItem('user_id')); break;
     }
 
     aplicarFiltros();
@@ -313,7 +327,7 @@ function renderizarCandidatos() {
     const prefEl  = document.getElementById('preferencias-activas');
     if (totalEl) totalEl.textContent = candidatos.length;
     if (maxEl)   maxEl.textContent   = candidatos.length ? `${candidatos[0].compatibilidad}%` : '-';
-    if (prefEl)  prefEl.textContent  = preferencias.listaPreferenciasMemoria.filter(p => p.estado === 'activo').length;
+    if (prefEl)  prefEl.textContent  = preferencias.listaRespuestasMemoria.filter(p => p.id_opcion != null).length;
 
     const grid = document.getElementById('grid-candidatos');
     if (!grid) return;
@@ -364,28 +378,33 @@ function renderizarResumenConvivencia(c) {
     if (compatEl) compatEl.textContent = `${c.compatibilidad}%`;
     if (fechaEl)  fechaEl.textContent  = c.fechaInicio || t('huesped.summary_status.pending');
 
-    const tbody = document.getElementById('tabla-resumen-convivencia');
-    if (!tbody) return;
     const badges = {
         activo:     `<span class="badge rounded-pill px-3 py-2" style="background-color:#D1E7DD;color:#0F5132;">${t('huesped.convivencia.statusActive')}</span>`,
         entrevista: `<span class="badge rounded-pill px-3 py-2" style="background-color:#FFF3CD;color:#856404;">${t('huesped.convivencia.statusInterview')}</span>`,
         prueba:     `<span class="badge rounded-pill px-3 py-2" style="background-color:#CFE2FF;color:#084298;">${t('huesped.convivencia.statusTrial')}</span>`
     };
-    tbody.innerHTML = `
-        <tr>
-            <td class="fw-semibold">${c.anfitrion}</td>
-            <td>${c.direccion}, ${c.ciudad}</td>
-            <td>${c.fechaInicio || '-'}</td>
-            <td>${badges[c.estado] || `<span class="badge bg-secondary rounded-pill px-3 py-2">${c.estado}</span>`}</td>
-        </tr>
-    `;
+    aplicarPaginacion('tabla-resumen-convivencia', [c], (pagina) => {
+        const tbody = document.getElementById('tabla-resumen-convivencia');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        pagina.forEach(item => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td class="fw-semibold">${item.anfitrion}</td>
+                <td>${item.direccion}, ${item.ciudad}</td>
+                <td>${item.fechaInicio || '-'}</td>
+                <td>${badges[item.estado] || `<span class="badge bg-secondary rounded-pill px-3 py-2">${item.estado}</span>`}</td>
+            `;
+            tbody.appendChild(row);
+        });
+    });
 }
 
-function abrirModalGenerico(seccion) {
+function abrirModalGenerico(seccion, param = null) {
     const config = CONFIG_MODALES[seccion];
     if (!config) return;
     document.getElementById('modalTitle').textContent     = config.getTitulo();
-    document.getElementById('modalFormContent').innerHTML  = config.getHtml();
+    document.getElementById('modalFormContent').innerHTML  = config.getHtml(param);
     const form = document.getElementById('formGenerico');
     form.reset();
     form.querySelector('input[name="id_edit"]')?.remove();
@@ -412,15 +431,13 @@ function actualizarControlesSeccion(seccion) {
 
     if (seccion === 'preferencias') {
         const btnCrear     = document.getElementById('btnCrear');
-        const btnEditar    = document.getElementById('btnEditar');
         const btnEliminar  = document.getElementById('btnEliminar');
         const btnReactivar = document.getElementById('btnReactivar');
-        btnCrear?.classList.remove('d-none');
-        if (btnCrear)     btnCrear.innerHTML     = `<i class="bi bi-plus-circle me-2"></i> ${t('buttons.add')}`;
-        if (btnEditar)    btnEditar.innerHTML    = `<i class="bi bi-pencil me-2"></i> ${t('buttons.edit')}`;
-        if (btnEliminar)  btnEliminar.innerHTML  = `<i class="bi bi-x-circle me-2"></i> ${t('buttons.deactivate')}`;
-        btnReactivar?.classList.remove('d-none');
-        if (btnReactivar) btnReactivar.innerHTML = `<i class="bi bi-check-circle me-2"></i> ${t('buttons.activate')}`;
+        const btnEditar    = document.getElementById('btnEditar');
+        btnCrear?.classList.add('d-none');
+        btnEliminar?.classList.add('d-none');
+        btnReactivar?.classList.add('d-none');
+        if (btnEditar) btnEditar.innerHTML = `<i class="bi bi-pencil me-2"></i> ${t('buttons.edit')}`;
     }
 
     configurarFiltros(seccion);
@@ -463,7 +480,7 @@ function aplicarFiltros() {
 }
 
 function obtenerConfigSeccion(seccion) {
-    return { preferencias: { lista: preferencias.listaPreferenciasMemoria, renderizar: preferencias.renderizarPreferencias } }[seccion];
+    return { preferencias: { lista: preferencias.listaRespuestasMemoria, renderizar: preferencias.renderizarPreferencias } }[seccion];
 }
 
 function obtenerIdsSeleccionados(seccion) {
@@ -472,29 +489,13 @@ function obtenerIdsSeleccionados(seccion) {
     return Array.from(document.querySelectorAll(`tbody ${s}:checked`)).map(cb => cb.value);
 }
 
-function obtenerIdsSeleccionadosInactivos(seccion) {
-    const config = obtenerConfigSeccion(seccion);
-    if (!config) return [];
-    return obtenerIdsSeleccionados(seccion).filter(id => {
-        const item = config.lista.find(x => String(x.id) === id);
-        return item?.estado === 'inactivo';
-    });
-}
-
 function actualizarBotones() {
     const seccion = document.querySelector('.section-link.active-custom')?.getAttribute('data-section');
     const seleccionados = seccion === 'preferencias'
         ? document.querySelectorAll('tbody .preferencia-checkbox:checked').length : 0;
 
-    const btnEditar    = document.getElementById('btnEditar');
-    const btnEliminar  = document.getElementById('btnEliminar');
-    const btnReactivar = document.getElementById('btnReactivar');
-
-    if (btnEditar)   btnEditar.disabled   = (seleccionados !== 1);
-    if (btnEliminar) btnEliminar.disabled = (seleccionados === 0);
-    if (seccion === 'preferencias' && btnReactivar) {
-        btnReactivar.disabled = (obtenerIdsSeleccionadosInactivos(seccion).length === 0);
-    }
+    const btnEditar = document.getElementById('btnEditar');
+    if (btnEditar) btnEditar.disabled = (seleccionados !== 1);
 }
 
 function calcularFortaleza(pwd) {

@@ -1,49 +1,49 @@
 import { t } from '../i18n.js';
+import { aplicarPaginacion, resetPagina } from '../admin/paginacion.js';
 
-export let listaPreferenciasMemoria = [];
+export let listaRespuestasMemoria = []; // { id_criterio, nombre_criterio, id_opcion, nombre_opcion }
 
-export function cargarPreferencias() {
-    if (listaPreferenciasMemoria.length === 0) {
-        listaPreferenciasMemoria = [
-            { id:1, preferencia:'Rango de edad anfitrión', valor:'50-70 años',  estado:'activo'   },
-            { id:2, preferencia:'Ambiente de la vivienda', valor:'Tranquilo',    estado:'activo'   },
-            { id:3, preferencia:'Mascotas',                valor:'Sin mascotas', estado:'inactivo' }
-        ];
-    }
-    renderizarPreferencias(listaPreferenciasMemoria);
-}
+export async function cargarPreferencias(idUsuario) {
+    if (!idUsuario) return;
 
-export function reactivarPreferencias(ids) {
-    listaPreferenciasMemoria.forEach(p => { if (ids.includes(String(p.id))) p.estado = 'activo'; });
-}
+    const res = await apiPost('usuario_criterio_opcion', 'getResumenByUsuario', { id_usuario: idUsuario });
 
-export function desactivarPreferencias(ids) {
-    listaPreferenciasMemoria.forEach(p => { if (ids.includes(String(p.id))) p.estado = 'inactivo'; });
+    listaRespuestasMemoria = (res.ok && Array.isArray(res.resource))
+        ? res.resource.map(r => ({
+            id_criterio:     r.id_criterio,
+            nombre_criterio: r.nombre_criterio,
+            id_opcion:       r.id_opcion   ?? null,
+            nombre_opcion:   r.nombre_opcion ?? null
+        }))
+        : [];
+
+    resetPagina('tabla-preferencias');
+    renderizarPreferencias(listaRespuestasMemoria);
 }
 
 export function renderizarPreferencias(lista) {
+    const datos = lista ?? listaRespuestasMemoria;
+    aplicarPaginacion('tabla-preferencias', datos, _renderFilasPreferencias);
+}
+
+function _renderFilasPreferencias(pagina) {
     const tbody = document.getElementById('tabla-preferencias');
     if (!tbody) return;
     tbody.innerHTML = '';
-
-    lista.forEach(p => {
-        const esActivo = p.estado === 'activo';
+    pagina.forEach(r => {
         const row = document.createElement('tr');
+        const respuesta = r.nombre_opcion
+            ? `<span class="fw-semibold">${r.nombre_opcion}</span>`
+            : `<span class="text-muted fst-italic">${t('huesped.preferences.noAnswer') || 'Sin respuesta'}</span>`;
         row.innerHTML = `
             <td>
                 <div class="d-flex align-items-center gap-2">
-                    <input class="form-check-input preferencia-checkbox align-self-start mt-1" type="checkbox" value="${p.id}">
-                    <div>
-                        <span class="fw-semibold d-block">${p.preferencia}</span>
-                    </div>
+                    <input class="form-check-input preferencia-checkbox align-self-start mt-1"
+                           type="checkbox" value="${r.id_criterio}">
+                    <span class="fw-semibold">${r.nombre_criterio}</span>
                 </div>
             </td>
-            <td>${p.valor}</td>
-            <td>
-                <span class="badge ${esActivo ? 'bg-success' : 'bg-secondary'} rounded-pill px-3">
-                    ${esActivo ? t('huesped.preferences.active') : t('huesped.preferences.inactive')}
-                </span>
-            </td>
+            <td>${respuesta}</td>
         `;
         tbody.appendChild(row);
     });

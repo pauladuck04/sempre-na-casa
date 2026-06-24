@@ -10,12 +10,14 @@ const btnFinalizar = document.getElementById('btnFinalizar');
 const inputs       = document.querySelectorAll('.btn-check');
 const totalPreguntas = 10;
 
-const userDataStr = sessionStorage.getItem('newUser');
-if (!userDataStr) {
+const userDataStr       = sessionStorage.getItem('newUser');
+const usuarioLogueadoId = localStorage.getItem('user_id');
+
+if (!userDataStr && !usuarioLogueadoId) {
     window.location.href = 'registro.html';
 }
 
-const userData = JSON.parse(userDataStr);
+const userData = userDataStr ? JSON.parse(userDataStr) : null;
 
 function actualizarProgreso() {
     const nombres = new Set();
@@ -58,27 +60,34 @@ form.addEventListener('submit', async (e) => {
     btnFinalizar.disabled  = true;
 
     try {
-        // 1. Registrar el usuario
-        const resRegistro = await apiPost('auth', 'REGISTRAR', {
-            nombre:    userData.nombre,
-            apellidos: userData.apellidos,
-            email:     userData.email,
-            telefono:  userData.telefono,
-            dni:       userData.dni,
-            password:  userData.password,
-            rol:       userData.rol,
-            id_rol:    userData.id_rol
-        });
+        let idUsuario;
 
-        if (!resRegistro.ok) {
-            throw new Error(resRegistro.code === 'USUARIO_YA_EXISTE_KO'
-                ? 'Ya existe una cuenta con ese email o DNI.'
-                : 'Error al crear la cuenta. Inténtalo de nuevo.');
+        if (usuarioLogueadoId) {
+            // Usuario ya registrado que no ha rellenado la encuesta aún
+            idUsuario = usuarioLogueadoId;
+        } else {
+            // Flujo normal de registro: crear la cuenta primero
+            const resRegistro = await apiPost('auth', 'REGISTRAR', {
+                nombre:    userData.nombre,
+                apellidos: userData.apellidos,
+                email:     userData.email,
+                telefono:  userData.telefono,
+                dni:       userData.dni,
+                password:  userData.password,
+                rol:       userData.rol,
+                id_rol:    userData.id_rol
+            });
+
+            if (!resRegistro.ok) {
+                throw new Error(resRegistro.code === 'USUARIO_YA_EXISTE_KO'
+                    ? 'Ya existe una cuenta con ese email o DNI.'
+                    : 'Error al crear la cuenta. Inténtalo de nuevo.');
+            }
+
+            idUsuario = resRegistro.resource;
         }
 
-        const idUsuario = resRegistro.resource;
-
-        // 2. Guardar respuestas de la encuesta
+        // Guardar respuestas de la encuesta
         const secciones = document.querySelectorAll('[data-criterio]');
         const promesas = [];
 
@@ -98,12 +107,15 @@ form.addEventListener('submit', async (e) => {
 
         await Promise.all(promesas);
 
-        // 3. Limpiar sesión y redirigir al login
-        sessionStorage.removeItem('newUser');
-        window.location.href = 'login.html';
+        if (usuarioLogueadoId) {
+            window.location.href = 'dashboard-huesped.html';
+        } else {
+            sessionStorage.removeItem('newUser');
+            window.location.href = 'login.html';
+        }
 
     } catch (error) {
-        console.error('Error en registro:', error);
+        console.error('Error en encuesta:', error);
         errorMessage.textContent = error.message || t('survey.error') || 'Error al completar el registro.';
         errorMessage.classList.remove('d-none');
         window.scrollTo(0, 0);

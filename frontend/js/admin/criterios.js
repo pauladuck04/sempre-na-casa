@@ -1,4 +1,5 @@
 import { t } from '../i18n.js';
+import { aplicarPaginacion } from './paginacion.js';
 
 export let listaCriteriosMemoria = [];
 export let listaOpcionesMemoria = [];
@@ -54,10 +55,14 @@ export async function desactivarCriterios(ids) {
     }
 }
 export function renderizarCriterios(lista) {
+    aplicarPaginacion('tabla-criterios', lista, _renderFilasCriterios);
+}
+
+function _renderFilasCriterios(pagina) {
     const tbody = document.getElementById('tabla-criterios');
     if (!tbody) return;
     tbody.innerHTML = '';
-    lista.forEach(c => {
+    pagina.forEach(c => {
         const esActivo = c.estado === 'activo';
         const row = document.createElement('tr');
         row.innerHTML = `
@@ -78,7 +83,7 @@ export function renderizarCriterios(lista) {
     tbody.querySelectorAll('.criterio-nombre').forEach(span => {
         span.addEventListener('click', function(e) {
             e.stopPropagation();
-            if (typeof verCriterio === 'function') verCriterio(Number(this.getAttribute('data-id')), e);
+            if (typeof verCriterio === 'function') verCriterio(this.getAttribute('data-id'), e);
         });
     });
 }
@@ -103,10 +108,14 @@ export async function desactivarOpciones(ids) {
     }
 }
 export function renderizarOpciones(lista) {
+    aplicarPaginacion('tabla-opciones', lista, _renderFilasOpciones);
+}
+
+function _renderFilasOpciones(pagina) {
     const tbody = document.getElementById('tabla-opciones');
     if (!tbody) return;
     tbody.innerHTML = '';
-    lista.forEach(o => {
+    pagina.forEach(o => {
         const esActivo = o.estado === 'activo';
         const row = document.createElement('tr');
         row.innerHTML = `

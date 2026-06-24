@@ -60,7 +60,10 @@
     "confirmDeleteActionBtn": "Yes, delete",
     "confirmReactivateTitle": "Confirm reactivation",
     "confirmReactivateBody": "Are you sure you want to reactivate the selected items?",
-    "confirmReactivateBtn": "Yes, reactivate"
+    "confirmReactivateBtn": "Yes, reactivate",
+    "confirmPasswordTitle": "Confirm password change",
+    "confirmPasswordBody": "Are you sure you want to change your password?",
+    "confirmPasswordBtn": "Yes, change password"
   },
   "login": {
     "welcomeTitle": "Welcome back",

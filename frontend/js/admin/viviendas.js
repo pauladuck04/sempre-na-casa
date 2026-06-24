@@ -1,4 +1,5 @@
 import { t } from '../i18n.js';
+import { aplicarPaginacion } from './paginacion.js';
 
 export let listaViviendasMemoria = [];
 
@@ -50,11 +51,15 @@ export async function desactivarViviendas(ids) {
 }
 
 export function renderizarViviendas(viviendas) {
+    aplicarPaginacion('tabla-viviendas', viviendas, _renderFilasViviendas);
+}
+
+function _renderFilasViviendas(pagina) {
     const tbody = document.getElementById('tabla-viviendas');
     if (!tbody) return;
     tbody.innerHTML = '';
 
-    viviendas.forEach(vivienda => {
+    pagina.forEach(vivienda => {
         const badgeEstado  = vivienda.estado === 'ocupada'   ? 'bg-success'
                            : vivienda.estado === 'inactivo' ? 'bg-secondary'
                                                             : 'bg-info';
@@ -63,6 +68,7 @@ export function renderizarViviendas(viviendas) {
                                                             : t('admin.homes.statusAvailable');
 
         const row = document.createElement('tr');
+        if (Number(vivienda.plazas_libres) === 0) row.classList.add('table-danger');
         row.innerHTML = `
             <td>
                 <div class="d-flex align-items-center gap-2">
@@ -84,7 +90,7 @@ export function renderizarViviendas(viviendas) {
     tbody.querySelectorAll('.vivienda-direccion').forEach(span => {
         span.addEventListener('click', function(e) {
             e.stopPropagation();
-            if (typeof verVivienda === 'function') verVivienda(Number(this.getAttribute('data-id')), e);
+            if (typeof verVivienda === 'function') verVivienda(this.getAttribute('data-id'), e);
         });
     });
 }

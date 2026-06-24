@@ -3,6 +3,15 @@ import * as usuarios from '../admin/usuarios.js';
 import * as roles     from '../admin/roles.js';
 import * as criterios from '../admin/criterios.js';
 import * as viviendas from '../admin/viviendas.js';
+import { aplicarPaginacion, resetPagina } from '../admin/paginacion.js';
+
+const TABLA_POR_SECCION = {
+    usuarios: 'tabla-usuarios',
+    roles: 'tabla-roles',
+    viviendas: 'tabla-viviendas',
+    criterios: 'tabla-criterios',
+    opciones: 'tabla-opciones'
+};
 
 const FILTROS_POR_SECCION = {
     usuarios: [{ campo: 'estado', opciones: [['activo','filterActive'],['inactivo','filterInactive']] }],
@@ -46,9 +55,14 @@ const CONFIG_MODALES = {
     viviendas: {
         getTitulo: () => t('admin.homes.createTitle'),
         getHtml: (anfitrionActualId = null) => {
+            const rolAnfitrion = roles.listaRolesMemoria.find(r => r.nombre.toLowerCase().includes('anfitrion'));
             const tomados = new Set(viviendas.listaViviendasMemoria.filter(v => v.estado !== 'inactivo').map(v => Number(v.anfitrion)));
             const optsAnfitrion = usuarios.listaUsuariosMemoria
-                .filter(u => !tomados.has(Number(u.id)) || Number(u.id) === Number(anfitrionActualId))
+                .filter(u =>
+                    u.estado === 'activo' &&
+                    (rolAnfitrion ? Number(u.id_rol) === Number(rolAnfitrion.id) : true) &&
+                    (!tomados.has(Number(u.id)) || Number(u.id) === Number(anfitrionActualId))
+                )
                 .map(u => `<option value="${u.id}">${u.nombre} (${u.email})</option>`)
                 .join('');
             return `
@@ -378,6 +392,12 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
 
         if (seccionActual === 'viviendas') {
+            const libres  = parseInt(data.plazas_libres,  10);
+            const totales = parseInt(data.plazas_totales, 10);
+            if (isNaN(libres) || isNaN(totales) || libres > totales) {
+                mostrarToast('Las plazas libres no pueden ser mayores que las plazas totales.', 'danger');
+                return;
+            }
             const params = {
                 descripcion:    data.descripcion,
                 plazas_libres:  data.plazas_libres,
@@ -528,7 +548,30 @@ document.addEventListener('DOMContentLoaded', async function() {
         const confirma = document.getElementById('pwd-confirmar').value;
         if (nueva.length < 8) { mostrarToast(t('profile.passwordTooShort'), 'danger'); return; }
         if (nueva !== confirma) { mostrarToast(t('profile.passwordMismatch'), 'danger'); return; }
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('modalConfirmarPassword')).show();
+    });
+
+    document.getElementById('btnConfirmarPassword')?.addEventListener('click', async () => {
+        const mail   = localStorage.getItem('user_email');
+        const actual = document.getElementById('pwd-actual').value;
+        const nueva  = document.getElementById('pwd-nueva').value;
+
+        const res = await apiPost('auth', 'CAMBIAR_CONTRASENA', { mail, password_actual: actual, password: nueva });
+
+        bootstrap.Modal.getInstance(document.getElementById('modalConfirmarPassword')).hide();
+
+        if (!res.ok) {
+            const msg = res.code === 'PASSWORD_ACTUAL_INCORRECTA_KO'
+                ? 'La contraseña actual no es correcta.'
+                : 'Error al cambiar la contraseña.';
+            const feedback = document.getElementById('pwd-feedback');
+            if (feedback) feedback.innerHTML = `<div class="alert alert-danger py-2 mb-0"><i class="bi bi-exclamation-circle me-1"></i>${msg}</div>`;
+            return;
+        }
+
         document.getElementById('perfil-form-pwd').reset();
+        const feedback = document.getElementById('pwd-feedback');
+        if (feedback) feedback.innerHTML = '';
         mostrarToast(t('profile.passwordUpdated'), 'success');
     });
 
@@ -536,10 +579,26 @@ document.addEventListener('DOMContentLoaded', async function() {
         bootstrap.Modal.getOrCreateInstance(document.getElementById('modalEliminarCuenta')).show();
     });
 
-    document.getElementById('btnConfirmarEliminarCuenta')?.addEventListener('click', () => {
+    document.getElementById('btnConfirmarEliminarCuenta')?.addEventListener('click', async () => {
         bootstrap.Modal.getInstance(document.getElementById('modalEliminarCuenta')).hide();
-        mostrarToast(t('profile.deleteSuccess'), 'success');
-        setTimeout(() => { window.location.href = 'public.html'; }, 2000);
+        const id = localStorage.getItem('user_id');
+        if (!id) { mostrarToast('No se pudo desactivar: id de usuario desconocido', 'danger'); return; }
+        try {
+            const res = await apiPost('usuario', 'DELETE', { id_usuario: id });
+            if (res.ok) {
+                localStorage.removeItem('user_email');
+                localStorage.removeItem('user_token');
+                localStorage.removeItem('user_role');
+                localStorage.removeItem('user_id');
+                mostrarToast(t('profile.deleteSuccess'), 'danger');
+                setTimeout(() => { window.location.href = 'public.html'; }, 1500);
+            } else {
+                mostrarToast('Error al desactivar cuenta: ' + (res.error || res.code || 'desconocido'), 'danger');
+            }
+        } catch (err) {
+            console.error(err);
+            mostrarToast('Error al desactivar cuenta: ' + err.message, 'danger');
+        }
     });
 
     // Navegación
@@ -564,7 +623,11 @@ document.addEventListener('DOMContentLoaded', async function() {
                     break;
                 case 'roles':     roles.cargarRoles();        break;
                 case 'viviendas': viviendas.cargarViviendas();break;
-                case 'criterios': criterios.cargarCriterios();break;
+                case 'criterios':
+                    resetPagina('tabla-criterios');
+                    resetPagina('tabla-opciones');
+                    criterios.cargarCriterios();
+                    break;
             }
 
             aplicarFiltros();
@@ -606,16 +669,21 @@ async function cargarSeguimientoConvivencias() {
 }
 
 function renderizarConvivencias(convivencias) {
+    if (convivencias.length === 0) {
+        const tbody = document.getElementById('tabla-convivencias');
+        if (tbody) tbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted py-3">${t('admin.convivencias.noActive')}</td></tr>`;
+        const pagEl = document.getElementById('paginacion-tabla-convivencias');
+        if (pagEl) pagEl.innerHTML = '';
+        return;
+    }
+    aplicarPaginacion('tabla-convivencias', convivencias, _renderFilasConvivencias);
+}
+
+function _renderFilasConvivencias(pagina) {
     const tbody = document.getElementById('tabla-convivencias');
     if (!tbody) return;
     tbody.innerHTML = '';
-
-    if (convivencias.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted py-3">${t('admin.convivencias.noActive')}</td></tr>`;
-        return;
-    }
-
-    convivencias.forEach(c => {
+    pagina.forEach(c => {
         const activo = c.estado === 'activo';
         const row = document.createElement('tr');
         row.innerHTML = `
@@ -751,6 +819,8 @@ function aplicarFiltros() {
     const config  = obtenerConfigSeccion(efectiva);
     if (!config) return;
 
+    if (TABLA_POR_SECCION[efectiva]) resetPagina(TABLA_POR_SECCION[efectiva]);
+
     const texto = document.getElementById('filtroTexto')?.value.trim().toLowerCase() || '';
     const filtrosActivos = Array.from(document.querySelectorAll('#filtrosEspecificos [data-filtro-campo]'))
         .map(s => ({ campo: s.dataset.filtroCampo, valor: s.value }))
@@ -800,7 +870,7 @@ function actualizarBotones() {
 }
 
 window.verUsuario = function(id) {
-    const u = usuarios.listaUsuariosMemoria.find(x => x.id === id);
+    const u = usuarios.listaUsuariosMemoria.find(x => String(x.id) === String(id));
     if (!u) return;
 
     const estadoBadge = u.estado === 'activo'
@@ -809,9 +879,11 @@ window.verUsuario = function(id) {
             ? `<span class="badge bg-secondary">${t('admin.users.statusInactive')}</span>`
             : `<span class="badge bg-warning text-dark">${t('admin.users.statusPending')}</span>`;
 
-    const rolBadge = u.rol === 'anfitrion'
-        ? `<span class="badge bg-success-subtle text-success">${t('admin.users.roleAnfitrion')}</span>`
-        : `<span class="badge bg-info-subtle text-info">${t('admin.users.rolehuesped')}</span>`;
+    const rolObj = roles.listaRolesMemoria.find(r => String(r.id) === String(u.id_rol));
+    const rolNombre = rolObj ? rolObj.nombre : `Rol ${u.id_rol}`;
+    const rolBadge = u.id_rol == 2
+        ? `<span class="badge bg-success-subtle text-success">${rolNombre}</span>`
+        : `<span class="badge bg-info-subtle text-info">${rolNombre}</span>`;
 
     document.getElementById('modalDetalleTitle').textContent = `${t('admin.users.detailTitle')}: ${u.nombre}`;
     document.getElementById('modalDetalleContent').innerHTML = `
@@ -827,7 +899,7 @@ window.verUsuario = function(id) {
 };
 
 window.verVivienda = function(id) {
-    const v = viviendas.listaViviendasMemoria.find(x => x.id === id);
+    const v = viviendas.listaViviendasMemoria.find(x => String(x.id) === String(id));
     if (!v) return;
 
     const estadoBadge = v.estado === 'ocupada'
@@ -849,7 +921,7 @@ window.verVivienda = function(id) {
 };
 
 window.verRol = function(id) {
-    const r = roles.listaRolesMemoria.find(x => x.id === id);
+    const r = roles.listaRolesMemoria.find(x => String(x.id) === String(id));
     if (!r) return;
 
     const estadoBadge = r.estado === 'activo'
@@ -865,7 +937,7 @@ window.verRol = function(id) {
 };
 
 window.verCriterio = function(id) {
-    const c = criterios.listaCriteriosMemoria.find(x => x.id === id);
+    const c = criterios.listaCriteriosMemoria.find(x => String(x.id) === String(id));
     if (!c) return;
 
     const estadoBadge = c.estado === 'activo'

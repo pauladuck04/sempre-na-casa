@@ -305,8 +305,30 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (!actual) { feedback.innerHTML = pwdErrorHtml(t('profile.passwordRequired')); return; }
         if (nueva.length < 8) { feedback.innerHTML = pwdErrorHtml(t('profile.passwordTooShort')); return; }
         if (nueva !== confirma) { feedback.innerHTML = pwdErrorHtml(t('profile.passwordMismatch')); return; }
-        this.reset();
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('modalConfirmarPassword')).show();
+    });
+
+    document.getElementById('btnConfirmarPassword')?.addEventListener('click', async () => {
+        const mail   = usuarioActual.email || localStorage.getItem('user_email');
+        const actual = document.getElementById('pwd-actual').value;
+        const nueva  = document.getElementById('pwd-nueva').value;
+
+        const res = await apiPost('auth', 'CAMBIAR_CONTRASENA', { mail, password_actual: actual, password: nueva });
+
+        bootstrap.Modal.getInstance(document.getElementById('modalConfirmarPassword')).hide();
+
+        if (!res.ok) {
+            const msg = res.code === 'PASSWORD_ACTUAL_INCORRECTA_KO'
+                ? 'La contraseña actual no es correcta.'
+                : 'Error al cambiar la contraseña.';
+            const feedback = document.getElementById('pwd-feedback');
+            if (feedback) feedback.innerHTML = pwdErrorHtml(msg);
+            return;
+        }
+
+        document.getElementById('perfil-form-pwd').reset();
         document.getElementById('pwd-strength-wrap').style.display = 'none';
+        document.getElementById('pwd-feedback').innerHTML = '';
         mostrarToast(t('profile.passwordUpdated'), 'success');
     });
 
@@ -317,7 +339,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     document.getElementById('btnConfirmarEliminarCuenta')?.addEventListener('click', async () => {
         bootstrap.Modal.getInstance(document.getElementById('modalEliminarCuenta')).hide();
         const id = usuarioActual.id;
-        if (!id) { mostrarToast('No se pudo eliminar: id de usuario desconocido', 'danger'); return; }
+        if (!id) { mostrarToast('No se pudo desactivar: id de usuario desconocido', 'danger'); return; }
         try {
             const res = await apiPost('usuario', 'DELETE', { id_usuario: id });
             if (res.ok) {
@@ -325,13 +347,13 @@ document.addEventListener('DOMContentLoaded', async function() {
                 localStorage.removeItem('user_token');
                 localStorage.removeItem('user_role');
                 mostrarToast(t('profile.deleteSuccess'), 'danger');
-                setTimeout(() => { window.location.href = 'login.html'; }, 1500);
+                setTimeout(() => { window.location.href = 'public.html'; }, 1500);
             } else {
-                mostrarToast('Error al eliminar cuenta: ' + (res.error || res.code || 'desconocido'), 'danger');
+                mostrarToast('Error al desactivar cuenta: ' + (res.error || res.code || 'desconocido'), 'danger');
             }
         } catch (err) {
             console.error(err);
-            mostrarToast('Error al eliminar cuenta: ' + err.message, 'danger');
+            mostrarToast('Error al desactivar cuenta: ' + err.message, 'danger');
         }
     });
 });

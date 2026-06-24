@@ -39,9 +39,7 @@ class criterio_SERVICE extends appServiceBase {
     }
 
     function getAll() {
-        foreach ($this->modelo->valores as $key => $value) {
-            $this->modelo->valores[$key] = '';
-        }
+        $this->modelo->listaAtributos = [];
         $this->modelo->foraneas = [];
         return $this->modelo->SEARCH();
     }
