@@ -441,5 +441,64 @@
       "statusFinished": "Finished",
       "pending": "Pending"
     }
+  },
+  "public": {
+    "brand": "SEMPRE NA CASA",
+    "nav": {
+      "login": "Log in"
+    },
+    "hero": {
+      "badge": "NEW · MATCHING PLATFORM 2026",
+      "title": "Connecting generations, building homes",
+      "subtitle": "An impact solution for society and housing in Ourense.",
+      "ctaHost": "I'm a host",
+      "ctaTenant": "I'm a tenant"
+    },
+    "howWorks": {
+      "title": "How does it work?",
+      "subtitle": "A simple and secure process to find your ideal roommate",
+      "step1Title": "1. Create your profile",
+      "step1Text": "Sign up and tell us about yourself, your habits and preferences.",
+      "step1LinkTitle": "See the user types",
+      "step2Title": "2. Smart matching",
+      "step2Text": "Our algorithm finds the most compatible profiles based on lifestyle.",
+      "step3Title": "3. Connect and live together",
+      "step3Text": "Meet each other and start an enriching experience."
+    },
+    "footer": {
+      "tagline": "Promoting intergenerational living, fighting loneliness and easing access to housing.",
+      "about": "About us",
+      "testimonials": "Testimonials",
+      "faq": "FAQ",
+      "contact": "Contact",
+      "rights": "© 2026 Sempre na Casa. All rights reserved."
+    }
+  },
+  "userTypes": {
+    "backToHome": "Back to home",
+    "title": "How do you want to join Sempre na Casa?",
+    "subtitle": "Choose the profile that best fits you and discover everything you can do on the platform.",
+    "host": {
+      "badge": "I have a home",
+      "title": "Host",
+      "subtitle": "Share your home and find company",
+      "f1": "Register your home with address, available spots and description",
+      "f2": "Set your living criteria and preferences",
+      "f3": "Receive matching candidates and check their compatibility",
+      "f4": "Track your current and past tenants",
+      "f5": "Manage your profile and account at any time",
+      "cta": "Sign up as a host"
+    },
+    "tenant": {
+      "badge": "I'm looking for housing",
+      "title": "Tenant / Student",
+      "subtitle": "Find a home and a living arrangement that suits you",
+      "f1": "Complete your profile and your living preferences",
+      "f2": "Discover homes compatible with your lifestyle",
+      "f3": "Check your compatibility level with each home",
+      "f4": "Track the status of your process: interview, trial, active",
+      "f5": "Manage your profile and account at any time",
+      "cta": "Sign up as a tenant"
+    }
   }
 }

@@ -316,5 +316,62 @@
     },
     "candidates": { "compatibility": "Compatibilidade", "freeSlotsPlural": "prazas libres", "freeSlotsSingular": "praza libre" },
     "summary_status": { "statusActive": "Activa", "statusInterview": "En Entrevista", "statusTrial": "Período de Proba", "statusFinished": "Rematada", "pending": "Pendente" }
+  },
+  "public": {
+    "brand": "SEMPRE NA CASA",
+    "nav": { "login": "Iniciar sesión" },
+    "hero": {
+      "badge": "NOVO · PLATAFORMA MATCHING 2026",
+      "title": "Conectando xeracións, construíndo fogares",
+      "subtitle": "Unha solución de impacto para a sociedade e a vivenda en Ourense.",
+      "ctaHost": "Son anfitrión",
+      "ctaTenant": "Son hóspede"
+    },
+    "howWorks": {
+      "title": "Como funciona?",
+      "subtitle": "Un proceso sinxelo e seguro para atopar o teu compañeiro ideal",
+      "step1Title": "1. Crea o teu perfil",
+      "step1Text": "Rexístrate e cóntanos sobre ti, os teus hábitos e preferencias.",
+      "step1LinkTitle": "Ver os tipos de usuario",
+      "step2Title": "2. Matching intelixente",
+      "step2Text": "O noso algoritmo busca os perfís máis afíns segundo o estilo de vida.",
+      "step3Title": "3. Conecta e convive",
+      "step3Text": "Coñécense e comecen unha experiencia enriquecedora."
+    },
+    "footer": {
+      "tagline": "Fomentando a convivencia interxeracional, combatendo a soidade e facilitando o acceso á vivenda.",
+      "about": "Sobre nós",
+      "testimonials": "Testemuños",
+      "faq": "Preguntas frecuentes",
+      "contact": "Contacto",
+      "rights": "© 2026 Sempre na Casa. Todos os dereitos reservados."
+    }
+  },
+  "userTypes": {
+    "backToHome": "Volver ao inicio",
+    "title": "Como queres unirte a Sempre na Casa?",
+    "subtitle": "Escolle o perfil que mellor se adapta a ti e descobre todo o que podes facer na plataforma.",
+    "host": {
+      "badge": "Teño unha vivenda",
+      "title": "Anfitrión",
+      "subtitle": "Comparte a túa vivenda e atopa compañía",
+      "f1": "Dá de alta a túa vivenda con enderezo, prazas dispoñibles e descrición",
+      "f2": "Define os teus criterios e preferencias de convivencia",
+      "f3": "Recibe candidatos afíns e consulta a súa compatibilidade",
+      "f4": "Fai seguimento dos teus hóspedes actuais e históricos",
+      "f5": "Xestiona o teu perfil e a túa conta en todo momento",
+      "cta": "Rexistrarme como anfitrión"
+    },
+    "tenant": {
+      "badge": "Busco vivenda",
+      "title": "Hóspede / Estudante",
+      "subtitle": "Atopa un fogar e unha convivencia á túa medida",
+      "f1": "Completa o teu perfil e as túas preferencias de convivencia",
+      "f2": "Descobre vivendas compatibles co teu estilo de vida",
+      "f3": "Consulta o nivel de compatibilidade con cada vivenda",
+      "f4": "Fai seguimento do estado do teu proceso: entrevista, proba, activa",
+      "f5": "Xestiona o teu perfil e a túa conta en todo momento",
+      "cta": "Rexistrarme como hóspede"
+    }
   }
 }

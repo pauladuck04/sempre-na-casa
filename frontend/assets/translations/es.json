@@ -450,5 +450,64 @@
       "statusFinished": "Finalizada",
       "pending": "Pendiente"
     }
+  },
+  "public": {
+    "brand": "SEMPRE NA CASA",
+    "nav": {
+      "login": "Iniciar sesión"
+    },
+    "hero": {
+      "badge": "NEW · PLATAFORMA MATCHING 2026",
+      "title": "Conectando generaciones, construyendo hogares",
+      "subtitle": "Una solución de impacto para la sociedad y la vivienda en Ourense.",
+      "ctaHost": "Soy anfitrión",
+      "ctaTenant": "Soy huésped"
+    },
+    "howWorks": {
+      "title": "¿Cómo funciona?",
+      "subtitle": "Un proceso simple y seguro para encontrar a tu compañero ideal",
+      "step1Title": "1. Crea tu perfil",
+      "step1Text": "Regístrate y cuéntanos sobre ti, tus hábitos y preferencias.",
+      "step1LinkTitle": "Ver los tipos de usuario",
+      "step2Title": "2. Matching inteligente",
+      "step2Text": "Nuestro algoritmo busca los perfiles más afines basándose en estilo de vida.",
+      "step3Title": "3. Conecta y convive",
+      "step3Text": "Conózcanse y comiencen una experiencia enriquecedora."
+    },
+    "footer": {
+      "tagline": "Fomentando la convivencia intergeneracional, combatiendo la soledad y facilitando el acceso a la vivienda.",
+      "about": "Sobre nosotros",
+      "testimonials": "Testimonios",
+      "faq": "Preguntas frecuentes",
+      "contact": "Contacto",
+      "rights": "© 2026 Sempre na Casa. Todos los derechos reservados."
+    }
+  },
+  "userTypes": {
+    "backToHome": "Volver al inicio",
+    "title": "¿Cómo quieres unirte a Sempre na Casa?",
+    "subtitle": "Elige el perfil que mejor se adapta a ti y descubre todo lo que puedes hacer en la plataforma.",
+    "host": {
+      "badge": "Tengo una vivienda",
+      "title": "Anfitrión",
+      "subtitle": "Comparte tu vivienda y encuentra compañía",
+      "f1": "Da de alta tu vivienda con dirección, plazas disponibles y descripción",
+      "f2": "Define tus criterios y preferencias de convivencia",
+      "f3": "Recibe candidatos afines y consulta su compatibilidad",
+      "f4": "Haz seguimiento de tus huéspedes actuales e históricos",
+      "f5": "Gestiona tu perfil y tu cuenta en todo momento",
+      "cta": "Registrarme como anfitrión"
+    },
+    "tenant": {
+      "badge": "Busco vivienda",
+      "title": "Huésped / Estudiante",
+      "subtitle": "Encuentra un hogar y una convivencia a tu medida",
+      "f1": "Completa tu perfil y tus preferencias de convivencia",
+      "f2": "Descubre viviendas compatibles con tu estilo de vida",
+      "f3": "Consulta el nivel de compatibilidad con cada vivienda",
+      "f4": "Haz seguimiento del estado de tu proceso: entrevista, prueba, activa",
+      "f5": "Gestiona tu perfil y tu cuenta en todo momento",
+      "cta": "Registrarme como huésped"
+    }
   }
 }
