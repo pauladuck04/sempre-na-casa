@@ -52,6 +52,25 @@
     transition: var(--transicion);
 }
 
+.btn-soft-primary {
+    background-color: #EBF0FF;
+    color: var(--color-primario);
+    border: 2px solid #EBF0FF;
+    transition: var(--transicion);
+}
+
+.btn-soft-primary:hover {
+    background-color: #D6E1FA;
+    border-color: #D6E1FA;
+    color: var(--color-primario-oscuro);
+    transform: translateY(-2px);
+    box-shadow: var(--sombra-md);
+}
+
+.btn-soft-primary:active {
+    transform: translateY(0);
+}
+
 .step-card {
     border: none !important;
     border-radius: var(--border-radius-lg);
@@ -126,6 +145,26 @@
 
 .btn-pwd-toggle:hover {
     color: var(--color-primario);
+}
+
+/* ALERTAS DE FORMULARIO (errores/éxito de proceso) */
+.alert-danger,
+.alert-success {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: none;
+    border-radius: var(--border-radius-lg);
+}
+
+.alert-danger {
+    background-color: #F8D7DA;
+    color: #842029;
+}
+
+.alert-success {
+    background-color: #D1E7DD;
+    color: #0F5132;
 }
 
 /* FOOTER */

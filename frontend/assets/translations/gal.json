@@ -26,7 +26,10 @@
     "deactivate": "Desactivar",
     "activate": "Activar",
     "viewProfile": "Ver Perfil",
-    "notifyLeave": "Notificar Baixa"
+    "notifyLeave": "Notificar Baixa",
+    "fieldRequired": "Este campo é obrigatorio.",
+    "invalidValue": "Introduce un valor válido.",
+    "freeSlotsExceedTotal": "As prazas libres non poden ser maiores cás totais."
   },
   "nav": {
     "overview": "Vista Xeral",
@@ -91,6 +94,9 @@
     "password": "Contrasinal",
     "repeatPassword": "Repetir contrasinal",
     "passwordMismatch": "Os contrasinais non coinciden.",
+    "dniInvalid": "O DNI debe ter 8 díxitos seguidos dunha letra maiúscula (ex: 12345678A).",
+    "phoneInvalid": "O teléfono debe ter exactamente 9 díxitos.",
+    "emailInvalid": "O formato do email non é válido.",
     "continue": "Continuar",
     "alreadyHaveAccount": "Xa tes conta?",
     "goToLogin": "Iniciar sesión",
@@ -319,7 +325,7 @@
   },
   "public": {
     "brand": "SEMPRE NA CASA",
-    "nav": { "login": "Iniciar sesión" },
+    "nav": { "login": "Iniciar sesión", "register": "Rexistrarse" },
     "hero": {
       "badge": "NOVO · PLATAFORMA MATCHING 2026",
       "title": "Conectando xeracións, construíndo fogares",
@@ -332,7 +338,6 @@
       "subtitle": "Un proceso sinxelo e seguro para atopar o teu compañeiro ideal",
       "step1Title": "1. Crea o teu perfil",
       "step1Text": "Rexístrate e cóntanos sobre ti, os teus hábitos e preferencias.",
-      "step1LinkTitle": "Ver os tipos de usuario",
       "step2Title": "2. Matching intelixente",
       "step2Text": "O noso algoritmo busca os perfís máis afíns segundo o estilo de vida.",
       "step3Title": "3. Conecta e convive",

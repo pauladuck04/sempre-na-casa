@@ -1,4 +1,5 @@
 import { initI18n, t, applyTranslations, getLang, setLang } from '../i18n.js';
+import { mostrarErrorFormulario, ocultarErrorFormulario } from '../form-errors.js';
 
 await initI18n();
 applyTranslations();
@@ -42,8 +43,7 @@ form.addEventListener('submit', async (e) => {
     const email    = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
-    errorMessage.classList.add('d-none');
-    errorMessage.textContent = '';
+    ocultarErrorFormulario(errorMessage);
 
     try {
         const res = await apiPost('auth', 'LOGIN', { usuario: email, contrasena: password });
@@ -54,8 +54,7 @@ form.addEventListener('submit', async (e) => {
                 'USUARIO_PASS_KO':  t('login.wrongPassword') || 'Contraseña incorrecta.',
                 'USUARIO_INACTIVO_KO': t('login.inactiveUser') || 'La cuenta está desactivada.'
             };
-            errorMessage.textContent = mensajes[res.code] || t('login.error') || 'Error al iniciar sesión.';
-            errorMessage.classList.remove('d-none');
+            mostrarErrorFormulario(errorMessage, mensajes[res.code] || t('login.error') || 'Error al iniciar sesión.');
             return;
         }
 
@@ -82,7 +81,6 @@ form.addEventListener('submit', async (e) => {
 
     } catch (error) {
         console.error('Error en login:', error);
-        errorMessage.textContent = 'Error técnico: ' + error.message;
-        errorMessage.classList.remove('d-none');
+        mostrarErrorFormulario(errorMessage, 'Error técnico: ' + error.message);
     }
 });

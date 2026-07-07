@@ -26,7 +26,10 @@
     "deactivate": "Desactivar",
     "activate": "Activar",
     "viewProfile": "Ver Perfil",
-    "notifyLeave": "Notificar Baja"
+    "notifyLeave": "Notificar Baja",
+    "fieldRequired": "Este campo es obligatorio.",
+    "invalidValue": "Introduce un valor válido.",
+    "freeSlotsExceedTotal": "Las plazas libres no pueden ser mayores que las totales."
   },
   "nav": {
     "overview": "Vista General",
@@ -91,6 +94,9 @@
     "password": "Contraseña",
     "repeatPassword": "Repetir contraseña",
     "passwordMismatch": "Las contraseñas no coinciden.",
+    "dniInvalid": "El DNI debe tener 8 dígitos seguidos de una letra mayúscula (ej: 12345678A).",
+    "phoneInvalid": "El teléfono debe tener exactamente 9 dígitos.",
+    "emailInvalid": "El formato del email no es válido.",
     "continue": "Continuar",
     "alreadyHaveAccount": "¿Ya tienes cuenta?",
     "goToLogin": "Iniciar sesión",
@@ -454,7 +460,8 @@
   "public": {
     "brand": "SEMPRE NA CASA",
     "nav": {
-      "login": "Iniciar sesión"
+      "login": "Iniciar sesión",
+      "register": "Registrarse"
     },
     "hero": {
       "badge": "NEW · PLATAFORMA MATCHING 2026",
@@ -468,7 +475,6 @@
       "subtitle": "Un proceso simple y seguro para encontrar a tu compañero ideal",
       "step1Title": "1. Crea tu perfil",
       "step1Text": "Regístrate y cuéntanos sobre ti, tus hábitos y preferencias.",
-      "step1LinkTitle": "Ver los tipos de usuario",
       "step2Title": "2. Matching inteligente",
       "step2Text": "Nuestro algoritmo busca los perfiles más afines basándose en estilo de vida.",
       "step3Title": "3. Conecta y convive",

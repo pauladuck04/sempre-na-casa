@@ -4,6 +4,7 @@ import * as roles     from '../admin/roles.js';
 import * as criterios from '../admin/criterios.js';
 import * as viviendas from '../admin/viviendas.js';
 import { aplicarPaginacion, resetPagina } from '../admin/paginacion.js';
+import { mostrarErrorFormulario, ocultarErrorFormulario, mostrarErrorCampo, ocultarErrorCampo } from '../form-errors.js';
 
 const TABLA_POR_SECCION = {
     usuarios: 'tabla-usuarios',
@@ -381,6 +382,8 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     document.getElementById('formGenerico')?.addEventListener('submit', async function(e) {
         e.preventDefault();
+        const errorEl = document.getElementById('formGenerico-error');
+        ocultarErrorFormulario(errorEl);
         try {
         const seccionActual = document.querySelector('.section-link.active-custom').getAttribute('data-section');
         const data = Object.fromEntries(new FormData(this));
@@ -392,10 +395,12 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
 
         if (seccionActual === 'viviendas') {
+            const libresInput = this.querySelector('[name="plazas_libres"]');
+            ocultarErrorCampo(libresInput);
             const libres  = parseInt(data.plazas_libres,  10);
             const totales = parseInt(data.plazas_totales, 10);
             if (isNaN(libres) || isNaN(totales) || libres > totales) {
-                mostrarToast('Las plazas libres no pueden ser mayores que las plazas totales.', 'danger');
+                mostrarErrorCampo(libresInput, t('common.freeSlotsExceedTotal'));
                 return;
             }
             const params = {
@@ -409,32 +414,40 @@ document.addEventListener('DOMContentLoaded', async function() {
                 if (data.id_edit) {
                 params.id_vivienda = data.id_edit;
                 const res = await apiPost('vivienda', 'EDIT', params);
-                if (!res.ok) { mostrarToast('Error al guardar vivienda: ' + (res.code || 'desconocido')); return; }
+                if (!res.ok) { mostrarErrorFormulario(errorEl, 'Error al guardar vivienda: ' + (res.code || 'desconocido')); return; }
                 mostrarToast('Modificado correctamente', 'success');
             } else {
                 const res = await apiPost('vivienda', 'ADD', params);
-                if (!res.ok) { mostrarToast('Error al crear vivienda: ' + (res.code || 'desconocido')); return; }
+                if (!res.ok) { mostrarErrorFormulario(errorEl, 'Error al crear vivienda: ' + (res.code || 'desconocido')); return; }
                 mostrarToast('Guardado correctamente', 'success');
             }
             viviendas.listaViviendasMemoria.splice(0);
             await viviendas.cargarViviendas();
         } else if (seccionActual === 'usuarios') {
+            const dniInput      = this.querySelector('[name="dni"]');
+            const telefonoInput = this.querySelector('[name="telefono"]');
+            const mailInput     = this.querySelector('[name="mail"]');
+            const passwordInput = this.querySelector('[name="password"]');
+            [dniInput, telefonoInput, mailInput, passwordInput].forEach(ocultarErrorCampo);
+
+            let valido = true;
             if (!/^[0-9]{8}[A-Z]$/.test(data.dni)) {
-                mostrarToast('El DNI debe tener 8 dígitos seguidos de una letra mayúscula (ej: 12345678A).');
-                return;
+                mostrarErrorCampo(dniInput, t('register.dniInvalid'));
+                valido = false;
             }
             if (!/^[0-9]{9}$/.test(data.telefono)) {
-                mostrarToast('El teléfono debe tener exactamente 9 dígitos.');
-                return;
+                mostrarErrorCampo(telefonoInput, t('register.phoneInvalid'));
+                valido = false;
             }
             if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.mail)) {
-                mostrarToast('El formato del email no es válido.');
-                return;
+                mostrarErrorCampo(mailInput, t('register.emailInvalid'));
+                valido = false;
             }
             if (!data.id_edit && !data.password) {
-                mostrarToast('La contraseña es obligatoria para crear un nuevo usuario.', 'danger');
-                return;
+                mostrarErrorCampo(passwordInput, t('common.fieldRequired'));
+                valido = false;
             }
+            if (!valido) return;
             const params = {
                 nombre_usuario: data.nombre_usuario,
                 apellidos:      data.apellidos,
@@ -447,12 +460,12 @@ document.addEventListener('DOMContentLoaded', async function() {
                 params.id_usuario = data.id_edit;
                 if (data.password) params.password = data.password;
                 const res = await apiPost('usuario', 'EDIT', params);
-                if (!res.ok) { mostrarToast('Error al guardar: ' + (res.code || 'desconocido')); return; }
+                if (!res.ok) { mostrarErrorFormulario(errorEl, 'Error al guardar: ' + (res.code || 'desconocido')); return; }
                 mostrarToast('Modificado correctamente', 'success');
             } else {
                 params.password = data.password;
                 const res = await apiPost('usuario', 'ADD', params);
-                if (!res.ok) { mostrarToast('Error al crear usuario: ' + (res.code || 'desconocido')); return; }
+                if (!res.ok) { mostrarErrorFormulario(errorEl, 'Error al crear usuario: ' + (res.code || 'desconocido')); return; }
                 mostrarToast('Guardado correctamente', 'success');
             }
             usuarios.listaUsuariosMemoria.splice(0);
@@ -462,11 +475,11 @@ document.addEventListener('DOMContentLoaded', async function() {
             if (data.id_edit) {
                 params.id_rol = data.id_edit;
                 const res = await apiPost('rol', 'EDIT', params);
-                if (!res.ok) { mostrarToast('Error al guardar rol: ' + (res.code || 'desconocido')); return; }
+                if (!res.ok) { mostrarErrorFormulario(errorEl, 'Error al guardar rol: ' + (res.code || 'desconocido')); return; }
                 mostrarToast('Modificado correctamente', 'success');
             } else {
                 const res = await apiPost('rol', 'ADD', params);
-                if (!res.ok) { mostrarToast('Error al crear rol: ' + (res.code || 'desconocido')); return; }
+                if (!res.ok) { mostrarErrorFormulario(errorEl, 'Error al crear rol: ' + (res.code || 'desconocido')); return; }
                 mostrarToast('Guardado correctamente', 'success');
             }
             roles.listaRolesMemoria.splice(0);
@@ -482,11 +495,11 @@ document.addEventListener('DOMContentLoaded', async function() {
                 if (data.id_edit) {
                     params.id_opcion = data.id_edit;
                     const res = await apiPost('opcion', 'EDIT', params);
-                    if (!res.ok) { mostrarToast('Error al guardar opción: ' + (res.code || 'desconocido')); return; }
+                    if (!res.ok) { mostrarErrorFormulario(errorEl, 'Error al guardar opción: ' + (res.code || 'desconocido')); return; }
                     mostrarToast('Modificado correctamente', 'success');
                 } else {
                     const res = await apiPost('opcion', 'ADD', params);
-                    if (!res.ok) { mostrarToast('Error al crear opción: ' + (res.code || 'desconocido')); return; }
+                    if (!res.ok) { mostrarErrorFormulario(errorEl, 'Error al crear opción: ' + (res.code || 'desconocido')); return; }
                     mostrarToast('Guardado correctamente', 'success');
                 }
             } else {
@@ -494,11 +507,11 @@ document.addEventListener('DOMContentLoaded', async function() {
                 if (data.id_edit) {
                     params.id_criterio = data.id_edit;
                     const res = await apiPost('criterio', 'EDIT', params);
-                    if (!res.ok) { mostrarToast('Error al guardar criterio: ' + (res.code || 'desconocido')); return; }
+                    if (!res.ok) { mostrarErrorFormulario(errorEl, 'Error al guardar criterio: ' + (res.code || 'desconocido')); return; }
                     mostrarToast('Modificado correctamente', 'success');
                 } else {
                     const res = await apiPost('criterio', 'ADD', params);
-                    if (!res.ok) { mostrarToast('Error al crear criterio: ' + (res.code || 'desconocido')); return; }
+                    if (!res.ok) { mostrarErrorFormulario(errorEl, 'Error al crear criterio: ' + (res.code || 'desconocido')); return; }
                     mostrarToast('Guardado correctamente', 'success');
                 }
             }
@@ -509,7 +522,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         aplicarFiltros();
         bootstrap.Modal.getInstance(document.getElementById('modalGenerico')).hide();
-        } catch(err) { mostrarToast('ERROR en submit: ' + err.message); console.error(err); }
+        } catch(err) { mostrarErrorFormulario(errorEl, 'Error inesperado: ' + err.message); console.error(err); }
     });
 
     // Perfil
@@ -529,14 +542,20 @@ document.addEventListener('DOMContentLoaded', async function() {
     });
 
     document.getElementById('perfil-btnCancelar')?.addEventListener('click', () => {
-        Array.from(document.querySelectorAll('#perfil-form input')).forEach(inp => inp.disabled = true);
+        Array.from(document.querySelectorAll('#perfil-form input')).forEach(inp => { inp.disabled = true; ocultarErrorCampo(inp); });
         document.getElementById('perfil-btnEditar').classList.remove('d-none');
         document.getElementById('perfil-acciones').classList.add('d-none');
     });
 
     document.getElementById('perfil-form')?.addEventListener('submit', (e) => {
         e.preventDefault();
-        Array.from(document.querySelectorAll('#perfil-form input')).forEach(inp => inp.disabled = true);
+        const nombreInput = document.getElementById('perfil-nombre');
+        const emailInput  = document.getElementById('perfil-email');
+        ocultarErrorCampo(nombreInput);
+        ocultarErrorCampo(emailInput);
+        if (!nombreInput.value.trim()) { mostrarErrorCampo(nombreInput, t('profile.nameRequired')); return; }
+        if (!emailInput.value.trim().includes('@')) { mostrarErrorCampo(emailInput, t('profile.emailInvalid')); return; }
+        Array.from(document.querySelectorAll('#perfil-form input')).forEach(inp => { inp.disabled = true; ocultarErrorCampo(inp); });
         document.getElementById('perfil-btnEditar').classList.remove('d-none');
         document.getElementById('perfil-acciones').classList.add('d-none');
         mostrarToast(t('profile.savedSuccess'), 'success');
@@ -544,10 +563,16 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     document.getElementById('perfil-form-pwd')?.addEventListener('submit', (e) => {
         e.preventDefault();
-        const nueva    = document.getElementById('pwd-nueva').value;
-        const confirma = document.getElementById('pwd-confirmar').value;
-        if (nueva.length < 8) { mostrarToast(t('profile.passwordTooShort'), 'danger'); return; }
-        if (nueva !== confirma) { mostrarToast(t('profile.passwordMismatch'), 'danger'); return; }
+        const actualInput   = document.getElementById('pwd-actual');
+        const nuevaInput    = document.getElementById('pwd-nueva');
+        const confirmaInput = document.getElementById('pwd-confirmar');
+        const feedback = document.getElementById('pwd-feedback');
+        ocultarErrorFormulario(feedback);
+        [actualInput, nuevaInput, confirmaInput].forEach(ocultarErrorCampo);
+
+        if (!actualInput.value) { mostrarErrorCampo(actualInput, t('profile.passwordRequired')); return; }
+        if (nuevaInput.value.length < 8) { mostrarErrorCampo(nuevaInput, t('profile.passwordTooShort')); return; }
+        if (nuevaInput.value !== confirmaInput.value) { mostrarErrorCampo(confirmaInput, t('profile.passwordMismatch')); return; }
         bootstrap.Modal.getOrCreateInstance(document.getElementById('modalConfirmarPassword')).show();
     });
 
@@ -560,18 +585,17 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         bootstrap.Modal.getInstance(document.getElementById('modalConfirmarPassword')).hide();
 
+        const feedback = document.getElementById('pwd-feedback');
         if (!res.ok) {
             const msg = res.code === 'PASSWORD_ACTUAL_INCORRECTA_KO'
                 ? 'La contraseña actual no es correcta.'
                 : 'Error al cambiar la contraseña.';
-            const feedback = document.getElementById('pwd-feedback');
-            if (feedback) feedback.innerHTML = `<div class="alert alert-danger py-2 mb-0"><i class="bi bi-exclamation-circle me-1"></i>${msg}</div>`;
+            mostrarErrorFormulario(feedback, msg);
             return;
         }
 
         document.getElementById('perfil-form-pwd').reset();
-        const feedback = document.getElementById('pwd-feedback');
-        if (feedback) feedback.innerHTML = '';
+        ocultarErrorFormulario(feedback);
         mostrarToast(t('profile.passwordUpdated'), 'success');
     });
 
@@ -728,6 +752,7 @@ async function abrirModalGenerico(seccion) {
     const form = document.getElementById('formGenerico');
     form.reset();
     form.querySelector('input[name="id_edit"]')?.remove();
+    ocultarErrorFormulario(document.getElementById('formGenerico-error'));
 
     bootstrap.Modal.getOrCreateInstance(document.getElementById('modalGenerico')).show();
 }
@@ -839,12 +864,12 @@ function aplicarFiltros() {
 async function reactivarSeleccion(seccion, ids) { await obtenerConfigSeccion(seccion)?.reactivar?.(ids); }
 async function desactivarSeleccion(seccion, ids) { await obtenerConfigSeccion(seccion)?.desactivar?.(ids); }
 
-function mostrarToast(mensaje, bgClass = 'bg-danger text-white') {
+function mostrarToast(mensaje, tipo = 'danger') {
     const el = document.getElementById('toastDashboard');
     if (!el) return;
-    el.className = `toast align-items-center border-0 ${bgClass}`;
+    el.className = `toast align-items-center border-0 text-bg-${tipo}`;
     document.getElementById('toastDashboardMsg').textContent = mensaje;
-    bootstrap.Toast.getOrCreateInstance(el).show();
+    bootstrap.Toast.getOrCreateInstance(el, { delay: 3000 }).show();
 }
 
 function actualizarBotones() {

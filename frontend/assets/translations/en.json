@@ -26,7 +26,10 @@
     "deactivate": "Deactivate",
     "activate": "Activate",
     "viewProfile": "View Profile",
-    "notifyLeave": "Notify Departure"
+    "notifyLeave": "Notify Departure",
+    "fieldRequired": "This field is required.",
+    "invalidValue": "Enter a valid value.",
+    "freeSlotsExceedTotal": "Free spots cannot be greater than total spots."
   },
   "nav": {
     "overview": "Overview",
@@ -91,6 +94,9 @@
     "password": "Password",
     "repeatPassword": "Repeat password",
     "passwordMismatch": "Passwords do not match.",
+    "dniInvalid": "The ID must have 8 digits followed by an uppercase letter (e.g. 12345678A).",
+    "phoneInvalid": "The phone number must have exactly 9 digits.",
+    "emailInvalid": "The email format is not valid.",
     "continue": "Continue",
     "alreadyHaveAccount": "Already have an account?",
     "goToLogin": "Sign in",
@@ -445,7 +451,8 @@
   "public": {
     "brand": "SEMPRE NA CASA",
     "nav": {
-      "login": "Log in"
+      "login": "Log in",
+      "register": "Sign up"
     },
     "hero": {
       "badge": "NEW · MATCHING PLATFORM 2026",
@@ -459,7 +466,6 @@
       "subtitle": "A simple and secure process to find your ideal roommate",
       "step1Title": "1. Create your profile",
       "step1Text": "Sign up and tell us about yourself, your habits and preferences.",
-      "step1LinkTitle": "See the user types",
       "step2Title": "2. Smart matching",
       "step2Text": "Our algorithm finds the most compatible profiles based on lifestyle.",
       "step3Title": "3. Connect and live together",

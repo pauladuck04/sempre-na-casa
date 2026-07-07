@@ -2,6 +2,7 @@ import { initI18n, t, applyTranslations } from '../i18n.js';
 import * as convivencia  from '../huesped/convivencia.js';
 import * as preferencias from '../huesped/preferencias.js';
 import { aplicarPaginacion, resetPagina } from '../admin/paginacion.js';
+import { mostrarErrorFormulario, ocultarErrorFormulario, mostrarErrorCampo, ocultarErrorCampo } from '../form-errors.js';
 
 const FILTROS_POR_SECCION = {};
 
@@ -191,7 +192,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     });
 
     document.getElementById('perfil-btnCancelar')?.addEventListener('click', () => {
-        perfilInputs().forEach(inp => { inp.value = valoresOriginalesPerfil[inp.id]; inp.disabled = true; inp.classList.remove('is-invalid'); });
+        perfilInputs().forEach(inp => { inp.value = valoresOriginalesPerfil[inp.id]; inp.disabled = true; ocultarErrorCampo(inp); });
         document.getElementById('perfil-btnEditar').classList.remove('d-none');
         const ac = document.getElementById('perfil-acciones');
         ac.classList.add('d-none'); ac.classList.remove('d-flex');
@@ -199,14 +200,18 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     document.getElementById('perfil-form')?.addEventListener('submit', function(e) {
         e.preventDefault();
-        const nombre = document.getElementById('perfil-nombre').value.trim();
-        const email  = document.getElementById('perfil-email').value.trim();
-        if (!nombre) { marcarInvalidoPerfil('perfil-nombre', t('profile.nameRequired')); return; }
-        if (!email.includes('@')) { marcarInvalidoPerfil('perfil-email', t('profile.emailInvalid')); return; }
+        const nombreInput = document.getElementById('perfil-nombre');
+        const emailInput  = document.getElementById('perfil-email');
+        ocultarErrorCampo(nombreInput);
+        ocultarErrorCampo(emailInput);
+        const nombre = nombreInput.value.trim();
+        const email  = emailInput.value.trim();
+        if (!nombre) { mostrarErrorCampo(nombreInput, t('profile.nameRequired')); return; }
+        if (!email.includes('@')) { mostrarErrorCampo(emailInput, t('profile.emailInvalid')); return; }
         usuarioActual.nombre   = nombre; usuarioActual.email = email;
         usuarioActual.telefono = document.getElementById('perfil-telefono').value.trim();
         usuarioActual.dni      = document.getElementById('perfil-dni').value.trim();
-        perfilInputs().forEach(inp => { inp.disabled = true; inp.classList.remove('is-invalid'); });
+        perfilInputs().forEach(inp => { inp.disabled = true; ocultarErrorCampo(inp); });
         document.getElementById('perfil-btnEditar').classList.remove('d-none');
         const ac = document.getElementById('perfil-acciones');
         ac.classList.add('d-none'); ac.classList.remove('d-flex');
@@ -216,14 +221,16 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     document.getElementById('perfil-form-pwd')?.addEventListener('submit', function(e) {
         e.preventDefault();
-        const actual   = document.getElementById('pwd-actual').value;
-        const nueva    = document.getElementById('pwd-nueva').value;
-        const confirma = document.getElementById('pwd-confirmar').value;
+        const actualInput   = document.getElementById('pwd-actual');
+        const nuevaInput    = document.getElementById('pwd-nueva');
+        const confirmaInput = document.getElementById('pwd-confirmar');
         const feedback = document.getElementById('pwd-feedback');
-        feedback.innerHTML = '';
-        if (!actual) { feedback.innerHTML = pwdErrorHtml(t('profile.passwordRequired')); return; }
-        if (nueva.length < 8) { feedback.innerHTML = pwdErrorHtml(t('profile.passwordTooShort')); return; }
-        if (nueva !== confirma) { feedback.innerHTML = pwdErrorHtml(t('profile.passwordMismatch')); return; }
+        ocultarErrorFormulario(feedback);
+        [actualInput, nuevaInput, confirmaInput].forEach(ocultarErrorCampo);
+
+        if (!actualInput.value) { mostrarErrorCampo(actualInput, t('profile.passwordRequired')); return; }
+        if (nuevaInput.value.length < 8) { mostrarErrorCampo(nuevaInput, t('profile.passwordTooShort')); return; }
+        if (nuevaInput.value !== confirmaInput.value) { mostrarErrorCampo(confirmaInput, t('profile.passwordMismatch')); return; }
         bootstrap.Modal.getOrCreateInstance(document.getElementById('modalConfirmarPassword')).show();
     });
 
@@ -236,18 +243,18 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         bootstrap.Modal.getInstance(document.getElementById('modalConfirmarPassword')).hide();
 
+        const feedback = document.getElementById('pwd-feedback');
         if (!res.ok) {
             const msg = res.code === 'PASSWORD_ACTUAL_INCORRECTA_KO'
                 ? 'La contraseña actual no es correcta.'
                 : 'Error al cambiar la contraseña.';
-            const feedback = document.getElementById('pwd-feedback');
-            if (feedback) feedback.innerHTML = pwdErrorHtml(msg);
+            mostrarErrorFormulario(feedback, msg);
             return;
         }
 
         document.getElementById('perfil-form-pwd').reset();
         document.getElementById('pwd-strength-wrap').style.display = 'none';
-        document.getElementById('pwd-feedback').innerHTML = '';
+        ocultarErrorFormulario(feedback);
         mostrarToast(t('profile.passwordUpdated'), 'success');
     });
 
@@ -505,20 +512,6 @@ function calcularFortaleza(pwd) {
     if (/[0-9]/.test(pwd))        p++;
     if (/[^A-Za-z0-9]/.test(pwd)) p++;
     return Math.max(1, p);
-}
-
-function marcarInvalidoPerfil(id, mensaje) {
-    const el = document.getElementById(id);
-    el.classList.add('is-invalid');
-    let fb = el.nextElementSibling;
-    if (!fb || !fb.classList.contains('invalid-feedback')) {
-        fb = document.createElement('div'); fb.className = 'invalid-feedback'; el.after(fb);
-    }
-    fb.textContent = mensaje;
-}
-
-function pwdErrorHtml(texto) {
-    return `<p class="text-danger small mb-0"><i class="bi bi-x-circle me-1"></i>${texto}</p>`;
 }
 
 function mostrarToast(mensaje, tipo = 'success') {

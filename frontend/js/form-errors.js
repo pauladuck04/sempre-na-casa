@@ -1,0 +1,54 @@
+// Helpers comunes para mostrar errores de formulario de forma consistente en toda la app.
+//
+// Dos patrones:
+//  - Error de un campo concreto  -> mostrarErrorCampo() / ocultarErrorCampo()  (borde rojo + texto debajo, patrón nativo de Bootstrap)
+//  - Error de proceso/servidor   -> mostrarErrorFormulario() / ocultarErrorFormulario() (caja de alerta arriba del formulario)
+
+/** Muestra un mensaje de error de proceso en la caja de alerta de un formulario. */
+export function mostrarErrorFormulario(el, mensaje) {
+    if (!el) return;
+    el.innerHTML = `<i class="bi bi-exclamation-triangle-fill"></i><span>${mensaje}</span>`;
+    el.classList.remove('d-none');
+}
+
+/** Oculta y limpia la caja de alerta de error de un formulario. */
+export function ocultarErrorFormulario(el) {
+    if (!el) return;
+    el.classList.add('d-none');
+    el.innerHTML = '';
+}
+
+/** Marca un campo como inválido y añade/actualiza su mensaje de ayuda debajo.
+ *  Si el input está dentro de un .input-group, el mensaje se coloca después del grupo entero. */
+export function mostrarErrorCampo(input, mensaje) {
+    if (!input) return;
+    input.classList.add('is-invalid');
+    const contenedor = input.closest('.input-group') || input;
+    let feedback = contenedor.nextElementSibling;
+    if (!feedback || !feedback.classList.contains('invalid-feedback')) {
+        feedback = document.createElement('div');
+        feedback.className = 'invalid-feedback';
+        contenedor.after(feedback);
+    }
+    feedback.textContent = mensaje;
+    feedback.style.display = 'block';
+}
+
+/** Quita el estado inválido de un campo y limpia su mensaje de ayuda. */
+export function ocultarErrorCampo(input) {
+    if (!input) return;
+    input.classList.remove('is-invalid');
+    const contenedor = input.closest('.input-group') || input;
+    const feedback = contenedor.nextElementSibling;
+    if (feedback && feedback.classList.contains('invalid-feedback')) {
+        feedback.textContent = '';
+        feedback.style.display = 'none';
+    }
+}
+
+/** Limpia todos los errores de campo (is-invalid + invalid-feedback) dentro de un formulario. */
+export function limpiarErroresCampos(form) {
+    if (!form) return;
+    form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+    form.querySelectorAll('.invalid-feedback').forEach(el => { el.textContent = ''; el.style.display = 'none'; });
+}

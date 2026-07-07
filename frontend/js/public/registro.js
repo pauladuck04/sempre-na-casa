@@ -1,4 +1,5 @@
 import { initI18n, t, applyTranslations, getLang, setLang } from '../i18n.js';
+import { mostrarErrorCampo, ocultarErrorCampo } from '../form-errors.js';
 
 await initI18n();
 applyTranslations();
@@ -21,12 +22,13 @@ document.querySelectorAll('.lang-option').forEach(btn => {
 });
 
 const form           = document.getElementById('registro-form');
-const errorMessage   = document.getElementById('error-message');
 const rolInput       = document.getElementById('rol');
 const rolLabel       = document.getElementById('rol-label');
+const dniInput       = document.getElementById('dni');
+const telefonoInput  = document.getElementById('telefono');
+const emailInput     = document.getElementById('email');
 const password       = document.getElementById('password');
 const password2      = document.getElementById('password2');
-const passError      = document.getElementById('pass-error');
 const togglePassword  = document.querySelector('.toggle-password');
 const togglePassword2 = document.querySelector('.toggle-password2');
 const iconPass        = document.getElementById('icon-pass');
@@ -66,42 +68,39 @@ togglePassword2.addEventListener('click', () => {
 
 password2.addEventListener('input', () => {
     if (password.value !== password2.value) {
-        passError.classList.remove('d-none');
+        mostrarErrorCampo(password2, t('register.passwordMismatch'));
     } else {
-        passError.classList.add('d-none');
+        ocultarErrorCampo(password2);
     }
 });
 
-
-function mostrarError(msg) {
-    errorMessage.textContent = msg;
-    errorMessage.classList.remove('d-none');
-}
-
 form.addEventListener('submit', (e) => {
     e.preventDefault();
-    errorMessage.classList.add('d-none');
+    [dniInput, telefonoInput, emailInput, password2].forEach(ocultarErrorCampo);
 
-    const dni      = document.getElementById('dni').value;
-    const telefono = document.getElementById('telefono').value;
-    const email    = document.getElementById('email').value;
+    const dni      = dniInput.value;
+    const telefono = telefonoInput.value;
+    const email    = emailInput.value;
+    let valido = true;
 
     if (!/^[0-9]{8}[A-Z]$/.test(dni)) {
-        mostrarError('El DNI debe tener 8 dígitos seguidos de una letra mayúscula (ej: 12345678A).');
-        return;
+        mostrarErrorCampo(dniInput, t('register.dniInvalid'));
+        valido = false;
     }
     if (!/^[0-9]{9}$/.test(telefono)) {
-        mostrarError('El teléfono debe tener exactamente 9 dígitos.');
-        return;
+        mostrarErrorCampo(telefonoInput, t('register.phoneInvalid'));
+        valido = false;
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        mostrarError('El formato del email no es válido.');
-        return;
+        mostrarErrorCampo(emailInput, t('register.emailInvalid'));
+        valido = false;
     }
     if (password.value !== password2.value) {
-        passError.classList.remove('d-none');
-        return;
+        mostrarErrorCampo(password2, t('register.passwordMismatch'));
+        valido = false;
     }
+
+    if (!valido) return;
 
     const rolSeleccionado = rolInput.value === 'anfitrion' ? 'anfitrion' : 'huesped';
     const idRolSeleccionado = rolSeleccionado === 'anfitrion' ? 4 : 5;

@@ -1,4 +1,5 @@
 import { initI18n, t, applyTranslations } from '../i18n.js';
+import { mostrarErrorFormulario, ocultarErrorFormulario } from '../form-errors.js';
 
 await initI18n();
 applyTranslations();
@@ -39,7 +40,7 @@ actualizarProgreso();
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    errorMessage.classList.add('d-none');
+    ocultarErrorFormulario(errorMessage);
 
     const nombres = new Set();
     inputs.forEach(input => nombres.add(input.name));
@@ -50,8 +51,7 @@ form.addEventListener('submit', async (e) => {
     });
 
     if (!allAnswered) {
-        errorMessage.textContent = t('survey.allRequired') || 'Debes responder todas las preguntas.';
-        errorMessage.classList.remove('d-none');
+        mostrarErrorFormulario(errorMessage, t('survey.allRequired') || 'Debes responder todas las preguntas.');
         window.scrollTo(0, 0);
         return;
     }
@@ -116,8 +116,7 @@ form.addEventListener('submit', async (e) => {
 
     } catch (error) {
         console.error('Error en encuesta:', error);
-        errorMessage.textContent = error.message || t('survey.error') || 'Error al completar el registro.';
-        errorMessage.classList.remove('d-none');
+        mostrarErrorFormulario(errorMessage, error.message || t('survey.error') || 'Error al completar el registro.');
         window.scrollTo(0, 0);
 
         btnFinalizar.textContent = t('survey.finishBtn') || 'Crear cuenta';

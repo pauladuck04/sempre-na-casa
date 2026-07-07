@@ -1,4 +1,5 @@
 import { initI18n, t, applyTranslations } from '../i18n.js';
+import { mostrarErrorFormulario, ocultarErrorFormulario } from '../form-errors.js';
 
 await initI18n();
 applyTranslations();
@@ -15,11 +16,10 @@ form.addEventListener('submit', async (e) => {
     const email = emailInput.value.trim();
 
     successMessage.classList.add('d-none');
-    errorMessage.classList.add('d-none');
+    ocultarErrorFormulario(errorMessage);
 
     if (!email) {
-        errorMessage.textContent = t('recoverPassword.emailRequired');
-        errorMessage.classList.remove('d-none');
+        mostrarErrorFormulario(errorMessage, t('recoverPassword.emailRequired'));
         return;
     }
 
@@ -44,8 +44,7 @@ form.addEventListener('submit', async (e) => {
 
     } catch (error) {
         console.error('Error en recuperar contraseña:', error);
-        errorMessage.textContent = error.message || t('recoverPassword.error');
-        errorMessage.classList.remove('d-none');
+        mostrarErrorFormulario(errorMessage, error.message || t('recoverPassword.error'));
 
         btnRecuperar.textContent = t('recoverPassword.submit');
         btnRecuperar.disabled    = false;
