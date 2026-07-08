@@ -610,10 +610,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         try {
             const res = await apiPost('usuario', 'DELETE', { id_usuario: id });
             if (res.ok) {
-                localStorage.removeItem('user_email');
-                localStorage.removeItem('user_token');
-                localStorage.removeItem('user_role');
-                localStorage.removeItem('user_id');
+                limpiarSesion();
                 mostrarToast(t('profile.deleteSuccess'), 'danger');
                 setTimeout(() => { window.location.href = 'public.html'; }, 1500);
             } else {
