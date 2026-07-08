@@ -1,0 +1,24 @@
+<nav class="navbar navbar-light bg-white sticky-top shadow-sm py-3">
+    <div class="container d-flex justify-content-between align-items-center">
+        <a class="navbar-brand d-flex align-items-center fw-bold" href="public.html" style=" font-size: 1.5rem;">
+            <img src="assets/images/logo.jpg" alt="Logo" width="40" height="40" class="d-inline-block align-text-top me-2">
+            <span data-i18n="public.brand"></span>
+        </a>
+
+        <div class="d-flex align-items-center gap-3">
+            <div class="dropdown">
+                <button class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center gap-1" type="button" id="langDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-globe2"></i>
+                    <span id="lang-label">Español</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="langDropdown">
+                    <li><button class="dropdown-item lang-option" data-lang="es">🇪🇸 Español</button></li>
+                    <li><button class="dropdown-item lang-option" data-lang="en">🇬🇧 English</button></li>
+                    <li><button class="dropdown-item lang-option" data-lang="gal">🏴󠁧󠁢󠁳󠁣󠁴󠁿 Galego</button></li>
+                </ul>
+            </div>
+            <a href="tipos-usuarios.html" id="navbar-btn-register" class="btn btn-soft-primary fw-semibold px-4 rounded-pill text-uppercase" data-i18n="public.nav.register"></a>
+            <a href="login.html" id="navbar-btn-login" class="btn btn-primary fw-semibold px-4 rounded-pill text-uppercase" style="color: white;" data-i18n="public.nav.login"></a>
+        </div>
+    </div>
+</nav>

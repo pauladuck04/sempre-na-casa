@@ -1,6 +1,8 @@
 import { initI18n, t, applyTranslations, getLang, setLang } from '../i18n.js';
 import { mostrarErrorCampo, ocultarErrorCampo } from '../form-errors.js';
+import { cargarPartials } from '../partials.js';
 
+await cargarPartials();
 await initI18n();
 applyTranslations();
 
