@@ -483,7 +483,6 @@
     "footer": {
       "tagline": "Fomentando la convivencia intergeneracional, combatiendo la soledad y facilitando el acceso a la vivienda.",
       "about": "Sobre nosotros",
-      "testimonials": "Testimonios",
       "faq": "Preguntas frecuentes",
       "contact": "Contacto",
       "rights": "© 2026 Sempre na Casa. Todos los derechos reservados."
@@ -514,6 +513,79 @@
       "f4": "Haz seguimiento del estado de tu proceso: entrevista, prueba, activa",
       "f5": "Gestiona tu perfil y tu cuenta en todo momento",
       "cta": "Registrarme como huésped"
+    }
+  },
+  "about": {
+    "hero": {
+      "title": "Sobre nosotros",
+      "subtitle": "Conectamos generaciones para construir hogares y comunidades más fuertes en Ourense."
+    },
+    "mission": {
+      "title": "Nuestra misión",
+      "text1": "Sempre na Casa nace para dar respuesta a dos problemas que, unidos, se convierten en una oportunidad: la soledad no deseada de muchas personas mayores y la dificultad de acceso a la vivienda de jóvenes y estudiantes.",
+      "text2": "Ponemos en contacto a anfitriones con una habitación libre en su vivienda y personas que buscan un lugar donde vivir, fomentando una convivencia basada en la compañía, el respeto mutuo y la ayuda cotidiana."
+    },
+    "values": {
+      "title": "Lo que nos mueve",
+      "v1Title": "Confianza y seguridad",
+      "v1Text": "Verificamos los perfiles y acompañamos el proceso de encuentro entre anfitrión y huésped para que la convivencia empiece con buen pie.",
+      "v2Title": "Comunidad",
+      "v2Text": "Creemos en el valor de compartir el día a día entre generaciones: se aprende, se acompaña y se gana en calidad de vida.",
+      "v3Title": "Impacto social",
+      "v3Text": "Cada convivencia es un pequeño paso contra la soledad no deseada y contra la falta de vivienda asequible."
+    },
+    "cta": {
+      "title": "¿Quieres formar parte?",
+      "subtitle": "Descubre si encajas mejor como anfitrión o como huésped.",
+      "button": "Ver tipos de usuario"
+    }
+  },
+  "faq": {
+    "hero": {
+      "title": "Preguntas frecuentes",
+      "subtitle": "Resolvemos las dudas más habituales sobre Sempre na Casa."
+    },
+    "q1": { "q": "¿Qué es Sempre na Casa?", "a": "Es una plataforma de convivencia intergeneracional que conecta a personas anfitrionas, con una habitación libre en su vivienda, con huéspedes que buscan alojamiento, principalmente estudiantes y jóvenes." },
+    "q2": { "q": "¿Cómo funciona el proceso de matching?", "a": "Anfitriones y huéspedes completan una breve encuesta sobre hábitos y preferencias de convivencia. Nuestro sistema calcula un porcentaje de compatibilidad entre viviendas y candidatos para facilitar el contacto." },
+    "q3": { "q": "¿Tiene algún coste usar la plataforma?", "a": "El registro y el uso básico de la plataforma son gratuitos tanto para anfitriones como para huéspedes." },
+    "q4": { "q": "¿Quién puede registrarse como anfitrión?", "a": "Cualquier persona con una habitación libre en su vivienda que quiera compartir su hogar y, opcionalmente, recibir ayuda o compañía a cambio." },
+    "q5": { "q": "¿Quién puede registrarse como huésped?", "a": "Principalmente estudiantes y jóvenes que buscan una vivienda asequible y una convivencia enriquecedora con una persona anfitriona." },
+    "q6": { "q": "¿Cómo se garantiza la seguridad de los perfiles?", "a": "Cada usuario se registra con sus datos personales y de contacto, y el equipo de Sempre na Casa supervisa las viviendas y los perfiles dados de alta en la plataforma." },
+    "q7": { "q": "¿Qué pasa si la convivencia no funciona?", "a": "El anfitrión puede notificar la baja del huésped desde su panel en cualquier momento, y ambas partes pueden ponerse en contacto con nosotros si necesitan ayuda para resolver la situación." },
+    "q8": { "q": "¿Cómo puedo contactar con el equipo?", "a": "Puedes escribirnos desde nuestra página de contacto y te responderemos lo antes posible." },
+    "cta": {
+      "title": "¿No has encontrado tu respuesta?",
+      "subtitle": "Escríbenos y te ayudamos.",
+      "button": "Ir a contacto"
+    }
+  },
+  "contact": {
+    "hero": {
+      "title": "Contacto",
+      "subtitle": "¿Tienes dudas o sugerencias? Escríbenos, estaremos encantados de ayudarte."
+    },
+    "info": {
+      "title": "Información de contacto",
+      "email": "Email",
+      "phone": "Teléfono",
+      "location": "Ubicación",
+      "locationValue": "Ourense, España",
+      "hours": "Horario de atención",
+      "hoursValue": "Lunes a viernes, 9:00 - 18:00"
+    },
+    "form": {
+      "title": "Envíanos un mensaje",
+      "name": "Nombre",
+      "email": "Email",
+      "subject": "Asunto",
+      "message": "Mensaje",
+      "submit": "Enviar mensaje",
+      "nameRequired": "Introduce tu nombre.",
+      "emailInvalid": "Introduce un email válido.",
+      "subjectRequired": "Introduce un asunto.",
+      "messageRequired": "Escribe tu mensaje.",
+      "successTitle": "¡Mensaje enviado!",
+      "successText": "Gracias por escribirnos, te responderemos lo antes posible."
     }
   }
 }

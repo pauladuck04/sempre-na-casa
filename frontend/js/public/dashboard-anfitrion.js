@@ -137,6 +137,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             `;
             const currentRadio = document.getElementById(`copt-${c.id_opcion}`);
             if (currentRadio) currentRadio.checked = true;
+            ocultarErrorFormulario(document.getElementById('formGenerico-error'));
             bootstrap.Modal.getOrCreateInstance(document.getElementById('modalGenerico')).show();
         } else if (seccion === 'huespedes') {
             const seleccionado = document.querySelector('tbody .huesped-checkbox:checked');
@@ -180,9 +181,12 @@ document.addEventListener('DOMContentLoaded', async function() {
         const seccion = document.querySelector('.section-link.active-custom')?.getAttribute('data-section');
         const data    = Object.fromEntries(new FormData(this));
 
+        const errorEl = document.getElementById('formGenerico-error');
+        ocultarErrorFormulario(errorEl);
+
         if (seccion === 'criterios') {
             if (!data.id_opcion) {
-                mostrarToast(t('anfitrion.criteria.selectOption'), 'warning');
+                mostrarErrorFormulario(errorEl, t('anfitrion.criteria.selectOption'));
                 return;
             }
             bootstrap.Modal.getInstance(document.getElementById('modalGenerico')).hide();
@@ -661,6 +665,7 @@ function abrirModalGenerico(seccion) {
     const form = document.getElementById('formGenerico');
     form.reset();
     form.querySelector('input[name="id_edit"]')?.remove();
+    ocultarErrorFormulario(document.getElementById('formGenerico-error'));
     bootstrap.Modal.getOrCreateInstance(document.getElementById('modalGenerico')).show();
 }
 

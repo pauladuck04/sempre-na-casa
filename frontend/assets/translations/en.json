@@ -474,7 +474,6 @@
     "footer": {
       "tagline": "Promoting intergenerational living, fighting loneliness and easing access to housing.",
       "about": "About us",
-      "testimonials": "Testimonials",
       "faq": "FAQ",
       "contact": "Contact",
       "rights": "© 2026 Sempre na Casa. All rights reserved."
@@ -505,6 +504,79 @@
       "f4": "Track the status of your process: interview, trial, active",
       "f5": "Manage your profile and account at any time",
       "cta": "Sign up as a tenant"
+    }
+  },
+  "about": {
+    "hero": {
+      "title": "About us",
+      "subtitle": "We connect generations to build stronger homes and communities in Ourense."
+    },
+    "mission": {
+      "title": "Our mission",
+      "text1": "Sempre na Casa was created to address two problems that, together, become an opportunity: unwanted loneliness among many older people and the difficulty young people and students face in accessing housing.",
+      "text2": "We connect hosts with a free room in their home with people looking for a place to live, fostering a coexistence based on companionship, mutual respect and everyday support."
+    },
+    "values": {
+      "title": "What drives us",
+      "v1Title": "Trust and safety",
+      "v1Text": "We verify profiles and support the matching process between host and tenant so that the coexistence starts off on the right foot.",
+      "v2Title": "Community",
+      "v2Text": "We believe in the value of sharing everyday life across generations: you learn, you get support, and your quality of life improves.",
+      "v3Title": "Social impact",
+      "v3Text": "Every coexistence is a small step against unwanted loneliness and against the lack of affordable housing."
+    },
+    "cta": {
+      "title": "Want to take part?",
+      "subtitle": "Find out whether you fit better as a host or as a tenant.",
+      "button": "See user types"
+    }
+  },
+  "faq": {
+    "hero": {
+      "title": "Frequently asked questions",
+      "subtitle": "We answer the most common questions about Sempre na Casa."
+    },
+    "q1": { "q": "What is Sempre na Casa?", "a": "It's an intergenerational coexistence platform that connects hosts, who have a free room in their home, with tenants looking for accommodation, mainly students and young people." },
+    "q2": { "q": "How does the matching process work?", "a": "Hosts and tenants fill in a short survey about their habits and coexistence preferences. Our system calculates a compatibility percentage between homes and candidates to make it easier to get in touch." },
+    "q3": { "q": "Does using the platform cost anything?", "a": "Registering and basic use of the platform are free for both hosts and tenants." },
+    "q4": { "q": "Who can register as a host?", "a": "Anyone with a free room in their home who wants to share it and, optionally, receive help or company in return." },
+    "q5": { "q": "Who can register as a tenant?", "a": "Mainly students and young people looking for affordable housing and an enriching coexistence with a host." },
+    "q6": { "q": "How is profile safety guaranteed?", "a": "Every user registers with their personal and contact details, and the Sempre na Casa team reviews the homes and profiles registered on the platform." },
+    "q7": { "q": "What happens if the coexistence doesn't work out?", "a": "The host can report the tenant's departure from their dashboard at any time, and both parties can contact us if they need help resolving the situation." },
+    "q8": { "q": "How can I contact the team?", "a": "You can write to us from our contact page and we'll reply as soon as possible." },
+    "cta": {
+      "title": "Didn't find your answer?",
+      "subtitle": "Write to us and we'll help you out.",
+      "button": "Go to contact"
+    }
+  },
+  "contact": {
+    "hero": {
+      "title": "Contact",
+      "subtitle": "Have questions or suggestions? Write to us, we'd be happy to help."
+    },
+    "info": {
+      "title": "Contact information",
+      "email": "Email",
+      "phone": "Phone",
+      "location": "Location",
+      "locationValue": "Ourense, Spain",
+      "hours": "Opening hours",
+      "hoursValue": "Monday to Friday, 9:00 AM - 6:00 PM"
+    },
+    "form": {
+      "title": "Send us a message",
+      "name": "Name",
+      "email": "Email",
+      "subject": "Subject",
+      "message": "Message",
+      "submit": "Send message",
+      "nameRequired": "Enter your name.",
+      "emailInvalid": "Enter a valid email.",
+      "subjectRequired": "Enter a subject.",
+      "messageRequired": "Write your message.",
+      "successTitle": "Message sent!",
+      "successText": "Thanks for writing to us, we'll get back to you as soon as possible."
     }
   }
 }

@@ -114,6 +114,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             </div>
             <input type="hidden" name="id_criterio" value="${criterioId}">
         `;
+        ocultarErrorFormulario(document.getElementById('formGenerico-error'));
         bootstrap.Modal.getOrCreateInstance(document.getElementById('modalGenerico')).show();
     });
 
@@ -128,16 +129,18 @@ document.addEventListener('DOMContentLoaded', async function() {
         e.preventDefault();
         const seccion = document.querySelector('.section-link.active-custom')?.getAttribute('data-section');
         const data    = Object.fromEntries(new FormData(this));
+        const errorEl = document.getElementById('formGenerico-error');
+        ocultarErrorFormulario(errorEl);
 
         if (seccion === 'preferencias') {
             const idUsuario = usuarioActual.id || localStorage.getItem('user_id');
-            if (!idUsuario) { mostrarToast('Error: usuario no identificado.', 'danger'); return; }
+            if (!idUsuario) { mostrarErrorFormulario(errorEl, 'Error: usuario no identificado.'); return; }
             const res = await apiPost('usuario_criterio_opcion', 'UPSERT_RESPUESTA', {
                 id_usuario:  idUsuario,
                 id_criterio: data.id_criterio,
                 id_opcion:   data.id_opcion
             });
-            if (!res.ok) { mostrarToast('Error al guardar la respuesta.', 'danger'); return; }
+            if (!res.ok) { mostrarErrorFormulario(errorEl, 'Error al guardar la respuesta.'); return; }
             bootstrap.Modal.getInstance(document.getElementById('modalGenerico')).hide();
             await preferencias.cargarPreferencias(idUsuario);
             actualizarBotones();
