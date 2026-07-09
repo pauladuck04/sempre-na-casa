@@ -3,6 +3,8 @@ import * as convivencia  from '../huesped/convivencia.js';
 import * as preferencias from '../huesped/preferencias.js';
 import { aplicarPaginacion, resetPagina } from '../admin/paginacion.js';
 import { mostrarErrorFormulario, ocultarErrorFormulario, mostrarErrorCampo, ocultarErrorCampo } from '../form-errors.js';
+import { cargarPartials } from '../partials.js';
+import { mostrarToast, cargarPerfilPorMail, inicializarMedidorFortaleza, inicializarTogglePassword, inicializarCambioPassword } from '../perfil-comun.js';
 
 const FILTROS_POR_SECCION = {};
 
@@ -22,53 +24,24 @@ const usuarioActual = {
 };
 
 document.addEventListener('DOMContentLoaded', async function() {
+    await cargarPartials();
     await initI18n();
     applyTranslations();
 
     convivencia.cargarConvivencia();
 
     // Cargar perfil del usuario logueado por email
-    (async function cargarPerfilPorMail() {
-        const email = (window.auth && typeof window.auth.getEmail === 'function') ? window.auth.getEmail() : localStorage.getItem('user_email');
-        const initialsFrom = name => (name || '').split(' ').map(n => n[0] || '').join('').toUpperCase().slice(0,2);
-        if (!email) return;
-        try {
-            const res = await apiPost('usuario', 'getByMail', { mail: email });
-            if (res.ok && Array.isArray(res.resource) && res.resource.length > 0) {
-                const ures = res.resource[0];
-                const u = {
-                    id: ures.id_usuario,
-                    nombre: `${ures.nombre_usuario} ${ures.apellidos}`.trim(),
-                    email: ures.mail,
-                    dni: ures.dni,
-                    telefono: ures.telefono,
-                    ciudad: ures.ciudad || '',
-                    fechaRegistro: ures.fecha_alta_usuario ? ures.fecha_alta_usuario.split(' ')[0] : '-'
-                };
-                // Guardar en usuarioActual
-                usuarioActual.id = u.id;
-                usuarioActual.nombre = u.nombre;
-                usuarioActual.email = u.email;
-                usuarioActual.dni = u.dni;
-                usuarioActual.telefono = u.telefono;
-                usuarioActual.ciudad = u.ciudad;
-                usuarioActual.fechaAlta = u.fechaRegistro;
-
-                document.getElementById('perfil-display-nombre').textContent = u.nombre || '';
-                const inpNombre = document.getElementById('perfil-nombre'); if (inpNombre) inpNombre.value = u.nombre || '';
-                const inpEmail = document.getElementById('perfil-email'); if (inpEmail) inpEmail.value = u.email || '';
-                const inpDni = document.getElementById('perfil-dni'); if (inpDni) inpDni.value = u.dni || '';
-                const inpTel = document.getElementById('perfil-telefono'); if (inpTel) inpTel.value = u.telefono || '';
-                const fecha = document.getElementById('perfil-fecha-alta'); if (fecha) fecha.textContent = u.fechaRegistro || '-';
-                const initials = initialsFrom(u.nombre);
-                const avatar = document.getElementById('perfil-avatar'); if (avatar) { avatar.textContent = initials; avatar.style.backgroundColor = 'var(--color-primario)'; }
-                const btn = document.getElementById('btnPerfil'); if (btn) { btn.textContent = initials; btn.style.backgroundColor = 'var(--color-primario)'; }
-                return;
-            }
-        } catch (err) {
-            console.warn('Error cargando perfil por mail (huesped):', err);
+    cargarPerfilPorMail({
+        onDatos: (u) => {
+            usuarioActual.id = u.id;
+            usuarioActual.nombre = u.nombre;
+            usuarioActual.email = u.email;
+            usuarioActual.dni = u.dni;
+            usuarioActual.telefono = u.telefono;
+            usuarioActual.ciudad = u.ciudad;
+            usuarioActual.fechaAlta = u.fechaRegistro;
         }
-    })();
+    });
 
     const navConvivencia = document.getElementById('nav-convivencia');
     if (navConvivencia) {
@@ -157,30 +130,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     });
 
     // Perfil
-    document.querySelectorAll('[data-toggle-pwd]').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const input = document.getElementById(btn.dataset.togglePwd);
-            const icon  = btn.querySelector('i');
-            input.type     = input.type === 'password' ? 'text' : 'password';
-            icon.className = input.type === 'password' ? 'bi bi-eye' : 'bi bi-eye-slash';
-        });
-    });
-
-    document.getElementById('pwd-nueva')?.addEventListener('input', function() {
-        const wrap = document.getElementById('pwd-strength-wrap');
-        const bar  = document.getElementById('pwd-strength-bar');
-        const txt  = document.getElementById('pwd-strength-text');
-        if (!this.value) { wrap.style.display = 'none'; return; }
-        wrap.style.display = 'block';
-        const cfg = {
-            1: [25,'#dc3545', t('profile.strengthVeryWeak')],
-            2: [50,'#fd7e14', t('profile.strengthWeak')],
-            3: [75,'#ffc107', t('profile.strengthModerate')],
-            4: [100,'#28a745', t('profile.strengthStrong')]
-        }[calcularFortaleza(this.value)];
-        bar.style.width = cfg[0] + '%'; bar.style.backgroundColor = cfg[1];
-        txt.textContent = cfg[2]; txt.style.color = cfg[1];
-    });
+    inicializarTogglePassword();
+    inicializarMedidorFortaleza();
 
     let valoresOriginalesPerfil = {};
     const perfilInputs = () => Array.from(document.querySelectorAll('#perfil-form input'));
@@ -222,44 +173,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         mostrarToast(t('profile.savedSuccess'), 'success');
     });
 
-    document.getElementById('perfil-form-pwd')?.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const actualInput   = document.getElementById('pwd-actual');
-        const nuevaInput    = document.getElementById('pwd-nueva');
-        const confirmaInput = document.getElementById('pwd-confirmar');
-        const feedback = document.getElementById('pwd-feedback');
-        ocultarErrorFormulario(feedback);
-        [actualInput, nuevaInput, confirmaInput].forEach(ocultarErrorCampo);
-
-        if (!actualInput.value) { mostrarErrorCampo(actualInput, t('profile.passwordRequired')); return; }
-        if (nuevaInput.value.length < 8) { mostrarErrorCampo(nuevaInput, t('profile.passwordTooShort')); return; }
-        if (nuevaInput.value !== confirmaInput.value) { mostrarErrorCampo(confirmaInput, t('profile.passwordMismatch')); return; }
-        bootstrap.Modal.getOrCreateInstance(document.getElementById('modalConfirmarPassword')).show();
-    });
-
-    document.getElementById('btnConfirmarPassword')?.addEventListener('click', async () => {
-        const mail   = usuarioActual.email || localStorage.getItem('user_email');
-        const actual = document.getElementById('pwd-actual').value;
-        const nueva  = document.getElementById('pwd-nueva').value;
-
-        const res = await apiPost('auth', 'CAMBIAR_CONTRASENA', { mail, password_actual: actual, password: nueva });
-
-        bootstrap.Modal.getInstance(document.getElementById('modalConfirmarPassword')).hide();
-
-        const feedback = document.getElementById('pwd-feedback');
-        if (!res.ok) {
-            const msg = res.code === 'PASSWORD_ACTUAL_INCORRECTA_KO'
-                ? 'La contraseña actual no es correcta.'
-                : 'Error al cambiar la contraseña.';
-            mostrarErrorFormulario(feedback, msg);
-            return;
-        }
-
-        document.getElementById('perfil-form-pwd').reset();
-        document.getElementById('pwd-strength-wrap').style.display = 'none';
-        ocultarErrorFormulario(feedback);
-        mostrarToast(t('profile.passwordUpdated'), 'success');
-    });
+    inicializarCambioPassword(() => usuarioActual.email || localStorage.getItem('user_email'));
 
     document.getElementById('btnEliminarCuenta')?.addEventListener('click', () => {
         bootstrap.Modal.getOrCreateInstance(document.getElementById('modalEliminarCuenta')).show();
@@ -506,19 +420,3 @@ function actualizarBotones() {
     if (btnEditar) btnEditar.disabled = (seleccionados !== 1);
 }
 
-function calcularFortaleza(pwd) {
-    let p = 0;
-    if (pwd.length >= 8)          p++;
-    if (/[A-Z]/.test(pwd))        p++;
-    if (/[0-9]/.test(pwd))        p++;
-    if (/[^A-Za-z0-9]/.test(pwd)) p++;
-    return Math.max(1, p);
-}
-
-function mostrarToast(mensaje, tipo = 'success') {
-    const toast = document.getElementById('toastDashboard');
-    if (!toast) return;
-    toast.className = `toast align-items-center border-0 text-bg-${tipo}`;
-    document.getElementById('toastDashboardMsg').textContent = mensaje;
-    bootstrap.Toast.getOrCreateInstance(toast, { delay: 3000 }).show();
-}

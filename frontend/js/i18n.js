@@ -74,3 +74,26 @@ export async function initI18n(lang) {
     window.getLang          = getLang;
     window.applyTranslations = applyTranslations;
 }
+
+const LANG_LABELS = { es: 'Español', en: 'English', gal: 'Galego' };
+
+/**
+ * Conecta el selector de idioma del navbar (#langDropdown, #lang-label, .lang-option):
+ * actualiza la etiqueta visible y engancha el cambio de idioma al hacer clic.
+ * Debe llamarse cuando ese HTML ya esté en el DOM (tras cargar partials si vienen de fuera).
+ */
+export function initLangDropdown() {
+    const actualizarEtiqueta = () => {
+        const label = document.getElementById('lang-label');
+        if (label) label.textContent = LANG_LABELS[getLang()] ?? getLang();
+    };
+    actualizarEtiqueta();
+
+    document.querySelectorAll('.lang-option').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            await setLang(btn.dataset.lang);
+            applyTranslations();
+            actualizarEtiqueta();
+        });
+    });
+}

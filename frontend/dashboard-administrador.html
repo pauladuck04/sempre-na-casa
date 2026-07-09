@@ -368,67 +368,7 @@
         </main>
     </div>
 
-    <!-- Modal Genérico -->
-    <div class="modal fade" id="modalGenerico" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title fw-bold" id="modalTitle" data-i18n="modal.newRecord">Nuevo Registro</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <form id="formGenerico">
-                    <div class="modal-body p-4" id="modalFormContent"></div>
-                    <div id="formGenerico-error" class="alert alert-danger d-none mx-4 mb-3" role="alert"></div>
-                    <div class="modal-footer border-0 p-4">
-                        <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal" data-i18n="buttons.cancel">Cancelar</button>
-                        <button type="submit" class="btn btn-primary rounded-pill px-4" data-i18n="buttons.saveChanges">Guardar Cambios</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Detalle -->
-    <div class="modal fade" id="modalDetalle" tabindex="-1" aria-labelledby="modalDetalleTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow">
-                <div class="modal-header text-white" style="background-color: var(--color-primario);">
-                    <h5 class="modal-title fw-bold" id="modalDetalleTitle" data-i18n="modal.details">Detalles</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body p-4" id="modalDetalleContent"></div>
-                <div class="modal-footer border-0 p-4">
-                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal" data-i18n="buttons.close">Cerrar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Eliminar Cuenta -->
-    <div class="modal fade" id="modalEliminarCuenta" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow">
-                <div class="modal-header bg-danger text-white border-0">
-                    <h5 class="modal-title fw-bold">
-                        <i class="bi bi-exclamation-triangle me-2"></i>
-                        <span data-i18n="modal.deleteAccountTitle">Eliminar cuenta</span>
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body p-4">
-                    <p class="mb-2" data-i18n="modal.deleteAccountBody">¿Estás seguro de que quieres eliminar tu cuenta? Esta acción es permanente e irreversible.</p>
-                    <p class="text-muted small mb-0" data-i18n="modal.deleteAccountData">Se eliminarán todos tus datos.</p>
-                </div>
-                <div class="modal-footer border-0 p-4">
-                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal" data-i18n="buttons.cancel">Cancelar</button>
-                    <button type="button" class="btn btn-danger rounded-pill px-4" id="btnConfirmarEliminarCuenta">
-                        <i class="bi bi-trash me-1"></i>
-                        <span data-i18n="modal.confirmDeleteBtn">Sí, eliminar cuenta</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div data-partial="partials/dashboard-modals-common.html"></div>
 
     <!-- Modal Confirmar Eliminar -->
     <div class="modal fade" id="modalConfirmarEliminar" tabindex="-1" aria-hidden="true">
@@ -476,41 +416,6 @@
                         <span data-i18n="modal.confirmReactivateBtn">Sí, reactivar</span>
                     </button>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Confirmar Cambio Contraseña -->
-    <div class="modal fade" id="modalConfirmarPassword" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow">
-                <div class="modal-header bg-primary text-white border-0">
-                    <h5 class="modal-title fw-bold">
-                        <i class="bi bi-lock me-2"></i>
-                        <span data-i18n="modal.confirmPasswordTitle">Confirmar cambio de contraseña</span>
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body p-4">
-                    <p class="mb-0" data-i18n="modal.confirmPasswordBody">¿Estás seguro de que deseas cambiar tu contraseña?</p>
-                </div>
-                <div class="modal-footer border-0 p-4">
-                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal" data-i18n="buttons.cancel">Cancelar</button>
-                    <button type="button" class="btn btn-primary rounded-pill px-4" id="btnConfirmarPassword">
-                        <i class="bi bi-lock me-1"></i>
-                        <span data-i18n="modal.confirmPasswordBtn">Sí, cambiar contraseña</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Toast -->
-    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100;">
-        <div id="toastDashboard" class="toast align-items-center border-0" role="alert" aria-atomic="true" style="max-width: none; width: max-content;">
-            <div class="d-flex">
-                <div class="toast-body fw-semibold" id="toastDashboardMsg"></div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
             </div>
         </div>
     </div>

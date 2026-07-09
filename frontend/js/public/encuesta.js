@@ -1,5 +1,8 @@
 import { initI18n, t, applyTranslations } from '../i18n.js';
 import { mostrarErrorFormulario, ocultarErrorFormulario } from '../form-errors.js';
+import { renderPreguntasEncuesta } from '../encuesta-criterios.js';
+
+renderPreguntasEncuesta(document.getElementById('preguntas-encuesta'));
 
 await initI18n();
 applyTranslations();

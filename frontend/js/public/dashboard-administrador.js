@@ -5,6 +5,8 @@ import * as criterios from '../admin/criterios.js';
 import * as viviendas from '../admin/viviendas.js';
 import { aplicarPaginacion, resetPagina } from '../admin/paginacion.js';
 import { mostrarErrorFormulario, ocultarErrorFormulario, mostrarErrorCampo, ocultarErrorCampo } from '../form-errors.js';
+import { cargarPartials } from '../partials.js';
+import { mostrarToast, cargarPerfilPorMail, inicializarMedidorFortaleza, inicializarTogglePassword, inicializarCambioPassword } from '../perfil-comun.js';
 
 const TABLA_POR_SECCION = {
     usuarios: 'tabla-usuarios',
@@ -142,52 +144,14 @@ function getActiveCriteriosSubTab() {
 }
 
 document.addEventListener('DOMContentLoaded', async function() {
+    await cargarPartials();
     await initI18n();
     applyTranslations();
     // Cargar datos del perfil del usuario logueado por email desde backend
-    async function cargarPerfilPorMail() {
-        const email = (window.auth && typeof window.auth.getEmail === 'function') ? window.auth.getEmail() : localStorage.getItem('user_email');
-        const initialsFrom = name => (name || '').split(' ').map(n => n[0] || '').join('').toUpperCase().slice(0,2);
-        if (!email) return;
-        try {
-            const res = await apiPost('usuario', 'getByMail', { mail: email });
-            if (res.ok && Array.isArray(res.resource) && res.resource.length > 0) {
-                const ures = res.resource[0];
-                const u = {
-                    id: ures.id_usuario,
-                    nombre: `${ures.nombre_usuario} ${ures.apellidos}`.trim(),
-                    email: ures.mail,
-                    dni: ures.dni,
-                    telefono: ures.telefono,
-                    id_rol: ures.id_rol,
-                    fechaRegistro: ures.fecha_alta_usuario ? ures.fecha_alta_usuario.split(' ')[0] : '-'
-                };
-                document.getElementById('perfil-display-nombre').textContent = u.nombre || '';
-                const inpNombre = document.getElementById('perfil-nombre'); if (inpNombre) inpNombre.value = u.nombre || '';
-                const inpEmail = document.getElementById('perfil-email'); if (inpEmail) inpEmail.value = u.email || '';
-                const inpDni = document.getElementById('perfil-dni'); if (inpDni) inpDni.value = u.dni || '';
-                const inpTel = document.getElementById('perfil-telefono'); if (inpTel) inpTel.value = u.telefono || '';
-                const fecha = document.getElementById('perfil-fecha-alta'); if (fecha) fecha.textContent = u.fechaRegistro || '-';
-                const initials = initialsFrom(u.nombre);
-                const avatar = document.getElementById('perfil-avatar');
-                if (avatar) { avatar.textContent = initials; avatar.style.backgroundColor = (u.id_rol == 2) ? 'var(--color-secundario)' : 'var(--color-primario)'; }
-                const btn = document.getElementById('btnPerfil');
-                if (btn) { btn.textContent = initials; btn.style.backgroundColor = avatar?.style?.backgroundColor || 'var(--color-primario)'; }
-                return;
-            }
-        } catch (err) {
-            console.warn('Error cargando perfil por mail:', err);
-        }
-        // Fallback local
-        const fallbackName = email ? email.split('@')[0] : 'Usuario';
-        document.getElementById('perfil-display-nombre').textContent = fallbackName;
-        const inpNombre = document.getElementById('perfil-nombre'); if (inpNombre) inpNombre.value = fallbackName;
-        const inpEmail = document.getElementById('perfil-email'); if (inpEmail) inpEmail.value = email || '';
-        const initials = initialsFrom(fallbackName);
-        const avatar = document.getElementById('perfil-avatar'); if (avatar) { avatar.textContent = initials; avatar.style.backgroundColor = 'var(--color-primario)'; }
-        const btn = document.getElementById('btnPerfil'); if (btn) { btn.textContent = initials; btn.style.backgroundColor = 'var(--color-primario)'; }
-    }
-    cargarPerfilPorMail();
+    cargarPerfilPorMail({
+        colorAvatar: (u) => (u.id_rol == 2) ? 'var(--color-secundario)' : 'var(--color-primario)',
+        conFallbackLocal: true
+    });
 
     const seccionActiva = document.querySelector('.section-link.active-custom')?.getAttribute('data-section');
     actualizarControlesSeccion(seccionActiva);
@@ -330,7 +294,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
 
             if (bloqueado) {
-                mostrarToast('No se puede eliminar: hay convivencias activas asociadas.');
+                mostrarToast('No se puede eliminar: hay convivencias activas asociadas.', 'danger');
                 return;
             }
         }
@@ -526,14 +490,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     });
 
     // Perfil
-    document.querySelectorAll('[data-toggle-pwd]').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const input = document.getElementById(btn.dataset.togglePwd);
-            const icon  = btn.querySelector('i');
-            input.type = input.type === 'password' ? 'text' : 'password';
-            icon.className = input.type === 'password' ? 'bi bi-eye' : 'bi bi-eye-slash';
-        });
-    });
+    inicializarTogglePassword();
+    inicializarMedidorFortaleza();
 
     document.getElementById('perfil-btnEditar')?.addEventListener('click', () => {
         Array.from(document.querySelectorAll('#perfil-form input')).forEach(inp => inp.disabled = false);
@@ -561,43 +519,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         mostrarToast(t('profile.savedSuccess'), 'success');
     });
 
-    document.getElementById('perfil-form-pwd')?.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const actualInput   = document.getElementById('pwd-actual');
-        const nuevaInput    = document.getElementById('pwd-nueva');
-        const confirmaInput = document.getElementById('pwd-confirmar');
-        const feedback = document.getElementById('pwd-feedback');
-        ocultarErrorFormulario(feedback);
-        [actualInput, nuevaInput, confirmaInput].forEach(ocultarErrorCampo);
-
-        if (!actualInput.value) { mostrarErrorCampo(actualInput, t('profile.passwordRequired')); return; }
-        if (nuevaInput.value.length < 8) { mostrarErrorCampo(nuevaInput, t('profile.passwordTooShort')); return; }
-        if (nuevaInput.value !== confirmaInput.value) { mostrarErrorCampo(confirmaInput, t('profile.passwordMismatch')); return; }
-        bootstrap.Modal.getOrCreateInstance(document.getElementById('modalConfirmarPassword')).show();
-    });
-
-    document.getElementById('btnConfirmarPassword')?.addEventListener('click', async () => {
-        const mail   = localStorage.getItem('user_email');
-        const actual = document.getElementById('pwd-actual').value;
-        const nueva  = document.getElementById('pwd-nueva').value;
-
-        const res = await apiPost('auth', 'CAMBIAR_CONTRASENA', { mail, password_actual: actual, password: nueva });
-
-        bootstrap.Modal.getInstance(document.getElementById('modalConfirmarPassword')).hide();
-
-        const feedback = document.getElementById('pwd-feedback');
-        if (!res.ok) {
-            const msg = res.code === 'PASSWORD_ACTUAL_INCORRECTA_KO'
-                ? 'La contraseña actual no es correcta.'
-                : 'Error al cambiar la contraseña.';
-            mostrarErrorFormulario(feedback, msg);
-            return;
-        }
-
-        document.getElementById('perfil-form-pwd').reset();
-        ocultarErrorFormulario(feedback);
-        mostrarToast(t('profile.passwordUpdated'), 'success');
-    });
+    inicializarCambioPassword(() => localStorage.getItem('user_email'));
 
     document.getElementById('btnEliminarCuenta')?.addEventListener('click', () => {
         bootstrap.Modal.getOrCreateInstance(document.getElementById('modalEliminarCuenta')).show();
@@ -861,13 +783,6 @@ function aplicarFiltros() {
 async function reactivarSeleccion(seccion, ids) { await obtenerConfigSeccion(seccion)?.reactivar?.(ids); }
 async function desactivarSeleccion(seccion, ids) { await obtenerConfigSeccion(seccion)?.desactivar?.(ids); }
 
-function mostrarToast(mensaje, tipo = 'danger') {
-    const el = document.getElementById('toastDashboard');
-    if (!el) return;
-    el.className = `toast align-items-center border-0 text-bg-${tipo}`;
-    document.getElementById('toastDashboardMsg').textContent = mensaje;
-    bootstrap.Toast.getOrCreateInstance(el, { delay: 3000 }).show();
-}
 
 function actualizarBotones() {
     const seccion = document.querySelector('.section-link.active-custom')?.getAttribute('data-section');
