@@ -5,6 +5,7 @@ session_start();
 include_once './Comun/config.php';
 include_once './Comun/FuncionesGenerales.php';
 include_once './Comun/literalesbase.php';
+include_once './Comun/LogHelper.php';
 
 //Comprobar_si_existe_BD();
 

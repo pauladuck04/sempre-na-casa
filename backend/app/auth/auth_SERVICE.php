@@ -199,6 +199,17 @@ function mapRolToId($rol){
 			$_POST['id_rol'] = 5;
 		}
 
+		include_once './Base/mapping.php';
+		$map = new mapping('usuario');
+		$mail = addslashes($_POST['mail']);
+		$dni  = addslashes($_POST['dni']);
+		$existente = $map->lanzarqueryconresults(
+			"SELECT id_usuario FROM usuario WHERE mail = '{$mail}' OR dni = '{$dni}' LIMIT 1"
+		);
+		if ($existente['ok'] && !empty($existente['resource'])){
+			return array('ok' => false, 'code' => 'USUARIO_YA_EXISTE_KO');
+		}
+
 		$postOriginal = $_POST;
 
 		include_once './app/usuario/usuario_SERVICE.php';

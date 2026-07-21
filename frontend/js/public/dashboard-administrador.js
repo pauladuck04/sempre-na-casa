@@ -3,6 +3,7 @@ import * as usuarios from '../admin/usuarios.js';
 import * as roles     from '../admin/roles.js';
 import * as criterios from '../admin/criterios.js';
 import * as viviendas from '../admin/viviendas.js';
+import * as solicitudes from '../admin/solicitudes.js';
 import { aplicarPaginacion, resetPagina } from '../admin/paginacion.js';
 import { mostrarErrorFormulario, ocultarErrorFormulario, mostrarErrorCampo, ocultarErrorCampo } from '../form-errors.js';
 import { cargarPartials } from '../partials.js';
@@ -13,7 +14,8 @@ const TABLA_POR_SECCION = {
     roles: 'tabla-roles',
     viviendas: 'tabla-viviendas',
     criterios: 'tabla-criterios',
-    opciones: 'tabla-opciones'
+    opciones: 'tabla-opciones',
+    solicitudes: 'tabla-solicitudes'
 };
 
 const FILTROS_POR_SECCION = {
@@ -90,7 +92,21 @@ const CONFIG_MODALES = {
     criterios: {
         getTitulo: () => t('admin.criteria.createTitle'),
         getHtml: () => `
-            <div class="mb-3"><label class="form-label fw-bold">${t('admin.criteria.criteriaName')}</label><input name="nombre" class="form-control" required></div>`
+            <div class="mb-3"><label class="form-label fw-bold">${t('admin.criteria.criteriaName')}</label><input name="nombre" class="form-control" required></div>
+            <div class="mb-3">
+                <label class="form-label fw-bold">${t('admin.criteria.weight') || 'Peso / Importancia'}</label>
+                <select name="peso" class="form-select">
+                    <option value="1">1 - ${t('admin.criteria.weightLow') || 'Baja'}</option>
+                    <option value="2">2</option>
+                    <option value="3" selected>3 - ${t('admin.criteria.weightMedium') || 'Media'}</option>
+                    <option value="4">4</option>
+                    <option value="5">5 - ${t('admin.criteria.weightHigh') || 'Alta'}</option>
+                </select>
+            </div>
+            <div class="form-check mb-3">
+                <input type="checkbox" class="form-check-input" name="restrictivo" id="chk-criterio-restrictivo" value="1">
+                <label class="form-check-label" for="chk-criterio-restrictivo">${t('admin.criteria.restrictive') || 'Restrictivo (puede descartar matches por completo)'}</label>
+            </div>`
     },
     opciones: {
         getTitulo: () => t('admin.criteria.createOptionTitle'),
@@ -102,7 +118,12 @@ const CONFIG_MODALES = {
                 </select>
             </div>
             <div class="mb-3"><label class="form-label fw-bold">${t('admin.criteria.option')}</label><input name="opcion" class="form-control" required></div>
-            <div class="mb-3"><label class="form-label fw-bold">${t('admin.criteria.value')}</label><input name="valor" class="form-control" required></div>`
+            <div class="mb-3"><label class="form-label fw-bold">${t('admin.criteria.value')}</label><input name="valor" class="form-control" required></div>
+            <div class="form-check mb-1">
+                <input type="checkbox" class="form-check-input" name="excluyente" id="chk-opcion-excluyente" value="1">
+                <label class="form-check-label" for="chk-opcion-excluyente">${t('admin.criteria.excluding') || 'Excluyente (descarta el match si el criterio es restrictivo)'}</label>
+            </div>
+            <div id="hint-excluyente-no-restrictivo" class="form-text text-muted mb-3 d-none">${t('admin.criteria.excludingRequiresRestrictive') || 'Solo disponible si el criterio es restrictivo.'}</div>`
     },
     convivencias: {
         getTitulo: () => 'Editar Estado de Convivencia',
@@ -127,7 +148,8 @@ const sectionTitles = {
     usuarios: () => t('admin.sections.users.title'),
     roles:    () => t('admin.sections.roles.title'),
     viviendas:() => t('admin.sections.homes.title'),
-    criterios:() => t('admin.sections.criteria.title')
+    criterios:() => t('admin.sections.criteria.title'),
+    solicitudes:() => t('admin.sections.requests.title')
 };
 
 const sectionDescriptions = {
@@ -135,7 +157,8 @@ const sectionDescriptions = {
     usuarios: () => t('admin.sections.users.description'),
     roles:    () => t('admin.sections.roles.description'),
     viviendas:() => t('admin.sections.homes.description'),
-    criterios:() => t('admin.sections.criteria.description')
+    criterios:() => t('admin.sections.criteria.description'),
+    solicitudes:() => t('admin.sections.requests.description')
 };
 
 function getActiveCriteriosSubTab() {
@@ -235,6 +258,10 @@ document.addEventListener('DOMContentLoaded', async function() {
             const c = criterios.listaCriteriosMemoria.find(x => String(x.id) === id);
             if (c) {
                 form.querySelector('[name="nombre"]').value = c.nombre;
+                const selPeso = form.querySelector('[name="peso"]');
+                if (selPeso) selPeso.value = c.peso;
+                const chkRestrictivo = form.querySelector('[name="restrictivo"]');
+                if (chkRestrictivo) chkRestrictivo.checked = c.restrictivo == 1;
                 document.getElementById('modalTitle').textContent = `${t('admin.criteria.editTitle')}: ${c.nombre}`;
             }
         } else if (efectiva === 'opciones') {
@@ -244,6 +271,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                 if (selCrit) Array.from(selCrit.options).forEach(opt => { opt.selected = String(opt.value) === String(o.criterio_id); });
                 form.querySelector('[name="opcion"]').value = o.opcion;
                 form.querySelector('[name="valor"]').value  = o.valor;
+                sincronizarExcluyente();
+                const chkExcluyente = form.querySelector('[name="excluyente"]');
+                if (chkExcluyente && !chkExcluyente.disabled) chkExcluyente.checked = o.excluyente == 1;
                 document.getElementById('modalTitle').textContent = `${t('admin.criteria.editOptionTitle')}: ${o.opcion}`;
             }
         } else if (efectiva === 'viviendas') {
@@ -454,7 +484,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                 const params = {
                     nombre_opcion: data.opcion,
                     valor:         data.valor,
-                    id_criterio:   data.criterio_id
+                    id_criterio:   data.criterio_id,
+                    excluyente:    data.excluyente ? 1 : 0
                 };
                 if (data.id_edit) {
                     params.id_opcion = data.id_edit;
@@ -467,7 +498,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     mostrarToast('Guardado correctamente', 'success');
                 }
             } else {
-                const params = { nombre_criterio: data.nombre };
+                const params = { nombre_criterio: data.nombre, peso_criterio: data.peso, restrictivo: data.restrictivo ? 1 : 0 };
                 if (data.id_edit) {
                     params.id_criterio = data.id_edit;
                     const res = await apiPost('criterio', 'EDIT', params);
@@ -571,6 +602,10 @@ document.addEventListener('DOMContentLoaded', async function() {
                     resetPagina('tabla-opciones');
                     criterios.cargarCriterios();
                     break;
+                case 'solicitudes':
+                    resetPagina('tabla-solicitudes');
+                    solicitudes.cargarSolicitudes();
+                    break;
             }
 
             aplicarFiltros();
@@ -673,7 +708,30 @@ async function abrirModalGenerico(seccion) {
     form.querySelector('input[name="id_edit"]')?.remove();
     ocultarErrorFormulario(document.getElementById('formGenerico-error'));
 
+    if (seccion === 'opciones') inicializarControlExcluyente();
+
     bootstrap.Modal.getOrCreateInstance(document.getElementById('modalGenerico')).show();
+}
+
+// El checkbox "excluyente" solo tiene sentido si el criterio seleccionado es restrictivo
+function inicializarControlExcluyente() {
+    const selCriterio = document.querySelector('#formGenerico [name="criterio_id"]');
+    if (!selCriterio) return;
+    selCriterio.addEventListener('change', sincronizarExcluyente);
+    sincronizarExcluyente();
+}
+
+function sincronizarExcluyente() {
+    const selCriterio   = document.querySelector('#formGenerico [name="criterio_id"]');
+    const chkExcluyente = document.querySelector('#formGenerico [name="excluyente"]');
+    const hint          = document.getElementById('hint-excluyente-no-restrictivo');
+    if (!selCriterio || !chkExcluyente) return;
+
+    const criterioSeleccionado = criterios.listaCriteriosMemoria.find(c => String(c.id) === String(selCriterio.value));
+    const esRestrictivo = !!criterioSeleccionado && criterioSeleccionado.restrictivo == 1;
+    chkExcluyente.disabled = !esRestrictivo;
+    if (!esRestrictivo) chkExcluyente.checked = false;
+    hint?.classList.toggle('d-none', esRestrictivo);
 }
 
 function obtenerIdsSeleccionados(seccionEfectiva) {
@@ -704,7 +762,8 @@ function obtenerConfigSeccion(seccion) {
         roles:    { lista: roles.listaRolesMemoria,     renderizar: roles.renderizarRoles,     reactivar: roles.reactivarRoles,     desactivar: roles.desactivarRoles     },
         criterios:{ lista: criterios.listaCriteriosMemoria, renderizar: criterios.renderizarCriterios, reactivar: criterios.reactivarCriterios, desactivar: criterios.desactivarCriterios },
         opciones: { lista: criterios.listaOpcionesMemoria, renderizar: criterios.renderizarOpciones, reactivar: criterios.reactivarOpciones, desactivar: criterios.desactivarOpciones },
-        viviendas:{ lista: viviendas.listaViviendasMemoria, renderizar: viviendas.renderizarViviendas, reactivar: viviendas.reactivarViviendas, desactivar: viviendas.desactivarViviendas }
+        viviendas:{ lista: viviendas.listaViviendasMemoria, renderizar: viviendas.renderizarViviendas, reactivar: viviendas.reactivarViviendas, desactivar: viviendas.desactivarViviendas },
+        solicitudes:{ lista: solicitudes.listaSolicitudesMemoria, renderizar: solicitudes.renderizarSolicitudes }
     }[seccion];
 }
 
@@ -715,7 +774,9 @@ function actualizarControlesSeccion(seccion) {
     const filtroTexto        = document.getElementById('filtroTexto');
     if (!accionesGlobales || !filtrosGlobales) return;
 
-    if (seccion === 'general') {
+    if (seccion === 'general' || seccion === 'solicitudes') {
+        // 'solicitudes' no tiene acciones masivas ni filtros: cada solicitud se acepta/rechaza
+        // con sus propios botones en la fila
         accionesGlobales.classList.replace('d-flex','d-none');
         filtrosGlobales.classList.replace('d-flex','d-none');
         if (filtrosEspecificos) filtrosEspecificos.innerHTML = '';
@@ -724,6 +785,7 @@ function actualizarControlesSeccion(seccion) {
     }
     accionesGlobales.classList.replace('d-none','d-flex');
     filtrosGlobales.classList.replace('d-none','d-flex');
+
     const subSeccion = seccion === 'criterios' ? getActiveCriteriosSubTab() : seccion;
     configurarFiltros(subSeccion);
 }
@@ -886,11 +948,13 @@ window.verCriterio = function(id) {
     document.getElementById('modalDetalleTitle').textContent = `${t('admin.criteria.detailTitle')}: ${c.nombre}`;
     document.getElementById('modalDetalleContent').innerHTML = `
         <div class="row mb-3"><div class="col-md-12"><h6 class="text-muted small mb-1">${t('admin.criteria.criteriaName')}</h6><p class="fw-semibold mb-0">${c.nombre}</p></div></div>
+        <div class="row mb-3"><div class="col-md-12"><h6 class="text-muted small mb-1">${t('admin.criteria.weight')}</h6><p class="fw-semibold mb-0">${c.peso}</p></div></div>
+        <div class="row mb-3"><div class="col-md-12"><h6 class="text-muted small mb-1">${t('admin.criteria.restrictive')}</h6><p class="mb-0">${c.restrictivo == 1 ? `<span class="badge bg-danger">${t('common.yes') || 'Sí'}</span>` : `<span class="badge bg-secondary">${t('common.no') || 'No'}</span>`}</p></div></div>
         <div class="row ${opcionesDelCriterio.length ? 'mb-3' : ''}"><div class="col-md-12"><h6 class="text-muted small mb-1">${t('common.status')}</h6><p class="mb-0">${estadoBadge}</p></div></div>
         ${opcionesDelCriterio.length ? `
         <div class="row"><div class="col-md-12"><h6 class="text-muted small mb-1">${t('admin.criteria.tabOptions')}</h6>
             <ul class="list-unstyled mb-0">
-                ${opcionesDelCriterio.map(o => `<li><span class="fw-semibold">${o.opcion}</span> <span class="text-muted">(${t('admin.criteria.value')}: ${o.valor})</span></li>`).join('')}
+                ${opcionesDelCriterio.map(o => `<li><span class="fw-semibold">${o.opcion}</span> <span class="text-muted">(${t('admin.criteria.value')}: ${o.valor})</span>${o.excluyente == 1 ? ` <span class="badge bg-danger rounded-pill">${t('admin.criteria.excluding') || 'Excluyente'}</span>` : ''}</li>`).join('')}
             </ul>
         </div></div>` : ''}
     `;

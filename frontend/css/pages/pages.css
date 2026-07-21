@@ -230,7 +230,8 @@
 .table-responsive {
     width: max-content;
     min-width: 100%;
-    overflow-x: visible;
+    max-width: 100%;
+    overflow-x: auto;
 }
 
 .table {

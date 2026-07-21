@@ -13,6 +13,7 @@ const CONFIG_MODALES = {};
 const SECTION_TITLES = {
     general:      () => t('huesped.sections.general.title'),
     convivencia:  () => t('huesped.sections.convivencia.title'),
+    recomendadas: () => t('huesped.sections.recommended.title'),
     preferencias: () => t('huesped.sections.preferences.title'),
     perfil:       () => t('huesped.sections.profile.title')
 };
@@ -32,7 +33,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // Cargar perfil del usuario logueado por email
     cargarPerfilPorMail({
-        onDatos: (u) => {
+        onDatos: async (u) => {
             usuarioActual.id = u.id;
             usuarioActual.nombre = u.nombre;
             usuarioActual.email = u.email;
@@ -40,13 +41,21 @@ document.addEventListener('DOMContentLoaded', async function() {
             usuarioActual.telefono = u.telefono;
             usuarioActual.ciudad = u.ciudad;
             usuarioActual.fechaAlta = u.fechaRegistro;
+
+            await convivencia.cargarMiConvivencia(usuarioActual.id);
+            if (!convivencia.convivenciaMemoria) {
+                await convivencia.cargarCandidatos(usuarioActual.id);
+            }
+
+            const navConvivencia = document.getElementById('nav-convivencia');
+            if (navConvivencia) {
+                navConvivencia.classList.toggle('d-none', !convivencia.convivenciaMemoria);
+            }
+
+            convivencia.renderizarConvivencia();
+            cargarResumenGeneral();
         }
     });
-
-    const navConvivencia = document.getElementById('nav-convivencia');
-    if (navConvivencia) {
-        navConvivencia.classList.toggle('d-none', !convivencia.convivenciaMemoria);
-    }
 
     const seccionActiva = document.querySelector('.section-link.active-custom')?.getAttribute('data-section');
     actualizarControlesSeccion(seccionActiva);
@@ -213,13 +222,14 @@ function navegarASeccion(sectionName) {
     switch(sectionName) {
         case 'general':      cargarResumenGeneral();                   break;
         case 'convivencia':  convivencia.renderizarConvivencia();      break;
+        case 'recomendadas': renderizarCandidatos('grid-recomendadas'); break;
         case 'preferencias': preferencias.cargarPreferencias(usuarioActual.id || localStorage.getItem('user_id')); break;
     }
 
     aplicarFiltros();
     const descriptions = convivencia.convivenciaMemoria
-        ? { general: () => t('huesped.sections.general.descriptionWithHome'), convivencia: () => t('huesped.sections.convivencia.description'), preferencias: () => t('huesped.sections.preferences.description'), perfil: () => t('huesped.sections.profile.description') }
-        : { general: () => t('huesped.sections.general.descriptionWithoutHome'), preferencias: () => t('huesped.sections.preferences.description'), perfil: () => t('huesped.sections.profile.description') };
+        ? { general: () => t('huesped.sections.general.descriptionWithHome'), convivencia: () => t('huesped.sections.convivencia.description'), recomendadas: () => t('huesped.sections.recommended.description'), preferencias: () => t('huesped.sections.preferences.description'), perfil: () => t('huesped.sections.profile.description') }
+        : { general: () => t('huesped.sections.general.descriptionWithoutHome'), recomendadas: () => t('huesped.sections.recommended.description'), preferencias: () => t('huesped.sections.preferences.description'), perfil: () => t('huesped.sections.profile.description') };
 
     document.getElementById('section-title').textContent       = SECTION_TITLES[sectionName]?.()  || '';
     document.getElementById('section-description').textContent = descriptions[sectionName]?.()     || '';
@@ -241,7 +251,7 @@ function cargarResumenGeneral() {
     }
 }
 
-function renderizarCandidatos() {
+function renderizarCandidatos(containerId = 'grid-candidatos') {
     const candidatos = [...convivencia.candidatosMemoria].sort((a, b) => b.compatibilidad - a.compatibilidad);
 
     const totalEl = document.getElementById('total-candidatos');
@@ -251,7 +261,7 @@ function renderizarCandidatos() {
     if (maxEl)   maxEl.textContent   = candidatos.length ? `${candidatos[0].compatibilidad}%` : '-';
     if (prefEl)  prefEl.textContent  = preferencias.listaRespuestasMemoria.filter(p => p.id_opcion != null).length;
 
-    const grid = document.getElementById('grid-candidatos');
+    const grid = document.getElementById(containerId);
     if (!grid) return;
 
     grid.innerHTML = candidatos.map(cand => {
@@ -260,7 +270,7 @@ function renderizarCandidatos() {
         const slotsKey = cand.plazasLibres !== 1 ? t('huesped.candidates.freeSlotsPlural') : t('huesped.candidates.freeSlotsSingular');
         return `
             <div class="col-md-6 col-xl-3">
-                <div class="card border-0 shadow-sm rounded-4 h-100 p-3">
+                <div class="card border-0 shadow-sm rounded-4 h-100 p-3 candidato-card" data-id="${cand.id}" style="cursor:pointer;">
                     <div class="d-flex align-items-center gap-3 mb-3">
                         <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
                              style="width:44px;height:44px;background-color:#EBF0FF;color:var(--color-primario);font-weight:700;font-size:.9rem;">${inis}</div>
@@ -276,14 +286,139 @@ function renderizarCandidatos() {
                             <small class="text-muted">${t('huesped.candidates.compatibility')}</small>
                             <small class="fw-bold text-${pctColor}">${cand.compatibilidad}%</small>
                         </div>
-                        <div class="progress" style="height:6px;">
+                        <div class="progress mb-3" style="height:6px;">
                             <div class="progress-bar bg-${pctColor}" style="width:${cand.compatibilidad}%;"></div>
                         </div>
+                        <button type="button" class="btn btn-sm btn-primary rounded-pill w-100 btn-ver-detalle-vivienda" data-id="${cand.id}">
+                            <i class="bi bi-eye me-1"></i>${t('huesped.candidates.viewDetail') || 'Ver detalle'}
+                        </button>
                     </div>
                 </div>
             </div>
         `;
     }).join('');
+
+    grid.querySelectorAll('.candidato-card').forEach(card => {
+        card.addEventListener('dblclick', () => mostrarDetalleVivienda(card.getAttribute('data-id')));
+    });
+
+    grid.querySelectorAll('.btn-ver-detalle-vivienda').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            mostrarDetalleVivienda(this.getAttribute('data-id'));
+        });
+    });
+}
+
+async function solicitarVivienda(btn) {
+    const idVivienda   = btn.getAttribute('data-id');
+    const idUsuario    = usuarioActual.id || localStorage.getItem('user_id');
+    const fechaInicio  = document.getElementById('solicitud-fecha-inicio')?.value || '';
+    const fechaFin     = document.getElementById('solicitud-fecha-fin')?.value || '';
+
+    if (!fechaInicio) {
+        mostrarToast(t('huesped.candidates.expectedStartRequired') || 'Indica la fecha de inicio esperada.', 'danger');
+        return;
+    }
+    if (fechaFin && fechaFin <= fechaInicio) {
+        mostrarToast(t('huesped.candidates.expectedEndInvalid') || 'La fecha de fin debe ser posterior a la de inicio.', 'danger');
+        return;
+    }
+
+    btn.disabled = true;
+
+    const res = await apiPost('usuario_vivienda', 'ADD', {
+        id_usuario: idUsuario,
+        id_vivienda: idVivienda,
+        fecha_inicio: fechaInicio,
+        fecha_fin: fechaFin
+    });
+
+    if (res.ok) {
+        mostrarToast(t('huesped.candidates.requestSuccess') || 'Solicitud enviada correctamente.', 'success');
+        await convivencia.cargarCandidatos(idUsuario);
+        renderizarCandidatos('grid-candidatos');
+        renderizarCandidatos('grid-recomendadas');
+        bootstrap.Modal.getInstance(document.getElementById('modalDetalle'))?.hide();
+    } else {
+        const mensajes = {
+            USUARIO_YA_TIENE_CONVIVENCIA_ACTIVA_KO: t('huesped.candidates.requestErrorActive') || 'Ya tienes una convivencia activa en otra vivienda.',
+            SOLICITUD_YA_EXISTE_KO: t('huesped.candidates.requestErrorExists') || 'Ya has solicitado esta vivienda.',
+            FECHA_INICIO_PASADA_KO: t('huesped.candidates.expectedStartPast') || 'La fecha de inicio no puede estar en el pasado.',
+            FECHA_FIN_ANTERIOR_A_INICIO_KO: t('huesped.candidates.expectedEndInvalid') || 'La fecha de fin debe ser posterior a la de inicio.'
+        };
+        mostrarToast(mensajes[res.code] || t('huesped.candidates.requestError') || 'Error al enviar la solicitud.', 'danger');
+        btn.disabled = false;
+    }
+}
+
+async function mostrarDetalleVivienda(idVivienda) {
+    const cand = convivencia.candidatosMemoria.find(c => String(c.id) === String(idVivienda));
+
+    const [resVivienda, resPreferencias] = await Promise.all([
+        apiPost('vivienda', 'getById', { id: idVivienda }),
+        apiPost('vivienda_criterio_opcion', 'getByVivienda', { id_vivienda: idVivienda })
+    ]);
+
+    const v = (resVivienda.ok && Array.isArray(resVivienda.resource) && resVivienda.resource[0]) ? resVivienda.resource[0] : null;
+    const prefs = (resPreferencias.ok && Array.isArray(resPreferencias.resource)) ? resPreferencias.resource : [];
+
+    const direccion      = v?.direccion   ?? cand?.direccion ?? '';
+    const ciudad         = v?.ciudad      ?? cand?.ciudad ?? '';
+    const descripcion    = v?.descripcion ?? '';
+    const plazasLibres   = v ? Number(v.plazas_libres)  : cand?.plazasLibres;
+    const plazasTotales  = v ? Number(v.plazas_totales) : null;
+    const anfitrion      = cand?.anfitrion ?? '';
+    const compatibilidad = cand?.compatibilidad ?? null;
+
+    const preferenciasHtml = prefs.length
+        ? `<ul class="list-unstyled mb-0">${prefs.map(p => `<li class="mb-1"><span class="fw-semibold">${p.nombre_criterio}:</span> ${p.nombre_opcion}</li>`).join('')}</ul>`
+        : `<p class="text-muted small mb-0">${t('huesped.candidates.noPreferences') || 'Esta vivienda no tiene preferencias definidas.'}</p>`;
+
+    document.getElementById('modalDetalleTitle').textContent = direccion || t('modal.details');
+    document.getElementById('modalDetalleContent').innerHTML = `
+        <div class="row mb-3">
+            <div class="col-md-6"><h6 class="text-muted small mb-1">${t('huesped.table.host')}</h6><p class="fw-semibold mb-0">${anfitrion}</p></div>
+            <div class="col-md-6"><h6 class="text-muted small mb-1">${t('common.city')}</h6><p class="fw-semibold mb-0">${ciudad}</p></div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-12"><h6 class="text-muted small mb-1">${t('common.address')}</h6><p class="fw-semibold mb-0">${direccion}</p></div>
+        </div>
+        ${descripcion ? `<div class="row mb-3"><div class="col-md-12"><h6 class="text-muted small mb-1">${t('common.description')}</h6><p class="mb-0">${descripcion}</p></div></div>` : ''}
+        <div class="row mb-3">
+            <div class="col-md-6"><h6 class="text-muted small mb-1">${t('anfitrion.home.freeSlots')}</h6><p class="fw-semibold mb-0">${plazasLibres ?? '-'}</p></div>
+            ${plazasTotales !== null ? `<div class="col-md-6"><h6 class="text-muted small mb-1">${t('anfitrion.home.totalSlots')}</h6><p class="fw-semibold mb-0">${plazasTotales}</p></div>` : ''}
+        </div>
+        ${compatibilidad !== null ? `
+        <div class="row mb-3"><div class="col-md-12">
+            <h6 class="text-muted small mb-1">${t('huesped.candidates.compatibility')}</h6>
+            <p class="fw-semibold mb-0">${compatibilidad}%</p>
+        </div></div>` : ''}
+        <hr>
+        <h6 class="fw-bold mb-2">${t('huesped.candidates.preferences') || 'Preferencias de la vivienda'}</h6>
+        ${preferenciasHtml}
+        <hr>
+        <h6 class="fw-bold mb-2">${t('huesped.candidates.expectedDates') || 'Fechas propuestas para la convivencia'}</h6>
+        <div class="row g-2 mb-3">
+            <div class="col-md-6">
+                <label class="form-label small fw-bold" for="solicitud-fecha-inicio">${t('huesped.candidates.expectedStart') || 'Fecha de inicio esperada'}</label>
+                <input type="date" class="form-control form-control-sm" id="solicitud-fecha-inicio" min="${new Date().toISOString().split('T')[0]}" required>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label small fw-bold" for="solicitud-fecha-fin">${t('huesped.candidates.expectedEnd') || 'Fecha de fin esperada (opcional)'}</label>
+                <input type="date" class="form-control form-control-sm" id="solicitud-fecha-fin">
+            </div>
+        </div>
+        <button type="button" class="btn btn-primary rounded-pill w-100 btn-solicitar-vivienda" data-id="${idVivienda}">
+            <i class="bi bi-send me-1"></i>${t('huesped.candidates.request') || 'Solicitar'}
+        </button>
+    `;
+
+    document.getElementById('modalDetalleContent').querySelectorAll('.btn-solicitar-vivienda').forEach(btn => {
+        btn.addEventListener('click', () => solicitarVivienda(btn));
+    });
+
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('modalDetalle')).show();
 }
 
 function renderizarResumenConvivencia(c) {
@@ -340,7 +475,7 @@ function actualizarControlesSeccion(seccion) {
     const filtroTexto        = document.getElementById('filtroTexto');
     if (!accionesGlobales || !filtrosGlobales) return;
 
-    if (['general','convivencia','perfil'].includes(seccion)) {
+    if (['general','convivencia','recomendadas','perfil'].includes(seccion)) {
         accionesGlobales.classList.replace('d-flex','d-none');
         filtrosGlobales.classList.replace('d-flex','d-none');
         if (filtrosEspecificos) filtrosEspecificos.innerHTML = '';

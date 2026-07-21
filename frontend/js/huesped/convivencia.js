@@ -2,15 +2,38 @@ import { t } from '../i18n.js';
 
 export let convivenciaMemoria = null;
 
-export const candidatosMemoria = [
-    { id:1, anfitrion:'Ana García López',  direccion:'Calle Mayor 12, 3º B',       ciudad:'Santiago de Compostela', plazasLibres:2, compatibilidad:92 },
-    { id:2, anfitrion:'Carlos Fernández',  direccion:'Rúa do Franco 8, 1º A',      ciudad:'Santiago de Compostela', plazasLibres:1, compatibilidad:78 },
-    { id:3, anfitrion:'Rosa Méndez Vidal', direccion:'Avenida de Lugo 34, 2º C',   ciudad:'Santiago de Compostela', plazasLibres:3, compatibilidad:65 },
-    { id:4, anfitrion:'Manuel Losada',     direccion:'Praza de Galicia 5, Ático',  ciudad:'Santiago de Compostela', plazasLibres:1, compatibilidad:54 }
-];
+export let candidatosMemoria = [];
 
 export function cargarConvivencia() {
     renderizarConvivencia();
+}
+
+// Convivencia activa real: vivienda + anfitrion + companeros + compatibilidad, o null si el
+// huesped no tiene ninguna asociacion activa en usuario_vivienda.
+export async function cargarMiConvivencia(idUsuario) {
+    if (!idUsuario) { convivenciaMemoria = null; return; }
+
+    const res = await apiPost('usuario_vivienda', 'getConvivenciaByUsuario', { id_usuario: idUsuario });
+    convivenciaMemoria = (res.ok && res.resource) ? res.resource : null;
+}
+
+// Candidatos reales: viviendas activas con plazas libres, puntuadas por el motor de matching
+// (backend/app/matching) segun las preferencias que el huesped respondio en la encuesta.
+export async function cargarCandidatos(idUsuario) {
+    if (!idUsuario) { candidatosMemoria = []; return; }
+
+    const res = await apiPost('matching', 'rankViviendasParaUsuario', { id_usuario: idUsuario });
+
+    candidatosMemoria = (res.ok && Array.isArray(res.resource))
+        ? res.resource.map(v => ({
+            id: v.id_vivienda,
+            anfitrion: v.anfitrion || '',
+            direccion: v.direccion,
+            ciudad: v.ciudad,
+            plazasLibres: v.plazas_libres,
+            compatibilidad: v.compatibilidad
+        }))
+        : [];
 }
 
 export function renderizarConvivencia() {

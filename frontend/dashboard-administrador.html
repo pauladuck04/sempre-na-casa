@@ -38,6 +38,9 @@
                 <a href="#" class="nav-link text-muted transition section-link" data-section="criterios">
                     <i class="bi bi-diagram-3 me-2"></i> <span data-i18n="admin.nav.criteria"></span>
                 </a>
+                <a href="#" class="nav-link text-muted transition section-link" data-section="solicitudes">
+                    <i class="bi bi-envelope-paper me-2"></i> <span data-i18n="admin.nav.requests"></span>
+                </a>
                 <a href="#" class="nav-link d-none section-link" data-section="perfil"></a>
                 <hr class="my-3">
                 <a href="public.html" id="btnLogout" class="nav-link text-danger transition">
@@ -212,6 +215,7 @@
                                         <thead class="table-light">
                                             <tr>
                                                 <th data-i18n="admin.table.criteria"></th>
+                                                <th data-i18n="admin.table.weight"></th>
                                                 <th data-i18n="admin.table.status"></th>
                                             </tr>
                                         </thead>
@@ -238,6 +242,37 @@
                                     <div id="paginacion-tabla-opciones" class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3"></div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN: SOLICITUDES -->
+                <div class="section-content" data-section="solicitudes">
+                    <div class="card border-0 shadow-sm rounded-4">
+                        <div class="card-header bg-white border-bottom py-4">
+                            <h5 class="fw-bold mb-0">
+                                <i class="bi bi-envelope-paper me-2 text-primary"></i>
+                                <span data-i18n="admin.cardTitles.requests"></span>
+                            </h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th data-i18n="admin.table.guest"></th>
+                                            <th data-i18n="admin.table.home"></th>
+                                            <th data-i18n="admin.table.host"></th>
+                                            <th data-i18n="admin.table.requestDate"></th>
+                                            <th data-i18n="admin.table.proposedDates"></th>
+                                            <th data-i18n="admin.table.status"></th>
+                                            <th data-i18n="admin.table.actions"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tabla-solicitudes"></tbody>
+                                </table>
+                            </div>
+                            <div id="paginacion-tabla-solicitudes" class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3"></div>
                         </div>
                     </div>
                 </div>

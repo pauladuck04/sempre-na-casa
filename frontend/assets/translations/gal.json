@@ -8,6 +8,8 @@
     "add": "Engadir",
     "active": "Activo",
     "inactive": "Inactivo",
+    "yes": "Si",
+    "no": "Non",
     "pending": "Pendente",
     "available": "Dispoñible",
     "occupied": "Ocupada",
@@ -41,6 +43,8 @@
     "edit": "Editar",
     "delete": "Eliminar",
     "reactivate": "Reactivar",
+    "accept": "Aceptar",
+    "reject": "Rexeitar",
     "add": "Engadir",
     "deactivate": "Desactivar",
     "activate": "Activar",
@@ -181,7 +185,8 @@
       "users": "Xestión Usuarios",
       "roles": "Roles e Permisos",
       "homes": "Xestión Vivendas",
-      "criteria": "Criterios Match"
+      "criteria": "Criterios Match",
+      "requests": "Solicitudes"
     },
     "table": {
       "host": "Anfitrión",
@@ -199,21 +204,43 @@
       "totalSlots": "Prazas totais",
       "criteria": "Criterios",
       "options": "Opcións",
-      "values": "Valores"
+      "values": "Valores",
+      "weight": "Peso",
+      "guest": "Hóspede",
+      "home": "Vivenda",
+      "requestDate": "Data solicitude",
+      "proposedDates": "Datas propostas",
+      "actions": "Accións"
     },
     "cardTitles": {
       "convivencias": "Seguimento de Convivencias",
       "users": "Xestión de Usuarios",
       "roles": "Xestión de roles e permisos",
       "homes": "Xestión de Vivendas",
-      "criteria": "Xestión de Criterios de Compatibilidade"
+      "criteria": "Xestión de Criterios de Compatibilidade",
+      "requests": "Solicitudes de Vivenda"
+    },
+    "requests": {
+      "noRequests": "Non hai solicitudes",
+      "statusPending": "Pendente",
+      "statusAccepted": "Aceptada",
+      "statusRejected": "Rexeitada",
+      "filterPending": "Pendentes",
+      "filterAccepted": "Aceptadas",
+      "filterRejected": "Rexeitadas",
+      "acceptSuccess": "Solicitude aceptada correctamente.",
+      "rejectSuccess": "Solicitude rexeitada.",
+      "actionError": "Non se puido completar a acción",
+      "dateRangeTo": "a",
+      "openEnded": "sen definir"
     },
     "sections": {
       "general": { "title": "Panel de Control", "description": "Xestión global de usuarios, vivendas e algoritmos de compatibilidade" },
       "users": { "title": "Xestión de Usuarios", "description": "Administra e xestiona todos os usuarios do sistema" },
       "roles": { "title": "Roles e Permisos", "description": "Configura roles e permisos de acceso" },
       "homes": { "title": "Xestión de Vivendas", "description": "Xestiona o catálogo de vivendas dispoñibles" },
-      "criteria": { "title": "Criterios de Compatibilidade", "description": "Define criterios de compatibilidade para o matching" }
+      "criteria": { "title": "Criterios de Compatibilidade", "description": "Define criterios de compatibilidade para o matching" },
+      "requests": { "title": "Solicitudes de Vivenda", "description": "Xestiona as solicitudes de convivencia que os hóspedes fan ás vivendas" }
     },
     "convivencias": { "noActive": "Non hai convivencias activas" },
     "users": {
@@ -237,7 +264,11 @@
     },
     "criteria": {
       "criteriaName": "Nome do Criterio", "compatibilityCriteria": "Criterio de Compatibilidade",
-      "option": "Opción", "value": "Valor", "filterActive": "Activos", "filterInactive": "Inactivos",
+      "option": "Opción", "value": "Valor",
+      "weight": "Peso / Importancia", "weightLow": "Baixa", "weightMedium": "Media", "weightHigh": "Alta",
+      "restrictive": "Restritivo (pode descartar matches por completo)", "excluding": "Excluinte (descarta o match se o criterio e restritivo)",
+      "excludingRequiresRestrictive": "So dispoñible se o criterio e restritivo.",
+      "filterActive": "Activos", "filterInactive": "Inactivos",
       "createTitle": "Novo Criterio", "editTitle": "Editar Criterio", "detailTitle": "Detalles do Criterio",
       "tabCriteria": "Criterios", "tabOptions": "Opcións",
       "createOptionTitle": "Nova Opción", "editOptionTitle": "Editar Opción"
@@ -288,14 +319,14 @@
   },
   "huesped": {
     "badge": "convidado",
-    "nav": { "general": "Vista Xeral", "convivencia": "A Miña Convivencia", "preferences": "As Miñas Preferencias" },
+    "nav": { "general": "Vista Xeral", "convivencia": "A Miña Convivencia", "recommended": "Recomendadas", "preferences": "As Miñas Preferencias" },
     "summary": {
       "availableCandidates": "Candidatos Dispoñibles", "maxCompatibility": "Mellor Compatibilidade",
       "activePreferences": "Preferencias Activas", "requestStatus": "Estado Solicitude",
       "compatibility": "Compatibilidade", "startDate": "Data de Inicio"
     },
     "cardTitles": {
-      "possibleHomes": "Posibles Vivendas para Ti", "currentConvivencia": "A Miña Convivencia Actual",
+      "possibleHomes": "Posibles Vivendas para Ti", "recommendedHomes": "As Vivendas con Maior Compatibilidade", "currentConvivencia": "A Miña Convivencia Actual",
       "noConvivencia": "Aínda non tes unha convivencia asignada",
       "noConvivenciaSubtitle": "O equipo de Sempre na Casa está buscando a mellor compatibilidade para ti.",
       "convivenciaDetails": "Detalles da Miña Convivencia", "preferencesTitle": "As Miñas Preferencias de Convivencia"
@@ -304,6 +335,7 @@
     "sections": {
       "general": { "title": "Panel de convidado", "descriptionWithHome": "Resumo da túa convivencia e estado da solicitude", "descriptionWithoutHome": "Explora as vivendas con mellor compatibilidade para ti" },
       "convivencia": { "title": "A Miña Convivencia", "description": "Consulta os detalles da túa vivenda e anfitrión" },
+      "recommended": { "title": "Vivendas Recomendadas", "description": "As vivendas coa maior porcentaxe de compatibilidade contigo" },
       "preferences": { "title": "As Miñas Preferencias", "description": "Define as túas preferencias para o proceso de matching" },
       "profile": { "title": "O Meu Perfil", "description": "Xestiona a túa información persoal e configuración de conta" }
     },
@@ -320,7 +352,23 @@
       "add": "Engadir Preferencia", "preferenceLabel": "Preferencia", "myValue": "O Meu Valor",
       "active": "Activo", "inactive": "Inactivo", "filterActive": "Activos", "filterInactive": "Inactivos"
     },
-    "candidates": { "compatibility": "Compatibilidade", "freeSlotsPlural": "prazas libres", "freeSlotsSingular": "praza libre" },
+    "candidates": {
+      "compatibility": "Compatibilidade", "freeSlotsPlural": "prazas libres", "freeSlotsSingular": "praza libre",
+      "request": "Solicitar",
+      "requestSuccess": "Solicitude enviada correctamente.",
+      "requestError": "Erro ao enviar a solicitude.",
+      "requestErrorActive": "Xa tes unha convivencia activa noutra vivenda.",
+      "requestErrorExists": "Xa solicitaches esta vivenda.",
+      "preferences": "Preferencias da vivenda",
+      "noPreferences": "Esta vivenda non ten preferencias definidas.",
+      "viewDetail": "Ver detalle",
+      "expectedDates": "Datas propostas para a convivencia",
+      "expectedStart": "Data de inicio esperada",
+      "expectedEnd": "Data de fin esperada (opcional)",
+      "expectedStartRequired": "Indica a data de inicio esperada.",
+      "expectedStartPast": "A data de inicio non pode estar no pasado.",
+      "expectedEndInvalid": "A data de fin debe ser posterior á de inicio."
+    },
     "summary_status": { "statusActive": "Activa", "statusInterview": "En Entrevista", "statusTrial": "Período de Proba", "statusFinished": "Rematada", "pending": "Pendente" }
   },
   "public": {

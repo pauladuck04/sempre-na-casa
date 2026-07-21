@@ -13,11 +13,11 @@ class opcion_SERVICE extends appServiceBase {
     function inicializarRest() {
 
         $this->listaAtributos = array(
-            'id_opcion', 'id_criterio', 'nombre_opcion', 'valor', 'fecha_alta_opcion', 'fecha_modificacion_opcion', 'activo_opcion'
+            'id_opcion', 'id_criterio', 'nombre_opcion', 'valor', 'excluyente', 'fecha_alta_opcion', 'fecha_modificacion_opcion', 'activo_opcion'
         );
 
         $this->listaAtributosSelect = array(
-            'id_opcion', 'id_criterio', 'nombre_opcion', 'valor', 'fecha_alta_opcion', 'fecha_modificacion_opcion', 'activo_opcion'
+            'id_opcion', 'id_criterio', 'nombre_opcion', 'valor', 'excluyente', 'fecha_alta_opcion', 'fecha_modificacion_opcion', 'activo_opcion'
         );
 
         $this->notnull = array(
@@ -36,6 +36,9 @@ class opcion_SERVICE extends appServiceBase {
             $_POST['fecha_alta_opcion'] = date('Y-m-d H:i:s');
             $_POST['fecha_modificacion_opcion'] = date('Y-m-d H:i:s');
             $_POST['activo_opcion']     = 1;
+        }
+        if (!isset($_POST['excluyente']) || $_POST['excluyente'] === '') {
+            $_POST['excluyente'] = 0;
         }
     }
 
@@ -63,11 +66,41 @@ class opcion_SERVICE extends appServiceBase {
         return $this->reactivarRegistro('activo_opcion', 'fecha_modificacion_opcion');
     }
 
+    function ADD() {
+        $errorExcluyente = $this->validarExcluyenteRequiereCriterioRestrictivo();
+        if ($errorExcluyente !== true) return $errorExcluyente;
+        return $this->modelo->ADD();
+    }
+
     function EDIT() {
+        $errorExcluyente = $this->validarExcluyenteRequiereCriterioRestrictivo();
+        if ($errorExcluyente !== true) return $errorExcluyente;
         unset($this->modelo->valores['fecha_alta_opcion']);
         unset($this->modelo->valores['activo_opcion']);
         $this->modelo->valores['fecha_modificacion_opcion'] = date('Y-m-d H:i:s');
         return $this->modelo->EDIT();
+    }
+
+    // una opcion solo puede marcarse excluyente si el criterio al que pertenece es restrictivo
+    function validarExcluyenteRequiereCriterioRestrictivo() {
+        $esExcluyente = isset($_POST['excluyente']) && intval($_POST['excluyente']) === 1;
+        if (!$esExcluyente) return true;
+
+        $idCriterio = intval($_POST['id_criterio']);
+
+        include_once './Base/mapping.php';
+        $map = new mapping('criterio');
+        $res = $map->lanzarqueryconresults(
+            "SELECT restrictivo FROM criterio WHERE id_criterio = {$idCriterio} LIMIT 1"
+        );
+
+        $esRestrictivo = $res['ok'] && !empty($res['resource']) && intval($res['resource'][0]['restrictivo']) === 1;
+
+        if (!$esRestrictivo) {
+            return array('ok' => false, 'code' => 'EXCLUYENTE_REQUIERE_CRITERIO_RESTRICTIVO_KO');
+        }
+
+        return true;
     }
 
     function getById() {

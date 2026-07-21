@@ -8,6 +8,8 @@
     "add": "Añadir",
     "active": "Activo",
     "inactive": "Inactivo",
+    "yes": "Sí",
+    "no": "No",
     "pending": "Pendiente",
     "available": "Disponible",
     "occupied": "Ocupada",
@@ -41,6 +43,8 @@
     "edit": "Editar",
     "delete": "Eliminar",
     "reactivate": "Reactivar",
+    "accept": "Aceptar",
+    "reject": "Rechazar",
     "add": "Añadir",
     "deactivate": "Desactivar",
     "activate": "Activar",
@@ -181,7 +185,8 @@
       "users": "Gestión Usuarios",
       "roles": "Roles y Permisos",
       "homes": "Gestión Viviendas",
-      "criteria": "Criterios Match"
+      "criteria": "Criterios Match",
+      "requests": "Solicitudes"
     },
     "table": {
       "host": "Anfitrión",
@@ -199,21 +204,43 @@
       "totalSlots": "Plazas totales",
       "criteria": "Criterios",
       "options": "Opciones",
-      "values": "Valores"
+      "values": "Valores",
+      "weight": "Peso",
+      "guest": "Huésped",
+      "home": "Vivienda",
+      "requestDate": "Fecha solicitud",
+      "proposedDates": "Fechas propuestas",
+      "actions": "Acciones"
     },
     "cardTitles": {
       "convivencias": "Seguimiento de Convivencias",
       "users": "Gestión de Usuarios",
       "roles": "Gestión de roles y permisos",
       "homes": "Gestión de Viviendas",
-      "criteria": "Gestión de Criterios de Compatibilidad"
+      "criteria": "Gestión de Criterios de Compatibilidad",
+      "requests": "Solicitudes de Vivienda"
+    },
+    "requests": {
+      "noRequests": "No hay solicitudes",
+      "statusPending": "Pendiente",
+      "statusAccepted": "Aceptada",
+      "statusRejected": "Rechazada",
+      "filterPending": "Pendientes",
+      "filterAccepted": "Aceptadas",
+      "filterRejected": "Rechazadas",
+      "acceptSuccess": "Solicitud aceptada correctamente.",
+      "rejectSuccess": "Solicitud rechazada.",
+      "dateRangeTo": "a",
+      "openEnded": "sin definir",
+      "actionError": "No se pudo completar la acción"
     },
     "sections": {
       "general": { "title": "Panel de Control", "description": "Gestión global de usuarios, viviendas y algoritmos de compatibilidad" },
       "users": { "title": "Gestión de Usuarios", "description": "Administra y gestiona todos los usuarios del sistema" },
       "roles": { "title": "Roles y Permisos", "description": "Configura roles y permisos de acceso" },
       "homes": { "title": "Gestión de Viviendas", "description": "Gestiona el catálogo de viviendas disponibles" },
-      "criteria": { "title": "Criterios de Compatibilidad", "description": "Define criterios de compatibilidad para el matching" }
+      "criteria": { "title": "Criterios de Compatibilidad", "description": "Define criterios de compatibilidad para el matching" },
+      "requests": { "title": "Solicitudes de Vivienda", "description": "Gestiona las solicitudes de convivencia que los huéspedes hacen a las viviendas" }
     },
     "convivencias": { "noActive": "No hay convivencias activas" },
     "users": {
@@ -265,6 +292,13 @@
       "compatibilityCriteria": "Criterio de Compatibilidad",
       "option": "Opción",
       "value": "Valor",
+      "weight": "Peso / Importancia",
+      "weightLow": "Baja",
+      "weightMedium": "Media",
+      "weightHigh": "Alta",
+      "restrictive": "Restrictivo (puede descartar matches por completo)",
+      "excluding": "Excluyente (descarta el match si el criterio es restrictivo)",
+      "excludingRequiresRestrictive": "Solo disponible si el criterio es restrictivo.",
       "filterActive": "Activos",
       "filterInactive": "Inactivos",
       "createTitle": "Nuevo Criterio",
@@ -385,6 +419,7 @@
     "nav": {
       "general": "Vista General",
       "convivencia": "Mi Convivencia",
+      "recommended": "Recomendadas",
       "preferences": "Mis Preferencias"
     },
     "summary": {
@@ -397,6 +432,7 @@
     },
     "cardTitles": {
       "possibleHomes": "Posibles Viviendas para Ti",
+      "recommendedHomes": "Las Viviendas con Mayor Compatibilidad",
       "currentConvivencia": "Mi Convivencia Actual",
       "noConvivencia": "Todavía no tienes una convivencia asignada",
       "noConvivenciaSubtitle": "El equipo de Sempre na Casa está buscando la mejor compatibilidad para ti.",
@@ -414,6 +450,7 @@
     "sections": {
       "general": { "title": "Panel de huesped", "descriptionWithHome": "Resumen de tu convivencia y estado de solicitud", "descriptionWithoutHome": "Explora las viviendas con mejor compatibilidad para ti" },
       "convivencia": { "title": "Mi Convivencia", "description": "Consulta los detalles de tu vivienda y anfitrión" },
+      "recommended": { "title": "Viviendas Recomendadas", "description": "Las viviendas con mayor porcentaje de compatibilidad contigo" },
       "preferences": { "title": "Mis Preferencias", "description": "Define tus preferencias para el proceso de matching" },
       "profile": { "title": "Mi Perfil", "description": "Gestiona tu información personal y configuración de cuenta" }
     },
@@ -447,7 +484,21 @@
     "candidates": {
       "compatibility": "Compatibilidad",
       "freeSlotsPlural": "plazas libres",
-      "freeSlotsSingular": "plaza libre"
+      "freeSlotsSingular": "plaza libre",
+      "request": "Solicitar",
+      "requestSuccess": "Solicitud enviada correctamente.",
+      "requestError": "Error al enviar la solicitud.",
+      "requestErrorActive": "Ya tienes una convivencia activa en otra vivienda.",
+      "requestErrorExists": "Ya has solicitado esta vivienda.",
+      "preferences": "Preferencias de la vivienda",
+      "noPreferences": "Esta vivienda no tiene preferencias definidas.",
+      "viewDetail": "Ver detalle",
+      "expectedDates": "Fechas propuestas para la convivencia",
+      "expectedStart": "Fecha de inicio esperada",
+      "expectedEnd": "Fecha de fin esperada (opcional)",
+      "expectedStartRequired": "Indica la fecha de inicio esperada.",
+      "expectedStartPast": "La fecha de inicio no puede estar en el pasado.",
+      "expectedEndInvalid": "La fecha de fin debe ser posterior a la de inicio."
     },
     "summary_status": {
       "statusActive": "Activa",

@@ -8,6 +8,8 @@
     "add": "Add",
     "active": "Active",
     "inactive": "Inactive",
+    "yes": "Yes",
+    "no": "No",
     "pending": "Pending",
     "available": "Available",
     "occupied": "Occupied",
@@ -41,6 +43,8 @@
     "edit": "Edit",
     "delete": "Delete",
     "reactivate": "Reactivate",
+    "accept": "Accept",
+    "reject": "Reject",
     "add": "Add",
     "deactivate": "Deactivate",
     "activate": "Activate",
@@ -181,7 +185,8 @@
       "users": "User Management",
       "roles": "Roles & Permissions",
       "homes": "Home Management",
-      "criteria": "Match Criteria"
+      "criteria": "Match Criteria",
+      "requests": "Requests"
     },
     "table": {
       "host": "Host",
@@ -199,21 +204,43 @@
       "totalSlots": "Total spots",
       "criteria": "Criteria",
       "options": "Options",
-      "values": "Values"
+      "values": "Values",
+      "weight": "Weight",
+      "guest": "Guest",
+      "home": "Home",
+      "requestDate": "Request date",
+      "proposedDates": "Proposed dates",
+      "actions": "Actions"
     },
     "cardTitles": {
       "convivencias": "Cohabitation Tracking",
       "users": "User Management",
       "roles": "Role management",
       "homes": "Home Management",
-      "criteria": "Compatibility Criteria Management"
+      "criteria": "Compatibility Criteria Management",
+      "requests": "Home Requests"
+    },
+    "requests": {
+      "noRequests": "No requests",
+      "statusPending": "Pending",
+      "statusAccepted": "Accepted",
+      "statusRejected": "Rejected",
+      "filterPending": "Pending",
+      "filterAccepted": "Accepted",
+      "filterRejected": "Rejected",
+      "acceptSuccess": "Request accepted successfully.",
+      "rejectSuccess": "Request rejected.",
+      "actionError": "Could not complete the action",
+      "dateRangeTo": "to",
+      "openEnded": "open-ended"
     },
     "sections": {
       "general": { "title": "Control Panel", "description": "Global management of users, homes and compatibility algorithms" },
       "users": { "title": "User Management", "description": "Manage all users in the system" },
       "roles": { "title": "Roles & Permissions", "description": "Configure access roles and permissions" },
       "homes": { "title": "Home Management", "description": "Manage the catalog of available homes" },
-      "criteria": { "title": "Compatibility Criteria", "description": "Define compatibility criteria for matching" }
+      "criteria": { "title": "Compatibility Criteria", "description": "Define compatibility criteria for matching" },
+      "requests": { "title": "Home Requests", "description": "Manage the cohabitation requests guests make to homes" }
     },
     "convivencias": { "noActive": "No active cohabitations" },
     "users": {
@@ -265,6 +292,13 @@
       "compatibilityCriteria": "Compatibility Criteria",
       "option": "Option",
       "value": "Value",
+      "weight": "Weight / Importance",
+      "weightLow": "Low",
+      "weightMedium": "Medium",
+      "weightHigh": "High",
+      "restrictive": "Restrictive (can rule out matches entirely)",
+      "excluding": "Excluding (rules out the match if the criterion is restrictive)",
+      "excludingRequiresRestrictive": "Only available if the criterion is restrictive.",
       "filterActive": "Active",
       "filterInactive": "Inactive",
       "createTitle": "New Criterion",
@@ -376,6 +410,7 @@
     "nav": {
       "general": "Overview",
       "convivencia": "My Cohabitation",
+      "recommended": "Recommended",
       "preferences": "My Preferences"
     },
     "summary": {
@@ -388,6 +423,7 @@
     },
     "cardTitles": {
       "possibleHomes": "Possible Homes for You",
+      "recommendedHomes": "Top 20 Homes by Compatibility",
       "currentConvivencia": "My Current Cohabitation",
       "noConvivencia": "You don't have a cohabitation assigned yet",
       "noConvivenciaSubtitle": "The Sempre na Casa team is finding the best match for you.",
@@ -405,6 +441,7 @@
     "sections": {
       "general": { "title": "Tenant Panel", "descriptionWithHome": "Summary of your cohabitation and request status", "descriptionWithoutHome": "Explore homes with the best compatibility for you" },
       "convivencia": { "title": "My Cohabitation", "description": "View details of your home and host" },
+      "recommended": { "title": "Recommended Homes", "description": "The 20 homes with the highest compatibility with you" },
       "preferences": { "title": "My Preferences", "description": "Set your preferences for the matching process" },
       "profile": { "title": "My Profile", "description": "Manage your personal information and account settings" }
     },
@@ -438,7 +475,21 @@
     "candidates": {
       "compatibility": "Compatibility",
       "freeSlotsPlural": "free spots",
-      "freeSlotsSingular": "free spot"
+      "freeSlotsSingular": "free spot",
+      "request": "Request",
+      "requestSuccess": "Request sent successfully.",
+      "requestError": "Error sending the request.",
+      "requestErrorActive": "You already have an active cohabitation in another home.",
+      "requestErrorExists": "You have already requested this home.",
+      "preferences": "Home preferences",
+      "noPreferences": "This home has no preferences defined.",
+      "viewDetail": "View detail",
+      "expectedDates": "Proposed cohabitation dates",
+      "expectedStart": "Expected start date",
+      "expectedEnd": "Expected end date (optional)",
+      "expectedStartRequired": "Please enter the expected start date.",
+      "expectedStartPast": "The start date cannot be in the past.",
+      "expectedEndInvalid": "The end date must be after the start date."
     },
     "summary_status": {
       "statusActive": "Active",

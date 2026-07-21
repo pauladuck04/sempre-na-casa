@@ -60,18 +60,22 @@ abstract class appServiceBase{
 
 					if ($res['ok']){
 						$mires = $this->$accionejecutar();
-						return $mires;
 					}
 					else{
-						//debuggearrrrrrrrrrrrrr
-						if ($this->modelo == ''){
-							
-						}
-						else{
+						if ($this->modelo !== ''){
 							$mires = $this->modelo->$accionejecutar();
-							return $mires;
 						}
-						//
+					}
+
+					if (isset($mires)) {
+						if (empty($mires['ok'])) {
+							$ctrl = isset($_POST['controlador']) ? $_POST['controlador'] : '';
+							if ($ctrl !== 'log_excepciones') {
+								$uid = (isset($_POST['id_usuario']) && $_POST['id_usuario'] !== '') ? intval($_POST['id_usuario']) : null;
+								guardarLogExcepcion($ctrl, $accionejecutar, isset($mires['code']) ? $mires['code'] : '', $uid);
+							}
+						}
+						return $mires;
 					}
 					
 				}

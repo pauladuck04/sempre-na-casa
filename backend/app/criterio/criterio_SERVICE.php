@@ -13,15 +13,15 @@ class criterio_SERVICE extends appServiceBase {
     function inicializarRest() {
 
         $this->listaAtributos = array(
-            'id_criterio', 'nombre_criterio', 'fecha_alta_criterio', 'fecha_modificacion_criterio', 'activo_criterio'
+            'id_criterio', 'nombre_criterio', 'peso_criterio', 'restrictivo', 'fecha_alta_criterio', 'fecha_modificacion_criterio', 'activo_criterio'
         );
 
         $this->listaAtributosSelect = array(
-            'id_criterio', 'nombre_criterio', 'fecha_alta_criterio', 'fecha_modificacion_criterio', 'activo_criterio'
+            'id_criterio', 'nombre_criterio', 'peso_criterio', 'restrictivo', 'fecha_alta_criterio', 'fecha_modificacion_criterio', 'activo_criterio'
         );
 
         $this->notnull = array(
-            'ADD'    => array('nombre_criterio'),            
+            'ADD'    => array('nombre_criterio'),
             'EDIT'   => array('id_criterio', 'nombre_criterio'),
             'DELETE'    => array('id_criterio'),
             'REACTIVAR' => array('id_criterio'),
@@ -35,6 +35,12 @@ class criterio_SERVICE extends appServiceBase {
             $_POST['fecha_alta_criterio'] = date('Y-m-d H:i:s');
             $_POST['fecha_modificacion_criterio'] = date('Y-m-d H:i:s');
             $_POST['activo_criterio']     = 1;
+        }
+        if (empty($_POST['peso_criterio'])) {
+            $_POST['peso_criterio'] = 1;
+        }
+        if (!isset($_POST['restrictivo']) || $_POST['restrictivo'] === '') {
+            $_POST['restrictivo'] = 0;
         }
     }
 
