@@ -176,7 +176,21 @@
     "strengthStrong": "Strong",
     "deleteAccount": "Delete Account",
     "deleteConfirm": "Are you sure you want to delete your account? This action cannot be undone.",
-    "deleteSuccess": "Account deleted. Redirecting..."
+    "deleteSuccess": "Account deleted. Redirecting...",
+    "changeRole": {
+      "title": "Change role",
+      "subtitle": "Request to switch to a different role on the platform. An administrator will review your request.",
+      "selectLabel": "New desired role",
+      "selectPlaceholder": "-- Select a role --",
+      "submit": "Request role change",
+      "pendingPrefix": "You have a pending request to become",
+      "pendingSince": "Sent on",
+      "success": "Role change request sent successfully.",
+      "errorSameRole": "You already have that role.",
+      "errorAlreadyPending": "You already have a pending role change request.",
+      "errorSelectRole": "Select a role.",
+      "errorGeneric": "Could not send the request. Please try again."
+    }
   },
   "admin": {
     "badge": "Administrator",
@@ -233,6 +247,16 @@
       "actionError": "Could not complete the action",
       "dateRangeTo": "to",
       "openEnded": "open-ended"
+    },
+    "roleRequests": {
+      "title": "Role Change Requests",
+      "noRequests": "No role change requests",
+      "currentRole": "Current role",
+      "requestedRole": "Requested role",
+      "requestDate": "Request date",
+      "acceptSuccess": "Role change accepted successfully.",
+      "rejectSuccess": "Role change rejected.",
+      "actionError": "Could not complete the action"
     },
     "sections": {
       "general": { "title": "Control Panel", "description": "Global management of users, homes and compatibility algorithms" },

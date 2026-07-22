@@ -176,7 +176,21 @@
     "strengthStrong": "Forte",
     "deleteAccount": "Eliminar Conta",
     "deleteConfirm": "Estás seguro de que desexas eliminar a túa conta? Esta acción non se pode desfacer.",
-    "deleteSuccess": "Conta eliminada. Redirixindo..."
+    "deleteSuccess": "Conta eliminada. Redirixindo...",
+    "changeRole": {
+      "title": "Cambiar de rol",
+      "subtitle": "Solicita pasar a outro rol dentro da plataforma. Un administrador revisará a túa solicitude.",
+      "selectLabel": "Novo rol desexado",
+      "selectPlaceholder": "-- Selecciona un rol --",
+      "submit": "Solicitar cambio de rol",
+      "pendingPrefix": "Tes unha solicitude pendente para pasar a ser",
+      "pendingSince": "Enviada o",
+      "success": "Solicitude de cambio de rol enviada correctamente.",
+      "errorSameRole": "Xa tes ese rol.",
+      "errorAlreadyPending": "Xa tes unha solicitude de cambio de rol pendente.",
+      "errorSelectRole": "Selecciona un rol.",
+      "errorGeneric": "Non se puido enviar a solicitude. Téntao de novo."
+    }
   },
   "admin": {
     "badge": "Administrador",
@@ -233,6 +247,16 @@
       "actionError": "Non se puido completar a acción",
       "dateRangeTo": "a",
       "openEnded": "sen definir"
+    },
+    "roleRequests": {
+      "title": "Solicitudes de Cambio de Rol",
+      "noRequests": "Non hai solicitudes de cambio de rol",
+      "currentRole": "Rol actual",
+      "requestedRole": "Rol solicitado",
+      "requestDate": "Data de solicitude",
+      "acceptSuccess": "Cambio de rol aceptado correctamente.",
+      "rejectSuccess": "Cambio de rol rexeitado.",
+      "actionError": "Non se puido completar a acción"
     },
     "sections": {
       "general": { "title": "Panel de Control", "description": "Xestión global de usuarios, vivendas e algoritmos de compatibilidade" },
