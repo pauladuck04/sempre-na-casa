@@ -108,15 +108,32 @@
   },
   "recoverPassword": {
     "pageTitle": "Esqueciche o teu contrasinal?",
-    "subtitle": "Non te preocupes, introduce o teu email e enviarémosche as instrucións para restablecelo.",
+    "subtitle": "Non te preocupes, introduce o teu email e xeraremos un enlace para restablecelo.",
     "emailLabel": "Email",
-    "emailHelp": "Recibirás un email cun enlace para restablecer o teu contrasinal.",
-    "successText": "Email enviado correctamente. Comproba a túa bandexa de entrada.",
+    "emailHelp": "Mostrarémosche un enlace para restablecer o teu contrasinal.",
+    "successText": "Enlace xerado correctamente.",
+    "linkIntro": "Aquí tes o teu enlace de restablecemento (nun contorno con email configurado, chegaríache por correo):",
+    "openLink": "Abrir enlace",
     "backToLogin": "Volver ao inicio de sesión",
     "emailRequired": "Por favor introduce o teu email.",
-    "sending": "Enviando...",
+    "sending": "Xerando enlace...",
     "submit": "Recuperar contrasinal",
-    "error": "Erro ao enviar o email. Tenta de novo."
+    "error": "Non se puido xerar o enlace. Tenta de novo.",
+    "userNotFound": "Non existe ningunha conta con ese email."
+  },
+  "resetPassword": {
+    "pageTitle": "Restablecer contrasinal",
+    "subtitle": "Introduce o teu novo contrasinal.",
+    "submit": "Restablecer contrasinal",
+    "processing": "Restablecendo...",
+    "success": "Contrasinal actualizado!",
+    "successText": "Xa podes iniciar sesión co teu novo contrasinal.",
+    "goToLogin": "Ir a iniciar sesión",
+    "noToken": "Falta o enlace de restablecemento. Solicita un novo.",
+    "invalidToken": "Este enlace non é válido.",
+    "expiredToken": "Este enlace caducou. Solicita un novo.",
+    "requestNewLink": "Solicitar un enlace novo",
+    "error": "Non se puido restablecer o contrasinal. Téntao de novo."
   },
   "survey": {
     "pageTitle": "Enquisa de convivencia",

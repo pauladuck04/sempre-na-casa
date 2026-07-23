@@ -108,15 +108,32 @@
   },
   "recoverPassword": {
     "pageTitle": "Forgot your password?",
-    "subtitle": "Don't worry, enter your email and we'll send you instructions to reset it.",
+    "subtitle": "Don't worry, enter your email and we'll generate a link to reset it.",
     "emailLabel": "Email",
-    "emailHelp": "You'll receive an email with a link to reset your password.",
-    "successText": "Email sent successfully. Check your inbox.",
+    "emailHelp": "We'll show you a link to reset your password.",
+    "successText": "Link generated successfully.",
+    "linkIntro": "Here's your reset link (in an environment with email configured, it would arrive by email):",
+    "openLink": "Open link",
     "backToLogin": "Back to sign in",
     "emailRequired": "Please enter your email.",
-    "sending": "Sending...",
+    "sending": "Generating link...",
     "submit": "Recover password",
-    "error": "Error sending email. Please try again."
+    "error": "Could not generate the link. Please try again.",
+    "userNotFound": "There's no account with that email."
+  },
+  "resetPassword": {
+    "pageTitle": "Reset password",
+    "subtitle": "Enter your new password.",
+    "submit": "Reset password",
+    "processing": "Resetting...",
+    "success": "Password updated!",
+    "successText": "You can now sign in with your new password.",
+    "goToLogin": "Go to sign in",
+    "noToken": "The reset link is missing. Please request a new one.",
+    "invalidToken": "This link is not valid.",
+    "expiredToken": "This link has expired. Please request a new one.",
+    "requestNewLink": "Request a new link",
+    "error": "Could not reset the password. Please try again."
   },
   "survey": {
     "pageTitle": "Cohabitation survey",

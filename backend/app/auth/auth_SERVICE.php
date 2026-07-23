@@ -29,7 +29,9 @@ class AUTH_SERVICE extends appServiceBase{
 			'DESCONECTAR' => array('mail'),
 			'CAMBIAR_CONTRASENA' => array('mail', 'password_actual', 'password'),
 			'CAMBIAR_PASSWORD' => array('id_usuario', 'password'),
-			'REGISTRAR' => array('dni','mail','nombre_usuario','apellidos','password','telefono','id_rol')
+			'REGISTRAR' => array('dni','mail','nombre_usuario','apellidos','password','telefono','id_rol'),
+			'RECUPERAR_PASSWORD' => array('mail'),
+			'RESTABLECER_PASSWORD' => array('token', 'password')
 		);
 
 		$this->modelo = $this->crearModelOne('usuario');
@@ -256,6 +258,73 @@ function mapRolToId($rol){
 			return array('ok' => true, 'code' => 'CAMBIAR_PASSWORD_OK');
 		}
 		return array('ok' => false, 'code' => 'CAMBIAR_PASSWORD_KO');
+	}
+
+	// Genera un token de un solo uso (valido 1 hora) y lo guarda en la fila del usuario. Todavia
+	// no hay servicio de email configurado, asi que se devuelve el token en la respuesta para que
+	// el frontend construya el enlace de restablecimiento y lo muestre directamente en pantalla
+	// (ver 20260723_recuperacion_password.sql). El dia que haya SMTP, este mismo token es lo que
+	// habria que mandar por correo en vez de devolverlo en la respuesta.
+	function RECUPERAR_PASSWORD(){
+		$mail = addslashes(trim($_POST['mail']));
+
+		include_once './Base/mapping.php';
+		$map = new mapping('usuario');
+
+		$res = $map->lanzarqueryconresults(
+			"SELECT id_usuario FROM usuario WHERE mail = '{$mail}' LIMIT 1"
+		);
+		if (!$res['ok'] || empty($res['resource'])) {
+			return array('ok' => false, 'code' => 'USUARIO_NO_ENCONTRADO_KO');
+		}
+
+		$idUsuario = intval($res['resource'][0]['id_usuario']);
+		$token     = bin2hex(random_bytes(32));
+		$expira    = date('Y-m-d H:i:s', strtotime('+1 hour'));
+
+		$resUpdate = $map->lanzarquery(
+			"UPDATE usuario SET token_recuperacion = '{$token}', token_recuperacion_expira = '{$expira}' WHERE id_usuario = {$idUsuario}"
+		);
+		if (!$resUpdate['ok']) {
+			return array('ok' => false, 'code' => 'RECUPERAR_PASSWORD_KO');
+		}
+
+		return array('ok' => true, 'code' => 'RECUPERAR_PASSWORD_OK', 'resource' => array('token' => $token));
+	}
+
+	// Valida el token (existe y no ha caducado) y actualiza la contrasena. El token se invalida
+	// tras usarse para que el enlace no se pueda reutilizar.
+	function RESTABLECER_PASSWORD(){
+		$token = addslashes($_POST['token']);
+
+		include_once './Base/mapping.php';
+		$map = new mapping('usuario');
+
+		$res = $map->lanzarqueryconresults(
+			"SELECT id_usuario, token_recuperacion_expira FROM usuario WHERE token_recuperacion = '{$token}' LIMIT 1"
+		);
+		if (!$res['ok'] || empty($res['resource'])) {
+			return array('ok' => false, 'code' => 'TOKEN_INVALIDO_KO');
+		}
+
+		$fila = $res['resource'][0];
+		if (empty($fila['token_recuperacion_expira']) || $fila['token_recuperacion_expira'] < date('Y-m-d H:i:s')) {
+			return array('ok' => false, 'code' => 'TOKEN_EXPIRADO_KO');
+		}
+
+		$idUsuario = intval($fila['id_usuario']);
+		$nuevaHash = md5($_POST['password']);
+
+		$resUpdate = $map->lanzarquery(
+			"UPDATE usuario
+			 SET password = '{$nuevaHash}', token_recuperacion = NULL, token_recuperacion_expira = NULL, fecha_modificacion_usuario = '" . date('Y-m-d H:i:s') . "'
+			 WHERE id_usuario = {$idUsuario}"
+		);
+
+		if ($resUpdate['ok']) {
+			return array('ok' => true, 'code' => 'RESTABLECER_PASSWORD_OK');
+		}
+		return array('ok' => false, 'code' => 'RESTABLECER_PASSWORD_KO');
 	}
 
 	function CAMBIAR_PASSWORD(){

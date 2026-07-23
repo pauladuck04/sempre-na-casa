@@ -108,15 +108,32 @@
   },
   "recoverPassword": {
     "pageTitle": "¿Olvidaste tu contraseña?",
-    "subtitle": "No te preocupes, introduce tu email y te enviaremos las instrucciones para restablecerla.",
+    "subtitle": "No te preocupes, introduce tu email y generaremos un enlace para restablecerla.",
     "emailLabel": "Email",
-    "emailHelp": "Recibirás un email con un enlace para restablecer tu contraseña.",
-    "successText": "Email enviado correctamente. Revisa tu bandeja de entrada.",
+    "emailHelp": "Te mostraremos un enlace para restablecer tu contraseña.",
+    "successText": "Enlace generado correctamente.",
+    "linkIntro": "Aquí tienes tu enlace de restablecimiento (en un entorno con email configurado, te llegaría por correo):",
+    "openLink": "Abrir enlace",
     "backToLogin": "Volver al inicio de sesión",
     "emailRequired": "Por favor introduce tu email.",
-    "sending": "Enviando...",
+    "sending": "Generando enlace...",
     "submit": "Recuperar contraseña",
-    "error": "Error al enviar el email. Intenta de nuevo."
+    "error": "No se pudo generar el enlace. Intenta de nuevo.",
+    "userNotFound": "No existe ninguna cuenta con ese email."
+  },
+  "resetPassword": {
+    "pageTitle": "Restablecer contraseña",
+    "subtitle": "Introduce tu nueva contraseña.",
+    "submit": "Restablecer contraseña",
+    "processing": "Restableciendo...",
+    "success": "¡Contraseña actualizada!",
+    "successText": "Ya puedes iniciar sesión con tu nueva contraseña.",
+    "goToLogin": "Ir a iniciar sesión",
+    "noToken": "Falta el enlace de restablecimiento. Solicita uno nuevo.",
+    "invalidToken": "Este enlace no es válido.",
+    "expiredToken": "Este enlace ha caducado. Solicita uno nuevo.",
+    "requestNewLink": "Solicitar un enlace nuevo",
+    "error": "No se pudo restablecer la contraseña. Inténtalo de nuevo."
   },
   "survey": {
     "pageTitle": "Encuesta de convivencia",

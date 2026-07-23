@@ -9,6 +9,7 @@ const emailInput     = document.getElementById('email');
 const successMessage = document.getElementById('success-message');
 const errorMessage   = document.getElementById('error-message');
 const btnRecuperar   = document.getElementById('btn-recuperar');
+const resetLink       = document.getElementById('reset-link');
 
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -27,28 +28,27 @@ form.addEventListener('submit', async (e) => {
     btnRecuperar.disabled  = true;
 
     try {
-        await api.request('/auth/forgot-password', {
-            method: 'POST',
-            body: JSON.stringify({ email })
-        });
+        const res = await apiPost('auth', 'RECUPERAR_PASSWORD', { mail: email });
 
+        if (!res.ok) {
+            const mensaje = res.code === 'USUARIO_NO_ENCONTRADO_KO'
+                ? t('recoverPassword.userNotFound')
+                : t('recoverPassword.error');
+            mostrarErrorFormulario(errorMessage, mensaje);
+            return;
+        }
+
+        const url = new URL(`restablecer-password.html?token=${encodeURIComponent(res.resource.token)}`, window.location.href);
+        resetLink.href = url.href;
         successMessage.classList.remove('d-none');
         form.reset();
-
-        emailInput.disabled = true;
-        setTimeout(() => {
-            emailInput.disabled    = false;
-            btnRecuperar.textContent = t('recoverPassword.submit');
-            btnRecuperar.disabled  = false;
-        }, 5000);
 
     } catch (error) {
         console.error('Error en recuperar contraseña:', error);
         mostrarErrorFormulario(errorMessage, error.message || t('recoverPassword.error'));
-
+        window.scrollTo(0, 0);
+    } finally {
         btnRecuperar.textContent = t('recoverPassword.submit');
         btnRecuperar.disabled    = false;
-
-        window.scrollTo(0, 0);
     }
 });
