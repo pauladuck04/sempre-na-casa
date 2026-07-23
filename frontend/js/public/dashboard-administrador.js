@@ -4,10 +4,11 @@ import * as roles     from '../admin/roles.js';
 import * as criterios from '../admin/criterios.js';
 import * as viviendas from '../admin/viviendas.js';
 import * as solicitudes from '../admin/solicitudes.js';
+import * as solicitudesRol from '../admin/solicitudes-rol.js';
 import { aplicarPaginacion, resetPagina } from '../admin/paginacion.js';
 import { mostrarErrorFormulario, ocultarErrorFormulario, mostrarErrorCampo, ocultarErrorCampo } from '../form-errors.js';
 import { cargarPartials } from '../partials.js';
-import { mostrarToast, cargarPerfilPorMail, inicializarMedidorFortaleza, inicializarTogglePassword, inicializarCambioPassword } from '../perfil-comun.js';
+import { mostrarToast, cargarPerfilPorMail, inicializarMedidorFortaleza, inicializarTogglePassword, inicializarCambioPassword, inicializarCambioRol } from '../perfil-comun.js';
 
 const TABLA_POR_SECCION = {
     usuarios: 'tabla-usuarios',
@@ -173,7 +174,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Cargar datos del perfil del usuario logueado por email desde backend
     cargarPerfilPorMail({
         colorAvatar: (u) => (u.id_rol == 2) ? 'var(--color-secundario)' : 'var(--color-primario)',
-        conFallbackLocal: true
+        conFallbackLocal: true,
+        onDatos: (u) => inicializarCambioRol(u)
     });
 
     const seccionActiva = document.querySelector('.section-link.active-custom')?.getAttribute('data-section');
@@ -594,6 +596,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                 case 'general':   cargarSeguimientoConvivencias(); break;
                 case 'usuarios':
                     roles.cargarRoles().then(() => usuarios.cargarUsuarios());
+                    resetPagina('tabla-solicitudes-rol');
+                    solicitudesRol.cargarSolicitudesRol();
                     break;
                 case 'roles':     roles.cargarRoles();        break;
                 case 'viviendas': viviendas.cargarViviendas();break;

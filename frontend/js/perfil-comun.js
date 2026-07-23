@@ -55,6 +55,9 @@ export async function cargarPerfilPorMail(opciones = {}) {
                 telefono: ures.telefono,
                 ciudad: ures.ciudad || '',
                 id_rol: ures.id_rol,
+                id_rol_solicitado: ures.id_rol_solicitado || null,
+                estado_cambio_rol: ures.estado_cambio_rol || null,
+                fechaSolicitudRol: ures.fecha_solicitud_rol ? ures.fecha_solicitud_rol.split(' ')[0] : null,
                 fechaRegistro: ures.fecha_alta_usuario ? ures.fecha_alta_usuario.split(' ')[0] : '-'
             };
             pintarPerfil(u.nombre, u.email, u.dni, u.telefono, u.fechaRegistro, colorAvatar(u));
@@ -159,5 +162,78 @@ export function inicializarCambioPassword(obtenerEmail) {
         if (strengthWrap) strengthWrap.style.display = 'none';
         ocultarErrorFormulario(feedback);
         mostrarToast(t('profile.passwordUpdated'), 'success');
+    });
+}
+
+/**
+ * Conecta la tarjeta "Solicitar cambio de rol" del perfil (ver partials/perfil-cambio-rol.html):
+ * carga los roles disponibles, muestra el estado si ya hay una solicitud pendiente, y envía la
+ * solicitud nueva al backend.
+ * @param {Object} usuario  el objeto `u` que devuelve cargarPerfilPorMail (id, id_rol, id_rol_solicitado, estado_cambio_rol, fechaSolicitudRol).
+ */
+export async function inicializarCambioRol(usuario) {
+    const form   = document.getElementById('perfil-form-cambio-rol');
+    const select = document.getElementById('cambio-rol-select');
+    const aviso  = document.getElementById('cambio-rol-pendiente');
+    if (!form || !select || !usuario) return;
+
+    const res = await apiPost('rol', 'getAll');
+    const roles = (res.ok && Array.isArray(res.resource)) ? res.resource.filter(r => r.activo_rol == 1) : [];
+
+    const mostrarPendiente = () => {
+        const rol = roles.find(r => String(r.id_rol) === String(usuario.id_rol_solicitado));
+        const nombreRol = rol ? rol.nombre_rol : `#${usuario.id_rol_solicitado}`;
+        aviso.innerHTML = `<i class="bi bi-hourglass-split me-1"></i>${t('profile.changeRole.pendingPrefix')} <strong>${nombreRol}</strong>` +
+            (usuario.fechaSolicitudRol ? ` <span class="text-muted">(${t('profile.changeRole.pendingSince')} ${usuario.fechaSolicitudRol})</span>` : '');
+        aviso.classList.remove('d-none');
+        form.classList.add('d-none');
+    };
+
+    const mostrarFormulario = () => {
+        aviso.classList.add('d-none');
+        form.classList.remove('d-none');
+        select.innerHTML = `<option value="">${t('profile.changeRole.selectPlaceholder')}</option>` +
+            roles.filter(r => String(r.id_rol) !== String(usuario.id_rol))
+                 .map(r => `<option value="${r.id_rol}">${r.nombre_rol}</option>`)
+                 .join('');
+    };
+
+    if (usuario.estado_cambio_rol === 'PENDIENTE') {
+        mostrarPendiente();
+    } else {
+        mostrarFormulario();
+    }
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!select.value) {
+            mostrarToast(t('profile.changeRole.errorSelectRole'), 'danger');
+            return;
+        }
+
+        const btn = document.getElementById('btnSolicitarCambioRol');
+        btn.disabled = true;
+
+        const res = await apiPost('usuario', 'SOLICITAR_CAMBIO_ROL', {
+            id_usuario: usuario.id,
+            id_rol_solicitado: select.value
+        });
+
+        btn.disabled = false;
+
+        if (!res.ok) {
+            const mensajes = {
+                MISMO_ROL_KO: t('profile.changeRole.errorSameRole'),
+                SOLICITUD_CAMBIO_ROL_YA_EXISTE_KO: t('profile.changeRole.errorAlreadyPending')
+            };
+            mostrarToast(mensajes[res.code] || t('profile.changeRole.errorGeneric'), 'danger');
+            return;
+        }
+
+        usuario.id_rol_solicitado = select.value;
+        usuario.estado_cambio_rol = 'PENDIENTE';
+        usuario.fechaSolicitudRol = new Date().toISOString().split('T')[0];
+        mostrarPendiente();
+        mostrarToast(t('profile.changeRole.success'), 'success');
     });
 }
