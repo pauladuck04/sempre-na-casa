@@ -63,7 +63,7 @@ const usuarioActual = {
 document.addEventListener('DOMContentLoaded', async function() {
     await cargarPartials();
 
-    renderPreguntasEncuesta(document.getElementById('preguntas-encuesta-vivienda'), {
+    await renderPreguntasEncuesta(document.getElementById('preguntas-encuesta-vivienda'), {
         namePrefix: 'v-q', headingTag: 'h6', headingClass: 'fw-bold mb-3', wrapperClass: 'mb-4', rowClass: 'row g-2'
     });
 

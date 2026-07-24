@@ -2,7 +2,7 @@ import { initI18n, t, applyTranslations } from '../i18n.js';
 import { mostrarErrorFormulario, ocultarErrorFormulario } from '../form-errors.js';
 import { renderPreguntasEncuesta } from '../encuesta-criterios.js';
 
-renderPreguntasEncuesta(document.getElementById('preguntas-encuesta'));
+await renderPreguntasEncuesta(document.getElementById('preguntas-encuesta'));
 
 await initI18n();
 applyTranslations();
@@ -12,7 +12,7 @@ const errorMessage = document.getElementById('error-message');
 const barra        = document.getElementById('encuestaProgress');
 const btnFinalizar = document.getElementById('btnFinalizar');
 const inputs       = document.querySelectorAll('.btn-check');
-const totalPreguntas = 10;
+const totalPreguntas = document.querySelectorAll('[data-criterio]').length;
 
 const userDataStr       = sessionStorage.getItem('newUser');
 const usuarioLogueadoId = localStorage.getItem('user_id');

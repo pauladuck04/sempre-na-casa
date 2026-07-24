@@ -1,18 +1,17 @@
-// Fuente única de verdad para las 10 preguntas del cuestionario de convivencia.
+// Fuente única de verdad para las preguntas del cuestionario de convivencia.
 // Se usa tanto en el registro de huéspedes (encuesta.html) como en el alta de
 // vivienda del anfitrión (dashboard-anfitrion.html) — antes estaban calcadas
 // a mano en los dos sitios.
-
-const TOTAL_PREGUNTAS = 10;
-const OPCIONES_POR_PREGUNTA = 3;
+//
+// Carga TODOS los criterios y opciones activos desde el backend (sin límite
+// fijo de preguntas/opciones), en vez de tener un número fijo hardcodeado.
 
 /**
- * Pinta las N preguntas dentro de `contenedor` como bloques `[data-criterio]`
- * con radios `.btn-check` agrupados por pregunta (comportamiento idéntico al
- * HTML estático que sustituye). Los valores de cada opción son 1..30, la misma
- * numeración secuencial que ya usaban ambas páginas.
+ * Pinta un bloque `[data-criterio]` por cada criterio activo, con radios
+ * `.btn-check` agrupados por criterio (comportamiento idéntico al HTML
+ * estático que sustituye). El `value` de cada opción es su id_opcion real.
  */
-export function renderPreguntasEncuesta(contenedor, opciones = {}) {
+export async function renderPreguntasEncuesta(contenedor, opciones = {}) {
     if (!contenedor) return;
     const {
         namePrefix  = 'q',
@@ -22,22 +21,43 @@ export function renderPreguntasEncuesta(contenedor, opciones = {}) {
         rowClass     = 'row g-3'
     } = opciones;
 
+    const [resCriterios, resOpciones] = await Promise.all([
+        apiPost('criterio', 'getAll'),
+        apiPost('opcion', 'getAll')
+    ]);
+
+    const criterios = (resCriterios.ok && Array.isArray(resCriterios.resource))
+        ? resCriterios.resource.filter(c => c.activo_criterio == 1)
+        : [];
+
+    const opcionesPorCriterio = new Map();
+    if (resOpciones.ok && Array.isArray(resOpciones.resource)) {
+        resOpciones.resource
+            .filter(o => o.activo_opcion == 1)
+            .forEach(o => {
+                const lista = opcionesPorCriterio.get(o.id_criterio) || [];
+                lista.push(o);
+                opcionesPorCriterio.set(o.id_criterio, lista);
+            });
+    }
+
     let html = '';
-    for (let n = 1; n <= TOTAL_PREGUNTAS; n++) {
-        const nombreCampo = `${namePrefix}${n}`;
-        html += `<div class="${wrapperClass}" data-criterio="${n}">`;
-        html += `<${headingTag} class="${headingClass}" data-i18n="survey.q${n}.title"></${headingTag}>`;
+    criterios.forEach(criterio => {
+        const nombreCampo = `${namePrefix}${criterio.id_criterio}`;
+        const opcionesCriterio = opcionesPorCriterio.get(criterio.id_criterio) || [];
+
+        html += `<div class="${wrapperClass}" data-criterio="${criterio.id_criterio}">`;
+        html += `<${headingTag} class="${headingClass}">${criterio.nombre_criterio}</${headingTag}>`;
         html += `<div class="${rowClass}">`;
-        for (let o = 1; o <= OPCIONES_POR_PREGUNTA; o++) {
-            const valor = (n - 1) * OPCIONES_POR_PREGUNTA + o;
-            const id = `${nombreCampo}-${o}`;
+        opcionesCriterio.forEach(opcion => {
+            const id = `${nombreCampo}-${opcion.id_opcion}`;
             html += `
                 <div class="col-md-4">
-                    <input type="radio" class="btn-check" name="${nombreCampo}" id="${id}" value="${valor}">
-                    <label class="btn btn-outline-light-custom w-100 p-3" for="${id}" data-i18n="survey.q${n}.o${o}"></label>
+                    <input type="radio" class="btn-check" name="${nombreCampo}" id="${id}" value="${opcion.id_opcion}">
+                    <label class="btn btn-outline-light-custom w-100 p-3" for="${id}">${opcion.nombre_opcion}</label>
                 </div>`;
-        }
+        });
         html += `</div></div>`;
-    }
+    });
     contenedor.innerHTML = html;
 }
