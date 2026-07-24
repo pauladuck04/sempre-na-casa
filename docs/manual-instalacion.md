@@ -1,15 +1,23 @@
 # Manual de instalación — Sempre na Casa
 
-Guía para poner en marcha el proyecto en local desde cero: backend (PHP + MySQL,
-vía Docker) y frontend (HTML/JS estático, sin build).
+Guía para poner en marcha el proyecto sin Docker: backend en PHP conectado a una
+base de datos MySQL que **ya existe en un servidor** (con el esquema y los datos
+actualizados — no hace falta aplicar `dump.sql` ni las migraciones de
+`backend/bd/migrations/`), y frontend HTML/JS estático servido aparte.
 
 ## 1. Requisitos previos
 
-- **Docker Desktop** (incluye Docker Compose) — es lo único imprescindible para el backend.
+- **PHP 8.2 o superior** con las extensiones `pdo_mysql` y `mysqli` habilitadas.
+  Comprueba con:
+  ```bash
+  php -v
+  php -m | grep -i "pdo_mysql\|mysqli"
+  ```
+- Acceso a un **servidor MySQL/MariaDB** con la base de datos del proyecto ya creada
+  y actualizada (host, puerto, usuario, contraseña y nombre de la base de datos).
 - Un navegador moderno (Chrome, Firefox, Edge...).
 - Para servir el frontend, cualquiera de estas opciones:
-  - **Visual Studio Code** con la extensión **Live Server** (es como está montado el
-    proyecto durante el desarrollo — recomendado).
+  - **Visual Studio Code** con la extensión **Live Server** (recomendado).
   - O Node.js instalado, para usar `npx serve`.
   - O Python instalado, para usar `python -m http.server`.
 - Opcional: [Postman](https://www.postman.com/) si quieres probar la API directamente
@@ -20,111 +28,123 @@ vía Docker) y frontend (HTML/JS estático, sin build).
 > y a los parciales HTML necesitan que la página se sirva por `http://`, no por `file://`.
 > Usa siempre Live Server o uno de los servidores estáticos de abajo.
 
-## 2. Estructura del proyecto
+## 2. Instalación de las herramientas necesarias
+
+A continuación, se describirá el proceso de instalación para todas las herramientas necesarias
+para el correcto funcionamiento de la aplicación:
+
+### PHP 8.2 o superior
+
+- **Windows**: la forma más simple es instalar [Laragon](https://laragon.org/download/) o
+  [XAMPP](https://www.apachefriends.org/es/index.html), que traen PHP con `pdo_mysql` y
+  `mysqli` ya habilitados. Si prefieres solo PHP, descárgalo de
+  [windows.php.net/download](https://windows.php.net/download/) (versión *Thread Safe*),
+  descomprime, añade la carpeta al `PATH` del sistema y habilita ambas extensiones en su
+  `php.ini` (quita el `;` delante de `extension=pdo_mysql` y `extension=mysqli`).
+- **macOS**: `brew install php`
+- **Linux (Debian/Ubuntu)**: `sudo apt install php php-mysql`
+
+Verifica la instalación:
+
+```bash
+php -v
+php -m | grep -i "pdo_mysql\|mysqli"
+```
+
+Ambas extensiones deben aparecer en la segunda salida.
+
+### Un editor y un servidor de archivos estáticos (para el frontend)
+
+Elige una de estas opciones:
+
+- **Visual Studio Code + Live Server** (recomendado, es como está montado el proyecto
+  durante el desarrollo):
+  1. Instala VS Code desde [code.visualstudio.com](https://code.visualstudio.com/).
+  2. Abre la pestaña **Extensiones** (icono de cuadrados en la barra lateral, o
+     `Ctrl+Shift+X`), busca **"Live Server"** (de Ritwick Dey) e instálala.
+- **Node.js** (para usar `npx serve`): instala la versión LTS desde
+  [nodejs.org](https://nodejs.org/). Verifica con `node -v` y `npm -v`.
+- **Python** (para usar `python -m http.server`): suele venir preinstalado en macOS/Linux.
+  En Windows, descárgalo de [python.org](https://www.python.org/downloads/) y marca
+  **"Add python.exe to PATH"** durante la instalación. Verifica con `python --version`.
+
+### Postman (opcional)
+
+Solo necesario si quieres probar la API directamente, sin pasar por el frontend.
+Descárgalo e instálalo desde [postman.com/downloads](https://www.postman.com/downloads/)
+y luego importa la colección que hay en `postman/collections/`.
+
+## 3. Estructura del proyecto
 
 ```
 proyectos/
 ├── backend/          API en PHP (arquitectura propia por controlador/servicio/modelo)
-│   └── bd/migrations/  cambios de esquema posteriores al dump.sql inicial
+│   ├── index.php       único punto de entrada de la API (recibe POST con controlador+action)
+│   ├── Comun/config.php  credenciales de conexión a la base de datos
+│   └── bd/migrations/    histórico de cambios de esquema (referencia; no hace falta aplicarlos)
 ├── frontend/         HTML + CSS + JS estático, sin build ni npm install
 ├── docs/              este manual y el manual de usuario
 ├── postman/           colección para probar la API directamente
-├── docker-compose.yaml
-├── Dockerfile          imagen del backend (PHP 8.2 + Apache)
-└── dump.sql            volcado inicial de la base de datos
+└── dump.sql            volcado inicial de la base de datos (referencia/histórico)
 ```
 
-## 3. Levantar el backend y la base de datos
+## 4. Configurar la conexión a la base de datos
 
-Desde la raíz del proyecto:
+Edita `backend/Comun/config.php` con los datos del servidor MySQL donde ya está la
+base de datos del proyecto:
+
+```php
+<?php
+define('host', 'TU_HOST_MYSQL');       // p.ej. mysql.miempresa.com
+define('user', 'TU_USUARIO');
+define('pass', 'TU_CONTRASEÑA');
+define('BD',   'TU_BASE_DE_DATOS');
+define('BD_test', 'TU_BASE_DE_DATOS'); // el generador automático de la app va en modo test
+```
+
+`index.php` solo incluye `Comun/config.php`, así que basta con rellenar estos cinco
+valores. No toques nada más en ese fichero.
+
+> Existe también `backend/bd/DBCredentials.php`, apuntando a un hosting externo
+> (AwardSpace) usado en otra etapa del proyecto. **No lo usa la aplicación**
+> (`index.php` no lo incluye); ignóralo salvo que sepas que es el servidor al que
+> te quieres conectar, en cuyo caso copia esos mismos valores a `Comun/config.php`.
+
+## 5. Levantar el backend
+
+Como `index.php` es el único punto de entrada (no hay rutas bonitas ni `.htaccess`
+que resolver), sirve con cualquier servidor PHP. La opción más rápida sin instalar
+nada más que PHP:
 
 ```bash
-docker-compose up -d
+cd backend
+php -S localhost:8081
 ```
 
-Esto levanta tres servicios:
+Si prefieres Apache/Nginx (o el proyecto va a quedar desplegado de forma permanente),
+apunta el docroot del vhost a la carpeta `backend/` y asegúrate de que PHP 8.2+ con
+`pdo_mysql`/`mysqli` está activo en ese servidor.
 
-| Servicio | URL | Qué es |
-|---|---|---|
-| `web` | http://localhost:8081 | API PHP (el frontend le habla a `http://localhost:8081/index.php`) |
-| `db` | localhost:3307 (dentro de Docker: `db:3306`) | MySQL 8.0, con el volcado `dump.sql` cargado automáticamente en el primer arranque |
-| `phpmyadmin` | http://localhost:8082 | Interfaz web para inspeccionar/editar la base de datos |
-
-La primera vez que se crea el contenedor `db`, MySQL carga automáticamente
-`dump.sql` (Docker lo monta en `/docker-entrypoint-initdb.d/`). Esto **solo pasa la
-primera vez**: si el volumen `db_data` ya existe de un arranque anterior, el dump no
-se vuelve a aplicar aunque cambies el fichero.
-
-Para comprobar que el backend responde:
+Para comprobar que el backend responde y llega a la base de datos:
 
 ```bash
 curl -X POST http://localhost:8081/index.php -d "controlador=rol&action=getAll"
 ```
 
-Deberías recibir un JSON con `"ok":true`.
+Deberías recibir un JSON con `"ok":true`. Si da error de conexión, revisa las
+credenciales del paso 4.
 
-### Credenciales de la base de datos
+## 6. Servir el frontend
 
-No hay que configurar nada a mano: `backend/Comun/config.php` ya apunta al host `db`
-(el nombre del servicio de Docker) con el mismo usuario/contraseña/base de datos que
-define `docker-compose.yaml`. Es autocontenido mientras uses Docker Compose.
+El frontend le habla al backend en la URL fija `BASE_URL` de
+[`frontend/js/api.js`](../frontend/js/api.js):
 
-> Existe también `backend/bd/DBCredentials.php`, que apunta a un hosting externo
-> (AwardSpace). Es un resto de otra configuración y **no lo usa la aplicación**
-> (`index.php` solo incluye `Comun/config.php`); ignóralo salvo que vayáis a desplegar
-> ahí en el futuro.
-
-## 4. Aplicar las migraciones
-
-`dump.sql` deja la base de datos en el estado inicial del proyecto, pero varias
-funcionalidades que ya están en el frontend (peso y restricción de criterios,
-solicitudes de vivienda, cambio de rol, recuperación de contraseña...) necesitan
-columnas/tablas que se añadieron **después**, en `backend/bd/migrations/`. Sin
-aplicarlas, esas pantallas fallarán.
-
-Aplícalas **en este orden** (son incrementales):
-
-1. `20260620_fecha_modificacion.sql`
-2. `20260707_log_excepciones.sql`
-3. `20260718_criterios_restrictivos.sql`
-4. `20260718_peso_criterio.sql`
-5. `20260718_solicitudes_vivienda.sql`
-6. `20260722_solicitudes_cambio_rol.sql`
-7. `20260723_recuperacion_password.sql`
-8. `seed_criterio_opcion.sql` — **obligatorio**: crea los 10 criterios y sus opciones
-   con los IDs exactos (1-10 / 1-30) que la encuesta de convivencia tiene
-   hardcodeados en el frontend. Sin esto, el registro y la encuesta no funcionan.
-9. `seed_test_matching.sql` — **opcional**: datos de prueba (usuarios, viviendas y
-   solicitudes ficticias con IDs a partir de 9000) para ver el sistema de
-   compatibilidad funcionando sin tener que crear todo a mano. Usuarios de prueba con
-   contraseña `Test1234!`. Trae al final un bloque de `DELETE` comentado para deshacerlo.
-
-### Opción A — phpMyAdmin (más sencillo)
-
-1. Abre http://localhost:8082 y entra con el usuario/contraseña de
-   `docker-compose.yaml` (`4740201_semprenacasa` / `SempreNaCasa_2026`).
-2. Selecciona la base de datos `4740201_semprenacasa`.
-3. Pestaña **SQL** → pega el contenido de cada fichero (en el orden de arriba) → **Continuar**.
-
-### Opción B — línea de comandos
-
-```bash
-for f in backend/bd/migrations/20260620_fecha_modificacion.sql \
-         backend/bd/migrations/20260707_log_excepciones.sql \
-         backend/bd/migrations/20260718_criterios_restrictivos.sql \
-         backend/bd/migrations/20260718_peso_criterio.sql \
-         backend/bd/migrations/20260718_solicitudes_vivienda.sql \
-         backend/bd/migrations/20260722_solicitudes_cambio_rol.sql \
-         backend/bd/migrations/20260723_recuperacion_password.sql \
-         backend/bd/migrations/seed_criterio_opcion.sql; do
-  docker exec -i $(docker compose ps -q db) \
-    mysql -u4740201_semprenacasa -pSempreNaCasa_2026 4740201_semprenacasa < "$f"
-done
+```js
+const BASE_URL = 'http://localhost:8081/index.php';
 ```
 
-(Añade `backend/bd/migrations/seed_test_matching.sql` a la lista si también quieres los datos de prueba.)
-
-## 5. Servir el frontend
+Si el backend no va a correr en `localhost:8081` (por ejemplo, está en un dominio o
+puerto distinto), cambia esa línea antes de servir el frontend.
 
 Con **Live Server** (VS Code): clic derecho sobre `frontend/public.html` →
 **"Open with Live Server"**. Por defecto abre en `http://127.0.0.1:5500/...`.
@@ -138,19 +158,19 @@ python -m http.server 5500
 ```
 
 Cualquier puerto vale — el frontend no depende de en qué puerto se sirva a sí mismo,
-solo de que el backend siga en `http://localhost:8081` (definido en `frontend/js/api.js`).
+solo de que `BASE_URL` apunte al backend correcto.
 
 Abre `public.html` (la portada) para empezar a navegar la aplicación.
 
-## 6. Comprobar que todo funciona
+## 7. Comprobar que todo funciona
 
 1. Desde la portada, **Registrarse** → elige un rol → completa el formulario y la
-   encuesta de 10 preguntas. Si falla aquí, seguramente falta aplicar
-   `seed_criterio_opcion.sql` (paso 4).
+   encuesta de convivencia. Si falla aquí, probablemente la base de datos del
+   servidor no tiene los criterios/opciones cargados (tablas `criterio` / `opcion`).
 2. Inicia sesión con la cuenta que acabas de crear.
-3. Si usaste `seed_test_matching.sql`, puedes iniciar sesión directamente con
-   cualquiera de sus usuarios de prueba (contraseña `Test1234!`) para ver viviendas,
-   solicitudes y convivencias ya cargadas.
+3. Si la base de datos del servidor ya trae usuarios de prueba, puedes iniciar
+   sesión directamente con ellos para ver viviendas, solicitudes y convivencias
+   ya cargadas.
 4. Prueba **"¿Has olvidado tu contraseña?"** desde el login: al no haber un servicio
    de email configurado todavía, la propia página te muestra el enlace de
    restablecimiento en pantalla en vez de mandarlo por correo (es el comportamiento
@@ -159,19 +179,23 @@ Abre `public.html` (la portada) para empezar a navegar la aplicación.
 Para el detalle de qué puede hacer cada tipo de usuario dentro de la aplicación, consulta
 el [manual de usuario](./manual-usuario/README.md).
 
-## 7. Parar y limpiar
+## 8. Parar
 
-```bash
-docker-compose down          # para los contenedores, conserva los datos
-docker-compose down -v       # además borra el volumen db_data (vuelves a empezar de cero)
-```
+- Servidor PHP integrado (`php -S ...`): `Ctrl+C` en la terminal donde corre.
+- Live Server: botón **"Port: xxxx"** en la barra inferior de VS Code, o clic derecho
+  → **"Stop Live Server"**.
+- `npx serve` / `python -m http.server`: `Ctrl+C` en su terminal.
 
-## 8. Problemas habituales
+La base de datos no se toca en ningún momento desde este flujo — vive en el servidor
+y es responsabilidad de quien lo administre.
+
+## 9. Problemas habituales
 
 | Síntoma | Causa probable |
 |---|---|
-| La app se queda cargando / errores `Failed to fetch` en la consola | El backend no está levantado, o `docker-compose up` no ha terminado de arrancar `db` todavía. |
-| Login o registro fallan con "criterio no encontrado" o similar | Falta aplicar `seed_criterio_opcion.sql`. |
-| Las preferencias de vivienda no muestran peso/restrictivo, o las solicitudes de vivienda/rol no aparecen | Faltan una o varias migraciones del paso 4. |
+| La app se queda cargando / errores `Failed to fetch` en la consola | El backend no está levantado, o `BASE_URL` en `frontend/js/api.js` no apunta a donde realmente corre. |
+| `curl` al backend devuelve error de conexión a MySQL | Credenciales incorrectas en `backend/Comun/config.php`, o el servidor MySQL no permite conexiones desde donde corre el backend (firewall/whitelist de IP). |
+| Login o registro fallan con "criterio no encontrado" o similar | La base de datos del servidor no tiene cargadas las tablas `criterio`/`opcion` (ver `backend/bd/migrations/seed_criterio_opcion.sql` como referencia de qué debería contener). |
+| Las preferencias de vivienda no muestran peso/restrictivo, o las solicitudes de vivienda/rol no aparecen | La base de datos del servidor no tiene aplicadas todas las migraciones de `backend/bd/migrations/`; habría que pedir que se pongan al día ahí. |
 | La página se ve en blanco o con errores de `fetch` de traducciones/parciales | Se abrió el `.html` con doble clic (`file://`) en vez de servirlo por `http://`. |
-| Puerto ocupado al hacer `docker-compose up` | Otro proceso ya usa el 8081, 3307 u 8082 — cambia el puerto izquierdo (host) en `docker-compose.yaml`, p. ej. `"8091:80"`. |
+| Puerto ocupado al hacer `php -S localhost:8081` | Otro proceso ya usa el 8081 — arranca con otro puerto (`php -S localhost:8091`) y actualiza `BASE_URL` en `frontend/js/api.js` a juego. |
