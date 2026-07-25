@@ -112,7 +112,7 @@
     "emailLabel": "Email",
     "emailHelp": "We'll show you a link to reset your password.",
     "successText": "Link generated successfully.",
-    "linkIntro": "Here's your reset link (in an environment with email configured, it would arrive by email):",
+    "linkIntro": "Here's your reset link",
     "openLink": "Open link",
     "backToLogin": "Back to sign in",
     "emailRequired": "Please enter your email.",

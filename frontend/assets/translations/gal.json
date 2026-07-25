@@ -112,7 +112,7 @@
     "emailLabel": "Email",
     "emailHelp": "Mostrarémosche un enlace para restablecer o teu contrasinal.",
     "successText": "Enlace xerado correctamente.",
-    "linkIntro": "Aquí tes o teu enlace de restablecemento (nun contorno con email configurado, chegaríache por correo):",
+    "linkIntro": "Aquí tes o teu enlace de restablecemento",
     "openLink": "Abrir enlace",
     "backToLogin": "Volver ao inicio de sesión",
     "emailRequired": "Por favor introduce o teu email.",

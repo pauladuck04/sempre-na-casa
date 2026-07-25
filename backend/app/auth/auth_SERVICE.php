@@ -260,11 +260,12 @@ function mapRolToId($rol){
 		return array('ok' => false, 'code' => 'CAMBIAR_PASSWORD_KO');
 	}
 
-	// Genera un token de un solo uso (valido 1 hora) y lo guarda en la fila del usuario. Todavia
-	// no hay servicio de email configurado, asi que se devuelve el token en la respuesta para que
-	// el frontend construya el enlace de restablecimiento y lo muestre directamente en pantalla
-	// (ver 20260723_recuperacion_password.sql). El dia que haya SMTP, este mismo token es lo que
-	// habria que mandar por correo en vez de devolverlo en la respuesta.
+	// Genera un token JWT stateless (valido 2 horas, mismo mecanismo que el login) que lleva
+	// el id de usuario y una "huella" derivada de su password actual. No se guarda nada en BD:
+	// el propio token se autovalida (firma + caducidad) al restablecer. Todavia no hay servicio
+	// de email configurado, asi que se devuelve el token en la respuesta para que el frontend
+	// construya el enlace y lo muestre directamente en pantalla. El dia que haya SMTP, este
+	// mismo token es lo que habria que mandar por correo en vez de devolverlo en la respuesta.
 	function RECUPERAR_PASSWORD(){
 		$mail = addslashes(trim($_POST['mail']));
 
@@ -272,53 +273,70 @@ function mapRolToId($rol){
 		$map = new mapping('usuario');
 
 		$res = $map->lanzarqueryconresults(
-			"SELECT id_usuario FROM usuario WHERE mail = '{$mail}' LIMIT 1"
+			"SELECT id_usuario, password FROM usuario WHERE mail = '{$mail}' LIMIT 1"
 		);
 		if (!$res['ok'] || empty($res['resource'])) {
 			return array('ok' => false, 'code' => 'USUARIO_NO_ENCONTRADO_KO');
 		}
 
-		$idUsuario = intval($res['resource'][0]['id_usuario']);
-		$token     = bin2hex(random_bytes(32));
-		$expira    = date('Y-m-d H:i:s', strtotime('+1 hour'));
+		$fila = $res['resource'][0];
 
-		$resUpdate = $map->lanzarquery(
-			"UPDATE usuario SET token_recuperacion = '{$token}', token_recuperacion_expira = '{$expira}' WHERE id_usuario = {$idUsuario}"
+		include_once './Base/JWT/token.php';
+		$datosToken = array(
+			'purpose'    => 'reset_password',
+			'id_usuario' => intval($fila['id_usuario']),
+			'pwd_fp'     => $this->huellaPassword($fila['password'])
 		);
-		if (!$resUpdate['ok']) {
-			return array('ok' => false, 'code' => 'RECUPERAR_PASSWORD_KO');
-		}
+		$token = MiToken::creaToken($mail, '', $datosToken);
 
 		return array('ok' => true, 'code' => 'RECUPERAR_PASSWORD_OK', 'resource' => array('token' => $token));
 	}
 
-	// Valida el token (existe y no ha caducado) y actualiza la contrasena. El token se invalida
-	// tras usarse para que el enlace no se pueda reutilizar.
+	// Huella derivada del hash de la contrasena actual (no es el hash en si: se le aplica otra
+	// vuelta de hash con la clave secreta del JWT como pimienta, para no filtrar el hash real
+	// dentro del token). Cambia en cuanto la contrasena cambia, asi que sirve para invalidar el
+	// enlace de recuperacion automaticamente tras usarlo una vez, sin guardar ni borrar nada en BD.
+	function huellaPassword($passwordHashActual){
+		include_once './Base/JWT/token.php';
+		return substr(hash('sha256', $passwordHashActual . SECRET_KEY), 0, 16);
+	}
+
+	// Valida el token (firma + caducidad, vía MiToken) y comprueba que la huella de contrasena
+	// siga coincidiendo (si no, es que el enlace ya se uso o quedo obsoleto por uno mas reciente).
 	function RESTABLECER_PASSWORD(){
-		$token = addslashes($_POST['token']);
+		include_once './Base/JWT/token.php';
+
+		try {
+			$payload = MiToken::devuelveToken($_POST['token']);
+		} catch (Exception $e) {
+			$codigo = ($e->getMessage() === 'TOKEN_CADUCADO') ? 'TOKEN_EXPIRADO_KO' : 'TOKEN_INVALIDO_KO';
+			return array('ok' => false, 'code' => $codigo);
+		}
+
+		if (empty($payload->data->purpose) || $payload->data->purpose !== 'reset_password') {
+			return array('ok' => false, 'code' => 'TOKEN_INVALIDO_KO');
+		}
+
+		$idUsuario = intval($payload->data->id_usuario);
 
 		include_once './Base/mapping.php';
 		$map = new mapping('usuario');
 
 		$res = $map->lanzarqueryconresults(
-			"SELECT id_usuario, token_recuperacion_expira FROM usuario WHERE token_recuperacion = '{$token}' LIMIT 1"
+			"SELECT password FROM usuario WHERE id_usuario = {$idUsuario} LIMIT 1"
 		);
 		if (!$res['ok'] || empty($res['resource'])) {
 			return array('ok' => false, 'code' => 'TOKEN_INVALIDO_KO');
 		}
 
-		$fila = $res['resource'][0];
-		if (empty($fila['token_recuperacion_expira']) || $fila['token_recuperacion_expira'] < date('Y-m-d H:i:s')) {
+		$huellaActual = $this->huellaPassword($res['resource'][0]['password']);
+		if (!hash_equals($huellaActual, (string) $payload->data->pwd_fp)) {
 			return array('ok' => false, 'code' => 'TOKEN_EXPIRADO_KO');
 		}
 
-		$idUsuario = intval($fila['id_usuario']);
 		$nuevaHash = md5($_POST['password']);
-
 		$resUpdate = $map->lanzarquery(
-			"UPDATE usuario
-			 SET password = '{$nuevaHash}', token_recuperacion = NULL, token_recuperacion_expira = NULL, fecha_modificacion_usuario = '" . date('Y-m-d H:i:s') . "'
-			 WHERE id_usuario = {$idUsuario}"
+			"UPDATE usuario SET password = '{$nuevaHash}', fecha_modificacion_usuario = '" . date('Y-m-d H:i:s') . "' WHERE id_usuario = {$idUsuario}"
 		);
 
 		if ($resUpdate['ok']) {
@@ -354,13 +372,24 @@ function mapRolToId($rol){
 		return $res;
 	}
 
+	// Comprueba la cabecera Authorization. Antes llamaba a MiToken::devuelveToken() sin
+	// try/catch: un token ausente, caducado o invalido tiraba un error fatal sin capturar
+	// (HTML en vez de JSON) en lugar de una respuesta controlada. Tambien se normaliza el
+	// retorno al formato {ok, code, resource} que usa el resto del backend (antes devolvia
+	// $resultado->data suelto, sin envolver, inconsistente con todo lo demas).
 	function validar_token(){
 
 		include_once './Base/JWT/token.php';
 		$current_token = $this->cargarTokenCabecera();
-		$resultado = MiToken::devuelveToken($current_token);
 
-		return $resultado->data;
+		try {
+			$resultado = MiToken::devuelveToken($current_token);
+		} catch (Exception $e) {
+			$codigo = ($e->getMessage() === 'TOKEN_CADUCADO') ? 'TOKEN_EXPIRADO_KO' : 'TOKEN_INVALIDO_KO';
+			return array('ok' => false, 'code' => $codigo);
+		}
+
+		return array('ok' => true, 'code' => 'TOKEN_VALIDO_OK', 'resource' => $resultado->data);
 	}
 }
 

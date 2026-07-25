@@ -167,6 +167,16 @@
     color: #0F5132;
 }
 
+/* Alerta de exito de "recuperar contrasena": lleva icono+texto, un parrafo y un boton, no
+   cabe todo en una sola fila como el resto de alertas simples -> se apila en columna. */
+#success-message {
+    display: block;
+}
+
+#success-message #reset-link {
+    display: inline-block;
+}
+
 /* FOOTER */
 .footer-link {
     font-weight: 300;

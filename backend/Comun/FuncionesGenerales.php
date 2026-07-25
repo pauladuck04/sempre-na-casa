@@ -1,5 +1,12 @@
 <?php
 
+// usada por Base/JWT/JWT.php para señalar fallos de validacion (token caducado, firma
+// invalida, formato incorrecto...). Antes no existia -> cualquier token invalido provocaba
+// un error fatal sin capturar en vez de un error controlado.
+function fillExceptionAction($mensaje){
+	throw new Exception($mensaje);
+}
+
 function guardar_test(&$resultadosTESTS, $rest){
 	foreach ($rest as $item){
 		array_push($resultadosTESTS, $item);

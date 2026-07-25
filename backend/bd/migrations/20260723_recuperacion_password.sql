@@ -1,3 +1,9 @@
+-- OBSOLETA: la recuperacion de contrasena pasó a usar un token JWT stateless (mismo mecanismo
+-- que el login, ver Base/JWT/token.php), que se autovalida por firma + caducidad sin necesitar
+-- estas columnas. NO hace falta aplicar esta migracion. Se deja el fichero por si ya se aplico
+-- en algun entorno; en ese caso las columnas quedan sin uso (no las lee ni escribe nadie), no
+-- hace falta revertirla.
+--
 -- Recuperacion de contrasena: token de un solo uso con expiracion, guardado en la propia fila
 -- del usuario (mismo patron que las demas solicitudes de este proyecto: sin tabla nueva).
 -- El backend todavia no envia email real (no hay infraestructura SMTP configurada): el endpoint

@@ -112,7 +112,7 @@
     "emailLabel": "Email",
     "emailHelp": "Te mostraremos un enlace para restablecer tu contraseña.",
     "successText": "Enlace generado correctamente.",
-    "linkIntro": "Aquí tienes tu enlace de restablecimiento (en un entorno con email configurado, te llegaría por correo):",
+    "linkIntro": "Aquí tienes tu enlace de restablecimiento:",
     "openLink": "Abrir enlace",
     "backToLogin": "Volver al inicio de sesión",
     "emailRequired": "Por favor introduce tu email.",
