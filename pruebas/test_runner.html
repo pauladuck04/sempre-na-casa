@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Runner — SoilMonitor</title>
+    <style>
+        body { font-family: sans-serif; padding: 24px; background: #f5f5f5; }
+        h1 { color: #333; border-bottom: 2px solid #333; padding-bottom: 8px; }
+        .controles { margin: 20px 0; display: flex; align-items: center; gap: 12px; }
+        label { font-weight: bold; }
+        select, button { padding: 8px 16px; font-size: 14px; border-radius: 4px; border: 1px solid #ccc; }
+        button { background: #007bff; color: white; cursor: pointer; border-color: #007bff; }
+        button:hover { background: #0056b3; }
+        #runner_status { margin: 12px 0; padding: 10px 14px; background: #e8f4f8; border-left: 4px solid #007bff; font-size: 14px; }
+        #runner_status.error { background: #fde; border-color: red; color: red; }
+        /* Contenedores internos ocultos — data.js los usa para construir resultados */
+        #contenedor_IU_form, #IU_Test_result_nofile, #IU_Test_result_file, #form_iu { display: none; }
+    </style>
+</head>
+<body>
+    <h1>SoilMonitor — Test Runner</h1>
+
+    <div class="controles">
+        <label for="entidad_select">Entidad a probar:</label>
+        <select id="entidad_select">
+            <option value="medicion">medicion</option>
+            <option value="opinion">opinion</option>
+            <option value="parametro">parametro</option>
+            <option value="parcela">parcela</option>
+            <option value="parcela_proceso">parcela_proceso</option>
+            <option value="proceso">proceso</option>
+            <option value="usuario">usuario</option>
+        </select>
+        <button onclick="ejecutarTests()">Ejecutar Tests</button>
+    </div>
+
+    <div id="runner_status">Selecciona una entidad y pulsa "Ejecutar Tests". Los resultados se abren en una nueva ventana.</div>
+
+    <!-- Contenedores requeridos por Data_Test (ocultos en esta página) -->
+    <form id="form_iu"></form>
+    <div id="contenedor_IU_form"></div>
+    <div id="IU_Test_result_nofile"></div>
+    <div id="IU_Test_result_file"></div>
+
+    <!-- 1. Cookies e idioma (orden obligatorio) -->
+    <script src="../js/cookies.js"></script>
+    <script src="../js/textos_ES.js"></script>
+    <script src="../js/textos_EN.js"></script>
+    <script src="../js/idioma.js"></script>
+
+    <!-- 2. Validaciones y DOM -->
+    <script src="../js/validaciones.js"></script>
+    <script src="../js/DOM_class.js"></script>
+
+    <!-- 3. Clase base -->
+    <script src="../js/Entidad_Abstracta.js"></script>
+
+    <!-- 4. Clases de entidad -->
+    <script src="../js/medicion.js"></script>
+    <script src="../js/parametro.js"></script>
+    <script src="../js/parcela.js"></script>
+    <script src="../js/proceso.js"></script>
+    <script src="../js/parcela_proceso.js"></script>
+    <script src="../js/paises.js"></script>
+    <script src="../js/usuario.js"></script>
+
+    <!-- 5. Datos de prueba y runner -->
+    <script src="pruebas.js"></script>
+    <script src="data.js"></script>
+
+    <script>
+        // Respeta el idioma ya elegido en el resto de la app (cookie/localStorage) en vez
+        // de forzar español; setLang() sin argumento detecta la preferencia guardada.
+        setLang();
+
+        // opinion no tiene clase .js propia — se define aquí con los campos del DB
+        class opinion extends Entidad_Abstracta {
+            constructor() {
+                super();
+                this.entidad = 'opinion';
+            }
+            cargar_formulario_html(id) {
+                document.getElementById(id).innerHTML =
+                    '<input type="text" id="fecha_opinion" name="fecha_opinion" value="">' +
+                    '<input type="text" id="conclusiones" name="conclusiones" value="">';
+            }
+            ADD_fecha_opinion_validation() {
+                const el = document.getElementById('fecha_opinion');
+                if (!el || !el.value || el.value.trim() === '') return 'fecha_opinion_format_KO';
+                return this._vd('fecha_opinion');
+            }
+            EDIT_fecha_opinion_validation() { return this.ADD_fecha_opinion_validation(); }
+            ADD_conclusiones_validation() { return this._vt('conclusiones', 1, 200, '^[^#@<>]+$'); }
+            EDIT_conclusiones_validation() { return this.ADD_conclusiones_validation(); }
+            SEARCH_fecha_opinion_validation() { return this._vts('fecha_opinion', 10, '^[\\d\\-]+$'); }
+            SEARCH_conclusiones_validation() { return this._vts('conclusiones', 200, '^[^#@<>]+$'); }
+        }
+
+        const mapaEntidades = {
+            medicion,
+            opinion,
+            parametro,
+            parcela,
+            parcela_proceso,
+            proceso,
+            usuario
+        };
+
+        function ejecutarTests() {
+            const nombre = document.getElementById('entidad_select').value;
+            const ClaseEntidad = mapaEntidades[nombre];
+            const statusEl = document.getElementById('runner_status');
+
+            if (!ClaseEntidad) {
+                statusEl.className = 'error';
+                statusEl.textContent = 'Entidad no encontrada: ' + nombre;
+                return;
+            }
+
+            statusEl.className = '';
+            statusEl.textContent = 'Ejecutando tests para: ' + nombre + '...';
+
+            try {
+                new Data_Test(ClaseEntidad);
+                statusEl.textContent = 'Tests completados para: ' + nombre + '. Revisa la nueva ventana con los resultados.';
+            } catch (e) {
+                statusEl.className = 'error';
+                statusEl.textContent = 'Error al ejecutar: ' + e.message;
+                console.error(e);
+            }
+        }
+    </script>
+</body>
+</html>
