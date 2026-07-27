@@ -1,6 +1,7 @@
-// Protección de rutas basada en la sesión guardada en localStorage al hacer login.
-// Se carga como <script> clásico (no type="module") al principio de <head>, antes
-// de pintar nada, para redirigir de inmediato si el usuario no debería estar aquí.
+// Protección de rutas basada en la sesión guardada en cookies (cookies.js) al hacer login.
+// Se carga como <script> clásico (no type="module") al principio de <head>, después de
+// cookies.js y antes de pintar nada, para redirigir de inmediato si el usuario no debería
+// estar aquí.
 
 (function () {
     const DASHBOARD_POR_ROL = {
@@ -17,17 +18,17 @@
     }
 
     function rolActual() {
-        const rol = normalizarRol(localStorage.getItem('user_rol'));
+        const rol = normalizarRol(getCookie('user_rol'));
         if (rol.includes('admin')) return 'admin';
         if (rol.includes('anfitrion')) return 'anfitrion';
-        if (localStorage.getItem('user_token')) return 'huesped';
+        if (getCookie('user_token')) return 'huesped';
         return null;
     }
 
     // Redirige fuera de la página actual si el usuario no ha iniciado sesión
     // o su rol no está entre los permitidos para esta página.
     window.protegerRuta = function (rolesPermitidos) {
-        if (!localStorage.getItem('user_token')) {
+        if (!getCookie('user_token')) {
             window.location.replace('login.html');
             return;
         }
@@ -39,7 +40,7 @@
 
     // Borra todos los datos de sesión sin redirigir (útil tras eliminar/desactivar la cuenta).
     window.limpiarSesion = function () {
-        ['user_token', 'user_id', 'user_email', 'user_nombre', 'user_id_rol', 'user_rol'].forEach(k => localStorage.removeItem(k));
+        ['user_token', 'user_id', 'user_email', 'user_nombre', 'user_id_rol', 'user_rol'].forEach(k => eraseCookie(k));
     };
 
     window.cerrarSesion = function () {
@@ -55,8 +56,9 @@
     });
 })();
 
-// Aclaración importante: la app no usa cookies de sesión (el fetch al backend ni siquiera manda credentials), 
-// así que la protección se basa en lo que realmente persiste la sesión hoy: localStorage (user_token + user_rol). 
-// Ojo: esto es protección de navegación en el cliente, no seguridad real — cualquiera con la consola del navegador 
-// puede escribir localStorage.setItem('user_rol','Administrador') y saltárselo. Si el backend PHP no está ya validando 
-// el rol en cada petición de usuario/vivienda/etc. por su cuenta, ahí sigue habiendo un agujero de verdad. 
+// Aclaración importante: estas son cookies propias del cliente (document.cookie vía cookies.js), no
+// cookies de sesión HttpOnly gestionadas por el servidor — el fetch al backend ni siquiera manda
+// credentials. Ojo: esto sigue siendo protección de navegación en el cliente, no seguridad real —
+// cualquiera con la consola del navegador puede escribir document.cookie = 'user_rol=Administrador'
+// y saltárselo. Si el backend PHP no está ya validando el rol en cada petición de usuario/vivienda/etc.
+// por su cuenta, ahí sigue habiendo un agujero de verdad.

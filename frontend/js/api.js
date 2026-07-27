@@ -1,8 +1,9 @@
-const BASE_URL = 'http://localhost:8081/index.php';
+//cambiar url de la api según el entorno
+const API_URL = 'http://localhost:8081/index.php';
 
 async function apiPost(controlador, action, params = {}) {
     const body = new URLSearchParams({ controlador, action, ...params });
-    const response = await fetch(BASE_URL, {
+    const response = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: body.toString()
@@ -11,31 +12,26 @@ async function apiPost(controlador, action, params = {}) {
     return response.json();
 }
 
-window.apiPost = apiPost;
+// Hash SHA-256 del password antes de enviarlo. El backend le aplica su propio md5() tanto al
+// guardar (usuario_SERVICE::modificacion_atributos) como al comparar en el login (auth_SERVICE::LOGIN),
+// así que basta con que loginUser/registerUser/resetPassword manden siempre esta misma transformación
+// para que cuadre en las dos puntas — no hace falta que el backend sepa nada de este hash extra.
+async function hashPassword(password) {
+    return CryptoJS.SHA256(password).toString();
+}
 
-// Autenticación simulada
-window.auth = {
-    login: async (email, password) => {
-        localStorage.setItem('user_email', email);
-        localStorage.setItem('user_role', email.includes('admin') ? 'anfitrion' : 'huesped');
-        localStorage.setItem('user_token', 'token_' + Date.now());
-    },
+async function loginUser(mail, password) {
+    return apiPost('auth', 'LOGIN', { usuario: mail, contrasena: await hashPassword(password) });
+}
 
-    logout: () => {
-        localStorage.removeItem('user_email');
-        localStorage.removeItem('user_role');
-        localStorage.removeItem('user_token');
-    },
+async function registerUser(userData) {
+    return apiPost('auth', 'REGISTRAR', { ...userData, password: await hashPassword(userData.password) });
+}
 
-    getRole: () => {
-        return localStorage.getItem('user_role') || 'huesped';
-    },
+async function requestPasswordReset(email) {
+    return apiPost('auth', 'RECUPERAR_PASSWORD', { mail: email });
+}
 
-    getEmail: () => {
-        return localStorage.getItem('user_email');
-    },
-
-    isLoggedIn: () => {
-        return !!localStorage.getItem('user_token');
-    }
-};
+async function resetPassword(token, password) {
+    return apiPost('auth', 'RESTABLECER_PASSWORD', { token, password: await hashPassword(password) });
+}

@@ -27,7 +27,7 @@ export function mostrarToast(mensaje, tipo = 'success') {
  */
 export async function cargarPerfilPorMail(opciones = {}) {
     const { onDatos, colorAvatar = () => 'var(--color-primario)', conFallbackLocal = false } = opciones;
-    const email = (window.auth && typeof window.auth.getEmail === 'function') ? window.auth.getEmail() : localStorage.getItem('user_email');
+    const email = (window.auth && typeof window.auth.getEmail === 'function') ? window.auth.getEmail() : getCookie('user_email');
     const initialsFrom = name => (name || '').split(' ').map(n => n[0] || '').join('').toUpperCase().slice(0, 2);
     if (!email) return null;
 
