@@ -1,5 +1,5 @@
-import { initI18n, t, applyTranslations, initLangDropdown } from '../i18n.js';
-import { mostrarErrorFormulario, ocultarErrorFormulario } from '../form-errors.js';
+import { initI18n, t, applyTranslations, initLangDropdown } from './i18n.js';
+import { mostrarErrorFormulario, ocultarErrorFormulario } from './form-errors.js';
 
 await initI18n();
 applyTranslations();
@@ -43,12 +43,12 @@ form.addEventListener('submit', async (e) => {
         }
 
         const usuario = res.resource.usuario;
-        localStorage.setItem('user_token',    res.resource.token);
-        localStorage.setItem('user_id',       usuario.id_usuario);
-        localStorage.setItem('user_email',    usuario.mail);
-        localStorage.setItem('user_nombre',   usuario.nombre_usuario + ' ' + usuario.apellidos);
-        localStorage.setItem('user_id_rol',   usuario.id_rol);
-        localStorage.setItem('user_rol',      usuario.nombre_rol || '');
+        setCookie('user_token',  res.resource.token, 7);
+        setCookie('user_id',     usuario.id_usuario, 7);
+        setCookie('user_email',  usuario.mail, 7);
+        setCookie('user_nombre', usuario.nombre_usuario + ' ' + usuario.apellidos, 7);
+        setCookie('user_id_rol', usuario.id_rol, 7);
+        setCookie('user_rol',    usuario.nombre_rol || '', 7);
 
         const rol = (usuario.nombre_rol || '').toLowerCase()
             .normalize('NFD').replace(/[̀-ͯ]/g, '');

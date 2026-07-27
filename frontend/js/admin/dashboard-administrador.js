@@ -1,11 +1,11 @@
 import { initI18n, t, applyTranslations } from '../i18n.js';
-import * as usuarios from '../admin/usuarios.js';
-import * as roles     from '../admin/roles.js';
-import * as criterios from '../admin/criterios.js';
-import * as viviendas from '../admin/viviendas.js';
-import * as solicitudes from '../admin/solicitudes.js';
-import * as solicitudesRol from '../admin/solicitudes-rol.js';
-import { aplicarPaginacion, resetPagina } from '../admin/paginacion.js';
+import * as usuarios from './usuarios.js';
+import * as roles     from './roles.js';
+import * as criterios from './criterios.js';
+import * as viviendas from './viviendas.js';
+import * as solicitudes from './solicitudes.js';
+import * as solicitudesRol from './solicitudes-rol.js';
+import { aplicarPaginacion, resetPagina } from './paginacion.js';
 import { mostrarErrorFormulario, ocultarErrorFormulario, mostrarErrorCampo, ocultarErrorCampo } from '../form-errors.js';
 import { cargarPartials } from '../partials.js';
 import { mostrarToast, cargarPerfilPorMail, inicializarMedidorFortaleza, inicializarTogglePassword, inicializarCambioPassword, inicializarCambioRol } from '../perfil-comun.js';
@@ -552,7 +552,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         mostrarToast(t('profile.savedSuccess'), 'success');
     });
 
-    inicializarCambioPassword(() => localStorage.getItem('user_email'));
+    inicializarCambioPassword(() => getCookie('user_email'));
 
     document.getElementById('btnEliminarCuenta')?.addEventListener('click', () => {
         bootstrap.Modal.getOrCreateInstance(document.getElementById('modalEliminarCuenta')).show();
@@ -560,7 +560,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     document.getElementById('btnConfirmarEliminarCuenta')?.addEventListener('click', async () => {
         bootstrap.Modal.getInstance(document.getElementById('modalEliminarCuenta')).hide();
-        const id = localStorage.getItem('user_id');
+        const id = getCookie('user_id');
         if (!id) { mostrarToast('No se pudo desactivar: id de usuario desconocido', 'danger'); return; }
         try {
             const res = await apiPost('usuario', 'DELETE', { id_usuario: id });

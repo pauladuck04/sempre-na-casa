@@ -16,26 +16,26 @@ window.apiPost = apiPost;
 // Autenticación simulada
 window.auth = {
     login: async (email, password) => {
-        localStorage.setItem('user_email', email);
-        localStorage.setItem('user_role', email.includes('admin') ? 'anfitrion' : 'huesped');
-        localStorage.setItem('user_token', 'token_' + Date.now());
+        setCookie('user_email', email, 7);
+        setCookie('user_role', email.includes('admin') ? 'anfitrion' : 'huesped', 7);
+        setCookie('user_token', 'token_' + Date.now(), 7);
     },
 
     logout: () => {
-        localStorage.removeItem('user_email');
-        localStorage.removeItem('user_role');
-        localStorage.removeItem('user_token');
+        eraseCookie('user_email');
+        eraseCookie('user_role');
+        eraseCookie('user_token');
     },
 
     getRole: () => {
-        return localStorage.getItem('user_role') || 'huesped';
+        return getCookie('user_role') || 'huesped';
     },
 
     getEmail: () => {
-        return localStorage.getItem('user_email');
+        return getCookie('user_email');
     },
 
     isLoggedIn: () => {
-        return !!localStorage.getItem('user_token');
+        return !!getCookie('user_token');
     }
 };

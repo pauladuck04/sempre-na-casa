@@ -1,6 +1,6 @@
 import { initI18n, t, applyTranslations } from '../i18n.js';
-import * as convivencia  from '../huesped/convivencia.js';
-import * as preferencias from '../huesped/preferencias.js';
+import * as convivencia  from './convivencia.js';
+import * as preferencias from './preferencias.js';
 import { aplicarPaginacion, resetPagina } from '../admin/paginacion.js';
 import { mostrarErrorFormulario, ocultarErrorFormulario, mostrarErrorCampo, ocultarErrorCampo } from '../form-errors.js';
 import { cargarPartials } from '../partials.js';
@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         ocultarErrorFormulario(errorEl);
 
         if (seccion === 'preferencias') {
-            const idUsuario = usuarioActual.id || localStorage.getItem('user_id');
+            const idUsuario = usuarioActual.id || getCookie('user_id');
             if (!idUsuario) { mostrarErrorFormulario(errorEl, 'Error: usuario no identificado.'); return; }
             const res = await apiPost('usuario_criterio_opcion', 'UPSERT_RESPUESTA', {
                 id_usuario:  idUsuario,
@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         mostrarToast(t('profile.savedSuccess'), 'success');
     });
 
-    inicializarCambioPassword(() => usuarioActual.email || localStorage.getItem('user_email'));
+    inicializarCambioPassword(() => usuarioActual.email || getCookie('user_email'));
 
     document.getElementById('btnEliminarCuenta')?.addEventListener('click', () => {
         bootstrap.Modal.getOrCreateInstance(document.getElementById('modalEliminarCuenta')).show();
@@ -191,7 +191,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     document.getElementById('btnConfirmarEliminarCuenta')?.addEventListener('click', async () => {
         bootstrap.Modal.getInstance(document.getElementById('modalEliminarCuenta')).hide();
-        const id = usuarioActual.id || localStorage.getItem('user_id');
+        const id = usuarioActual.id || getCookie('user_id');
         if (!id) { mostrarToast('No se pudo desactivar: id de usuario desconocido', 'danger'); return; }
         try {
             const res = await apiPost('usuario', 'DELETE', { id_usuario: id });
@@ -224,7 +224,7 @@ function navegarASeccion(sectionName) {
         case 'general':      cargarResumenGeneral();                   break;
         case 'convivencia':  convivencia.renderizarConvivencia();      break;
         case 'recomendadas': renderizarCandidatos('grid-recomendadas'); break;
-        case 'preferencias': preferencias.cargarPreferencias(usuarioActual.id || localStorage.getItem('user_id')); break;
+        case 'preferencias': preferencias.cargarPreferencias(usuarioActual.id || getCookie('user_id')); break;
     }
 
     aplicarFiltros();
@@ -313,7 +313,7 @@ function renderizarCandidatos(containerId = 'grid-candidatos') {
 
 async function solicitarVivienda(btn) {
     const idVivienda   = btn.getAttribute('data-id');
-    const idUsuario    = usuarioActual.id || localStorage.getItem('user_id');
+    const idUsuario    = usuarioActual.id || getCookie('user_id');
     const fechaInicio  = document.getElementById('solicitud-fecha-inicio')?.value || '';
     const fechaFin     = document.getElementById('solicitud-fecha-fin')?.value || '';
 

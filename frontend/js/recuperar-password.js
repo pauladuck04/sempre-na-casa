@@ -1,5 +1,5 @@
-import { initI18n, t, applyTranslations } from '../i18n.js';
-import { mostrarErrorFormulario, ocultarErrorFormulario } from '../form-errors.js';
+import { initI18n, t, applyTranslations } from './i18n.js';
+import { mostrarErrorFormulario, ocultarErrorFormulario } from './form-errors.js';
 
 await initI18n();
 applyTranslations();

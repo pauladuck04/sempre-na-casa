@@ -1,6 +1,6 @@
 import { initI18n, t, applyTranslations } from '../i18n.js';
-import * as criterios  from '../anfitrion/criterios.js';
-import * as huespedes from '../anfitrion/huespedes.js';
+import * as criterios  from './criterios.js';
+import * as huespedes from './huespedes.js';
 import { mostrarErrorFormulario, ocultarErrorFormulario, mostrarErrorCampo, ocultarErrorCampo } from '../form-errors.js';
 import { renderPreguntasEncuesta } from '../encuesta-criterios.js';
 import { cargarPartials } from '../partials.js';
@@ -235,7 +235,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         btn.disabled = true;
         btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>${t('survey.processing')}`;
 
-        const idAnfitrion = localStorage.getItem('user_id') || usuarioActual.id;
+        const idAnfitrion = getCookie('user_id') || usuarioActual.id;
         const res = await apiPost('vivienda', 'ADD', {
             direccion:      data.direccion.trim(),
             ciudad:         data.ciudad.trim(),
@@ -385,7 +385,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         mostrarToast(t('profile.savedSuccess'), 'success');
     });
 
-    inicializarCambioPassword(() => usuarioActual.email || localStorage.getItem('user_email'));
+    inicializarCambioPassword(() => usuarioActual.email || getCookie('user_email'));
 
     document.getElementById('btnEliminarCuenta')?.addEventListener('click', () => {
         bootstrap.Modal.getOrCreateInstance(document.getElementById('modalEliminarCuenta')).show();
@@ -433,7 +433,7 @@ function navegarASeccion(sectionName) {
 }
 
 async function cargarSeguimientoConvivencias() {
-    const idUsuario = localStorage.getItem('user_id');
+    const idUsuario = getCookie('user_id');
 
     // Cargar vivienda del anfitrión
     if (idUsuario) {
@@ -516,7 +516,7 @@ function actualizarProgresoEncuestaVivienda() {
 async function renderizarVivienda() {
     // Si no hay vivienda cargada aún, intentar cargar del backend
     if (!viviendaActual) {
-        const idUsuario = localStorage.getItem('user_id');
+        const idUsuario = getCookie('user_id');
         if (idUsuario) {
             const resV = await apiPost('vivienda', 'getAll');
             if (resV.ok && Array.isArray(resV.resource)) {

@@ -1,5 +1,5 @@
-import { initI18n, applyTranslations, initLangDropdown } from '../i18n.js';
-import { cargarPartials } from '../partials.js';
+import { initI18n, applyTranslations, initLangDropdown } from './i18n.js';
+import { cargarPartials } from './partials.js';
 
 await cargarPartials();
 await initI18n();

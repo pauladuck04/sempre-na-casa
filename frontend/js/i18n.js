@@ -6,7 +6,7 @@ const DEFAULT_LANG = 'es';
 const LANGS_DISPONIBLES = ['es', 'en', 'gal'];
 
 let traducciones = {};
-let idiomaActual = localStorage.getItem('lang') || DEFAULT_LANG;
+let idiomaActual = getCookie('lang') || DEFAULT_LANG;
 
 /**
  * Carga el JSON del idioma y actualiza las traducciones activas.
@@ -17,7 +17,7 @@ export async function setLang(lang) {
     const res = await fetch(`./assets/translations/${lang}.json`);
     traducciones = await res.json();
     idiomaActual = lang;
-    localStorage.setItem('lang', lang);
+    setCookie('lang', lang, 365);
     document.documentElement.lang = lang;
     document.dispatchEvent(new CustomEvent('langChanged', { detail: { lang } }));
 }

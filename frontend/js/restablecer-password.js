@@ -1,6 +1,6 @@
-import { initI18n, t, applyTranslations } from '../i18n.js';
-import { mostrarErrorFormulario, ocultarErrorFormulario, mostrarErrorCampo, ocultarErrorCampo } from '../form-errors.js';
-import { inicializarTogglePassword, inicializarMedidorFortaleza } from '../perfil-comun.js';
+import { initI18n, t, applyTranslations } from './i18n.js';
+import { mostrarErrorFormulario, ocultarErrorFormulario, mostrarErrorCampo, ocultarErrorCampo } from './form-errors.js';
+import { inicializarTogglePassword, inicializarMedidorFortaleza } from './perfil-comun.js';
 
 await initI18n();
 applyTranslations();

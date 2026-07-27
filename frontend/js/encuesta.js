@@ -1,6 +1,6 @@
-import { initI18n, t, applyTranslations } from '../i18n.js';
-import { mostrarErrorFormulario, ocultarErrorFormulario } from '../form-errors.js';
-import { renderPreguntasEncuesta } from '../encuesta-criterios.js';
+import { initI18n, t, applyTranslations } from './i18n.js';
+import { mostrarErrorFormulario, ocultarErrorFormulario } from './form-errors.js';
+import { renderPreguntasEncuesta } from './encuesta-criterios.js';
 
 await renderPreguntasEncuesta(document.getElementById('preguntas-encuesta'));
 
@@ -15,7 +15,7 @@ const inputs       = document.querySelectorAll('.btn-check');
 const totalPreguntas = document.querySelectorAll('[data-criterio]').length;
 
 const userDataStr       = sessionStorage.getItem('newUser');
-const usuarioLogueadoId = localStorage.getItem('user_id');
+const usuarioLogueadoId = getCookie('user_id');
 
 if (!userDataStr && !usuarioLogueadoId) {
     window.location.href = 'registro.html';
