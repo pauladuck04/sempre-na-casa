@@ -292,75 +292,114 @@ class Data_Test {
      */
 
     data_test_class() {
+    var salidapruebasnofile = this.data_test_data_nofile();
+    let marcados = {
+        pruebastatus: { value: 'INCORRECTO', clase: 'table-danger' }
+    };
 
+    // Renderizamos los datos primero en el documento principal
+    this.dom.showData('IU_Test_result_nofile', salidapruebasnofile, marcados);
+    let htmlContenido = document.getElementById('IU_Test_result_nofile').innerHTML;
+    document.getElementById('IU_Test_result_nofile').style.display = 'none';
 
-        var salidapruebasnofile = this.data_test_data_nofile();
-        // se invoca la muestra del resultado de las pruebas
-        let marcados = {
-            pruebastatus: { value: 'INCORRECTO', clase: 'table-danger' }
-        };
+    if (this.array_pruebas_file.length > 0) {
+        var salidapruebasfile = this.data_test_data_file();
+        this.dom.showData('IU_Test_result_file', salidapruebasfile, marcados);
+        htmlContenido += document.getElementById('IU_Test_result_file').innerHTML;
+        document.getElementById('IU_Test_result_file').style.display = 'none';
+    }
 
+    // Dimensionado de ventana
+    const anchoVentana = Math.round(screen.availWidth * 0.9);
+    const altoVentana = Math.round(screen.availHeight * 0.9);
+    const newWindow = window.open("", "Nueva Ventana", `width=${anchoVentana},height=${altoVentana}`);
 
-        // Se abre aprovechando la pantalla disponible (en vez de un 1100x800 fijo) para que
-        // la tabla, con sus 11 columnas, tenga sitio de sobra donde ajustarse.
-        const anchoVentana  = Math.round(screen.availWidth  * 0.9);
-        const altoVentana   = Math.round(screen.availHeight * 0.9);
-        const newWindow = window.open("", "Nueva Ventana", `width=${anchoVentana},height=${altoVentana}`);
+    newWindow.resizeTo(anchoVentana, altoVentana);
+    newWindow.moveTo(0, 0);
+    newWindow.focus();
 
-        // Si la ventana ya estaba abierta de una ejecución anterior, el navegador la reutiliza
-        // e ignora "width=/height=" del open() de arriba (comportamiento estándar, no un bug).
-        // Se fuerza el tamaño/posición explícitamente para que el ajuste se aplique siempre.
-        newWindow.resizeTo(anchoVentana, altoVentana);
-        newWindow.moveTo(0, 0);
-        newWindow.focus();
-
-        // Carga el mismo Bootstrap + CSS real de la app (ver test_runner.html) en la ventana
-        // emergente, para que las clases que pinta DOM_class (table-hover, badges, etc.) se
-        // vean igual que en el resto de la app y no como una tabla sin estilo. table-layout:
-        // fixed + word-break hace que la tabla se ajuste al ancho de la ventana en vez de
-        // desbordarse. El body es un contenedor flex a pantalla completa: "#resultados-wrap"
-        // es el único que hace scroll (vertical) cuando hay más filas de las que caben, la
-        // ventana en sí no se redimensiona ni añade scroll propio.
-        newWindow.document.head.innerHTML = `
+    // Inyección limpia y síncrona de todo el documento HTML
+    newWindow.document.open();
+    newWindow.document.write(`
+        <!DOCTYPE html>
+        <html lang="es">
+        <head>
             <meta charset="UTF-8">
             <title>Resultados de pruebas</title>
             <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
             <link rel="stylesheet" href="../frontend/css/main.css?v=3">
             <style>
-                html, body { height: 100%; margin: 0; }
-                body { display: flex; flex-direction: column; overflow: hidden; }
-                #resultados-wrap { flex: 1 1 auto; overflow-y: auto; overflow-x: hidden; }
-                table { table-layout: fixed; width: 100%; font-size: 0.75rem; }
-                td, th { word-break: break-word; overflow-wrap: break-word; }
-                thead th { position: sticky; top: 0; z-index: 1; }
-            </style>
-        `;
-        newWindow.document.body.innerHTML = '<div id="resultados-wrap" class="p-4"></div>';
-        const resultadosWrap = newWindow.document.getElementById('resultados-wrap');
+            * { box-sizing: border-box !important; }
+            html, body { height: 100% !important; margin: 0 !important; padding: 0 !important; }
+            body { display: flex !important; flex-direction: column !important; overflow: hidden !important; }
+            
+            /* 1. ELIMINAMOS EL PADDING SUPERIOR DEL CONTENEDOR CON SCROLL */
+            #resultados-wrap {
+                flex: 1 1 0 !important;
+                min-height: 0 !important;
+                overflow-y: auto !important;
+                overflow-x: hidden !important;
+                padding: 0 1rem 1rem 1rem !important; /* Arriba 0, lados y abajo 1rem */
+            }
 
-        this.dom.showData('IU_Test_result_nofile', salidapruebasnofile, marcados);
+            .table-responsive { 
+                overflow: visible !important; 
+                height: auto !important; 
+            }
 
-        resultadosWrap.innerHTML = document.getElementById('IU_Test_result_nofile').innerHTML;
-        document.getElementById('IU_Test_result_nofile').style.display = 'none';
+            table { 
+                table-layout: fixed !important; 
+                width: 100% !important; 
+                max-width: 100% !important;
+                font-size: 0.75rem !important; 
+                border-collapse: separate !important;
+                border-spacing: 0 !important;
+                margin-top: 0 !important; /* Evita que la tabla tenga margen superior */
+            }
 
+            td, th { 
+                white-space: normal !important;
+                word-wrap: break-word !important;
+                word-break: break-all !important;
+                overflow-wrap: anywhere !important;
+                max-width: 0 !important;
+                padding: 0.5rem !important;
+            }
 
-        // la sección de pruebas de fichero solo se muestra si la entidad tiene campos de ese tipo
-        if (this.array_pruebas_file.length > 0) {
-            var salidapruebasfile = this.data_test_data_file();
+            /* 2. FORZAMOS A LA CABECERA A PEGARSE AL BORDE SUPERIOR REAL */
+            thead {
+                position: sticky !important;
+                top: 0 !important;
+                z-index: 9999 !important;
+            }
 
-            // se invoca la muestra del resultado de las pruebas
+            thead th { 
+                position: sticky !important;
+                top: 0 !important;
+                z-index: 9999 !important;
+                background-color: #e9ecef !important; /* Gris idéntico al de Bootstrap en tu imagen */
+                color: #000000 !important;
+                border-bottom: 2px solid #dee2e6 !important;
+                background-clip: padding-box !important;
+            }
 
-            this.dom.showData('IU_Test_result_file', salidapruebasfile, marcados);
+            /* 3. ASEGURAMOS QUE EL CUERPO NO TENGA POSICIONAMIENTOS RAROS */
+            tbody tr, tbody td {
+                position: static !important;
+            }
+        </style>
+        </head>
+        <body>
+            <div id="resultados-wrap">
+                ${htmlContenido}
+            </div>
+        </body>
+        </html>
+    `);
+    newWindow.document.close();
 
-            resultadosWrap.innerHTML += document.getElementById('IU_Test_result_file').innerHTML;
-            document.getElementById('IU_Test_result_file').style.display = 'none';
-        }
-
-        newWindow.document.close();
-
-        return true;
-
-    }
+    return true;
+}
 
     /**
      * Rellenado de un select de elección única
