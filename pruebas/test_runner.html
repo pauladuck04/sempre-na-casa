@@ -65,24 +65,21 @@
     <!-- 1. Cookies, la real del proyecto -->
     <script src="../frontend/js/cookies.js?v=3"></script>
 
-    <!-- Puente a i18n, a las reglas (regex/min/max) y a la lógica de validación genérica
-         reales, única fuente de verdad compartida con el frontend real (ver frontend/js/i18n.js,
-         frontend/js/validaciones-campos.js y frontend/js/validadores.js, usados por auth.js y
-         perfil-comun.js). Son módulos ES (los "js/*.js" de abajo son scripts clásicos), así que
-         se republican como globales: initI18n() ya deja "t"/"setLang"/"getLang" en window (ver
-         i18n.js), y aquí además se exponen "REGLAS_CAMPOS.<entidad>.<campo>" y
-         "Validadores.<funcion>" para que los lean pruebas/js/validaciones.js y las clases de
-         entidad. Los scripts clásicos se ejecutan antes que este módulo (que se difiere como un
-         <script defer>), pero no hay problema: solo se leen estos globales dentro de los
-         métodos de validación o al pulsar "Ejecutar Tests", muy después de que la página haya
-         terminado de cargar. -->
+    <!-- Puente a i18n y a las reglas/lógica de validación genérica reales, única fuente de
+         verdad compartida con el frontend real (ver frontend/js/i18n.js y
+         frontend/js/validaciones-campos.js -- reglas + validadores en un único módulo --,
+         usados por auth.js, form-errors.js y perfil-comun.js). Son módulos ES (los "js/*.js"
+         de abajo son scripts clásicos), así que se republican como globales: initI18n() ya
+         deja "t"/"setLang"/"getLang" en window (ver i18n.js), y aquí además se exponen
+         "REGLAS_CAMPOS.<entidad>.<campo>" y "Validadores.<funcion>" para que los lean
+         pruebas/js/validaciones.js y las clases de entidad. Los scripts clásicos se ejecutan
+         antes que este módulo (que se difiere como un <script defer>), pero no hay problema:
+         solo se leen estos globales dentro de los métodos de validación o al pulsar "Ejecutar
+         Tests", muy después de que la página haya terminado de cargar. -->
     <script type="module">
-        window._reglasListo = Promise.all([
-            import('../frontend/js/validaciones-campos.js?v=3'),
-            import('../frontend/js/validadores.js?v=3')
-        ]).then(([reglasMod, validadoresMod]) => {
+        window._reglasListo = import('../frontend/js/validaciones-campos.js?v=3').then(reglasMod => {
             window.REGLAS_CAMPOS = reglasMod.REGLAS_CAMPOS;
-            window.Validadores = validadoresMod;
+            window.Validadores = reglasMod;
         });
 
         window._i18nListo = import('../frontend/js/i18n.js?v=3').then(i18nMod => i18nMod.initI18n());

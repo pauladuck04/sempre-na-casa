@@ -4,7 +4,7 @@
 //  - Error de un campo concreto  -> mostrarErrorCampo() / ocultarErrorCampo()  (borde rojo + texto debajo, patrón nativo de Bootstrap)
 //  - Error de proceso/servidor   -> mostrarErrorFormulario() / ocultarErrorFormulario() (caja de alerta arriba del formulario)
 
-import { validarTexto } from './validadores.js';
+import { validarTexto } from './validaciones-campos.js';
 
 /** Muestra un mensaje de error de proceso en la caja de alerta de un formulario. */
 export function mostrarErrorFormulario(el, mensaje) {

@@ -6,8 +6,7 @@
 
 import { t } from './i18n.js';
 import { mostrarErrorFormulario, ocultarErrorFormulario, mostrarErrorCampo, ocultarErrorCampo } from './form-errors.js';
-import { REGLAS_CAMPOS } from './validaciones-campos.js';
-import { validarTexto } from './validadores.js';
+import { REGLAS_CAMPOS, validarTexto } from './validaciones-campos.js';
 
 /** Muestra un toast en el `#toastDashboard` de la página actual. */
 export function mostrarToast(mensaje, tipo = 'success') {
