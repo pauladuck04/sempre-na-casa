@@ -4,11 +4,10 @@
 // cada bloque se activa solo si encuentra su formulario en la página actual.
 
 import { initI18n, t, applyTranslations, initLangDropdown } from './i18n.js';
-import { mostrarErrorFormulario, ocultarErrorFormulario, mostrarErrorCampo, ocultarErrorCampo } from './form-errors.js';
+import { mostrarErrorFormulario, ocultarErrorFormulario, mostrarErrorCampo, ocultarErrorCampo, validarCampoTexto } from './form-errors.js';
 import { inicializarTogglePassword, inicializarMedidorFortaleza } from './perfil-comun.js';
 import { renderPreguntasEncuesta } from './encuesta-criterios.js';
 import { REGLAS_CAMPOS } from './validaciones-campos.js';
-import { validarTexto } from './validadores.js';
 
 // La encuesta rellena sus preguntas antes de traducir la página, para que applyTranslations()
 // también les aplique data-i18n a ellas.
@@ -96,6 +95,8 @@ if (registroForm) {
     const rolInput        = document.getElementById('rol');
     const rolLabel        = document.getElementById('rol-label');
     const dniInput        = document.getElementById('dni');
+    const nombreInput     = document.getElementById('nombre');
+    const apellidosInput  = document.getElementById('apellidos');
     const telefonoInput   = document.getElementById('telefono');
     const emailInput      = document.getElementById('email');
     const password        = document.getElementById('password');
@@ -104,6 +105,21 @@ if (registroForm) {
     const togglePassword2 = document.querySelector('.toggle-password2');
     const iconPass        = document.getElementById('icon-pass');
     const iconPass2       = document.getElementById('icon-pass2');
+
+    // Mensajes específicos por motivo real de fallo (min_size/max_size/format), en vez de un
+    // único texto genérico por campo -- ver validarCampoTexto() en form-errors.js.
+    const mensajesDni       = { min_size: t('register.dniMinSize'),      max_size: t('register.dniMaxSize'),      format: t('register.dniFormat') };
+    const mensajesNombre    = { min_size: t('register.nameMinSize'),     max_size: t('register.nameMaxSize'),     format: t('register.nameFormat') };
+    const mensajesApellidos = { min_size: t('register.surnamesMinSize'), max_size: t('register.surnamesMaxSize'), format: t('register.surnamesFormat') };
+    const mensajesTelefono  = { min_size: t('register.phoneMinSize'),    max_size: t('register.phoneMaxSize'),    format: t('register.phoneFormat') };
+    const mensajesEmail     = { min_size: t('register.emailMinSize'),    max_size: t('register.emailMaxSize'),    format: t('register.emailFormat') };
+
+    // Validación en vivo al salir de cada campo, igual que ya hacía password2 con el mismatch.
+    dniInput.addEventListener('blur',       () => validarCampoTexto(dniInput,       REGLAS_CAMPOS.usuario.dni,            mensajesDni));
+    nombreInput.addEventListener('blur',    () => validarCampoTexto(nombreInput,    REGLAS_CAMPOS.usuario.nombre_usuario, mensajesNombre));
+    apellidosInput.addEventListener('blur', () => validarCampoTexto(apellidosInput, REGLAS_CAMPOS.usuario.apellidos,      mensajesApellidos));
+    telefonoInput.addEventListener('blur',  () => validarCampoTexto(telefonoInput,  REGLAS_CAMPOS.usuario.telefono,       mensajesTelefono));
+    emailInput.addEventListener('blur',     () => validarCampoTexto(emailInput,     REGLAS_CAMPOS.usuario.mail,           mensajesEmail));
 
     const urlParams = new URLSearchParams(window.location.search);
     const rolParam  = (urlParams.get('rol') || '').toLowerCase();
@@ -145,25 +161,14 @@ if (registroForm) {
 
     registroForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        [dniInput, telefonoInput, emailInput, password2].forEach(ocultarErrorCampo);
+        [dniInput, nombreInput, apellidosInput, telefonoInput, emailInput, password2].forEach(ocultarErrorCampo);
 
-        const dni      = dniInput.value;
-        const telefono = telefonoInput.value;
-        const email    = emailInput.value;
         let valido = true;
-
-        if (validarTexto(dni, REGLAS_CAMPOS.usuario.dni)) {
-            mostrarErrorCampo(dniInput, t('register.dniInvalid'));
-            valido = false;
-        }
-        if (validarTexto(telefono, REGLAS_CAMPOS.usuario.telefono)) {
-            mostrarErrorCampo(telefonoInput, t('register.phoneInvalid'));
-            valido = false;
-        }
-        if (validarTexto(email, REGLAS_CAMPOS.usuario.mail)) {
-            mostrarErrorCampo(emailInput, t('register.emailInvalid'));
-            valido = false;
-        }
+        if (!validarCampoTexto(dniInput,       REGLAS_CAMPOS.usuario.dni,            mensajesDni))       valido = false;
+        if (!validarCampoTexto(nombreInput,    REGLAS_CAMPOS.usuario.nombre_usuario, mensajesNombre))    valido = false;
+        if (!validarCampoTexto(apellidosInput, REGLAS_CAMPOS.usuario.apellidos,      mensajesApellidos)) valido = false;
+        if (!validarCampoTexto(telefonoInput,  REGLAS_CAMPOS.usuario.telefono,       mensajesTelefono))  valido = false;
+        if (!validarCampoTexto(emailInput,     REGLAS_CAMPOS.usuario.mail,           mensajesEmail))     valido = false;
         if (password.value !== password2.value) {
             mostrarErrorCampo(password2, t('register.passwordMismatch'));
             valido = false;
@@ -176,8 +181,8 @@ if (registroForm) {
 
         const formData = {
             dni:       dniInput.value,
-            nombre:    document.getElementById('nombre').value,
-            apellidos: document.getElementById('apellidos').value,
+            nombre:    nombreInput.value,
+            apellidos: apellidosInput.value,
             email:     emailInput.value,
             telefono:  telefonoInput.value,
             password:  password.value,

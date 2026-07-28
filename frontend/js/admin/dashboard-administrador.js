@@ -6,7 +6,8 @@ import * as viviendas from './viviendas.js';
 import * as solicitudes from './solicitudes.js';
 import * as solicitudesRol from './solicitudes-rol.js';
 import { aplicarPaginacion, resetPagina } from './paginacion.js';
-import { mostrarErrorFormulario, ocultarErrorFormulario, mostrarErrorCampo, ocultarErrorCampo } from '../form-errors.js';
+import { mostrarErrorFormulario, ocultarErrorFormulario, mostrarErrorCampo, ocultarErrorCampo, validarCampoTexto } from '../form-errors.js';
+import { REGLAS_CAMPOS } from '../validaciones-campos.js';
 import { cargarPartials } from '../partials.js';
 import { mostrarToast, cargarPerfilPorMail, inicializarMedidorFortaleza, inicializarTogglePassword, inicializarCambioPassword, inicializarCambioRol } from '../perfil-comun.js';
 
@@ -420,25 +421,28 @@ document.addEventListener('DOMContentLoaded', async function() {
             viviendas.listaViviendasMemoria.splice(0);
             await viviendas.cargarViviendas();
         } else if (seccionActual === 'usuarios') {
-            const dniInput      = this.querySelector('[name="dni"]');
-            const telefonoInput = this.querySelector('[name="telefono"]');
-            const mailInput     = this.querySelector('[name="mail"]');
-            const passwordInput = this.querySelector('[name="password"]');
-            [dniInput, telefonoInput, mailInput, passwordInput].forEach(ocultarErrorCampo);
+            const dniInput        = this.querySelector('[name="dni"]');
+            const nombreInput     = this.querySelector('[name="nombre_usuario"]');
+            const apellidosInput  = this.querySelector('[name="apellidos"]');
+            const telefonoInput   = this.querySelector('[name="telefono"]');
+            const mailInput       = this.querySelector('[name="mail"]');
+            const passwordInput   = this.querySelector('[name="password"]');
+            [dniInput, nombreInput, apellidosInput, telefonoInput, mailInput, passwordInput].forEach(ocultarErrorCampo);
+
+            // Mensajes específicos por motivo real de fallo (min_size/max_size/format), en vez
+            // de un único texto genérico por campo -- misma regla que auth.js (registro).
+            const mensajesDni       = { min_size: t('register.dniMinSize'),      max_size: t('register.dniMaxSize'),      format: t('register.dniFormat') };
+            const mensajesNombre    = { min_size: t('register.nameMinSize'),     max_size: t('register.nameMaxSize'),     format: t('register.nameFormat') };
+            const mensajesApellidos = { min_size: t('register.surnamesMinSize'), max_size: t('register.surnamesMaxSize'), format: t('register.surnamesFormat') };
+            const mensajesTelefono  = { min_size: t('register.phoneMinSize'),    max_size: t('register.phoneMaxSize'),    format: t('register.phoneFormat') };
+            const mensajesEmail     = { min_size: t('register.emailMinSize'),    max_size: t('register.emailMaxSize'),    format: t('register.emailFormat') };
 
             let valido = true;
-            if (!/^[0-9]{8}[A-Z]$/.test(data.dni)) {
-                mostrarErrorCampo(dniInput, t('register.dniInvalid'));
-                valido = false;
-            }
-            if (!/^[0-9]{9}$/.test(data.telefono)) {
-                mostrarErrorCampo(telefonoInput, t('register.phoneInvalid'));
-                valido = false;
-            }
-            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.mail)) {
-                mostrarErrorCampo(mailInput, t('register.emailInvalid'));
-                valido = false;
-            }
+            if (!validarCampoTexto(dniInput,       REGLAS_CAMPOS.usuario.dni,            mensajesDni))       valido = false;
+            if (!validarCampoTexto(nombreInput,    REGLAS_CAMPOS.usuario.nombre_usuario, mensajesNombre))    valido = false;
+            if (!validarCampoTexto(apellidosInput, REGLAS_CAMPOS.usuario.apellidos,      mensajesApellidos)) valido = false;
+            if (!validarCampoTexto(telefonoInput,  REGLAS_CAMPOS.usuario.telefono,       mensajesTelefono))  valido = false;
+            if (!validarCampoTexto(mailInput,      REGLAS_CAMPOS.usuario.mail,           mensajesEmail))     valido = false;
             if (!data.id_edit && !data.password) {
                 mostrarErrorCampo(passwordInput, t('common.fieldRequired'));
                 valido = false;

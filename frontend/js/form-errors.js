@@ -4,6 +4,8 @@
 //  - Error de un campo concreto  -> mostrarErrorCampo() / ocultarErrorCampo()  (borde rojo + texto debajo, patrón nativo de Bootstrap)
 //  - Error de proceso/servidor   -> mostrarErrorFormulario() / ocultarErrorFormulario() (caja de alerta arriba del formulario)
 
+import { validarTexto } from './validadores.js';
+
 /** Muestra un mensaje de error de proceso en la caja de alerta de un formulario. */
 export function mostrarErrorFormulario(el, mensaje) {
     if (!el) return;
@@ -44,6 +46,30 @@ export function ocultarErrorCampo(input) {
         feedback.textContent = '';
         feedback.style.display = 'none';
     }
+}
+
+/**
+ * Valida un campo de texto contra una regla de REGLAS_CAMPOS (ver validaciones-campos.js) y
+ * muestra/oculta su error con el mensaje específico del motivo real de fallo -- 'min_size' |
+ * 'max_size' | 'format', tal cual los devuelve validarTexto() -- en vez de un único mensaje
+ * genérico por campo. Devuelve true si el campo es válido.
+ *
+ * @param {HTMLElement} input   Campo a validar (puede ser null; en ese caso no hace nada y
+ *                              se considera válido, para poder usarse en formularios donde
+ *                              el campo es opcional según el contexto).
+ * @param {Object} regla        { min, max, regex } de REGLAS_CAMPOS.<entidad>.<campo>.
+ * @param {Object} mensajes     { min_size, max_size, format } con el texto ya traducido de
+ *                              cada motivo (ver t('register.dniMinSize') etc.).
+ */
+export function validarCampoTexto(input, regla, mensajes) {
+    if (!input) return true;
+    const motivo = validarTexto(input.value, regla);
+    if (motivo) {
+        mostrarErrorCampo(input, mensajes[motivo] || mensajes.format || '');
+        return false;
+    }
+    ocultarErrorCampo(input);
+    return true;
 }
 
 /** Limpia todos los errores de campo (is-invalid + invalid-feedback) dentro de un formulario. */
