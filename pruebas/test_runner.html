@@ -7,7 +7,7 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="../frontend/css/main.css">
+    <link rel="stylesheet" href="../frontend/css/main.css?v=3">
 
     <style>
         /* Contenedores internos ocultos — data.js los usa para construir resultados */
@@ -32,13 +32,13 @@
                         <i class="bi bi-diagram-3 text-muted"></i>
                     </span>
                     <select id="entidad_select" class="form-select border-start-0 bg-light">
-                        <option value="medicion">usuario</option>
-                        <option value="opinion">vivienda</option>
-                        <option value="parametro">criterio</option>
-                        <option value="parcela">opcion</option>
-                        <option value="parcela_proceso">usuario_vivienda</option>
-                        <option value="proceso">usuario_criterio_opcion</option>
-                        <option value="usuario">vivienda_criterio_opcion</option>
+                        <option value="usuario">usuario</option>
+                        <option value="vivienda">vivienda</option>
+                        <option value="criterio">criterio</option>
+                        <option value="opcion">opcion</option>
+                        <option value="usuario_vivienda">usuario_vivienda</option>
+                        <option value="usuario_criterio_opcion">usuario_criterio_opcion</option>
+                        <option value="vivienda_criterio_opcion">vivienda_criterio_opcion</option>
                     </select>
                 </div>
             </div>
@@ -62,72 +62,70 @@
     <div id="IU_Test_result_nofile"></div>
     <div id="IU_Test_result_file"></div>
 
-    <!-- 1. Cookies e idioma (orden obligatorio) -->
-     <!-- Revisar como se estan implementando en mi codigo -->
-    <script src="../js/cookies.js"></script>
-    <script src="../js/textos_ES.js"></script>
-    <script src="../js/textos_EN.js"></script>
-    <script src="../js/idioma.js"></script>
+    <!-- 1. Cookies (la real del proyecto) e idioma (puente a las traducciones reales, ver
+         pruebas/js/i18n-test.js — no hay textos_ES.js/textos_EN.js/idioma.js propios) -->
+    <script src="../frontend/js/cookies.js?v=3"></script>
+    <script src="js/i18n-test.js?v=3"></script>
+
+    <!-- Puente a las reglas (regex/min/max) y a la lógica de validación genérica reales,
+         única fuente de verdad compartida con el frontend real (ver
+         frontend/js/validaciones-campos.js y frontend/js/validadores.js, usados por auth.js
+         y perfil-comun.js). Son módulos ES (los "js/*.js" de abajo son scripts clásicos), así
+         que se republican como globales para que pruebas/js/validaciones.js y las clases de
+         entidad los lean como "REGLAS_CAMPOS.<entidad>.<campo>" y "Validadores.<funcion>".
+         Los scripts clásicos se ejecutan antes que este módulo (que se difiere como un
+         <script defer>), pero no hay problema: solo se leen estos globales dentro de los
+         métodos de validación, invocados al pulsar "Ejecutar Tests", muy después de que la
+         página haya terminado de cargar. -->
+    <script type="module">
+        window._reglasListo = Promise.all([
+            import('../frontend/js/validaciones-campos.js?v=3'),
+            import('../frontend/js/validadores.js?v=3')
+        ]).then(([reglasMod, validadoresMod]) => {
+            window.REGLAS_CAMPOS = reglasMod.REGLAS_CAMPOS;
+            window.Validadores = validadoresMod;
+        });
+    </script>
 
     <!-- 2. Validaciones y DOM -->
-    <script src="../js/validaciones.js"></script>
-    <script src="../js/DOM_class.js"></script>
+    <script src="js/validaciones.js?v=3"></script>
+    <script src="js/DOM_class.js?v=3"></script>
 
     <!-- 3. Clase base -->
-    <script src="../js/Entidad_Abstracta.js"></script>
+    <script src="js/Entidad_Abstracta.js?v=3"></script>
 
     <!-- 4. Clases de entidad -->
-    <script src="../js/medicion.js"></script>
-    <script src="../js/parametro.js"></script>
-    <script src="../js/parcela.js"></script>
-    <script src="../js/proceso.js"></script>
-    <script src="../js/parcela_proceso.js"></script>
-    <script src="../js/paises.js"></script>
-    <script src="../js/usuario.js"></script>
+    <script src="js/usuario.js?v=3"></script>
+    <script src="js/vivienda.js?v=3"></script>
+    <script src="js/criterio.js?v=3"></script>
+    <script src="js/opcion.js?v=3"></script>
+    <script src="js/usuario_vivienda.js?v=3"></script>
+    <script src="js/usuario_criterio_opcion.js?v=3"></script>
+    <script src="js/vivienda_criterio_opcion.js?v=3"></script>
 
     <!-- 5. Datos de prueba y runner -->
     <script src="pruebas.js"></script>
     <script src="data.js"></script>
 
     <script>
-        // Respeta el idioma ya elegido en el resto de la app (cookie/localStorage) en vez
-        // de forzar español; setLang() sin argumento detecta la preferencia guardada.
-        setLang();
-
-        // opinion no tiene clase .js propia — se define aquí con los campos del DB
-        class opinion extends Entidad_Abstracta {
-            constructor() {
-                super();
-                this.entidad = 'opinion';
-            }
-            cargar_formulario_html(id) {
-                document.getElementById(id).innerHTML =
-                    '<input type="text" id="fecha_opinion" name="fecha_opinion" value="">' +
-                    '<input type="text" id="conclusiones" name="conclusiones" value="">';
-            }
-            ADD_fecha_opinion_validation() {
-                const el = document.getElementById('fecha_opinion');
-                if (!el || !el.value || el.value.trim() === '') return 'fecha_opinion_format_KO';
-                return this._vd('fecha_opinion');
-            }
-            EDIT_fecha_opinion_validation() { return this.ADD_fecha_opinion_validation(); }
-            ADD_conclusiones_validation() { return this._vt('conclusiones', 1, 200, '^[^#@<>]+$'); }
-            EDIT_conclusiones_validation() { return this.ADD_conclusiones_validation(); }
-            SEARCH_fecha_opinion_validation() { return this._vts('fecha_opinion', 10, '^[\\d\\-]+$'); }
-            SEARCH_conclusiones_validation() { return this._vts('conclusiones', 200, '^[^#@<>]+$'); }
-        }
+        // Carga las traducciones reales del proyecto (respeta el idioma ya elegido en el
+        // resto de la app, guardado en la cookie 'lang') antes de permitir ejecutar tests.
+        let _i18nListo = initI18nPruebas();
 
         const mapaEntidades = {
-            medicion,
-            opinion,
-            parametro,
-            parcela,
-            parcela_proceso,
-            proceso,
-            usuario
+            usuario,
+            vivienda,
+            criterio,
+            opcion,
+            usuario_vivienda,
+            usuario_criterio_opcion,
+            vivienda_criterio_opcion
         };
 
-        function ejecutarTests() {
+        async function ejecutarTests() {
+            await _i18nListo;
+            await window._reglasListo;
+
             const nombre = document.getElementById('entidad_select').value;
             const ClaseEntidad = mapaEntidades[nombre];
             const statusEl = document.getElementById('runner_status');

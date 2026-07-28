@@ -297,28 +297,64 @@ class Data_Test {
         var salidapruebasnofile = this.data_test_data_nofile();
         // se invoca la muestra del resultado de las pruebas
         let marcados = {
-            pruebastatus: { value: 'INCORRECTO', style: 'background-color: red' }
+            pruebastatus: { value: 'INCORRECTO', clase: 'table-danger' }
         };
 
 
-        const newWindow = window.open("", "Nueva Ventana", "width=1100,height=800");
-        //newWindow.document.write(salidapruebasnofile);
+        // Se abre aprovechando la pantalla disponible (en vez de un 1100x800 fijo) para que
+        // la tabla, con sus 11 columnas, tenga sitio de sobra donde ajustarse.
+        const anchoVentana  = Math.round(screen.availWidth  * 0.9);
+        const altoVentana   = Math.round(screen.availHeight * 0.9);
+        const newWindow = window.open("", "Nueva Ventana", `width=${anchoVentana},height=${altoVentana}`);
 
+        // Si la ventana ya estaba abierta de una ejecución anterior, el navegador la reutiliza
+        // e ignora "width=/height=" del open() de arriba (comportamiento estándar, no un bug).
+        // Se fuerza el tamaño/posición explícitamente para que el ajuste se aplique siempre.
+        newWindow.resizeTo(anchoVentana, altoVentana);
+        newWindow.moveTo(0, 0);
+        newWindow.focus();
+
+        // Carga el mismo Bootstrap + CSS real de la app (ver test_runner.html) en la ventana
+        // emergente, para que las clases que pinta DOM_class (table-hover, badges, etc.) se
+        // vean igual que en el resto de la app y no como una tabla sin estilo. table-layout:
+        // fixed + word-break hace que la tabla se ajuste al ancho de la ventana en vez de
+        // desbordarse. El body es un contenedor flex a pantalla completa: "#resultados-wrap"
+        // es el único que hace scroll (vertical) cuando hay más filas de las que caben, la
+        // ventana en sí no se redimensiona ni añade scroll propio.
+        newWindow.document.head.innerHTML = `
+            <meta charset="UTF-8">
+            <title>Resultados de pruebas</title>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+            <link rel="stylesheet" href="../frontend/css/main.css?v=3">
+            <style>
+                html, body { height: 100%; margin: 0; }
+                body { display: flex; flex-direction: column; overflow: hidden; }
+                #resultados-wrap { flex: 1 1 auto; overflow-y: auto; overflow-x: hidden; }
+                table { table-layout: fixed; width: 100%; font-size: 0.75rem; }
+                td, th { word-break: break-word; overflow-wrap: break-word; }
+                thead th { position: sticky; top: 0; z-index: 1; }
+            </style>
+        `;
+        newWindow.document.body.innerHTML = '<div id="resultados-wrap" class="p-4"></div>';
+        const resultadosWrap = newWindow.document.getElementById('resultados-wrap');
 
         this.dom.showData('IU_Test_result_nofile', salidapruebasnofile, marcados);
 
-        newWindow.document.body.innerHTML = document.getElementById('IU_Test_result_nofile').innerHTML;
+        resultadosWrap.innerHTML = document.getElementById('IU_Test_result_nofile').innerHTML;
         document.getElementById('IU_Test_result_nofile').style.display = 'none';
 
 
-        var salidapruebasfile = this.data_test_data_file();
+        // la sección de pruebas de fichero solo se muestra si la entidad tiene campos de ese tipo
+        if (this.array_pruebas_file.length > 0) {
+            var salidapruebasfile = this.data_test_data_file();
 
-        // se invoca la muestra del resultado de las pruebas
+            // se invoca la muestra del resultado de las pruebas
 
-        this.dom.showData('IU_Test_result_file', salidapruebasfile, marcados);
+            this.dom.showData('IU_Test_result_file', salidapruebasfile, marcados);
 
-        newWindow.document.body.innerHTML += document.getElementById('IU_Test_result_file').innerHTML;
-        document.getElementById('IU_Test_result_file').style.display = 'none';
+            resultadosWrap.innerHTML += document.getElementById('IU_Test_result_file').innerHTML;
+            document.getElementById('IU_Test_result_file').style.display = 'none';
+        }
 
         newWindow.document.close();
 
@@ -483,68 +519,25 @@ class Data_Test {
     }
 
     /**
-     * Traduce el código KO esperado por la prueba (o el estado "correcto" cuando no
-     * se espera ningún error) al mensaje de error correspondiente, en el idioma activo
-     * en la página. Primero busca un mensaje detallado específico de esta entidad+campo
-     * (textos_ES.js/textos_EN.js, clave "<entidad>_<codigoKO>" — cualificada por entidad
-     * porque el mismo nombre de campo puede tener reglas distintas según la entidad,
-     * p.ej. 'nombre' en parcela vs parametro). Si no existe uno detallado, cae al mismo
-     * mensaje general (getTexto()/_mensajeGenericoError() de idioma.js) que ya traduce
-     * estos códigos en las columnas respuestaesperada/resultadoprueba y en los
-     * formularios reales.
+     * Traduce el código KO esperado por la prueba (o el estado "correcto" cuando no se
+     * espera ningún error) a un mensaje legible, usando las traducciones reales del
+     * proyecto (ver pruebas/js/i18n-test.js). Los códigos son "<campo>_<motivo>_KO"
+     * (p.ej. 'dni_format_KO'): se busca el mensaje genérico por motivo bajo la clave
+     * "pruebas.<motivo>" y se antepone el nombre del campo.
      */
     obtenerMensajeErrorTest(entidad, respuestaesperada) {
-        if (typeof getTexto !== 'function') return String(respuestaesperada);
-        if (respuestaesperada === true) return getTexto('texto_prueba_correcta');
+        if (typeof t !== 'function') return String(respuestaesperada);
+        if (respuestaesperada === true) return t('pruebas.correct');
 
-        const claveDetallada = entidad + '_' + respuestaesperada;
-        const lang = (typeof localStorage !== 'undefined' && localStorage.getItem('lang'))
-            || (typeof getCookie === 'function' && getCookie('lang'))
-            || 'ES';
-        const diccionario = lang === 'EN' ? textos_EN : textos_ES;
-        if (diccionario[claveDetallada] !== undefined) return diccionario[claveDetallada];
+        const motivos = [
+            'min_size', 'max_size', 'format',
+            'not_exist_file', 'type_file', 'max_size_file', 'min_size_name', 'max_size_name', 'format_name_file'
+        ];
+        const motivo = motivos.find(m => respuestaesperada.endsWith('_' + m + '_KO'));
+        if (!motivo) return respuestaesperada;
 
-        return getTexto(respuestaesperada);
+        const campo = respuestaesperada.slice(0, -(motivo.length + 4)); // quita "_<motivo>_KO"
+        return `${campo}: ${t('pruebas.' + motivo)}`;
     }
-
-    devolverTraduccionError(codigoerror) {
-
-        var lang = getCookie('lang');
-
-        var traduccion;
-
-
-        switch (lang) {
-            case 'ES':
-                traduccion = textos_ES;
-                break;
-            case 'EN':
-                traduccion = textos_EN;
-                break;
-            case 'GAL':
-                traduccion = textos_GAL;
-                break;
-            default:
-                traduccion = textos_ES;
-                break;
-        }
-
-
-        if (codigoerror == true) {
-            return 'Exito';
-        }
-        else {
-            if (traduccion[codigoerror] == null) {
-                return 'NO HAY TRADUCCION';
-            }
-            else {
-                return traduccion[codigoerror];
-            }
-        }
-
-    }
-
-
-
 
 }

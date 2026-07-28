@@ -7,6 +7,8 @@ import { initI18n, t, applyTranslations, initLangDropdown } from './i18n.js';
 import { mostrarErrorFormulario, ocultarErrorFormulario, mostrarErrorCampo, ocultarErrorCampo } from './form-errors.js';
 import { inicializarTogglePassword, inicializarMedidorFortaleza } from './perfil-comun.js';
 import { renderPreguntasEncuesta } from './encuesta-criterios.js';
+import { REGLAS_CAMPOS } from './validaciones-campos.js';
+import { validarTexto } from './validadores.js';
 
 // La encuesta rellena sus preguntas antes de traducir la página, para que applyTranslations()
 // también les aplique data-i18n a ellas.
@@ -150,15 +152,15 @@ if (registroForm) {
         const email    = emailInput.value;
         let valido = true;
 
-        if (!/^[0-9]{8}[A-Z]$/.test(dni)) {
+        if (validarTexto(dni, REGLAS_CAMPOS.usuario.dni)) {
             mostrarErrorCampo(dniInput, t('register.dniInvalid'));
             valido = false;
         }
-        if (!/^[0-9]{9}$/.test(telefono)) {
+        if (validarTexto(telefono, REGLAS_CAMPOS.usuario.telefono)) {
             mostrarErrorCampo(telefonoInput, t('register.phoneInvalid'));
             valido = false;
         }
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        if (validarTexto(email, REGLAS_CAMPOS.usuario.mail)) {
             mostrarErrorCampo(emailInput, t('register.emailInvalid'));
             valido = false;
         }

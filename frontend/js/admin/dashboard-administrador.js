@@ -454,12 +454,12 @@ document.addEventListener('DOMContentLoaded', async function() {
             };
                 if (data.id_edit) {
                 params.id_usuario = data.id_edit;
-                if (data.password) params.password = data.password;
+                if (data.password) params.password = await hashPassword(data.password);
                 const res = await apiPost('usuario', 'EDIT', params);
                 if (!res.ok) { mostrarErrorFormulario(errorEl, 'Error al guardar: ' + (res.code || 'desconocido')); return; }
                 mostrarToast('Modificado correctamente', 'success');
             } else {
-                params.password = data.password;
+                params.password = await hashPassword(data.password);
                 const res = await apiPost('usuario', 'ADD', params);
                 if (!res.ok) { mostrarErrorFormulario(errorEl, 'Error al crear usuario: ' + (res.code || 'desconocido')); return; }
                 mostrarToast('Guardado correctamente', 'success');

@@ -1,4 +1,16 @@
 {
+  "pruebas": {
+    "correct": "Proba correcta",
+    "min_size": "non cumpre o tamaño mínimo",
+    "max_size": "supera o tamaño máximo",
+    "format": "non ten o formato correcto",
+    "not_exist_file": "o ficheiro non existe",
+    "type_file": "o tipo de ficheiro non é válido",
+    "max_size_file": "o ficheiro supera o tamaño máximo",
+    "min_size_name": "o nome de ficheiro non cumpre o tamaño mínimo",
+    "max_size_name": "o nome de ficheiro supera o tamaño máximo",
+    "format_name_file": "o nome de ficheiro non ten o formato correcto"
+  },
   "common": {
     "cancel": "Cancelar",
     "save": "Gardar",
@@ -185,6 +197,7 @@
     "confirmPassword": "Confirmar Contrasinal",
     "passwordRequired": "Introduce o teu contrasinal actual.",
     "passwordTooShort": "O novo contrasinal debe ter polo menos 8 caracteres.",
+    "passwordTooLong": "O novo contrasinal non pode ter máis de 15 caracteres.",
     "passwordMismatch": "Os contrasinais non coinciden.",
     "passwordUpdated": "Contrasinal actualizado correctamente.",
     "strengthVeryWeak": "Moi débil",
@@ -262,7 +275,7 @@
       "acceptSuccess": "Solicitude aceptada correctamente.",
       "rejectSuccess": "Solicitude rexeitada.",
       "actionError": "Non se puido completar a acción",
-      "dateRangeTo": "a",
+      "dateRangeTo": " ",
       "openEnded": "sen definir"
     },
     "roleRequests": {

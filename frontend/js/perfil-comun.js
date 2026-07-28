@@ -6,6 +6,8 @@
 
 import { t } from './i18n.js';
 import { mostrarErrorFormulario, ocultarErrorFormulario, mostrarErrorCampo, ocultarErrorCampo } from './form-errors.js';
+import { REGLAS_CAMPOS } from './validaciones-campos.js';
+import { validarTexto } from './validadores.js';
 
 /** Muestra un toast en el `#toastDashboard` de la página actual. */
 export function mostrarToast(mensaje, tipo = 'success') {
@@ -135,7 +137,9 @@ export function inicializarCambioPassword(obtenerEmail) {
         [actualInput, nuevaInput, confirmaInput].forEach(ocultarErrorCampo);
 
         if (!actualInput.value) { mostrarErrorCampo(actualInput, t('profile.passwordRequired')); return; }
-        if (nuevaInput.value.length < 8) { mostrarErrorCampo(nuevaInput, t('profile.passwordTooShort')); return; }
+        const motivoPassword = validarTexto(nuevaInput.value, REGLAS_CAMPOS.usuario.password);
+        if (motivoPassword === 'min_size') { mostrarErrorCampo(nuevaInput, t('profile.passwordTooShort')); return; }
+        if (motivoPassword === 'max_size') { mostrarErrorCampo(nuevaInput, t('profile.passwordTooLong')); return; }
         if (nuevaInput.value !== confirmaInput.value) { mostrarErrorCampo(confirmaInput, t('profile.passwordMismatch')); return; }
         bootstrap.Modal.getOrCreateInstance(document.getElementById('modalConfirmarPassword')).show();
     });
@@ -145,7 +149,11 @@ export function inicializarCambioPassword(obtenerEmail) {
         const actual = actualInput.value;
         const nueva  = nuevaInput.value;
 
-        const res = await apiPost('auth', 'CAMBIAR_CONTRASENA', { mail, password_actual: actual, password: nueva });
+        const res = await apiPost('auth', 'CAMBIAR_CONTRASENA', {
+            mail,
+            password_actual: await hashPassword(actual),
+            password: await hashPassword(nueva)
+        });
 
         bootstrap.Modal.getInstance(document.getElementById('modalConfirmarPassword')).hide();
 

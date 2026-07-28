@@ -1,4 +1,16 @@
 {
+  "pruebas": {
+    "correct": "Prueba correcta",
+    "min_size": "no cumple el tamaño mínimo",
+    "max_size": "supera el tamaño máximo",
+    "format": "no tiene el formato correcto",
+    "not_exist_file": "el fichero no existe",
+    "type_file": "el tipo de fichero no es válido",
+    "max_size_file": "el fichero supera el tamaño máximo",
+    "min_size_name": "el nombre de fichero no cumple el tamaño mínimo",
+    "max_size_name": "el nombre de fichero supera el tamaño máximo",
+    "format_name_file": "el nombre de fichero no tiene el formato correcto"
+  },
   "common": {
     "cancel": "Cancelar",
     "save": "Guardar",
@@ -185,6 +197,7 @@
     "confirmPassword": "Confirmar Contraseña",
     "passwordRequired": "Introduce tu contraseña actual.",
     "passwordTooShort": "La nueva contraseña debe tener al menos 8 caracteres.",
+    "passwordTooLong": "La nueva contraseña no puede tener más de 15 caracteres.",
     "passwordMismatch": "Las contraseñas no coinciden.",
     "passwordUpdated": "Contraseña actualizada correctamente.",
     "strengthVeryWeak": "Muy débil",
@@ -261,7 +274,7 @@
       "filterRejected": "Rechazadas",
       "acceptSuccess": "Solicitud aceptada correctamente.",
       "rejectSuccess": "Solicitud rechazada.",
-      "dateRangeTo": "a",
+      "dateRangeTo": " ",
       "openEnded": "sin definir",
       "actionError": "No se pudo completar la acción"
     },

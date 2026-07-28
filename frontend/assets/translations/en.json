@@ -1,4 +1,16 @@
 {
+  "pruebas": {
+    "correct": "Test passed",
+    "min_size": "does not meet the minimum size",
+    "max_size": "exceeds the maximum size",
+    "format": "has an invalid format",
+    "not_exist_file": "the file does not exist",
+    "type_file": "the file type is not valid",
+    "max_size_file": "the file exceeds the maximum size",
+    "min_size_name": "the file name does not meet the minimum size",
+    "max_size_name": "the file name exceeds the maximum size",
+    "format_name_file": "the file name has an invalid format"
+  },
   "common": {
     "cancel": "Cancel",
     "save": "Save",
@@ -185,6 +197,7 @@
     "confirmPassword": "Confirm Password",
     "passwordRequired": "Please enter your current password.",
     "passwordTooShort": "New password must be at least 8 characters.",
+    "passwordTooLong": "New password cannot be more than 15 characters.",
     "passwordMismatch": "Passwords do not match.",
     "passwordUpdated": "Password updated successfully.",
     "strengthVeryWeak": "Very weak",
@@ -262,7 +275,7 @@
       "acceptSuccess": "Request accepted successfully.",
       "rejectSuccess": "Request rejected.",
       "actionError": "Could not complete the action",
-      "dateRangeTo": "to",
+      "dateRangeTo": "",
       "openEnded": "open-ended"
     },
     "roleRequests": {

@@ -49,7 +49,7 @@ function _renderFilasSolicitudes(pagina) {
                 <i class="bi bi-x-lg"></i> ${t('buttons.reject') || 'Rechazar'}
             </button>` : '-';
 
-        const fechasPropuestas = `${s.fechaInicio} ${t('admin.requests.dateRangeTo') || 'a'} ${s.fechaFin || (t('admin.requests.openEnded') || 'sin definir')}`;
+        const fechasPropuestas = `${s.fechaInicio} ${t('admin.requests.dateRangeTo') || 'a'} ${s.fechaFin || (t('admin.requests.openEnded') || '-')}`;
 
         row.innerHTML = `
             <td class="fw-semibold">${s.huesped}<br><span class="text-muted small">${s.mail}</span></td>

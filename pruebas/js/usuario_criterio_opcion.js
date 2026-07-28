@@ -1,0 +1,29 @@
+// Entidad "usuario_criterio_opcion" real de Sempre na Casa: la respuesta de un huesped a un
+// criterio de la encuesta (tabla puramente relacional, solo tres FK numericas, ver
+// backend/app/usuario_criterio_opcion/usuario_criterio_opcion_SERVICE.php).
+class usuario_criterio_opcion extends Entidad_Abstracta {
+
+    constructor(modo) {
+        super(modo);
+        this.entidad = 'usuario_criterio_opcion';
+    }
+
+    cargar_formulario_html(id) {
+        document.getElementById(id).innerHTML =
+            '<input type="text" id="id_usuario" name="id_usuario" value="">' +
+            '<input type="text" id="id_criterio" name="id_criterio" value="">' +
+            '<input type="text" id="id_opcion" name="id_opcion" value="">';
+    }
+
+    ADD_id_usuario_validation() { return this._vn('id_usuario', REGLAS_CAMPOS.usuario_criterio_opcion.id_usuario.regex); }
+    EDIT_id_usuario_validation() { return this.ADD_id_usuario_validation(); }
+    SEARCH_id_usuario_validation() { return this._vns('id_usuario', REGLAS_CAMPOS.usuario_criterio_opcion.id_usuario.regexBusqueda); }
+
+    ADD_id_criterio_validation() { return this._vn('id_criterio', REGLAS_CAMPOS.usuario_criterio_opcion.id_criterio.regex); }
+    EDIT_id_criterio_validation() { return this.ADD_id_criterio_validation(); }
+    SEARCH_id_criterio_validation() { return this._vns('id_criterio', REGLAS_CAMPOS.usuario_criterio_opcion.id_criterio.regexBusqueda); }
+
+    ADD_id_opcion_validation() { return this._vn('id_opcion', REGLAS_CAMPOS.usuario_criterio_opcion.id_opcion.regex); }
+    EDIT_id_opcion_validation() { return this.ADD_id_opcion_validation(); }
+    SEARCH_id_opcion_validation() { return this._vns('id_opcion', REGLAS_CAMPOS.usuario_criterio_opcion.id_opcion.regexBusqueda); }
+}
