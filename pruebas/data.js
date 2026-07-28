@@ -333,13 +333,13 @@ class Data_Test {
             html, body { height: 100% !important; margin: 0 !important; padding: 0 !important; }
             body { display: flex !important; flex-direction: column !important; overflow: hidden !important; }
             
-            /* 1. ELIMINAMOS EL PADDING SUPERIOR DEL CONTENEDOR CON SCROLL */
+            /* Contenedor principal: activa scroll vertical y horizontal si no caben las columnas */
             #resultados-wrap {
                 flex: 1 1 0 !important;
                 min-height: 0 !important;
                 overflow-y: auto !important;
-                overflow-x: hidden !important;
-                padding: 0 1rem 1rem 1rem !important; /* Arriba 0, lados y abajo 1rem */
+                overflow-x: auto !important; /* Permite scroll horizontal solo si la pantalla es más estrecha que la suma de los títulos */
+                padding: 0 1rem 1rem 1rem !important;
             }
 
             .table-responsive { 
@@ -348,42 +348,39 @@ class Data_Test {
             }
 
             table { 
-                table-layout: fixed !important; 
+                table-layout: auto !important; /* Permite que el ancho se adapte dinámicamente al contenido */
                 width: 100% !important; 
-                max-width: 100% !important;
                 font-size: 0.75rem !important; 
                 border-collapse: separate !important;
                 border-spacing: 0 !important;
-                margin-top: 0 !important; /* Evita que la tabla tenga margen superior */
+                margin-top: 0 !important;
             }
 
-            td, th { 
-                white-space: normal !important;
-                word-wrap: break-word !important;
-                word-break: break-all !important;
-                overflow-wrap: anywhere !important;
-                max-width: 0 !important;
-                padding: 0.5rem !important;
-            }
-
-            /* 2. FORZAMOS A LA CABECERA A PEGARSE AL BORDE SUPERIOR REAL */
-            thead {
-                position: sticky !important;
-                top: 0 !important;
-                z-index: 9999 !important;
-            }
-
+            /* 1. ENCABEZADOS: Nunca se dividen y dictan el ancho mínimo de la columna */
             thead th { 
                 position: sticky !important;
                 top: 0 !important;
                 z-index: 9999 !important;
-                background-color: #e9ecef !important; /* Gris idéntico al de Bootstrap en tu imagen */
+                background-color: #e9ecef !important;
                 color: #000000 !important;
                 border-bottom: 2px solid #dee2e6 !important;
                 background-clip: padding-box !important;
+                
+                /* REGLAS CLAVE PARA TÍTULOS */
+                white-space: nowrap !important; /* EL TÍTULO NUNCA SE ROMPE EN VARIAS LÍNEAS */
+                padding: 0.6rem 0.8rem !important;
+                text-align: left !important;
             }
 
-            /* 3. ASEGURAMOS QUE EL CUERPO NO TENGA POSICIONAMIENTOS RAROS */
+            /* 2. CELDAS DE DATOS: Se adaptan al ancho fijado por el título y parten el texto si es largo */
+            tbody td { 
+                white-space: normal !important;      /* Permite saltos de línea */
+                word-break: break-word !important;   /* Corta palabras largas o rutas */
+                overflow-wrap: anywhere !important;
+                padding: 0.5rem 0.8rem !important;
+                vertical-align: top !important;
+            }
+
             tbody tr, tbody td {
                 position: static !important;
             }
