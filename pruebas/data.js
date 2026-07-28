@@ -557,7 +557,7 @@ class Data_Test {
     /**
      * Traduce el código KO esperado por la prueba (o el estado "correcto" cuando no se
      * espera ningún error) a un mensaje legible, usando las traducciones reales del
-     * proyecto (ver pruebas/js/i18n-test.js). Los códigos son "<campo>_<motivo>_KO"
+     * proyecto (ver el import de frontend/js/i18n.js en pruebas/test_runner.html). Los códigos son "<campo>_<motivo>_KO"
      * (p.ej. 'dni_format_KO'): se busca el mensaje genérico por motivo bajo la clave
      * "pruebas.<motivo>" y se antepone el nombre del campo.
      */
