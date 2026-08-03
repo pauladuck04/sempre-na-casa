@@ -42,12 +42,23 @@ class DOM_class {
         contenedor.innerHTML = html;
     }
 
-    // pruebastatus ('CORRECTO'/'INCORRECTO') se pinta como badge, igual que los estados de
-    // las tablas reales (ver p.ej. dashboard-anfitrion.js: badge bg-success/bg-secondary).
+    // pruebastatus ('CORRECTO'/'INCORRECTO') y backend_status (ver pruebas/backend_fixtures.js)
+    // se pintan como badge, igual que los estados de las tablas reales (ver p.ej.
+    // dashboard-anfitrion.js: badge bg-success/bg-secondary).
     _celda(columna, valor) {
         if (columna === 'pruebastatus') {
             const esCorrecto = valor === 'CORRECTO';
             return `<span class="badge rounded-pill px-3 ${esCorrecto ? 'bg-success' : 'bg-danger'}">${valor}</span>`;
+        }
+        if (columna === 'backend_status') {
+            const clases = {
+                OK: 'bg-success',
+                DIVERGENCIA: 'bg-warning text-dark',
+                BACKEND_MAS_ESTRICTO: 'bg-danger',
+                SIN_CONEXION: 'bg-secondary',
+                'N/A': 'bg-light text-dark'
+            };
+            return `<span class="badge rounded-pill px-3 ${clases[valor] || 'bg-light text-dark'}">${valor}</span>`;
         }
         return valor;
     }
@@ -65,7 +76,8 @@ class DOM_class {
             entidad: '7%', campo: '8%', NumDef: '5%', NumPrueba: '5%',
             descripcion: '12%', accion: '6%', valorprueba: '15%',
             respuestaesperada: '11%', resultadoprueba: '9%',
-            pruebastatus: '8%', textoidiomaerror: '14%'
+            pruebastatus: '8%', textoidiomaerror: '14%',
+            backend_status: '11%', backend_code: '13%'
         };
         return anchos[campo] || 'auto';
     }

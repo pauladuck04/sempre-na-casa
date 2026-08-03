@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backend Runner - Sempre na Casa</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../frontend/css/main.css?v=3">
+</head>
+<body class="bg-light">
+    <div class="d-flex align-items-center justify-content-center min-vh-100 py-5">
+        <div class="login-card" style="max-width: 640px;">
+
+            <div class="text-center mb-4">
+                <img src="../frontend/assets/images/logo.JPG" alt="Logo" width="70" height="70" class="rounded-circle mb-3 logo-shadow"
+                     onerror="this.src='https://ui-avatars.com/api/?name=QA&background=7A99DD&color=fff'">
+                <h2 class="fw-bold mb-1">Backend Runner</h2>
+                <p class="text-muted small mb-0">Ejecuta los mismos casos de prueba contra el backend real (apiPost)</p>
+            </div>
+
+            <div class="alert alert-warning d-flex align-items-start gap-2 py-2 px-3 mb-3" style="font-size: 0.85rem;">
+                <i class="bi bi-exclamation-triangle mt-1"></i>
+                <span>Esto crea filas reales (marcadas "QA...") en la base de datos conectada al backend. Úsalo contra una BD de desarrollo/pruebas, no contra producción.</span>
+            </div>
+
+            <div class="mb-3">
+                <label for="entidad_select" class="form-label fw-semibold">Entidad a probar</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0">
+                        <i class="bi bi-hdd-network text-muted"></i>
+                    </span>
+                    <select id="entidad_select" class="form-select border-start-0 bg-light">
+                        <option value="usuario">usuario</option>
+                        <option value="vivienda">vivienda</option>
+                        <option value="criterio">criterio</option>
+                        <option value="opcion">opcion</option>
+                        <option value="usuario_vivienda">usuario_vivienda</option>
+                        <option value="usuario_criterio_opcion">usuario_criterio_opcion</option>
+                        <option value="vivienda_criterio_opcion">vivienda_criterio_opcion</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="button" class="btn btn-primary-inverse w-100 fw-bold py-2 rounded-pill mb-3" onclick="ejecutarTestsBackend()">
+                <i class="bi bi-cloud-arrow-up me-1"></i>
+                Ejecutar Tests contra Backend
+            </button>
+
+            <div id="runner_status" class="alert alert-info d-flex align-items-start gap-2 mb-0" role="status">
+                <i class="bi bi-info-circle mt-1"></i>
+                <span>Selecciona una entidad y pulsa "Ejecutar Tests contra Backend". Los resultados se abren en una nueva ventana.</span>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 1. Cookies (la real del proyecto) y apiPost real (frontend/js/api.js). No hace falta
+         cargar el CDN de CryptoJS: aquí no se llama a loginUser/registerUser (que son los
+         únicos que usan hashPassword), solo a apiPost directo contra cada entidad. -->
+    <script src="../frontend/js/cookies.js?v=3"></script>
+    <script src="../frontend/js/api.js?v=3"></script>
+
+    <!-- 2. DOM (resultados) y fixtures/comparación contra backend -->
+    <script src="DOM_class.js?v=3"></script>
+    <script src="backend_fixtures.js?v=3"></script>
+
+    <!-- 3. Casos de prueba (los mismos que usa test_runner.html) y el runner de backend -->
+    <script src="pruebas.js"></script>
+    <script src="backend_test.js?v=3"></script>
+
+    <script>
+        async function ejecutarTestsBackend() {
+            const nombre = document.getElementById('entidad_select').value;
+            const statusEl = document.getElementById('runner_status');
+
+            statusEl.className = 'alert alert-info d-flex align-items-start gap-2 mb-0';
+            statusEl.innerHTML = '<i class="bi bi-hourglass-split mt-1"></i><span>Ejecutando tests de backend para: ' + nombre + '... (puede tardar, cada fila llama de verdad al backend)</span>';
+
+            try {
+                const bt = new Backend_Test(nombre);
+                await bt.ejecutar();
+                statusEl.className = 'alert alert-success d-flex align-items-start gap-2 mb-0';
+                statusEl.innerHTML = '<i class="bi bi-check-circle mt-1"></i><span>Tests de backend completados para: ' + nombre + '. Revisa la nueva ventana con los resultados.</span>';
+            } catch (e) {
+                statusEl.className = 'alert alert-danger d-flex align-items-start gap-2 mb-0';
+                statusEl.innerHTML = '<i class="bi bi-x-circle mt-1"></i><span>Error al ejecutar: ' + e.message + '</span>';
+                console.error(e);
+            }
+        }
+    </script>
+</body>
+</html>

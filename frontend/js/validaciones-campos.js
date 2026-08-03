@@ -1,6 +1,6 @@
 // Única fuente de verdad para las reglas de formato (min/max/regex) de los campos de cada
 // entidad, y para la lógica pura que las aplica. La consumen tanto el frontend real (auth.js,
-// perfil-comun.js, form-errors.js) como el framework de pruebas (pruebas/js/*.js, a través del
+// perfil-comun.js, form-errors.js) como el framework de pruebas (pruebas/entidades/*.js, a través del
 // puente en pruebas/test_runner.html), para no mantener los mismos regex ni la misma lógica
 // de validación duplicados en dos sitios que puedan divergir con el tiempo.
 //

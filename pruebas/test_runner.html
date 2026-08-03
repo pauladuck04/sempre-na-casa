@@ -68,11 +68,11 @@
     <!-- Puente a i18n y a las reglas/lógica de validación genérica reales, única fuente de
          verdad compartida con el frontend real (ver frontend/js/i18n.js y
          frontend/js/validaciones-campos.js -- reglas + validadores en un único módulo --,
-         usados por auth.js, form-errors.js y perfil-comun.js). Son módulos ES (los "js/*.js"
-         de abajo son scripts clásicos), así que se republican como globales: initI18n() ya
+         usados por auth.js, form-errors.js y perfil-comun.js). Son módulos ES (los scripts
+         de abajo son clásicos), así que se republican como globales: initI18n() ya
          deja "t"/"setLang"/"getLang" en window (ver i18n.js), y aquí además se exponen
          "REGLAS_CAMPOS.<entidad>.<campo>" y "Validadores.<funcion>" para que los lean
-         pruebas/js/validaciones.js y las clases de entidad. Los scripts clásicos se ejecutan
+         pruebas/entidades/validaciones.js y las clases de entidad. Los scripts clásicos se ejecutan
          antes que este módulo (que se difiere como un <script defer>), pero no hay problema:
          solo se leen estos globales dentro de los métodos de validación o al pulsar "Ejecutar
          Tests", muy después de que la página haya terminado de cargar. -->
@@ -86,20 +86,20 @@
     </script>
 
     <!-- 2. Validaciones y DOM -->
-    <script src="js/validaciones.js?v=3"></script>
-    <script src="js/DOM_class.js?v=3"></script>
+    <script src="entidades/validaciones.js?v=3"></script>
+    <script src="DOM_class.js?v=3"></script>
 
     <!-- 3. Clase base -->
-    <script src="js/Entidad_Abstracta.js?v=3"></script>
+    <script src="Entidad_Abstracta.js?v=3"></script>
 
     <!-- 4. Clases de entidad -->
-    <script src="js/usuario.js?v=3"></script>
-    <script src="js/vivienda.js?v=3"></script>
-    <script src="js/criterio.js?v=3"></script>
-    <script src="js/opcion.js?v=3"></script>
-    <script src="js/usuario_vivienda.js?v=3"></script>
-    <script src="js/usuario_criterio_opcion.js?v=3"></script>
-    <script src="js/vivienda_criterio_opcion.js?v=3"></script>
+    <script src="entidades/usuario.js?v=3"></script>
+    <script src="entidades/vivienda.js?v=3"></script>
+    <script src="entidades/criterio.js?v=3"></script>
+    <script src="entidades/opcion.js?v=3"></script>
+    <script src="entidades/usuario_vivienda.js?v=3"></script>
+    <script src="entidades/usuario_criterio_opcion.js?v=3"></script>
+    <script src="entidades/vivienda_criterio_opcion.js?v=3"></script>
 
     <!-- 5. Datos de prueba y runner -->
     <script src="pruebas.js"></script>
