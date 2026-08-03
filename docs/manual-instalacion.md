@@ -105,10 +105,10 @@ define('BD_test', 'TU_BASE_DE_DATOS'); // el generador automático de la app va 
 `index.php` solo incluye `Comun/config.php`, así que basta con rellenar estos cinco
 valores. No toques nada más en ese fichero.
 
-> Existe también `backend/bd/DBCredentials.php`, apuntando a un hosting externo
-> (AwardSpace) usado en otra etapa del proyecto. **No lo usa la aplicación**
-> (`index.php` no lo incluye); ignóralo salvo que sepas que es el servidor al que
-> te quieres conectar, en cuyo caso copia esos mismos valores a `Comun/config.php`.
+> Existe también `backend/bd/DBCredentials.php`, con los mismos datos de conexión
+> (el hosting de AwardSpace del proyecto). **No lo usa la aplicación** (`index.php`
+> no lo incluye) — es solo una copia de referencia; el que hay que editar siempre
+> es `Comun/config.php`.
 
 ## 5. Levantar el backend
 
@@ -136,11 +136,11 @@ credenciales del paso 4.
 
 ## 6. Servir el frontend
 
-El frontend le habla al backend en la URL fija `BASE_URL` de
+El frontend le habla al backend en la URL fija `API_URL` de
 [`frontend/js/api.js`](../frontend/js/api.js):
 
 ```js
-const BASE_URL = 'http://localhost:8081/index.php';
+const API_URL = 'http://localhost:8081/index.php';
 ```
 
 Si el backend no va a correr en `localhost:8081` (por ejemplo, está en un dominio o
@@ -198,4 +198,4 @@ y es responsabilidad de quien lo administre.
 | Login o registro fallan con "criterio no encontrado" o similar | La base de datos del servidor no tiene cargadas las tablas `criterio`/`opcion` (ver `backend/bd/migrations/seed_criterio_opcion.sql` como referencia de qué debería contener). |
 | Las preferencias de vivienda no muestran peso/restrictivo, o las solicitudes de vivienda/rol no aparecen | La base de datos del servidor no tiene aplicadas todas las migraciones de `backend/bd/migrations/`; habría que pedir que se pongan al día ahí. |
 | La página se ve en blanco o con errores de `fetch` de traducciones/parciales | Se abrió el `.html` con doble clic (`file://`) en vez de servirlo por `http://`. |
-| Puerto ocupado al hacer `php -S localhost:8081` | Otro proceso ya usa el 8081 — arranca con otro puerto (`php -S localhost:8091`) y actualiza `BASE_URL` en `frontend/js/api.js` a juego. |
+| Puerto ocupado al hacer `php -S localhost:8081` | Otro proceso ya usa el 8081 — arranca con otro puerto (`php -S localhost:8091`) y actualiza `API_URL` en `frontend/js/api.js` a juego. |
