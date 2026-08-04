@@ -8,6 +8,11 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="../frontend/css/main.css?v=3">
+
+    <style>
+        /* Contenedores internos ocultos — data.js los usa para construir resultados */
+        #contenedor_IU_form, #IU_Test_result_nofile, #IU_Test_result_file, #form_iu { display: none; }
+    </style>
 </head>
 <body class="bg-light">
     <div class="d-flex align-items-center justify-content-center min-vh-100 py-5">
@@ -16,7 +21,7 @@
             <div class="text-center mb-4">
                 <img src="../frontend/assets/images/logo.JPG" alt="Logo" width="70" height="70" class="rounded-circle mb-3 logo-shadow"
                      onerror="this.src='https://ui-avatars.com/api/?name=QA&background=7A99DD&color=fff'">
-                <h2 class="fw-bold mb-1">Backend Runner</h2>
+                <h2 class="fw-bold mb-1">Backend Test Runner</h2>
                 <p class="text-muted small mb-0">Ejecuta los mismos casos de prueba contra el backend real (apiPost)</p>
             </div>
 
@@ -29,7 +34,7 @@
                 <label for="entidad_select" class="form-label fw-semibold">Entidad a probar</label>
                 <div class="input-group">
                     <span class="input-group-text bg-light border-end-0">
-                        <i class="bi bi-hdd-network text-muted"></i>
+                        <i class="bi bi-diagram-3 text-muted"></i>
                     </span>
                     <select id="entidad_select" class="form-select border-start-0 bg-light">
                         <option value="usuario">usuario</option>
@@ -55,6 +60,9 @@
 
         </div>
     </div>
+
+    <!-- Contenedor oculto requerido por DOM_class.showData() / Backend_Test._mostrarResultados() -->
+    <div id="IU_Test_result_nofile" style="display:none;"></div>
 
     <!-- 1. Cookies (la real del proyecto) y apiPost real (frontend/js/api.js). No hace falta
          cargar el CDN de CryptoJS: aquí no se llama a loginUser/registerUser (que son los
