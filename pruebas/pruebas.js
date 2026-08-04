@@ -42,6 +42,7 @@ let usuario_def_tests = Array(
     ['usuario', 'apellidos', 'input', 28, 'es correcto', 'ADD', true],
     ['usuario', 'apellidos', 'input', 29, 'es correcto', 'EDIT', true],
     ['usuario', 'apellidos', 'input', 30, 'es correcto vacío', 'SEARCH', true],
+    ['usuario', 'apellidos', 'input', 44, 'cumple tamaño máximo', 'SEARCH', 'apellidos_max_size_KO'],
 
     // telefono
     ['usuario', 'telefono', 'input', 31, 'cumple tamaño mínimo', 'ADD', 'telefono_min_size_KO'],
@@ -99,6 +100,7 @@ let usuario_tests_fields = Array(
     ['usuario', 'apellidos', 28, 28, 'ADD', [{ apellidos: 'García López' }], true],
     ['usuario', 'apellidos', 29, 29, 'EDIT', [{ apellidos: 'García López' }], true],
     ['usuario', 'apellidos', 30, 30, 'SEARCH', [{ apellidos: '' }], true],
+    ['usuario', 'apellidos', 44, 44, 'SEARCH', [{ apellidos: 'A'.repeat(101) }], 'apellidos_max_size_KO'],
 
     // telefono
     ['usuario', 'telefono', 31, 31, 'ADD', [{ telefono: '12345' }], 'telefono_min_size_KO'],
@@ -156,7 +158,9 @@ let vivienda_def_tests = Array(
 
     ['vivienda', 'plazas_libres', 'input', 25, 'cumple formato', 'ADD', 'plazas_libres_format_KO'],
     ['vivienda', 'plazas_libres', 'input', 26, 'es correcto', 'ADD', true],
-    ['vivienda', 'plazas_libres', 'input', 27, 'es correcto', 'EDIT', true]
+    ['vivienda', 'plazas_libres', 'input', 27, 'es correcto', 'EDIT', true],
+    ['vivienda', 'plazas_libres', 'input', 28, 'es correcto vacío', 'SEARCH', true],
+    ['vivienda', 'plazas_libres', 'input', 29, 'cumple formato', 'SEARCH', 'plazas_libres_format_KO']
 );
 
 let vivienda_tests_fields = Array(
@@ -190,7 +194,9 @@ let vivienda_tests_fields = Array(
 
     ['vivienda', 'plazas_libres', 25, 25, 'ADD', [{ plazas_libres: 'uno' }], 'plazas_libres_format_KO'],
     ['vivienda', 'plazas_libres', 26, 26, 'ADD', [{ plazas_libres: '1' }], true],
-    ['vivienda', 'plazas_libres', 27, 27, 'EDIT', [{ plazas_libres: '0' }], true]
+    ['vivienda', 'plazas_libres', 27, 27, 'EDIT', [{ plazas_libres: '0' }], true],
+    ['vivienda', 'plazas_libres', 28, 28, 'SEARCH', [{ plazas_libres: '' }], true],
+    ['vivienda', 'plazas_libres', 29, 29, 'SEARCH', [{ plazas_libres: 'abc' }], 'plazas_libres_format_KO']
 );
 
 let vivienda_tests_files = Array();
@@ -211,7 +217,8 @@ let criterio_def_tests = Array(
     ['criterio', 'peso_criterio', 'input', 8, 'cumple formato', 'ADD', 'peso_criterio_format_KO'],
     ['criterio', 'peso_criterio', 'input', 9, 'es correcto', 'ADD', true],
     ['criterio', 'peso_criterio', 'input', 10, 'es correcto', 'EDIT', true],
-    ['criterio', 'peso_criterio', 'input', 11, 'es correcto vacío', 'SEARCH', true]
+    ['criterio', 'peso_criterio', 'input', 11, 'es correcto vacío', 'SEARCH', true],
+    ['criterio', 'peso_criterio', 'input', 12, 'cumple formato', 'SEARCH', 'peso_criterio_format_KO']
 );
 
 let criterio_tests_fields = Array(
@@ -226,7 +233,8 @@ let criterio_tests_fields = Array(
     ['criterio', 'peso_criterio', 8, 8, 'ADD', [{ peso_criterio: 'alto' }], 'peso_criterio_format_KO'],
     ['criterio', 'peso_criterio', 9, 9, 'ADD', [{ peso_criterio: '5' }], true],
     ['criterio', 'peso_criterio', 10, 10, 'EDIT', [{ peso_criterio: '1' }], true],
-    ['criterio', 'peso_criterio', 11, 11, 'SEARCH', [{ peso_criterio: '' }], true]
+    ['criterio', 'peso_criterio', 11, 11, 'SEARCH', [{ peso_criterio: '' }], true],
+    ['criterio', 'peso_criterio', 12, 12, 'SEARCH', [{ peso_criterio: 'alto' }], 'peso_criterio_format_KO']
 );
 
 let criterio_tests_files = Array();
@@ -249,7 +257,8 @@ let opcion_def_tests = Array(
 
     ['opcion', 'id_criterio', 'input', 10, 'cumple formato', 'ADD', 'id_criterio_format_KO'],
     ['opcion', 'id_criterio', 'input', 11, 'es correcto', 'ADD', true],
-    ['opcion', 'id_criterio', 'input', 12, 'es correcto', 'EDIT', true]
+    ['opcion', 'id_criterio', 'input', 12, 'es correcto', 'EDIT', true],
+    ['opcion', 'id_criterio', 'input', 13, 'es correcto vacío', 'SEARCH', true]
 );
 
 let opcion_tests_fields = Array(
@@ -266,7 +275,8 @@ let opcion_tests_fields = Array(
 
     ['opcion', 'id_criterio', 10, 10, 'ADD', [{ id_criterio: 'x' }], 'id_criterio_format_KO'],
     ['opcion', 'id_criterio', 11, 11, 'ADD', [{ id_criterio: '1' }], true],
-    ['opcion', 'id_criterio', 12, 12, 'EDIT', [{ id_criterio: '1' }], true]
+    ['opcion', 'id_criterio', 12, 12, 'EDIT', [{ id_criterio: '1' }], true],
+    ['opcion', 'id_criterio', 13, 13, 'SEARCH', [{ id_criterio: '' }], true]
 );
 
 let opcion_tests_files = Array();
@@ -293,7 +303,10 @@ let usuario_vivienda_def_tests = Array(
     ['usuario_vivienda', 'fecha_fin', 'input', 12, 'es correcto vacío (estancia abierta)', 'ADD', true],
     ['usuario_vivienda', 'fecha_fin', 'input', 13, 'cumple formato', 'ADD', 'fecha_fin_format_KO'],
     ['usuario_vivienda', 'fecha_fin', 'input', 14, 'es correcto', 'ADD', true],
-    ['usuario_vivienda', 'fecha_fin', 'input', 15, 'es correcto vacío', 'SEARCH', true]
+    ['usuario_vivienda', 'fecha_fin', 'input', 15, 'es correcto vacío', 'SEARCH', true],
+
+    ['usuario_vivienda', 'id_usuario', 'input', 16, 'es correcto', 'EDIT', true],
+    ['usuario_vivienda', 'id_vivienda', 'input', 17, 'es correcto', 'EDIT', true]
 );
 
 let usuario_vivienda_tests_fields = Array(
@@ -314,7 +327,10 @@ let usuario_vivienda_tests_fields = Array(
     ['usuario_vivienda', 'fecha_fin', 12, 12, 'ADD', [{ fecha_fin: '' }], true],
     ['usuario_vivienda', 'fecha_fin', 13, 13, 'ADD', [{ fecha_fin: 'nunca' }], 'fecha_fin_format_KO'],
     ['usuario_vivienda', 'fecha_fin', 14, 14, 'ADD', [{ fecha_fin: '2027-02-01' }], true],
-    ['usuario_vivienda', 'fecha_fin', 15, 15, 'SEARCH', [{ fecha_fin: '' }], true]
+    ['usuario_vivienda', 'fecha_fin', 15, 15, 'SEARCH', [{ fecha_fin: '' }], true],
+
+    ['usuario_vivienda', 'id_usuario', 16, 16, 'EDIT', [{ id_usuario: '9101' }], true],
+    ['usuario_vivienda', 'id_vivienda', 17, 17, 'EDIT', [{ id_vivienda: '9001' }], true]
 );
 
 let usuario_vivienda_tests_files = Array();
