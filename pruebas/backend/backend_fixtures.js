@@ -35,17 +35,21 @@ function fechaOffset(diasDesdeHoy) {
     return d.toISOString().slice(0, 10);
 }
 
-/** Primera fila que devuelve un SEARCH real contra el backend, o null si no hay ninguna o si
- * falla la llamada. Se usa para reutilizar datos ya existentes (p.ej. un id_rol válido) en vez
- * de asumir un ID fijo que podría no existir en esta base de datos. */
+/** Primera fila que devuelve un SEARCH real contra el backend, o null si no hay ninguna. Se usa
+ * para reutilizar datos ya existentes (p.ej. un id_rol válido) en vez de asumir un ID fijo que
+ * podría no existir en esta base de datos.
+ *
+ * OJO: a propósito NO se traga un fallo de red/conexión (si apiPost lanza, esta función también
+ * lanza). Antes sí lo hacía, y eso escondía un problema real: un blip de conectividad durante
+ * crearContextoBackend('usuario') convertía esto en null -> idRol = '' -> TODAS las filas
+ * ADD/EDIT de esa ejecución se reportaban como "BACKEND_MAS_ESTRICTO: id_rol_es_nulo_KO" (parece
+ * un fallo de validación) en vez de como lo que era de verdad: SIN_CONEXION. Dejando que el error
+ * se propague, Backend_Test.ejecutar() lo captura y compararConBackend() lo reporta correctamente
+ * como SIN_CONEXION en cada fila. */
 async function primeraFila(entidad, filtro = {}) {
-    try {
-        const res = await apiPost(entidad, 'SEARCH', filtro);
-        if (res.ok && Array.isArray(res.resource) && res.resource.length > 0) return res.resource[0];
-        return null;
-    } catch (e) {
-        return null;
-    }
+    const res = await apiPost(entidad, 'SEARCH', filtro);
+    if (res.ok && Array.isArray(res.resource) && res.resource.length > 0) return res.resource[0];
+    return null;
 }
 
 async function crearUsuarioFixture(semilla, idRolForzado) {
