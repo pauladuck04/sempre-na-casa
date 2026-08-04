@@ -42,7 +42,7 @@ class DOM_class {
         contenedor.innerHTML = html;
     }
 
-    // pruebastatus ('CORRECTO'/'INCORRECTO') y backend_status (ver pruebas/backend_fixtures.js)
+    // pruebastatus ('CORRECTO'/'INCORRECTO') y backend_status (ver pruebas/backend/backend_fixtures.js)
     // se pintan como badge, igual que los estados de las tablas reales (ver p.ej.
     // dashboard-anfitrion.js: badge bg-success/bg-secondary).
     _celda(columna, valor) {

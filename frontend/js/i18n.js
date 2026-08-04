@@ -15,7 +15,7 @@ let idiomaActual = getCookie('lang') || DEFAULT_LANG;
 export async function setLang(lang) {
     if (!LANGS_DISPONIBLES.includes(lang)) return;
     // Resuelto contra la URL de este propio módulo (no contra la página que lo importa): así
-    // funciona igual si lo carga una página de frontend/ o pruebas/test_runner.html, en vez de
+    // funciona igual si lo carga una página de frontend/ o pruebas/frontend/test_runner.html, en vez de
     // depender de que el importador esté siempre en la raíz de frontend/.
     const res = await fetch(new URL(`../assets/translations/${lang}.json`, import.meta.url));
     traducciones = await res.json();

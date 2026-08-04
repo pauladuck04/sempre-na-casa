@@ -1,4 +1,13 @@
 <?php
+header('Access-Control-Allow-Origin: http://127.0.0.1:5500');
+header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header('Access-Control-Allow-Credentials: true');
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 
 session_start();
 
@@ -7,11 +16,7 @@ include_once './Comun/FuncionesGenerales.php';
 include_once './Comun/literalesbase.php';
 include_once './Comun/LogHelper.php';
 
-//Comprobar_si_existe_BD();
-
 error_reporting(E_ALL & ~E_DEPRECATED & ~E_WARNING);
-
-header('Access-Control-Allow-Origin: *');
 
 if (isset($_POST['managementCore'])){
 	if ($_POST['managementCore']=='crear'){
@@ -123,8 +128,8 @@ if ($res['ok']){
 		//escribirLogInterno($res['resource']);
 		exit();
 	}
-}
-else{
+
+}else{
 	$mensaje = 'No existe la definición del controlador indicada : '.$fichero;
 	$respuesta = array('ok' => false, 'code' => 'definicion_controlador_invalida_KO', 'resource' => $mensaje);
 	header('Content-type: application/json');

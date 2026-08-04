@@ -1,12 +1,14 @@
-// Fixtures y payloads base para pruebas/backend_test.js: llamadas REALES al backend PHP
+// Fixtures y payloads base para pruebas/backend/backend_test.js: llamadas REALES al backend PHP
 // (apiPost real, ver frontend/js/api.js) en vez de solo validar en el propio JS.
 //
-// ADD/EDIT necesitan TODOS los campos obligatorios de la entidad (ver notnull en cada
+// ADD/EDIT/DELETE necesitan TODOS los campos obligatorios de la entidad (ver notnull en cada
 // *_SERVICE.php del backend), no solo el campo que se está probando -- si no, el backend
 // rechazaría por "<campo>_es_nulo_KO" en vez de por el motivo real que se quiere comprobar.
 // Por eso cada entidad tiene un "contexto": un payload base válido (con IDs de FK reales,
 // obtenidos o creados contra el backend) sobre el que se sobreescribe únicamente el/los
-// campo(s) bajo prueba con el valor de cada caso de pruebas/pruebas.js.
+// campo(s) bajo prueba con el valor de cada caso de pruebas/backend/backend_pruebas.js (NO de
+// pruebas/frontend/pruebas.js -- ese fichero es solo para las pruebas de FORMATO del frontend en
+// pruebas/frontend/test_runner.html, no se usa aquí).
 //
 // Efecto secundario asumido: cada ejecución crea filas reales en la base de datos conectada
 // (usuario/vivienda/criterio/opcion/usuario_vivienda/...), marcadas con el prefijo "QA" (mismo
@@ -20,6 +22,17 @@
 function idUnico(semilla, digitos) {
     const base = (Date.now() + semilla) % (10 ** digitos);
     return String(base).padStart(digitos, '0');
+}
+
+/** Fecha 'YYYY-MM-DD' relativa a hoy (positivo = futuro, negativo = pasado). Se usa en vez de
+ * fechas fijas para las reglas de negocio de usuario_vivienda_SERVICE::ADD() (fecha_inicio no
+ * puede estar en el pasado): una fecha fija como '2026-01-01' es "futura" solo hasta que el
+ * reloj real la alcanza, y entonces el fixture empieza a fallar con FECHA_INICIO_PASADA_KO
+ * aunque el test en sí no haya cambiado. */
+function fechaOffset(diasDesdeHoy) {
+    const d = new Date();
+    d.setDate(d.getDate() + diasDesdeHoy);
+    return d.toISOString().slice(0, 10);
 }
 
 /** Primera fila que devuelve un SEARCH real contra el backend, o null si no hay ninguna o si
@@ -59,6 +72,14 @@ async function crearCriterioFixture() {
     return { id: res.ok ? res.resource : null };
 }
 
+async function crearRolFixture() {
+    // nombre_rol (varchar(25) NOT NULL, sin UNIQUE en el esquema -- ver dump.sql) tampoco admite
+    // sufijo numérico por las mismas reglas de formato que nombre_criterio; repetir el nombre no
+    // rompe nada al no ser único.
+    const res = await apiPost('rol', 'ADD', { nombre_rol: 'QA Rol Fixture' });
+    return { id: res.ok ? res.resource : null };
+}
+
 async function crearOpcionFixture(semilla, idCriterio) {
     const sufijo = idUnico(semilla, 4);
     const res = await apiPost('opcion', 'ADD', { nombre_opcion: 'QA Fixture ' + sufijo, valor: '1', id_criterio: idCriterio });
@@ -67,10 +88,12 @@ async function crearOpcionFixture(semilla, idCriterio) {
 
 async function crearViviendaFixture(semilla, idAnfitrion) {
     const sufijo = idUnico(semilla, 4);
+    // descripcion es obligatoria en vivienda_SERVICE (notnull ADD), un valor vacío haría
+    // fallar este ADD y dejaría el fixture sin crear (id: null) para todo lo que dependa de él.
     const payload = {
         direccion: 'Rua QA Fixture ' + sufijo,
         ciudad: 'Santiago',
-        descripcion: '',
+        descripcion: 'QA fixture',
         plazas_totales: '2',
         plazas_libres: '1',
         id_anfitrion: idAnfitrion
@@ -92,9 +115,11 @@ async function crearContextoBackend(nombreEntidad) {
             const rol = await primeraFila('rol');
             const idRol = rol ? rol.id_rol : '';
             const fixtureEdit = await crearUsuarioFixture(900001, idRol);
+            const fixtureDelete = await crearUsuarioFixture(900020, idRol);
             return {
                 idPrincipal: fixtureEdit.id,
                 async payloadPara(accion, numPrueba) {
+                    if (accion === 'DELETE') return { id_usuario: fixtureDelete.id };
                     const sufijo = idUnico(numPrueba, 8);
                     const base = {
                         dni: sufijo + 'A',
@@ -114,14 +139,17 @@ async function crearContextoBackend(nombreEntidad) {
         case 'vivienda': {
             const anfitrion = await crearUsuarioFixture(900002);
             const fixtureEdit = await crearViviendaFixture(900003, anfitrion.id);
+            const anfitrionDelete = await crearUsuarioFixture(900021);
+            const fixtureDelete = await crearViviendaFixture(900022, anfitrionDelete.id);
             return {
                 idPrincipal: fixtureEdit.id,
                 async payloadPara(accion, numPrueba) {
+                    if (accion === 'DELETE') return { id_vivienda: fixtureDelete.id };
                     const sufijo = idUnico(numPrueba, 4);
                     const base = {
                         direccion: 'Rua QA ' + sufijo,
                         ciudad: 'Santiago',
-                        descripcion: '',
+                        descripcion: 'QA fixture',
                         plazas_totales: '2',
                         plazas_libres: '1',
                         id_anfitrion: anfitrion.id
@@ -134,11 +162,30 @@ async function crearContextoBackend(nombreEntidad) {
 
         case 'criterio': {
             const fixtureEdit = await crearCriterioFixture();
+            const fixtureDelete = await crearCriterioFixture();
             return {
                 idPrincipal: fixtureEdit.id,
                 async payloadPara(accion) {
+                    if (accion === 'DELETE') return { id_criterio: fixtureDelete.id };
                     const base = { nombre_criterio: 'QA Fixture Backend' };
                     if (accion === 'EDIT') base.id_criterio = fixtureEdit.id;
+                    return base;
+                }
+            };
+        }
+
+        // rol_SERVICE::DELETE tiene un efecto secundario real (desactiva a los usuarios con ese
+        // id_rol), pero como el rol de fixture es nuevo y no lo usa ningún usuario, ese UPDATE
+        // no afecta a ninguna fila real.
+        case 'rol': {
+            const fixtureEdit = await crearRolFixture();
+            const fixtureDelete = await crearRolFixture();
+            return {
+                idPrincipal: fixtureEdit.id,
+                async payloadPara(accion) {
+                    if (accion === 'DELETE') return { id_rol: fixtureDelete.id };
+                    const base = { nombre_rol: 'QA Rol Fixture' };
+                    if (accion === 'EDIT') base.id_rol = fixtureEdit.id;
                     return base;
                 }
             };
@@ -147,9 +194,11 @@ async function crearContextoBackend(nombreEntidad) {
         case 'opcion': {
             const criterio = await crearCriterioFixture();
             const fixtureEdit = await crearOpcionFixture(900006, criterio.id);
+            const fixtureDelete = await crearOpcionFixture(900023, criterio.id);
             return {
                 idPrincipal: fixtureEdit.id,
                 async payloadPara(accion, numPrueba) {
+                    if (accion === 'DELETE') return { id_opcion: fixtureDelete.id };
                     const sufijo = idUnico(numPrueba, 4);
                     const base = { nombre_opcion: 'QA Fixture ' + sufijo, valor: '1', id_criterio: criterio.id };
                     if (accion === 'EDIT') base.id_opcion = fixtureEdit.id;
@@ -165,15 +214,20 @@ async function crearContextoBackend(nombreEntidad) {
         case 'usuario_vivienda': {
             const usuarioEdit  = await crearUsuarioFixture(900007);
             const viviendaEdit = await crearViviendaFixture(900008, usuarioEdit.id);
+            const usuarioDelete  = await crearUsuarioFixture(900024);
+            const viviendaDelete = await crearViviendaFixture(900025, usuarioDelete.id);
             return {
                 idPrincipal: null,
                 async payloadPara(accion, numPrueba) {
+                    if (accion === 'DELETE') {
+                        return { id_usuario: usuarioDelete.id, id_vivienda: viviendaDelete.id };
+                    }
                     if (accion === 'ADD') {
                         const usuario  = await crearUsuarioFixture(numPrueba);
                         const vivienda = await crearViviendaFixture(numPrueba + 500, usuario.id);
-                        return { id_usuario: usuario.id, id_vivienda: vivienda.id, fecha_inicio: '2026-01-01' };
+                        return { id_usuario: usuario.id, id_vivienda: vivienda.id, fecha_inicio: fechaOffset(30) };
                     }
-                    return { id_usuario: usuarioEdit.id, id_vivienda: viviendaEdit.id, fecha_inicio: '2026-01-01' };
+                    return { id_usuario: usuarioEdit.id, id_vivienda: viviendaEdit.id, fecha_inicio: fechaOffset(30) };
                 }
             };
         }
@@ -182,9 +236,13 @@ async function crearContextoBackend(nombreEntidad) {
             const criterio    = await crearCriterioFixture();
             const opcion      = await crearOpcionFixture(900010, criterio.id);
             const usuarioEdit = await crearUsuarioFixture(900011);
+            const usuarioDelete = await crearUsuarioFixture(900026);
             return {
                 idPrincipal: null,
                 async payloadPara(accion, numPrueba) {
+                    if (accion === 'DELETE') {
+                        return { id_usuario: usuarioDelete.id, id_criterio: criterio.id, id_opcion: opcion.id };
+                    }
                     const idUsuario = accion === 'ADD' ? (await crearUsuarioFixture(numPrueba)).id : usuarioEdit.id;
                     return { id_usuario: idUsuario, id_criterio: criterio.id, id_opcion: opcion.id };
                 }
@@ -196,9 +254,14 @@ async function crearContextoBackend(nombreEntidad) {
             const opcion        = await crearOpcionFixture(900013, criterio.id);
             const anfitrionEdit = await crearUsuarioFixture(900014);
             const viviendaEdit  = await crearViviendaFixture(900015, anfitrionEdit.id);
+            const anfitrionDelete = await crearUsuarioFixture(900027);
+            const viviendaDelete  = await crearViviendaFixture(900028, anfitrionDelete.id);
             return {
                 idPrincipal: null,
                 async payloadPara(accion, numPrueba) {
+                    if (accion === 'DELETE') {
+                        return { id_vivienda: viviendaDelete.id, id_criterio: criterio.id, id_opcion: opcion.id };
+                    }
                     let idVivienda = viviendaEdit.id;
                     if (accion === 'ADD') {
                         const anfitrion = await crearUsuarioFixture(numPrueba);
@@ -230,7 +293,7 @@ async function crearContextoBackend(nombreEntidad) {
  *  - 'SIN_CONEXION': la llamada ha fallado (backend caído, URL incorrecta...).
  */
 async function compararConBackend(nombreEntidad, accion, contexto, numPrueba, overrides, respuestaEsperadaLocal) {
-    if (accion !== 'ADD' && accion !== 'EDIT' && accion !== 'SEARCH') {
+    if (accion !== 'ADD' && accion !== 'EDIT' && accion !== 'SEARCH' && accion !== 'DELETE') {
         return { backend_status: 'N/A', backend_code: '' };
     }
     try {

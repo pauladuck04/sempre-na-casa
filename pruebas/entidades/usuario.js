@@ -1,6 +1,6 @@
 // Entidad "usuario" real de Sempre na Casa. Los regex/min/max de cada campo viven en
 // frontend/js/validaciones-campos.js (REGLAS_CAMPOS), única fuente de verdad que también
-// usa frontend/js/auth.js (registro) — ver el puente en pruebas/test_runner.html.
+// usa frontend/js/auth.js (registro) — ver el puente en pruebas/frontend/test_runner.html.
 class usuario extends Entidad_Abstracta {
 
     constructor(modo) {

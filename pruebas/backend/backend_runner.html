@@ -7,19 +7,36 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="../frontend/css/main.css?v=3">
+    <link rel="stylesheet" href="../../frontend/css/main.css?v=3">
 
     <style>
-        /* Contenedores internos ocultos — data.js los usa para construir resultados */
-        #contenedor_IU_form, #IU_Test_result_nofile, #IU_Test_result_file, #form_iu { display: none; }
+        /* Contenedor oculto interno — DOM_class.showData() lo usa para construir el HTML de la
+           tabla antes de que Backend_Test._mostrarResultados() lo copie a #resultados_panel. */
+        #IU_Test_result_nofile { display: none; }
+
+        /* Resultados: antes se abrían en una ventana emergente (window.open), pero eso depende
+           de que el navegador no la bloquee -- al abrirse tras las llamadas await al backend
+           real, la mayoría de navegadores ya no la asocian al clic del usuario y la bloquean
+           (window.open devuelve null). Se pintan aquí, en la misma página, para no depender de
+           popups en absoluto. */
+        #resultados_panel .table-responsive { overflow-x: auto; }
+        #resultados_panel table { table-layout: auto; width: 100%; font-size: 0.8rem; }
+        #resultados_panel thead th {
+            position: sticky; top: 0; z-index: 1; background-color: #e9ecef;
+            white-space: nowrap; padding: 0.6rem 0.8rem; text-align: left;
+        }
+        #resultados_panel tbody td {
+            white-space: normal; word-break: break-word; overflow-wrap: anywhere;
+            padding: 0.5rem 0.8rem; vertical-align: top;
+        }
     </style>
 </head>
 <body class="bg-light">
-    <div class="d-flex align-items-center justify-content-center min-vh-100 py-5">
+    <div class="d-flex align-items-center justify-content-center py-5">
         <div class="login-card" style="max-width: 640px;">
 
             <div class="text-center mb-4">
-                <img src="../frontend/assets/images/logo.JPG" alt="Logo" width="70" height="70" class="rounded-circle mb-3 logo-shadow"
+                <img src="../../frontend/assets/images/logo.JPG" alt="Logo" width="70" height="70" class="rounded-circle mb-3 logo-shadow"
                      onerror="this.src='https://ui-avatars.com/api/?name=QA&background=7A99DD&color=fff'">
                 <h2 class="fw-bold mb-1">Backend Test Runner</h2>
                 <p class="text-muted small mb-0">Ejecuta los mismos casos de prueba contra el backend real (apiPost)</p>
@@ -41,6 +58,7 @@
                         <option value="vivienda">vivienda</option>
                         <option value="criterio">criterio</option>
                         <option value="opcion">opcion</option>
+                        <option value="rol">rol</option>
                         <option value="usuario_vivienda">usuario_vivienda</option>
                         <option value="usuario_criterio_opcion">usuario_criterio_opcion</option>
                         <option value="vivienda_criterio_opcion">vivienda_criterio_opcion</option>
@@ -55,27 +73,33 @@
 
             <div id="runner_status" class="alert alert-info d-flex align-items-start gap-2 mb-0" role="status">
                 <i class="bi bi-info-circle mt-1"></i>
-                <span>Selecciona una entidad y pulsa "Ejecutar Tests contra Backend". Los resultados se abren en una nueva ventana.</span>
+                <span>Selecciona una entidad y pulsa "Ejecutar Tests contra Backend". Los resultados aparecen debajo.</span>
             </div>
 
         </div>
     </div>
 
-    <!-- Contenedor oculto requerido por DOM_class.showData() / Backend_Test._mostrarResultados() -->
-    <div id="IU_Test_result_nofile" style="display:none;"></div>
+    <!-- Contenedor oculto requerido por DOM_class.showData() -->
+    <div id="IU_Test_result_nofile"></div>
+
+    <!-- Resultados: se rellena e imprime en la propia página (ver nota más arriba sobre por
+         qué ya no se usa una ventana emergente) -->
+    <div id="resultados_panel" class="container-fluid px-4 pb-5" style="display:none;"></div>
 
     <!-- 1. Cookies (la real del proyecto) y apiPost real (frontend/js/api.js). No hace falta
          cargar el CDN de CryptoJS: aquí no se llama a loginUser/registerUser (que son los
          únicos que usan hashPassword), solo a apiPost directo contra cada entidad. -->
-    <script src="../frontend/js/cookies.js?v=3"></script>
-    <script src="../frontend/js/api.js?v=3"></script>
+    <script src="../../frontend/js/cookies.js?v=3"></script>
+    <script src="../../frontend/js/api.js?v=3"></script>
 
     <!-- 2. DOM (resultados) y fixtures/comparación contra backend -->
-    <script src="DOM_class.js?v=3"></script>
+    <script src="../common/DOM_class.js?v=3"></script>
     <script src="backend_fixtures.js?v=3"></script>
 
-    <!-- 3. Casos de prueba (los mismos que usa test_runner.html) y el runner de backend -->
-    <script src="pruebas.js"></script>
+    <!-- 3. Casos de prueba DEDICADOS al backend (independientes de pruebas/frontend/pruebas.js,
+         que solo es para las pruebas de formato del frontend en
+         pruebas/frontend/test_runner.html) y el runner de backend -->
+    <script src="backend_pruebas.js?v=3"></script>
     <script src="backend_test.js?v=3"></script>
 
     <script>
@@ -83,14 +107,22 @@
             const nombre = document.getElementById('entidad_select').value;
             const statusEl = document.getElementById('runner_status');
 
+            // Se abre AQUÍ, antes de cualquier await, para que el navegador todavía la asocie
+            // al clic (ver el comentario en Backend_Test.abrirVentanaResultados). Si el
+            // navegador la bloquea igualmente, Backend_Test cae de forma automática a pintar
+            // los resultados en #resultados_panel, en esta misma página.
+            const ventanaResultados = Backend_Test.abrirVentanaResultados();
+
             statusEl.className = 'alert alert-info d-flex align-items-start gap-2 mb-0';
             statusEl.innerHTML = '<i class="bi bi-hourglass-split mt-1"></i><span>Ejecutando tests de backend para: ' + nombre + '... (puede tardar, cada fila llama de verdad al backend)</span>';
 
             try {
-                const bt = new Backend_Test(nombre);
+                const bt = new Backend_Test(nombre, ventanaResultados);
                 await bt.ejecutar();
                 statusEl.className = 'alert alert-success d-flex align-items-start gap-2 mb-0';
-                statusEl.innerHTML = '<i class="bi bi-check-circle mt-1"></i><span>Tests de backend completados para: ' + nombre + '. Revisa la nueva ventana con los resultados.</span>';
+                const dondeVerlo = ventanaResultados ? 'la nueva ventana' : 'la tabla de resultados debajo';
+                statusEl.innerHTML = '<i class="bi bi-check-circle mt-1"></i><span>Tests de backend completados para: ' + nombre + '. Revisa ' + dondeVerlo + '.</span>';
+                if (!ventanaResultados) document.getElementById('resultados_panel').scrollIntoView({ behavior: 'smooth' });
             } catch (e) {
                 statusEl.className = 'alert alert-danger d-flex align-items-start gap-2 mb-0';
                 statusEl.innerHTML = '<i class="bi bi-x-circle mt-1"></i><span>Error al ejecutar: ' + e.message + '</span>';

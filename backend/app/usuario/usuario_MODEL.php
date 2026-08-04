@@ -8,7 +8,7 @@ class usuario_MODEL extends ModelBase{
 	//METODOS
 	// tabla tabla
 	// clave array(clavestabla)
-	// foraneas array(tablaforanea => clavetablaforanea)
+	// foraneas array(clavetablaforanea => tablaforanea) -- ver mapping::SEARCH()/SEARCH_BY()
     // autoincrement array(atributos autoincrementales)
     // unicos array(atributos unique)
 	function __construct(){
