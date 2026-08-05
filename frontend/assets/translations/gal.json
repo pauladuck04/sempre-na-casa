@@ -245,7 +245,9 @@
       "roles": "Roles e Permisos",
       "homes": "Xestión Vivendas",
       "criteria": "Criterios Match",
-      "requests": "Solicitudes"
+      "requests": "Solicitudes",
+      "frontendTest": "Frontend Test",
+      "backendTest": "Backend Test"
     },
     "table": {
       "host": "Anfitrión",
@@ -309,7 +311,9 @@
       "roles": { "title": "Roles e Permisos", "description": "Configura roles e permisos de acceso" },
       "homes": { "title": "Xestión de Vivendas", "description": "Xestiona o catálogo de vivendas dispoñibles" },
       "criteria": { "title": "Criterios de Compatibilidade", "description": "Define criterios de compatibilidade para o matching" },
-      "requests": { "title": "Solicitudes de Vivenda", "description": "Xestiona as solicitudes de convivencia que os hóspedes fan ás vivendas" }
+      "requests": { "title": "Solicitudes de Vivenda", "description": "Xestiona as solicitudes de convivencia que os hóspedes fan ás vivendas" },
+      "frontendTest": { "title": "Frontend Test", "description": "Batería de probas de validación das entidades do frontend" },
+      "backendTest": { "title": "Backend Test", "description": "Probas contra as accións reais do backend (ADD/EDIT/SEARCH/DELETE)" }
     },
     "convivencias": { "noActive": "Non hai convivencias activas" },
     "users": {

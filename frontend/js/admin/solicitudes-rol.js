@@ -39,17 +39,19 @@ function _renderFilasSolicitudesRol(pagina) {
     pagina.forEach(s => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td class="fw-semibold">${s.usuario}<br><span class="text-muted small">${s.mail}</span></td>
+            <td class="fw-semibold">${s.usuario}<br><span class="text-muted small">${s.mail.replace('@', '@<wbr>')}</span></td>
             <td>${s.rolActual}</td>
             <td>${s.rolSolicitado}</td>
             <td>${s.fechaSolicitud}</td>
             <td>
-                <button type="button" class="btn btn-sm btn-success rounded-pill me-1 btn-aceptar-cambio-rol" data-id-usuario="${s.id_usuario}">
-                    <i class="bi bi-check-lg"></i> ${t('buttons.accept')}
-                </button>
-                <button type="button" class="btn btn-sm btn-outline-danger rounded-pill btn-rechazar-cambio-rol" data-id-usuario="${s.id_usuario}">
-                    <i class="bi bi-x-lg"></i> ${t('buttons.reject')}
-                </button>
+                <div class="d-flex flex-wrap gap-1">
+                    <button type="button" class="btn btn-sm btn-success rounded-pill btn-aceptar-cambio-rol" data-id-usuario="${s.id_usuario}">
+                        <i class="bi bi-check-lg"></i> ${t('buttons.accept')}
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-danger rounded-pill btn-rechazar-cambio-rol" data-id-usuario="${s.id_usuario}">
+                        <i class="bi bi-x-lg"></i> ${t('buttons.reject')}
+                    </button>
+                </div>
             </td>
         `;
         tbody.appendChild(row);

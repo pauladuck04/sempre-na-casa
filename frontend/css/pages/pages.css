@@ -228,16 +228,14 @@
    TABLAS / GESTIÓN
    ============================================ */
 .table-responsive {
-    width: max-content;
-    min-width: 100%;
+    width: 100%;
     max-width: 100%;
-    overflow-x: auto;
+    overflow-x: hidden;
 }
 
 .table {
-    width: max-content;
-    min-width: 100%;
-    table-layout: auto;
+    width: 100%;
+    table-layout: fixed;
     border-collapse: collapse;
     margin-bottom: var(--space-lg);
 }
@@ -257,7 +255,19 @@
 .table td {
     padding: var(--space-md);
     border-bottom: 1px solid var(--color-gris-400);
-    white-space: nowrap;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    font-size: var(--font-size-sm);
+}
+
+/* Un email no tiene espacios, así que overflow-wrap:anywhere (arriba) lo cortaría a mitad de
+   palabra en cualquier punto para no desbordar la columna. Aquí se le da un único punto de
+   corte "bueno" justo después de la @ (ver el <wbr> insertado al pintar la fila en
+   usuarios.js/solicitudes.js/solicitudes-rol.js/huespedes.js): si con eso no basta, break-word
+   (no tan agresivo como anywhere) solo entra como último recurso para evitar desbordar la fila,
+   que crece de alto en vez de cortar el correo de forma arbitraria. */
+.table td .text-muted.small {
+    overflow-wrap: break-word;
 }
 
 .table tbody tr:hover {

@@ -1,13 +1,37 @@
 class Data_Test {
 
+    // Abre la ventana de resultados de forma SÍNCRONA, antes de cualquier await del llamador
+    // (ver ejecutarTests() en pruebas/frontend/test_runner.html). Antes esto se hacía dentro de
+    // data_test_class(), pero para entonces ya han pasado un par de await (esperar a que
+    // carguen los módulos de i18n/reglas), y encima ahora test_runner.html puede vivir dentro de
+    // un <iframe> (embebido en dashboard-administrador.html): con ese retraso, o simplemente por
+    // estar en un iframe anidado, el navegador deja de asociar la ventana al clic del usuario y
+    // la bloquea -- window.open() devuelve null, y el resizeTo() de después explota con
+    // "Cannot read properties of null". Abriéndola aquí, ya vacía, y rellenándola después, se
+    // evita ese problema (ver el mismo arreglo en pruebas/backend/backend_test.js).
+    static abrirVentanaResultados() {
+        const anchoVentana = Math.round(screen.availWidth * 0.9);
+        const altoVentana  = Math.round(screen.availHeight * 0.9);
+        const newWindow = window.open("", "Nueva Ventana", `width=${anchoVentana},height=${altoVentana}`);
+        if (!newWindow) return null;
+        newWindow.resizeTo(anchoVentana, altoVentana);
+        newWindow.moveTo(0, 0);
+        newWindow.focus();
+        return newWindow;
+    }
+
     /**
-     * 
-     * @param {declaracion de la entidad} entidad 
+     *
+     * @param {declaracion de la entidad} entidad
+     * @param {Window|null} ventanaResultados ventana ya abierta por abrirVentanaResultados(), o
+     *   null para que se pinte en #resultados_panel dentro de la propia página (ver
+     *   data_test_class()).
      */
-    constructor(entidad) {
+    constructor(entidad, ventanaResultados) {
 
 
         this.actions = ["ADD", "EDIT", "SEARCH"];
+        this.ventanaResultados = ventanaResultados || null;
 
         // se crea la entidad indicada en modo test
         this.entidad = new entidad('test');
@@ -309,14 +333,19 @@ class Data_Test {
         document.getElementById('IU_Test_result_file').style.display = 'none';
     }
 
-    // Dimensionado de ventana
-    const anchoVentana = Math.round(screen.availWidth * 0.9);
-    const altoVentana = Math.round(screen.availHeight * 0.9);
-    const newWindow = window.open("", "Nueva Ventana", `width=${anchoVentana},height=${altoVentana}`);
+    // La ventana ya se abrió de forma síncrona en Data_Test.abrirVentanaResultados() (ver el
+    // comentario ahí). Si no se pasó ninguna, o el navegador la bloqueó de todos modos, se pinta
+    // en #resultados_panel dentro de la propia página como último recurso.
+    const newWindow = (this.ventanaResultados && !this.ventanaResultados.closed) ? this.ventanaResultados : null;
 
-    newWindow.resizeTo(anchoVentana, altoVentana);
-    newWindow.moveTo(0, 0);
-    newWindow.focus();
+    if (!newWindow) {
+        const panel = document.getElementById('resultados_panel');
+        if (panel) {
+            panel.innerHTML = `<h5 class="fw-bold mb-3">Resultados: ${this.entidad.entidad}</h5>${htmlContenido}`;
+            panel.style.display = 'block';
+        }
+        return true;
+    }
 
     // Inyección limpia y síncrona de todo el documento HTML
     newWindow.document.open();

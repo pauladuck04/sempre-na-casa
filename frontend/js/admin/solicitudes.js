@@ -42,17 +42,19 @@ function _renderFilasSolicitudes(pagina) {
     pagina.forEach(s => {
         const row = document.createElement('tr');
         const acciones = s.estado === 'PENDIENTE' ? `
-            <button type="button" class="btn btn-sm btn-success rounded-pill me-1 btn-aceptar-solicitud" data-id-usuario="${s.id_usuario}" data-id-vivienda="${s.id_vivienda}">
-                <i class="bi bi-check-lg"></i> ${t('buttons.accept') || 'Aceptar'}
-            </button>
-            <button type="button" class="btn btn-sm btn-outline-danger rounded-pill btn-rechazar-solicitud" data-id-usuario="${s.id_usuario}" data-id-vivienda="${s.id_vivienda}">
-                <i class="bi bi-x-lg"></i> ${t('buttons.reject') || 'Rechazar'}
-            </button>` : '-';
+            <div class="d-flex flex-wrap gap-1">
+                <button type="button" class="btn btn-sm btn-success rounded-pill btn-aceptar-solicitud" data-id-usuario="${s.id_usuario}" data-id-vivienda="${s.id_vivienda}">
+                    <i class="bi bi-check-lg"></i> ${t('buttons.accept') || 'Aceptar'}
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-danger rounded-pill btn-rechazar-solicitud" data-id-usuario="${s.id_usuario}" data-id-vivienda="${s.id_vivienda}">
+                    <i class="bi bi-x-lg"></i> ${t('buttons.reject') || 'Rechazar'}
+                </button>
+            </div>` : '-';
 
         const fechasPropuestas = `${s.fechaInicio} ${t('admin.requests.dateRangeTo') || 'a'} ${s.fechaFin || (t('admin.requests.openEnded') || '-')}`;
 
         row.innerHTML = `
-            <td class="fw-semibold">${s.huesped}<br><span class="text-muted small">${s.mail}</span></td>
+            <td class="fw-semibold">${s.huesped}<br><span class="text-muted small">${s.mail.replace('@', '@<wbr>')}</span></td>
             <td>${s.vivienda}</td>
             <td>${s.anfitrion}</td>
             <td>${s.fechaSolicitud}</td>

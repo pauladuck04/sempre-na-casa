@@ -47,7 +47,7 @@ export function renderizarHuespedes(lista) {
                     <input class="form-check-input huesped-checkbox align-self-start mt-1" type="checkbox" value="${i.id}">
                     <div>
                         <span class="fw-semibold d-block huesped-nombre" data-id="${i.id}" style="cursor:pointer;">${i.nombre}</span>
-                        <span class="text-muted small d-block">${i.email}</span>
+                        <span class="text-muted small d-block">${i.email.replace('@', '@<wbr>')}</span>
                     </div>
                 </div>
             </td>

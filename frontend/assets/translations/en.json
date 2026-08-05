@@ -245,7 +245,9 @@
       "roles": "Roles & Permissions",
       "homes": "Home Management",
       "criteria": "Match Criteria",
-      "requests": "Requests"
+      "requests": "Requests",
+      "frontendTest": "Frontend Test",
+      "backendTest": "Backend Test"
     },
     "table": {
       "host": "Host",
@@ -309,7 +311,9 @@
       "roles": { "title": "Roles & Permissions", "description": "Configure access roles and permissions" },
       "homes": { "title": "Home Management", "description": "Manage the catalog of available homes" },
       "criteria": { "title": "Compatibility Criteria", "description": "Define compatibility criteria for matching" },
-      "requests": { "title": "Home Requests", "description": "Manage the cohabitation requests guests make to homes" }
+      "requests": { "title": "Home Requests", "description": "Manage the cohabitation requests guests make to homes" },
+      "frontendTest": { "title": "Frontend Test", "description": "Frontend entity validation test suite" },
+      "backendTest": { "title": "Backend Test", "description": "Tests against the real backend actions (ADD/EDIT/SEARCH/DELETE)" }
     },
     "convivencias": { "noActive": "No active cohabitations" },
     "users": {

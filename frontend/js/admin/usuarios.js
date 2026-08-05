@@ -57,8 +57,6 @@ function _renderFilasUsuarios(pagina) {
     pagina.forEach(usuario => {
         const rolObj    = listaRolesMemoria.find(r => r.id == usuario.id_rol);
         const rolNombre = rolObj ? rolObj.nombre : `Rol ${usuario.id_rol}`;
-        const iniciales = usuario.nombre.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-        const colorAvatar = usuario.id_rol == 2 ? 'var(--color-secundario)' : 'var(--color-primario)';
         const badgeEstado = usuario.estado === 'activo'   ? 'bg-success'
                           : usuario.estado === 'inactivo' ? 'bg-secondary'
                                                           : 'bg-warning text-dark';
@@ -74,13 +72,9 @@ function _renderFilasUsuarios(pagina) {
             <td>
                 <div class="d-flex align-items-center gap-2">
                     <input class="form-check-input usuario-checkbox align-self-start mt-1" type="checkbox" value="${usuario.id}">
-                    <div class="rounded-circle text-white fw-bold"
-                         style="width:35px;height:35px;background-color:${colorAvatar};display:flex;align-items:center;justify-content:center;font-size:.9rem;">
-                        ${iniciales}
-                    </div>
                     <div>
                         <span class="fw-semibold d-block usuario-nombre" data-id="${usuario.id}" style="cursor:pointer;">${usuario.nombre}</span>
-                        <span class="text-muted small d-block">${usuario.email}</span>
+                        <span class="text-muted small d-block">${usuario.email.replace('@', '@<wbr>')}</span>
                     </div>
                 </div>
             </td>

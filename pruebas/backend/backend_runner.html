@@ -19,6 +19,14 @@
            tabla antes de que Backend_Test._mostrarResultados() lo copie a #resultados_panel. */
         #IU_Test_result_nofile { display: none; }
 
+        /* Pantalla inicial (antes de ejecutar tests) más compacta que el .login-card normal
+           (pages.css usa padding: 2.5rem 2rem, pensado para login/registro) para que quepa sin
+           scroll incluso en viewports pequeños -- p.ej. el <iframe> de altura fija en el que
+           vive esta página dentro de dashboard-administrador.html. Solo afecta a esta página:
+           no se toca la clase compartida .login-card. */
+        #backend-test-card { padding: 1.25rem 1.5rem; }
+        #backend-test-card img { width: 48px; height: 48px; }
+
         /* Resultados: antes se abrían en una ventana emergente (window.open), pero eso depende
            de que el navegador no la bloquee -- al abrirse tras las llamadas await al backend
            real, la mayoría de navegadores ya no la asocian al clic del usuario y la bloquean
@@ -37,23 +45,23 @@
     </style>
 </head>
 <body class="bg-light">
-    <div class="d-flex align-items-center justify-content-center py-5">
-        <div class="login-card" style="max-width: 640px;">
+    <div class="d-flex align-items-center justify-content-center py-2">
+        <div id="backend-test-card" class="login-card" style="max-width: 640px;">
 
-            <div class="text-center mb-4">
-                <img src="../../frontend/assets/images/logo.JPG" alt="Logo" width="70" height="70" class="rounded-circle mb-3 logo-shadow"
+            <div class="text-center mb-2">
+                <img src="../../frontend/assets/images/logo.JPG" alt="Logo" class="rounded-circle mb-2 logo-shadow"
                      onerror="this.src='https://ui-avatars.com/api/?name=QA&background=7A99DD&color=fff'">
-                <h2 class="fw-bold mb-1">Backend Test Runner</h2>
+                <h2 class="fw-bold mb-1" style="font-size: 1.4rem;">Backend Test Runner</h2>
                 <p class="text-muted small mb-0">Ejecuta los mismos casos de prueba contra el backend real (apiPost)</p>
             </div>
 
-            <div class="alert alert-warning d-flex align-items-start gap-2 py-2 px-3 mb-3" style="font-size: 0.85rem;">
+            <div class="alert alert-warning d-flex align-items-start gap-2 py-1 px-2 mb-2" style="font-size: 0.8rem;">
                 <i class="bi bi-exclamation-triangle mt-1"></i>
                 <span>Esto crea filas reales (marcadas "QA...") en la base de datos conectada al backend. Úsalo contra una BD de desarrollo/pruebas, no contra producción.</span>
             </div>
 
-            <div class="mb-3">
-                <label for="entidad_select" class="form-label fw-semibold">Entidad a probar</label>
+            <div class="mb-2">
+                <label for="entidad_select" class="form-label fw-semibold mb-1">Entidad a probar</label>
                 <div class="input-group">
                     <span class="input-group-text bg-light border-end-0">
                         <i class="bi bi-diagram-3 text-muted"></i>
@@ -71,7 +79,7 @@
                 </div>
             </div>
 
-            <button type="button" class="btn btn-primary-inverse w-100 fw-bold py-2 rounded-pill mb-3" onclick="ejecutarTestsBackend()">
+            <button type="button" class="btn btn-primary-inverse w-100 fw-bold py-2 rounded-pill mb-2" onclick="ejecutarTestsBackend()">
                 <i class="bi bi-cloud-arrow-up me-1"></i>
                 Ejecutar Tests contra Backend
             </button>

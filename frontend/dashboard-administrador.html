@@ -44,11 +44,11 @@
                 </a>
                 <a href="#" class="nav-link d-none section-link" data-section="perfil"></a>
                 <hr class="my-3">
-                <a href="../pruebas/frontend/test_runner.html" target="_blank" rel="noopener" class="nav-link text-muted transition">
-                    <i class="bi bi-clipboard2-check me-2"></i> Test Runner (frontend)
+                <a href="#" class="nav-link text-muted transition section-link" data-section="frontend-test">
+                    <i class="bi bi-clipboard2-check me-2"></i> <span data-i18n="admin.nav.frontendTest"></span>
                 </a>
-                <a href="../pruebas/backend/backend_runner.html" target="_blank" rel="noopener" class="nav-link text-muted transition">
-                    <i class="bi bi-hdd-network me-2"></i> Backend Runner
+                <a href="#" class="nav-link text-muted transition section-link" data-section="backend-test">
+                    <i class="bi bi-hdd-network me-2"></i> <span data-i18n="admin.nav.backendTest"></span>
                 </a>
                 <hr class="my-3">
                 <a href="public.html" id="btnLogout" class="nav-link text-danger transition">
@@ -307,6 +307,24 @@
                             </div>
                             <div id="paginacion-tabla-solicitudes" class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3"></div>
                         </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN: FRONTEND TEST (misma herramienta que pruebas/frontend/test_runner.html,
+                     cargada en un iframe -- ver el resto de section-content -- en vez de una
+                     pestaña nueva, para que se sienta como una sección más del dashboard) -->
+                <div class="section-content" data-section="frontend-test">
+                    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                        <iframe id="iframe-frontend-test" data-src="../pruebas/frontend/test_runner.html"
+                                title="Frontend Test Runner" style="width:100%; height:75vh; border:0;"></iframe>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN: BACKEND TEST (ídem, pruebas/backend/backend_runner.html) -->
+                <div class="section-content" data-section="backend-test">
+                    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                        <iframe id="iframe-backend-test" data-src="../pruebas/backend/backend_runner.html"
+                                title="Backend Test Runner" style="width:100%; height:75vh; border:0;"></iframe>
                     </div>
                 </div>
 

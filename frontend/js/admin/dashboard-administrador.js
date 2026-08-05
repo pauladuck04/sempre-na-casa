@@ -151,7 +151,9 @@ const sectionTitles = {
     roles:    () => t('admin.sections.roles.title'),
     viviendas:() => t('admin.sections.homes.title'),
     criterios:() => t('admin.sections.criteria.title'),
-    solicitudes:() => t('admin.sections.requests.title')
+    solicitudes:() => t('admin.sections.requests.title'),
+    'frontend-test': () => t('admin.sections.frontendTest.title'),
+    'backend-test':  () => t('admin.sections.backendTest.title')
 };
 
 const sectionDescriptions = {
@@ -160,8 +162,18 @@ const sectionDescriptions = {
     roles:    () => t('admin.sections.roles.description'),
     viviendas:() => t('admin.sections.homes.description'),
     criterios:() => t('admin.sections.criteria.description'),
-    solicitudes:() => t('admin.sections.requests.description')
+    solicitudes:() => t('admin.sections.requests.description'),
+    'frontend-test': () => t('admin.sections.frontendTest.description'),
+    'backend-test':  () => t('admin.sections.backendTest.description')
 };
+
+// El iframe solo carga la URL real la primera vez que se visita la sección -- si no, cada admin
+// que nunca abre "Frontend/Backend Test" cargaría igualmente esas dos páginas completas (con sus
+// propios scripts/CDN) en cada carga del dashboard.
+function cargarIframeSiHaceFalta(idIframe) {
+    const iframe = document.getElementById(idIframe);
+    if (iframe && !iframe.src) iframe.src = iframe.dataset.src;
+}
 
 function getActiveCriteriosSubTab() {
     const activeTabBtn = document.querySelector('#criteriosTabs .nav-link.active');
@@ -614,6 +626,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                     resetPagina('tabla-solicitudes');
                     solicitudes.cargarSolicitudes();
                     break;
+                case 'frontend-test': cargarIframeSiHaceFalta('iframe-frontend-test'); break;
+                case 'backend-test':  cargarIframeSiHaceFalta('iframe-backend-test');  break;
             }
 
             aplicarFiltros();
@@ -782,9 +796,10 @@ function actualizarControlesSeccion(seccion) {
     const filtroTexto        = document.getElementById('filtroTexto');
     if (!accionesGlobales || !filtrosGlobales) return;
 
-    if (seccion === 'general' || seccion === 'solicitudes') {
+    if (seccion === 'general' || seccion === 'solicitudes' || seccion === 'frontend-test' || seccion === 'backend-test') {
         // 'solicitudes' no tiene acciones masivas ni filtros: cada solicitud se acepta/rechaza
-        // con sus propios botones en la fila
+        // con sus propios botones en la fila. 'frontend-test'/'backend-test' tampoco: son un
+        // iframe con su propia UI, no una tabla del dashboard.
         accionesGlobales.classList.replace('d-flex','d-none');
         filtrosGlobales.classList.replace('d-flex','d-none');
         if (filtrosEspecificos) filtrosEspecificos.innerHTML = '';
