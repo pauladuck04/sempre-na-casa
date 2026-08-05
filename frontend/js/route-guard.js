@@ -27,14 +27,18 @@
 
     // Redirige fuera de la página actual si el usuario no ha iniciado sesión
     // o su rol no está entre los permitidos para esta página.
-    window.protegerRuta = function (rolesPermitidos) {
+    // `basePath` es el prefijo relativo hasta frontend/ desde donde se llama: '' para las
+    // páginas que ya viven en frontend/ (las 3 dashboard-*.html), o p.ej. '../../frontend/'
+    // para páginas fuera de esa carpeta (ver pruebas/frontend/test_runner.html y
+    // pruebas/backend/backend_runner.html, protegidas con rol admin).
+    window.protegerRuta = function (rolesPermitidos, basePath = '') {
         if (!getCookie('user_token')) {
-            window.location.replace('login.html');
+            window.location.replace(basePath + 'login.html');
             return;
         }
         const rol = rolActual();
         if (!rolesPermitidos.includes(rol)) {
-            window.location.replace(DASHBOARD_POR_ROL[rol] || 'login.html');
+            window.location.replace(basePath + (DASHBOARD_POR_ROL[rol] || 'login.html'));
         }
     };
 

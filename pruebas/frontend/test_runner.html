@@ -2,6 +2,11 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <!-- Solo accesible con rol admin (ver frontend/js/route-guard.js). Debe cargarse antes de
+         pintar nada, así que va lo primero en <head>, igual que en las dashboard-*.html reales. -->
+    <script src="../../frontend/js/cookies.js?v=3"></script>
+    <script src="../../frontend/js/route-guard.js?v=3"></script>
+    <script>protegerRuta(['admin'], '../../frontend/');</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test Runner - Sempre na Casa</title>
 
@@ -61,9 +66,6 @@
     <div id="contenedor_IU_form"></div>
     <div id="IU_Test_result_nofile"></div>
     <div id="IU_Test_result_file"></div>
-
-    <!-- 1. Cookies, la real del proyecto -->
-    <script src="../../frontend/js/cookies.js?v=3"></script>
 
     <!-- Puente a i18n y a las reglas/lógica de validación genérica reales, única fuente de
          verdad compartida con el frontend real (ver frontend/js/i18n.js y

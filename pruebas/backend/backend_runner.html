@@ -2,6 +2,11 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <!-- Solo accesible con rol admin (ver frontend/js/route-guard.js). Debe cargarse antes de
+         pintar nada, así que va lo primero en <head>, igual que en las dashboard-*.html reales. -->
+    <script src="../../frontend/js/cookies.js?v=3"></script>
+    <script src="../../frontend/js/route-guard.js?v=3"></script>
+    <script>protegerRuta(['admin'], '../../frontend/');</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Backend Runner - Sempre na Casa</title>
 
@@ -86,10 +91,10 @@
          qué ya no se usa una ventana emergente) -->
     <div id="resultados_panel" class="container-fluid px-4 pb-5" style="display:none;"></div>
 
-    <!-- 1. Cookies (la real del proyecto) y apiPost real (frontend/js/api.js). No hace falta
-         cargar el CDN de CryptoJS: aquí no se llama a loginUser/registerUser (que son los
-         únicos que usan hashPassword), solo a apiPost directo contra cada entidad. -->
-    <script src="../../frontend/js/cookies.js?v=3"></script>
+    <!-- 1. apiPost real (frontend/js/api.js). cookies.js ya se cargó en <head> (ver el guard
+         de arriba). No hace falta cargar el CDN de CryptoJS: aquí no se llama a
+         loginUser/registerUser (que son los únicos que usan hashPassword), solo a apiPost
+         directo contra cada entidad. -->
     <script src="../../frontend/js/api.js?v=3"></script>
 
     <!-- 2. DOM (resultados) y fixtures/comparación contra backend -->

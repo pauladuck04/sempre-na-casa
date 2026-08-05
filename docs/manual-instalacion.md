@@ -20,13 +20,6 @@ actualizados — no hace falta aplicar `dump.sql` ni las migraciones de
   - **Visual Studio Code** con la extensión **Live Server** (recomendado).
   - O Node.js instalado, para usar `npx serve`.
   - O Python instalado, para usar `python -m http.server`.
-- Opcional: [Postman](https://www.postman.com/) si quieres probar la API directamente
-  (hay una colección en `postman/collections/`).
-
-> ⚠️ El frontend **no se puede abrir haciendo doble clic** en los archivos `.html`.
-> Los módulos JavaScript (`type="module"`) y las llamadas `fetch()` a las traducciones
-> y a los parciales HTML necesitan que la página se sirva por `http://`, no por `file://`.
-> Usa siempre Live Server o uno de los servidores estáticos de abajo.
 
 ## 2. Instalación de las herramientas necesarias
 
@@ -35,9 +28,7 @@ para el correcto funcionamiento de la aplicación:
 
 ### PHP 8.2 o superior
 
-- **Windows**: la forma más simple es instalar [Laragon](https://laragon.org/download/) o
-  [XAMPP](https://www.apachefriends.org/es/index.html), que traen PHP con `pdo_mysql` y
-  `mysqli` ya habilitados. Si prefieres solo PHP, descárgalo de
+- **Windows**: la forma más simple es descargar PHP de
   [windows.php.net/download](https://windows.php.net/download/) (versión *Thread Safe*),
   descomprime, añade la carpeta al `PATH` del sistema y habilita ambas extensiones en su
   `php.ini` (quita el `;` delante de `extension=pdo_mysql` y `extension=mysqli`).
