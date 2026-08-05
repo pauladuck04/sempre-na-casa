@@ -1,7 +1,7 @@
 import { t } from '../i18n.js';
 import { aplicarPaginacion, resetPagina } from '../admin/paginacion.js';
 
-export let listaRespuestasMemoria = []; // { id_criterio, nombre_criterio, id_opcion, nombre_opcion }
+export let listaRespuestasMemoria = [];
 
 export async function cargarPreferencias(idUsuario) {
     if (!idUsuario) return;

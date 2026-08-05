@@ -1,6 +1,3 @@
-// Entidad "criterio" real de Sempre na Casa (ver backend/app/criterio/criterio_SERVICE.php:
-// notnull ADD = nombre_criterio). peso_criterio se valida solo en formato (el rango de
-// negocio 1-5 es una regla de UI/admin, no algo que este framework campo a campo comprueba).
 class criterio extends Entidad_Abstracta {
 
     constructor(modo) {

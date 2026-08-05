@@ -167,9 +167,6 @@ const sectionDescriptions = {
     'backend-test':  () => t('admin.sections.backendTest.description')
 };
 
-// El iframe solo carga la URL real la primera vez que se visita la sección -- si no, cada admin
-// que nunca abre "Frontend/Backend Test" cargaría igualmente esas dos páginas completas (con sus
-// propios scripts/CDN) en cada carga del dashboard.
 function cargarIframeSiHaceFalta(idIframe) {
     const iframe = document.getElementById(idIframe);
     if (iframe && !iframe.src) iframe.src = iframe.dataset.src;
@@ -184,7 +181,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     await cargarPartials();
     await initI18n();
     applyTranslations();
-    // Cargar datos del perfil del usuario logueado por email desde backend
     cargarPerfilPorMail({
         colorAvatar: (u) => (u.id_rol == 2) ? 'var(--color-secundario)' : 'var(--color-primario)',
         conFallbackLocal: true,
@@ -441,8 +437,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             const passwordInput   = this.querySelector('[name="password"]');
             [dniInput, nombreInput, apellidosInput, telefonoInput, mailInput, passwordInput].forEach(ocultarErrorCampo);
 
-            // Mensajes específicos por motivo real de fallo (min_size/max_size/format), en vez
-            // de un único texto genérico por campo -- misma regla que auth.js (registro).
             const mensajesDni       = { min_size: t('register.dniMinSize'),      max_size: t('register.dniMaxSize'),      format: t('register.dniFormat') };
             const mensajesNombre    = { min_size: t('register.nameMinSize'),     max_size: t('register.nameMaxSize'),     format: t('register.nameFormat') };
             const mensajesApellidos = { min_size: t('register.surnamesMinSize'), max_size: t('register.surnamesMaxSize'), format: t('register.surnamesFormat') };
@@ -717,7 +711,6 @@ async function abrirModalGenerico(seccion) {
     const config = CONFIG_MODALES[seccion];
     if (!config) return;
 
-    // Ensure roles are loaded when showing usuarios modal
     if (seccion === 'usuarios' && Array.isArray(roles.listaRolesMemoria) && roles.listaRolesMemoria.length === 0) {
         try { await roles.cargarRoles(); } catch (err) { console.warn('No se pudieron cargar roles antes de abrir modal:', err); }
     }
@@ -797,9 +790,6 @@ function actualizarControlesSeccion(seccion) {
     if (!accionesGlobales || !filtrosGlobales) return;
 
     if (seccion === 'general' || seccion === 'solicitudes' || seccion === 'frontend-test' || seccion === 'backend-test') {
-        // 'solicitudes' no tiene acciones masivas ni filtros: cada solicitud se acepta/rechaza
-        // con sus propios botones en la fila. 'frontend-test'/'backend-test' tampoco: son un
-        // iframe con su propia UI, no una tabla del dashboard.
         accionesGlobales.classList.replace('d-flex','d-none');
         filtrosGlobales.classList.replace('d-flex','d-none');
         if (filtrosEspecificos) filtrosEspecificos.innerHTML = '';

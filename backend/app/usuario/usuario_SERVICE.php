@@ -91,9 +91,8 @@ class usuario_SERVICE extends appServiceBase{
         return array('ok' => false, 'error' => 'mail_not_provided');
     }
 
-    // Solicitudes de cambio de rol: se guardan como columnas en la propia fila del usuario (igual
-    // que las solicitudes de vivienda reutilizan usuario_vivienda) en vez de una tabla aparte, ya
-    // que cada usuario solo puede tener una solicitud pendiente a la vez.
+    // Solicitudes de cambio de rol: se guardan como columnas en la propia fila del usuario 
+    // en vez de una tabla aparte
     function SOLICITAR_CAMBIO_ROL() {
         $idUsuario       = intval($_POST['id_usuario']);
         $idRolSolicitado = intval($_POST['id_rol_solicitado']);
@@ -135,9 +134,7 @@ class usuario_SERVICE extends appServiceBase{
         return $this->resolverCambioRol('RECHAZADA');
     }
 
-    // solo se puede resolver una solicitud que siga pendiente. Al aceptar, id_rol pasa a valer
-    // el rol solicitado; al rechazar, id_rol no se toca (se deja id_rol_solicitado para que la
-    // fila conserve constancia de que fue rechazado y a que rol).
+    // solo se puede resolver una solicitud que siga pendiente
     function resolverCambioRol($nuevoEstado) {
         $idUsuario = intval($_POST['id_usuario']);
 
@@ -168,8 +165,7 @@ class usuario_SERVICE extends appServiceBase{
         return $resUpdate;
     }
 
-    // listado para el panel de administrador: usuarios con una solicitud de cambio de rol pendiente,
-    // con el nombre del rol actual y del solicitado ya resueltos para pintar la tabla de un tiro.
+    // listado para el panel de administrador: usuarios con una solicitud de cambio de rol pendiente
     function getSolicitudesCambioRol() {
         include_once './Base/mapping.php';
         $map = new mapping('usuario');

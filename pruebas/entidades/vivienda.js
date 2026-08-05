@@ -1,7 +1,3 @@
-// Entidad "vivienda" real de Sempre na Casa (ver backend/app/vivienda/vivienda_SERVICE.php:
-// notnull ADD = descripcion, plazas_libres, plazas_totales, id_anfitrion, direccion, ciudad).
-// No se valida aquí la regla cruzada "plazas_libres <= plazas_totales" (ver nota en _vn de
-// validaciones.js: este framework valida campo a campo, no reglas entre campos).
 class vivienda extends Entidad_Abstracta {
 
     constructor(modo) {

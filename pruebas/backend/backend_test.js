@@ -1,19 +1,5 @@
-// Runner de pruebas de backend: consume pruebas/backend/backend_pruebas.js (casos DEDICADOS a
-// probar las acciones reales del backend -- ADD/EDIT/SEARCH/DELETE -- independientes de
-// pruebas/frontend/pruebas.js, que solo se usa para las pruebas de FORMATO del frontend en
-// pruebas/frontend/test_runner.html). Hace una llamada real a apiPost(entidad, accion, payload)
-// contra el backend PHP (ver pruebas/backend/backend_fixtures.js para cómo se construye un
-// payload completo y válido por caso).
 class Backend_Test {
 
-    // Abre la ventana de resultados de forma SÍNCRONA, antes de cualquier await (llamar a esto
-    // como primera línea del manejador de clic, ver pruebas/backend/backend_runner.html). El "user
-    // activation" que permite abrir un popup se consume en el momento de llamar a window.open(),
-    // no cuando se le escribe contenido después con document.write() -- eso último no necesita
-    // gesto del usuario. Por eso basta con abrirla aquí, ya vacía, y rellenarla más tarde en
-    // _mostrarResultados() tras los await de ejecutar() (fixtures + una petición real por caso
-    // contra el backend, que si se esperase a que terminen para recién abrir la ventana, el
-    // navegador ya no lo asociaría al clic y la bloquearía -> window.open devuelve null).
     static abrirVentanaResultados() {
         const anchoVentana = Math.round(screen.availWidth * 0.9);
         const altoVentana  = Math.round(screen.availHeight * 0.9);
@@ -33,8 +19,6 @@ class Backend_Test {
         this.ventanaResultados = ventanaResultados || null;
     }
 
-    /** Punto de entrada async: primero prepara el contexto de backend de la entidad (puede
-     * implicar crear varias filas reales de fixture), y solo entonces ejecuta las pruebas. */
     async ejecutar() {
         try {
             this.contextoBackend = await crearContextoBackend(this.nombreEntidad);
@@ -70,12 +54,6 @@ class Backend_Test {
         return salida;
     }
 
-    // Mismo aspecto que la ventana de resultados de Data_Test (ver pruebas/frontend/data.js:
-    // data_test_class()): misma ventana al 90% de pantalla, mismo CSS (tabla con cabecera
-    // pegajosa y scroll propio). Si por lo que sea no hay ventana disponible (no se abrió a
-    // tiempo en abrirVentanaResultados(), o el navegador la bloqueó de todos modos), se pinta
-    // igualmente en #resultados_panel dentro de la propia página como último recurso, para que
-    // los resultados nunca se pierdan.
     _mostrarResultados(salida) {
         let marcados = {
             backend_status: { value: 'BACKEND_MAS_ESTRICTO', clase: 'table-danger' }
@@ -167,7 +145,7 @@ class Backend_Test {
         }
 
         const panel = document.getElementById('resultados_panel');
-        if (!panel) return; // permite reutilizar Backend_Test fuera de backend_runner.html sin romper
+        if (!panel) return;
         panel.innerHTML = `<h5 class="fw-bold mb-3">Resultados: ${this.nombreEntidad}</h5>${htmlContenido}`;
         panel.style.display = 'block';
     }

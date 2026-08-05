@@ -1,8 +1,3 @@
-// Casos de prueba reales para la entidad "usuario" de Sempre na Casa (ver pruebas/entidades/usuario.js
-// para las reglas de validación exactas). Formato de cada array, heredado del framework
-// original: [entidad, campo, tipoElemento, NumDef, descripcion, accion, respuestaEsperada]
-// para *_def_tests, y [entidad, campo, NumDef, NumPrueba, accion, [{campo: valor}], respuestaEsperada]
-// para *_tests_fields.
 
 let usuario_def_tests = Array(
     // dni

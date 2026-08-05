@@ -1,5 +1,3 @@
-// Entidad "opcion" real de Sempre na Casa (ver backend/app/opcion/opcion_SERVICE.php:
-// notnull ADD = nombre_opcion, valor, id_criterio).
 class opcion extends Entidad_Abstracta {
 
     constructor(modo) {

@@ -1,7 +1,3 @@
-// Entidad "usuario_vivienda" real de Sempre na Casa: la solicitud/convivencia entre un
-// huesped y una vivienda (ver backend/app/usuario_vivienda/usuario_vivienda_SERVICE.php:
-// notnull ADD = id_usuario, id_vivienda, fecha_inicio). fecha_fin es opcional (estancia
-// abierta), por eso usa _vds tambien en ADD/EDIT y no solo en SEARCH.
 class usuario_vivienda extends Entidad_Abstracta {
 
     constructor(modo) {

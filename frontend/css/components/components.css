@@ -33,22 +33,22 @@
 }
 
 .btn-primary-inverse {
-    background-color: var(--color-blanco); /* Fondo blanco inicial */
-    color: var(--color-primario);         /* Texto en color azul primario */
-    border: 1px solid var(--color-primario); /* Borde para que se vea el contorno */
-    transition: var(--transicion);        /* Para que el cambio de color sea suave */
+    background-color: var(--color-blanco);
+    color: var(--color-primario);
+    border: 1px solid var(--color-primario);
+    transition: var(--transicion);
 }
 
 .btn-primary-inverse:hover {
-    background-color: var(--color-primario); /* Un gris muy leve para notar el hover */
+    background-color: var(--color-primario);
     color: var(--color-blanco);
     border-color: var(--color-primario);
 }
 
 .btn-primary-inverse:disabled {
-    background-color: var(--color-primario); /* Fondo blanco inicial */
-    color: var(--color-blanco);         /* Texto en color azul primario */
-    border: 2px solid var(--color-primario); /* Borde para que se vea el contorno */
+    background-color: var(--color-primario);
+    color: var(--color-blanco);
+    border: 2px solid var(--color-primario);
     transition: var(--transicion);
 }
 
@@ -167,8 +167,6 @@
     color: #0F5132;
 }
 
-/* Alerta de exito de "recuperar contrasena": lleva icono+texto, un parrafo y un boton, no
-   cabe todo en una sola fila como el resto de alertas simples -> se apila en columna. */
 #success-message {
     display: block;
 }

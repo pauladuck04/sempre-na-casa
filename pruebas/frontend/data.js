@@ -1,14 +1,5 @@
 class Data_Test {
 
-    // Abre la ventana de resultados de forma SÍNCRONA, antes de cualquier await del llamador
-    // (ver ejecutarTests() en pruebas/frontend/test_runner.html). Antes esto se hacía dentro de
-    // data_test_class(), pero para entonces ya han pasado un par de await (esperar a que
-    // carguen los módulos de i18n/reglas), y encima ahora test_runner.html puede vivir dentro de
-    // un <iframe> (embebido en dashboard-administrador.html): con ese retraso, o simplemente por
-    // estar en un iframe anidado, el navegador deja de asociar la ventana al clic del usuario y
-    // la bloquea -- window.open() devuelve null, y el resizeTo() de después explota con
-    // "Cannot read properties of null". Abriéndola aquí, ya vacía, y rellenándola después, se
-    // evita ese problema (ver el mismo arreglo en pruebas/backend/backend_test.js).
     static abrirVentanaResultados() {
         const anchoVentana = Math.round(screen.availWidth * 0.9);
         const altoVentana  = Math.round(screen.availHeight * 0.9);
@@ -47,11 +38,6 @@ class Data_Test {
 
         // se invoca la realizacion de pruebas
         this.data_test_class();
-
-
-
-        // se invoca la muestra del resultado de las pruebas
-        //this.dom.showtestresult('IU_Test_result', test_result);
 
     }
 
@@ -333,9 +319,6 @@ class Data_Test {
         document.getElementById('IU_Test_result_file').style.display = 'none';
     }
 
-    // La ventana ya se abrió de forma síncrona en Data_Test.abrirVentanaResultados() (ver el
-    // comentario ahí). Si no se pasó ninguna, o el navegador la bloqueó de todos modos, se pinta
-    // en #resultados_panel dentro de la propia página como último recurso.
     const newWindow = (this.ventanaResultados && !this.ventanaResultados.closed) ? this.ventanaResultados : null;
 
     if (!newWindow) {
@@ -584,11 +567,7 @@ class Data_Test {
     }
 
     /**
-     * Traduce el código KO esperado por la prueba (o el estado "correcto" cuando no se
-     * espera ningún error) a un mensaje legible, usando las traducciones reales del
-     * proyecto (ver el import de frontend/js/i18n.js en pruebas/frontend/test_runner.html). Los códigos son "<campo>_<motivo>_KO"
-     * (p.ej. 'dni_format_KO'): se busca el mensaje genérico por motivo bajo la clave
-     * "pruebas.<motivo>" y se antepone el nombre del campo.
+     * Traduce el código KO esperado por la prueba
      */
     obtenerMensajeErrorTest(entidad, respuestaesperada) {
         if (typeof t !== 'function') return String(respuestaesperada);
@@ -601,7 +580,7 @@ class Data_Test {
         const motivo = motivos.find(m => respuestaesperada.endsWith('_' + m + '_KO'));
         if (!motivo) return respuestaesperada;
 
-        const campo = respuestaesperada.slice(0, -(motivo.length + 4)); // quita "_<motivo>_KO"
+        const campo = respuestaesperada.slice(0, -(motivo.length + 4));
         return `${campo}: ${t('pruebas.' + motivo)}`;
     }
 

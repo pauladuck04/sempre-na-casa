@@ -12,10 +12,6 @@ async function apiPost(controlador, action, params = {}) {
     return response.json();
 }
 
-// Hash SHA-256 del password antes de enviarlo. El backend le aplica su propio md5() tanto al
-// guardar (usuario_SERVICE::modificacion_atributos) como al comparar en el login (auth_SERVICE::LOGIN),
-// así que basta con que loginUser/registerUser/resetPassword manden siempre esta misma transformación
-// para que cuadre en las dos puntas — no hace falta que el backend sepa nada de este hash extra.
 async function hashPassword(password) {
     return CryptoJS.SHA256(password).toString();
 }

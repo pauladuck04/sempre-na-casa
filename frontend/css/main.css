@@ -39,10 +39,6 @@
    ESTILOS ADICIONALES PERSONALIZADOS
    (Aquí puedes agregar ajustes finales si es necesario)
    ============================================ */
-
-
-
-/* Asegurar que los row de Bootstrap usen variables CSS */
 .row {
     --bs-gutter-x: var(--space-lg);
     --bs-gutter-y: 0;
@@ -65,7 +61,6 @@
     padding-right: var(--space-md);
 }
 
-/* Asegurar que min-vh-100 funcione correctamente */
 html, body {
     height: 100%;
 }
@@ -80,9 +75,6 @@ main {
     flex: 1;
 }
 
-/* Sin max-height/overflow-y: la paginación (paginacion.js) ya limita cada tabla a un máximo de
-   5 filas por página, así que la tabla ocupa exactamente lo que ocupen esas filas en vez de
-   forzar un scroll interno innecesario cuando no hay nada más en la página. */
 .table-responsive thead th {
     background-color: var(--bs-table-bg, #f8f9fa);
 }

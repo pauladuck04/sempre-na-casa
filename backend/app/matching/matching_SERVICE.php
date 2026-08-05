@@ -114,8 +114,6 @@ class matching_SERVICE extends appServiceBase {
         return array('ok' => true, 'code' => 'RANK_VIVIENDAS_OK', 'resource' => $ranking);
     }
 
-    // --- helpers ---
-
     function cargarPesosCriterios($map) {
         $res = $map->lanzarqueryconresults(
             "SELECT id_criterio, nombre_criterio, peso_criterio, restrictivo FROM criterio WHERE activo_criterio = 1"
@@ -172,9 +170,8 @@ class matching_SERVICE extends appServiceBase {
     }
 
     // recorre los criterios restrictivos: si cualquiera de las dos partes eligio la opcion
-    // excluyente de uno de ellos Y la otra parte no eligio esa misma opcion (si ambas partes
-    // coinciden en la opcion excluyente, p.ej. las dos dicen "no acepto mascotas", no hay
-    // conflicto real y no se excluyen entre si), el match se descarta sin comprobar el resto
+    // excluyente de uno de ellos Y la otra parte no eligio esa misma opcion, el match se 
+    // descarta sin comprobar el resto
     function detectarExclusion($pesos, $respuestasA, $respuestasB) {
         foreach ($pesos as $idCriterio => $infoCriterio) {
             if (!$infoCriterio['restrictivo']) continue;

@@ -59,7 +59,7 @@
 .btn-outline-light-custom {
     color: var(--color-secundario);
     background-color: var(--color-blanco);
-    border: 1px solid var(--color-primario-claro); /* Borde azul */
+    border: 1px solid var(--color-primario-claro);
     transition: all 0.3s ease;
     font-weight: 500;
 }
@@ -94,7 +94,7 @@
 }
 
 #vistas-tab .nav-link.active {
-    background-color: #7A99DD !important; /* Tu azul */
+    background-color: #7A99DD !important;
     color: white !important;
     box-shadow: 0 4px 10px rgba(122, 153, 221, 0.2);
 }

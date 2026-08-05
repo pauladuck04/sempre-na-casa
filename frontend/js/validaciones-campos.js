@@ -1,13 +1,3 @@
-// Única fuente de verdad para las reglas de formato (min/max/regex) de los campos de cada
-// entidad, y para la lógica pura que las aplica. La consumen tanto el frontend real (auth.js,
-// perfil-comun.js, form-errors.js) como el framework de pruebas (pruebas/entidades/*.js,
-// a través del puente en pruebas/frontend/test_runner.html), para no mantener los mismos regex ni la misma lógica
-// de validación duplicados en dos sitios que puedan divergir con el tiempo.
-//
-// `regex` es la regla en ADD/EDIT; `regexBusqueda` es la regla en modo búsqueda (a menudo
-// más laxa o null). Los campos de fecha (fecha_inicio/fecha_fin de usuario_vivienda) no
-// están aquí: su formato (AAAA-MM-DD) es fijo y lo valida validarFecha/validarFechaOpcional
-// directamente, sin regex que compartir.
 export const REGLAS_CAMPOS = {
     usuario: {
         dni:            { min: 9, max: 9,   regex: '^[0-9]{8}[A-Z]$',              regexBusqueda: '^[0-9]{0,8}[A-Z]?$' },
@@ -48,10 +38,6 @@ export const REGLAS_CAMPOS = {
         id_opcion:   { regex: '^[0-9]+$', regexBusqueda: '^[0-9]+$' }
     }
 };
-
-// Lógica de validación genérica, sin dependencias del DOM: cada función recibe el valor ya
-// leído y una regla de arriba (min/max/regex) y devuelve el motivo de fallo ('min_size' |
-// 'max_size' | 'format') o null si el valor es válido.
 
 export function validarTexto(valor, { min = 0, max = Infinity, regex = null } = {}) {
     if (valor.length < min) return 'min_size';

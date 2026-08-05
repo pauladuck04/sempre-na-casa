@@ -1,9 +1,3 @@
-// Adaptador entre el framework de pruebas (lee valores del DOM) y la lógica de validación
-// genérica real de la app (frontend/js/validaciones-campos.js, sin dependencias del DOM),
-// expuesta aquí como el global `Validadores` a través del puente en pruebas/frontend/test_runner.html.
-// Cada método lee el valor del campo por id y traduce el motivo devuelto ('min_size' |
-// 'max_size' | 'format' | null) al código "<campo>_<motivo>_KO" (mismo formato que ya usan
-// los códigos de error reales del backend, p.ej. 'dni_format_KO'), o `true` si es válido.
 class Validaciones {
 
     _valorCampo(campo) {

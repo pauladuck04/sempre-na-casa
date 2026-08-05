@@ -1,9 +1,0 @@
-$kind: http-request
-url: http://localhost:8081
-method: POST
-body:
-  type: urlencoded
-  content:
-    action: getAll
-    controlador: usuario_criterio_opcion
-order: 6000

@@ -1,21 +1,3 @@
-// Fixtures y payloads base para pruebas/backend/backend_test.js: llamadas REALES al backend PHP
-// (apiPost real, ver frontend/js/api.js) en vez de solo validar en el propio JS.
-//
-// ADD/EDIT/DELETE necesitan TODOS los campos obligatorios de la entidad (ver notnull en cada
-// *_SERVICE.php del backend), no solo el campo que se está probando -- si no, el backend
-// rechazaría por "<campo>_es_nulo_KO" en vez de por el motivo real que se quiere comprobar.
-// Por eso cada entidad tiene un "contexto": un payload base válido (con IDs de FK reales,
-// obtenidos o creados contra el backend) sobre el que se sobreescribe únicamente el/los
-// campo(s) bajo prueba con el valor de cada caso de pruebas/backend/backend_pruebas.js (NO de
-// pruebas/frontend/pruebas.js -- ese fichero es solo para las pruebas de FORMATO del frontend en
-// pruebas/frontend/test_runner.html, no se usa aquí).
-//
-// Efecto secundario asumido: cada ejecución crea filas reales en la base de datos conectada
-// (usuario/vivienda/criterio/opcion/usuario_vivienda/...), marcadas con el prefijo "QA" (mismo
-// espíritu que backend/bd/migrations/seed_test_matching.sql, que usa IDs 9000+ y correos
-// "*.test@example.com" para no mezclarse con datos reales). Pensado para ejecutarse contra
-// una base de datos de desarrollo/pruebas, no contra producción.
-
 /** Genera un número de `digitos` cifras, distinto en cada llamada dentro de la misma ejecución
  * (combina el reloj con `semilla` para que varias filas de prueba no choquen entre sí). Se usa
  * para construir dni/mail/teléfono únicos por fila. */
@@ -38,14 +20,7 @@ function fechaOffset(diasDesdeHoy) {
 /** Primera fila que devuelve un SEARCH real contra el backend, o null si no hay ninguna. Se usa
  * para reutilizar datos ya existentes (p.ej. un id_rol válido) en vez de asumir un ID fijo que
  * podría no existir en esta base de datos.
- *
- * OJO: a propósito NO se traga un fallo de red/conexión (si apiPost lanza, esta función también
- * lanza). Antes sí lo hacía, y eso escondía un problema real: un blip de conectividad durante
- * crearContextoBackend('usuario') convertía esto en null -> idRol = '' -> TODAS las filas
- * ADD/EDIT de esa ejecución se reportaban como "BACKEND_MAS_ESTRICTO: id_rol_es_nulo_KO" (parece
- * un fallo de validación) en vez de como lo que era de verdad: SIN_CONEXION. Dejando que el error
- * se propague, Backend_Test.ejecutar() lo captura y compararConBackend() lo reporta correctamente
- * como SIN_CONEXION en cada fila. */
+ **/
 async function primeraFila(entidad, filtro = {}) {
     const res = await apiPost(entidad, 'SEARCH', filtro);
     if (res.ok && Array.isArray(res.resource) && res.resource.length > 0) return res.resource[0];
@@ -69,17 +44,11 @@ async function crearUsuarioFixture(semilla, idRolForzado) {
 }
 
 async function crearCriterioFixture() {
-    // nombre_criterio solo admite letras/espacios (REGLAS_CAMPOS), así que no se le puede
-    // pegar un sufijo numérico para garantizar unicidad; no hay problema, no está declarado
-    // como único en el backend, así que repetir el nombre en cada ejecución no rompe nada.
     const res = await apiPost('criterio', 'ADD', { nombre_criterio: 'QA Fixture Backend' });
     return { id: res.ok ? res.resource : null };
 }
 
 async function crearRolFixture() {
-    // nombre_rol (varchar(25) NOT NULL, sin UNIQUE en el esquema -- ver dump.sql) tampoco admite
-    // sufijo numérico por las mismas reglas de formato que nombre_criterio; repetir el nombre no
-    // rompe nada al no ser único.
     const res = await apiPost('rol', 'ADD', { nombre_rol: 'QA Rol Fixture' });
     return { id: res.ok ? res.resource : null };
 }
@@ -92,8 +61,6 @@ async function crearOpcionFixture(semilla, idCriterio) {
 
 async function crearViviendaFixture(semilla, idAnfitrion) {
     const sufijo = idUnico(semilla, 4);
-    // descripcion es obligatoria en vivienda_SERVICE (notnull ADD), un valor vacío haría
-    // fallar este ADD y dejaría el fixture sin crear (id: null) para todo lo que dependa de él.
     const payload = {
         direccion: 'Rua QA Fixture ' + sufijo,
         ciudad: 'Santiago',
@@ -178,9 +145,6 @@ async function crearContextoBackend(nombreEntidad) {
             };
         }
 
-        // rol_SERVICE::DELETE tiene un efecto secundario real (desactiva a los usuarios con ese
-        // id_rol), pero como el rol de fixture es nuevo y no lo usa ningún usuario, ese UPDATE
-        // no afecta a ninguna fila real.
         case 'rol': {
             const fixtureEdit = await crearRolFixture();
             const fixtureDelete = await crearRolFixture();
@@ -211,10 +175,6 @@ async function crearContextoBackend(nombreEntidad) {
             };
         }
 
-        // Entidades de relación: la pareja/tripleta de IDs suele ser la clave real de la fila,
-        // así que cada ADD necesita datos NUEVOS (para no chocar con la fila que insertó el
-        // ADD anterior); EDIT en cambio reutiliza siempre el mismo fixture fijo creado al
-        // preparar el contexto (actualizar una fila ya existente no puede chocar con nada).
         case 'usuario_vivienda': {
             const usuarioEdit  = await crearUsuarioFixture(900007);
             const viviendaEdit = await crearViviendaFixture(900008, usuarioEdit.id);
@@ -281,21 +241,6 @@ async function crearContextoBackend(nombreEntidad) {
     }
 }
 
-/**
- * Ejecuta la llamada real al backend para una fila de prueba y clasifica el resultado
- * comparándolo con lo que se esperaba localmente:
- *  - 'OK': backend y la regla de negocio están de acuerdo (los dos aceptan, o los dos
- *    rechazan).
- *  - 'DIVERGENCIA': el frontend bloquearía este valor pero el backend lo acepta igualmente.
- *    Es lo esperable en casi todos los casos KO de formato: el CRUD genérico del backend (ver
- *    appServiceBase) solo comprueba que los campos obligatorios no estén vacíos, no valida
- *    formato/longitud -- esa validación hoy solo vive en el frontend (ver
- *    frontend/js/validaciones-campos.js).
- *  - 'BACKEND_MAS_ESTRICTO': el frontend dejaría pasar el valor pero el backend lo rechaza.
- *    A diferencia del caso anterior, esto suele indicar un problema real (fixture mal
- *    construido, columna demasiado corta, FK inexistente...).
- *  - 'SIN_CONEXION': la llamada ha fallado (backend caído, URL incorrecta...).
- */
 async function compararConBackend(nombreEntidad, accion, contexto, numPrueba, overrides, respuestaEsperadaLocal) {
     if (accion !== 'ADD' && accion !== 'EDIT' && accion !== 'SEARCH' && accion !== 'DELETE') {
         return { backend_status: 'N/A', backend_code: '' };

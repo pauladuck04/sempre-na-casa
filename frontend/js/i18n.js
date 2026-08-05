@@ -1,22 +1,11 @@
-// Módulo de internacionalización
-// Uso (módulo):  import { t, initI18n, applyTranslations } from '../i18n.js';
-// Uso (global):  window.t('login.title')  — disponible tras llamar a initI18n()
-
 const DEFAULT_LANG = 'es';
 const LANGS_DISPONIBLES = ['es', 'en', 'gal'];
 
 let traducciones = {};
 let idiomaActual = getCookie('lang') || DEFAULT_LANG;
 
-/**
- * Carga el JSON del idioma y actualiza las traducciones activas.
- * Lanza el evento 'langChanged' en document cuando termina.
- */
 export async function setLang(lang) {
     if (!LANGS_DISPONIBLES.includes(lang)) return;
-    // Resuelto contra la URL de este propio módulo (no contra la página que lo importa): así
-    // funciona igual si lo carga una página de frontend/ o pruebas/frontend/test_runner.html, en vez de
-    // depender de que el importador esté siempre en la raíz de frontend/.
     const res = await fetch(new URL(`../assets/translations/${lang}.json`, import.meta.url));
     traducciones = await res.json();
     idiomaActual = lang;
@@ -25,11 +14,6 @@ export async function setLang(lang) {
     document.dispatchEvent(new CustomEvent('langChanged', { detail: { lang } }));
 }
 
-/**
- * Devuelve el valor de una clave con notación de puntos.
- * Si la clave no existe devuelve la propia clave como fallback.
- * Ejemplo: t('login.error') → "Error al iniciar sesión..."
- */
 export function t(clave) {
     const partes = clave.split('.');
     let valor = traducciones;
@@ -68,7 +52,6 @@ export function applyTranslations(root = document) {
 
 /**
  * Inicializa i18n y expone t(), setLang(), getLang() y applyTranslations() globalmente.
- * Llama a esto una vez al arrancar cada página, antes de usar t().
  */
 export async function initI18n(lang) {
     await setLang(lang || idiomaActual);
@@ -81,9 +64,9 @@ export async function initI18n(lang) {
 const LANG_LABELS = { es: 'Español', en: 'English', gal: 'Galego' };
 
 /**
- * Conecta el selector de idioma del navbar (#langDropdown, #lang-label, .lang-option):
+ * Conecta el selector de idioma del navbar:
  * actualiza la etiqueta visible y engancha el cambio de idioma al hacer clic.
- * Debe llamarse cuando ese HTML ya esté en el DOM (tras cargar partials si vienen de fuera).
+ * Debe llamarse cuando ese HTML ya esté en el DOM.
  */
 export function initLangDropdown() {
     const actualizarEtiqueta = () => {

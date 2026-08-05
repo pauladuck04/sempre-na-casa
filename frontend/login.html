@@ -18,25 +18,25 @@
             <div class="dropdown">
                 <button class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center gap-1" type="button" id="langDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="bi bi-globe2"></i>
-                    <span id="lang-label">Español</span>
+                    <span id="lang-label" data-i18n="login.language"></span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="langDropdown">
-                    <li><button class="dropdown-item lang-option" data-lang="es">🇪🇸 Español</button></li>
-                    <li><button class="dropdown-item lang-option" data-lang="en">🇬🇧 English</button></li>
-                    <li><button class="dropdown-item lang-option" data-lang="gal">🏴󠁧󠁢󠁳󠁣󠁴󠁿 Galego</button></li>
+                    <li><button class="dropdown-item lang-option" data-lang="es" data-i18n="login.language.es"></button></li>
+                    <li><button class="dropdown-item lang-option" data-lang="en" data-i18n="login.language.en"></button></li>
+                    <li><button class="dropdown-item lang-option" data-lang="gal" data-i18n="login.language.gal"></button></li>
                 </ul>
             </div>
         </div>
 
         <div class="text-center mb-4">
             <img src="./assets/images/logo.JPG" alt="Logo" width="70" height="70" class="rounded-circle mb-3 logo-shadow">
-            <h2 class="fw-bold mb-1" data-i18n="login.welcomeTitle">Bienvenido de nuevo</h2>
-            <p class="text-muted small" data-i18n="login.welcomeSubtitle">Inicia sesión en tu cuenta de Sempre na Casa</p>
+            <h2 class="fw-bold mb-1" data-i18n="login.welcomeTitle"></h2>
+            <p class="text-muted small" data-i18n="login.welcomeSubtitle"></p>
         </div>
 
         <form id="login-form">
             <div class="mb-3">
-                <label for="email" class="form-label fw-semibold" data-i18n="login.emailLabel">Email</label>
+                <label for="email" class="form-label fw-semibold" data-i18n="login.emailLabel"></label>
                 <div class="input-group">
                     <span class="input-group-text bg-light border-end-0">
                         <i class="bi bi-envelope text-muted"></i>
@@ -47,7 +47,7 @@
             </div>
 
             <div class="mb-2">
-                <label for="password" class="form-label fw-semibold" data-i18n="login.password">Contraseña</label>
+                <label for="password" class="form-label fw-semibold" data-i18n="login.password"></label>
                 <div class="input-group">
                     <span class="input-group-text bg-light border-end-0">
                         <i class="bi bi-lock text-muted"></i>
@@ -61,27 +61,23 @@
             </div>
 
             <div class="text-end mb-4">
-                <a href="recuperar-password.html" class="small text-decoration-none link-custom" data-i18n="login.forgotPassword">¿Has olvidado tu contraseña?</a>
+                <a href="recuperar-password.html" class="small text-decoration-none link-custom" data-i18n="login.forgotPassword"></a>
             </div>
 
             <div id="error-message" class="alert alert-danger d-none" role="alert"></div>
 
             <button type="submit" class="btn btn-primary w-100 fw-bold py-2 rounded-pill" style="background-color: var(--color-primario);">
-                <span data-i18n="login.submit">Entrar</span>
+                <span data-i18n="login.submit"></span>
             </button>
         </form>
 
         <div class="divider my-4">
-            <span data-i18n="login.noAccount">¿Aún no tienes cuenta?</span>
+            <span data-i18n="login.noAccount"></span>
         </div>
 
         <div class="d-flex gap-2">
-            <a href="./registro.html?rol=anfitrion" class="btn btn-dark w-50 rounded-pill small fw-semibold" data-i18n="login.isHost">
-                Soy anfitrión
-            </a>
-            <a href="./registro.html?rol=huesped" class="btn btn-dark w-50 rounded-pill small fw-semibold" data-i18n="login.isTenant">
-                Soy huesped
-            </a>
+            <a href="./registro.html?rol=anfitrion" class="btn btn-dark w-50 rounded-pill small fw-semibold" data-i18n="login.isHost"></a>
+            <a href="./registro.html?rol=huesped" class="btn btn-dark w-50 rounded-pill small fw-semibold" data-i18n="login.isTenant"></a>
         </div>
 
     </div>

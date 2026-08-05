@@ -1,6 +1,3 @@
-// Entidad "usuario_criterio_opcion" real de Sempre na Casa: la respuesta de un huesped a un
-// criterio de la encuesta (tabla puramente relacional, solo tres FK numericas, ver
-// backend/app/usuario_criterio_opcion/usuario_criterio_opcion_SERVICE.php).
 class usuario_criterio_opcion extends Entidad_Abstracta {
 
     constructor(modo) {

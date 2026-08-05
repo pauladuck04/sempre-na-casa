@@ -1,9 +1,3 @@
-// Lógica de "Perfil" compartida por los 3 dashboards (anfitrión, huésped, administrador):
-// carga de datos por email, toast, medidor de fortaleza de contraseña, toggle mostrar/ocultar
-// contraseña y el formulario de cambio de contraseña. Antes estaba copiada literalmente en
-// cada dashboard-*.js (y en el caso del administrador, el medidor de fortaleza directamente
-// no estaba conectado).
-
 import { t } from './i18n.js';
 import { mostrarErrorFormulario, ocultarErrorFormulario, mostrarErrorCampo, ocultarErrorCampo } from './form-errors.js';
 import { REGLAS_CAMPOS, validarTexto } from './validaciones-campos.js';
@@ -22,9 +16,9 @@ export function mostrarToast(mensaje, tipo = 'success') {
  * teléfono, fecha de alta, avatar con iniciales). Devuelve los datos cargados (o null).
  *
  * @param {Object}   opciones
- * @param {Function} [opciones.onDatos]        Callback(u) para que la página guarde lo que necesite (p.ej. su propio `usuarioActual`).
- * @param {Function} [opciones.colorAvatar]    (u) => color CSS del avatar. Por defecto siempre el color primario.
- * @param {boolean}  [opciones.conFallbackLocal] Si no se encuentra el usuario en el backend, rellena la tarjeta con datos derivados del email en vez de dejarla vacía.
+ * @param {Function} [opciones.onDatos]
+ * @param {Function} [opciones.colorAvatar]
+ * @param {boolean}  [opciones.conFallbackLocal]
  */
 export async function cargarPerfilPorMail(opciones = {}) {
     const { onDatos, colorAvatar = () => 'var(--color-primario)', conFallbackLocal = false } = opciones;

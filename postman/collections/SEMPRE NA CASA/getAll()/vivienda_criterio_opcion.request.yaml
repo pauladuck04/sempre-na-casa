@@ -1,9 +1,0 @@
-$kind: http-request
-url: http://localhost:8081
-method: POST
-body:
-  type: urlencoded
-  content:
-    controlador: vivienda_criterio_opcion
-    action: getAll
-order: 7000

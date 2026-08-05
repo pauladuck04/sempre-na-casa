@@ -1,16 +1,9 @@
-// Lógica de autenticación de todo el flujo público (login, registro, recuperar/restablecer
-// contraseña y el paso final de la encuesta que crea la cuenta). Un único módulo cargado en
-// login.html, registro.html, recuperar-password.html, restablecer-password.html y encuesta.html;
-// cada bloque se activa solo si encuentra su formulario en la página actual.
-
 import { initI18n, t, applyTranslations, initLangDropdown } from './i18n.js';
 import { mostrarErrorFormulario, ocultarErrorFormulario, mostrarErrorCampo, ocultarErrorCampo, validarCampoTexto } from './form-errors.js';
 import { inicializarTogglePassword, inicializarMedidorFortaleza } from './perfil-comun.js';
 import { renderPreguntasEncuesta } from './encuesta-criterios.js';
 import { REGLAS_CAMPOS } from './validaciones-campos.js';
 
-// La encuesta rellena sus preguntas antes de traducir la página, para que applyTranslations()
-// también les aplique data-i18n a ellas.
 const contenedorPreguntas = document.getElementById('preguntas-encuesta');
 if (contenedorPreguntas) {
     await renderPreguntasEncuesta(contenedorPreguntas);
@@ -88,8 +81,6 @@ if (loginForm) {
 }
 
 // ================== REGISTRO, paso 1: datos (registro.html) ==================
-// Todavía no crea la cuenta — guarda los datos y pasa a la encuesta, que es quien
-// realmente llama a registerUser() al terminar (ver más abajo).
 const registroForm = document.getElementById('registro-form');
 if (registroForm) {
     const rolInput        = document.getElementById('rol');
@@ -106,15 +97,13 @@ if (registroForm) {
     const iconPass        = document.getElementById('icon-pass');
     const iconPass2       = document.getElementById('icon-pass2');
 
-    // Mensajes específicos por motivo real de fallo (min_size/max_size/format), en vez de un
-    // único texto genérico por campo -- ver validarCampoTexto() en form-errors.js.
     const mensajesDni       = { min_size: t('register.dniMinSize'),      max_size: t('register.dniMaxSize'),      format: t('register.dniFormat') };
     const mensajesNombre    = { min_size: t('register.nameMinSize'),     max_size: t('register.nameMaxSize'),     format: t('register.nameFormat') };
     const mensajesApellidos = { min_size: t('register.surnamesMinSize'), max_size: t('register.surnamesMaxSize'), format: t('register.surnamesFormat') };
     const mensajesTelefono  = { min_size: t('register.phoneMinSize'),    max_size: t('register.phoneMaxSize'),    format: t('register.phoneFormat') };
     const mensajesEmail     = { min_size: t('register.emailMinSize'),    max_size: t('register.emailMaxSize'),    format: t('register.emailFormat') };
 
-    // Validación en vivo al salir de cada campo, igual que ya hacía password2 con el mismatch.
+    // Validación en vivo al salir de cada campo
     dniInput.addEventListener('blur',       () => validarCampoTexto(dniInput,       REGLAS_CAMPOS.usuario.dni,            mensajesDni));
     nombreInput.addEventListener('blur',    () => validarCampoTexto(nombreInput,    REGLAS_CAMPOS.usuario.nombre_usuario, mensajesNombre));
     apellidosInput.addEventListener('blur', () => validarCampoTexto(apellidosInput, REGLAS_CAMPOS.usuario.apellidos,      mensajesApellidos));

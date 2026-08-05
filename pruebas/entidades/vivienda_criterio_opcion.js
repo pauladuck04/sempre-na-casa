@@ -1,6 +1,3 @@
-// Entidad "vivienda_criterio_opcion" real de Sempre na Casa: la respuesta de un anfitrion/
-// vivienda a un criterio (tabla puramente relacional, solo tres FK numericas, ver
-// backend/app/vivienda_criterio_opcion/vivienda_criterio_opcion_SERVICE.php).
 class vivienda_criterio_opcion extends Entidad_Abstracta {
 
     constructor(modo) {

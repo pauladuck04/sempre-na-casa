@@ -2,8 +2,6 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <!-- Solo accesible con rol admin (ver frontend/js/route-guard.js). Debe cargarse antes de
-         pintar nada, así que va lo primero en <head>, igual que en las dashboard-*.html reales. -->
     <script src="../../frontend/js/cookies.js?v=3"></script>
     <script src="../../frontend/js/route-guard.js?v=3"></script>
     <script>protegerRuta(['admin'], '../../frontend/');</script>
@@ -15,23 +13,9 @@
     <link rel="stylesheet" href="../../frontend/css/main.css?v=3">
 
     <style>
-        /* Contenedor oculto interno — DOM_class.showData() lo usa para construir el HTML de la
-           tabla antes de que Backend_Test._mostrarResultados() lo copie a #resultados_panel. */
         #IU_Test_result_nofile { display: none; }
-
-        /* Pantalla inicial (antes de ejecutar tests) más compacta que el .login-card normal
-           (pages.css usa padding: 2.5rem 2rem, pensado para login/registro) para que quepa sin
-           scroll incluso en viewports pequeños -- p.ej. el <iframe> de altura fija en el que
-           vive esta página dentro de dashboard-administrador.html. Solo afecta a esta página:
-           no se toca la clase compartida .login-card. */
         #backend-test-card { padding: 1.25rem 1.5rem; }
         #backend-test-card img { width: 48px; height: 48px; }
-
-        /* Resultados: antes se abrían en una ventana emergente (window.open), pero eso depende
-           de que el navegador no la bloquee -- al abrirse tras las llamadas await al backend
-           real, la mayoría de navegadores ya no la asocian al clic del usuario y la bloquean
-           (window.open devuelve null). Se pintan aquí, en la misma página, para no depender de
-           popups en absoluto. */
         #resultados_panel .table-responsive { overflow-x: auto; }
         #resultados_panel table { table-layout: auto; width: 100%; font-size: 0.8rem; }
         #resultados_panel thead th {
@@ -92,26 +76,15 @@
         </div>
     </div>
 
-    <!-- Contenedor oculto requerido por DOM_class.showData() -->
     <div id="IU_Test_result_nofile"></div>
 
-    <!-- Resultados: se rellena e imprime en la propia página (ver nota más arriba sobre por
-         qué ya no se usa una ventana emergente) -->
     <div id="resultados_panel" class="container-fluid px-4 pb-5" style="display:none;"></div>
 
-    <!-- 1. apiPost real (frontend/js/api.js). cookies.js ya se cargó en <head> (ver el guard
-         de arriba). No hace falta cargar el CDN de CryptoJS: aquí no se llama a
-         loginUser/registerUser (que son los únicos que usan hashPassword), solo a apiPost
-         directo contra cada entidad. -->
     <script src="../../frontend/js/api.js?v=3"></script>
 
-    <!-- 2. DOM (resultados) y fixtures/comparación contra backend -->
     <script src="../common/DOM_class.js?v=3"></script>
     <script src="backend_fixtures.js?v=3"></script>
 
-    <!-- 3. Casos de prueba DEDICADOS al backend (independientes de pruebas/frontend/pruebas.js,
-         que solo es para las pruebas de formato del frontend en
-         pruebas/frontend/test_runner.html) y el runner de backend -->
     <script src="backend_pruebas.js?v=3"></script>
     <script src="backend_test.js?v=3"></script>
 
@@ -120,10 +93,6 @@
             const nombre = document.getElementById('entidad_select').value;
             const statusEl = document.getElementById('runner_status');
 
-            // Se abre AQUÍ, antes de cualquier await, para que el navegador todavía la asocie
-            // al clic (ver el comentario en Backend_Test.abrirVentanaResultados). Si el
-            // navegador la bloquea igualmente, Backend_Test cae de forma automática a pintar
-            // los resultados en #resultados_panel, en esta misma página.
             const ventanaResultados = Backend_Test.abrirVentanaResultados();
 
             statusEl.className = 'alert alert-info d-flex align-items-start gap-2 mb-0';

@@ -1,16 +1,3 @@
-// Fuente única de verdad para las preguntas del cuestionario de convivencia.
-// Se usa tanto en el registro de huéspedes (encuesta.html) como en el alta de
-// vivienda del anfitrión (dashboard-anfitrion.html) — antes estaban calcadas
-// a mano en los dos sitios.
-//
-// Carga TODOS los criterios y opciones activos desde el backend (sin límite
-// fijo de preguntas/opciones), en vez de tener un número fijo hardcodeado.
-
-/**
- * Pinta un bloque `[data-criterio]` por cada criterio activo, con radios
- * `.btn-check` agrupados por criterio (comportamiento idéntico al HTML
- * estático que sustituye). El `value` de cada opción es su id_opcion real.
- */
 export async function renderPreguntasEncuesta(contenedor, opciones = {}) {
     if (!contenedor) return;
     const {

@@ -18,12 +18,12 @@
                 <div class="dropdown">
                     <button class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center gap-1" type="button" id="langDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-globe2"></i>
-                        <span id="lang-label">Español</span>
+                        <span id="lang-label" data-i18n="register.language"></span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="langDropdown">
-                        <li><button class="dropdown-item lang-option" data-lang="es">🇪🇸 Español</button></li>
-                        <li><button class="dropdown-item lang-option" data-lang="en">🇬🇧 English</button></li>
-                        <li><button class="dropdown-item lang-option" data-lang="gal">🏴󠁧󠁢󠁳󠁣󠁴󠁿 Galego</button></li>
+                        <li><button class="dropdown-item lang-option" data-lang="es" data-i18n="register.language.es"></button></li>
+                        <li><button class="dropdown-item lang-option" data-lang="en" data-i18n="register.language.en"></button></li>
+                        <li><button class="dropdown-item lang-option" data-lang="gal" data-i18n="register.language.gal"></button></li>
                     </ul>
                 </div>
             </div>
@@ -31,10 +31,10 @@
             <!-- Logo + título -->
             <div class="text-center mb-1">
                 <img src="./assets/images/logo.JPG" alt="Logo" width="70" height="70" class="rounded-circle mb-1 logo-shadow">
-                <h2 class="fw-bold mb-0" data-i18n="register.pageTitle">Crear cuenta</h2>
+                <h2 class="fw-bold mb-0" data-i18n="register.pageTitle"></h2>
                 <p class="text-muted small">
-                    <span data-i18n="register.joinAs">Únete como</span>
-                    <span class="fw-semibold" id="rol-label" data-i18n="register.studentRole">🎓 Huésped/Estudiante</span>
+                    <span data-i18n="register.joinAs"></span>
+                    <span class="fw-semibold" id="rol-label" data-i18n="register.studentRole"></span>
                 </p>
             </div>
 
@@ -44,7 +44,7 @@
 
                 <!-- DNI -->
                 <div class="mb-2">
-                    <label for="dni" class="form-label fw-semibold" data-i18n="register.dniPassport">DNI / Pasaporte</label>
+                    <label for="dni" class="form-label fw-semibold" data-i18n="register.dniPassport"></label>
                     <div class="input-group">
                         <span class="input-group-text bg-light border-end-0">
                             <i class="bi bi-card-text text-muted"></i>
@@ -56,7 +56,7 @@
 
                 <!-- Nombre -->
                 <div class="mb-2">
-                    <label for="nombre" class="form-label fw-semibold" data-i18n="register.firstName">Nombre</label>
+                    <label for="nombre" class="form-label fw-semibold" data-i18n="register.firstName"></label>
                     <div class="input-group">
                         <span class="input-group-text bg-light border-end-0">
                             <i class="bi bi-person text-muted"></i>
@@ -68,7 +68,7 @@
 
                 <!-- Apellidos -->
                 <div class="mb-2">
-                    <label for="apellidos" class="form-label fw-semibold" data-i18n="register.surnames">Apellidos</label>
+                    <label for="apellidos" class="form-label fw-semibold" data-i18n="register.surnames"></label>
                     <div class="input-group">
                         <span class="input-group-text bg-light border-end-0">
                             <i class="bi bi-person-lines-fill text-muted"></i>
@@ -80,7 +80,7 @@
 
                 <!-- Email -->
                 <div class="mb-2">
-                    <label for="email" class="form-label fw-semibold" data-i18n="register.emailLabel">Email</label>
+                    <label for="email" class="form-label fw-semibold" data-i18n="register.emailLabel"></label>
                     <div class="input-group">
                         <span class="input-group-text bg-light border-end-0">
                             <i class="bi bi-envelope text-muted"></i>
@@ -92,7 +92,7 @@
 
                 <!-- Teléfono -->
                 <div class="mb-2">
-                    <label for="telefono" class="form-label fw-semibold" data-i18n="register.phoneLabel">Número de teléfono</label>
+                    <label for="telefono" class="form-label fw-semibold" data-i18n="register.phoneLabel"></label>
                     <div class="input-group">
                         <span class="input-group-text bg-light border-end-0">
                             <i class="bi bi-telephone text-muted"></i>
@@ -104,7 +104,7 @@
 
                 <!-- Contraseña -->
                 <div class="mb-2">
-                    <label for="password" class="form-label fw-semibold" data-i18n="register.password">Contraseña</label>
+                    <label for="password" class="form-label fw-semibold" data-i18n="register.password"></label>
                     <div class="input-group">
                         <span class="input-group-text bg-light border-end-0">
                             <i class="bi bi-lock text-muted"></i>
@@ -134,19 +134,16 @@
 
                 <!-- Botón submit -->
                 <button type="submit" class="btn btn-primary w-100 fw-bold py-2 rounded-pill">
-                    <span data-i18n="register.continue">Continuar</span> <i class="bi bi-arrow-right ms-2"></i>
+                    <span data-i18n="register.continue"></span> <i class="bi bi-arrow-right ms-2"></i>
                 </button>
             </form>
 
             <!-- Divider -->
             <div class="divider my-4">
-                <span data-i18n="register.alreadyHaveAccount">¿Ya tienes cuenta?</span>
+                <span data-i18n="register.alreadyHaveAccount"></span>
             </div>
 
-            <a href="index.html" class="btn btn-dark w-100 rounded-pill fw-semibold" data-i18n="register.goToLogin">
-                Iniciar sesión
-            </a>
-
+            <a href="index.html" class="btn btn-dark w-100 rounded-pill fw-semibold" data-i18n="register.goToLogin"></a>
         </div>
     </div>
 

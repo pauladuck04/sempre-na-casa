@@ -18,7 +18,7 @@ export async function cargarMiConvivencia(idUsuario) {
 }
 
 // Candidatos reales: viviendas activas con plazas libres, puntuadas por el motor de matching
-// (backend/app/matching) segun las preferencias que el huesped respondio en la encuesta.
+// segun las preferencias que el huesped respondio en la encuesta.
 export async function cargarCandidatos(idUsuario) {
     if (!idUsuario) { candidatosMemoria = []; return; }
 

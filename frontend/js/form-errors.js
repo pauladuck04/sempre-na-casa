@@ -1,9 +1,3 @@
-// Helpers comunes para mostrar errores de formulario de forma consistente en toda la app.
-//
-// Dos patrones:
-//  - Error de un campo concreto  -> mostrarErrorCampo() / ocultarErrorCampo()  (borde rojo + texto debajo, patrón nativo de Bootstrap)
-//  - Error de proceso/servidor   -> mostrarErrorFormulario() / ocultarErrorFormulario() (caja de alerta arriba del formulario)
-
 import { validarTexto } from './validaciones-campos.js';
 
 /** Muestra un mensaje de error de proceso en la caja de alerta de un formulario. */
@@ -49,11 +43,6 @@ export function ocultarErrorCampo(input) {
 }
 
 /**
- * Valida un campo de texto contra una regla de REGLAS_CAMPOS (ver validaciones-campos.js) y
- * muestra/oculta su error con el mensaje específico del motivo real de fallo -- 'min_size' |
- * 'max_size' | 'format', tal cual los devuelve validarTexto() -- en vez de un único mensaje
- * genérico por campo. Devuelve true si el campo es válido.
- *
  * @param {HTMLElement} input   Campo a validar (puede ser null; en ese caso no hace nada y
  *                              se considera válido, para poder usarse en formularios donde
  *                              el campo es opcional según el contexto).

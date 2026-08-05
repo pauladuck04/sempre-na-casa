@@ -514,7 +514,6 @@ function actualizarProgresoEncuestaVivienda() {
 }
 
 async function renderizarVivienda() {
-    // Si no hay vivienda cargada aún, intentar cargar del backend
     if (!viviendaActual) {
         const idUsuario = getCookie('user_id');
         if (idUsuario) {

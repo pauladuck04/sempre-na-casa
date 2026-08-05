@@ -1,23 +1,3 @@
-// Casos de prueba DEDICADOS a probar las acciones reales del backend PHP de Sempre na Casa
-// (ADD/EDIT/SEARCH/DELETE, los cuatro "verbos" que entiende backend/index.php a través del
-// campo POST "action" -- ver backend/index.php y backend/Base/appServiceBase.php).
-//
-// A diferencia de pruebas/frontend/pruebas.js (que valida las reglas de FORMATO del frontend, ver
-// frontend/js/validaciones-campos.js, y solo se usa en pruebas/frontend/test_runner.html), este
-// fichero no comprueba formato/longitud: el CRUD genérico del backend (appServiceBase::comprobarnulos)
-// no valida eso, solo que los campos obligatorios ("notnull" en cada <entidad>_SERVICE.php) no
-// vengan vacíos. Por eso los casos de aquí se centran en:
-//   1. Que cada acción (ADD/EDIT/SEARCH/DELETE) funcione con un payload válido.
-//   2. Que cada campo obligatorio de cada acción sea rechazado si viene vacío (<campo>_es_nulo_KO).
-//   3. Las reglas de negocio reales que sí vive en el backend (ver cada <entidad>_SERVICE.php).
-//
-// Formato de cada fila: { accion, descripcion, overrides, esperado }
-//   - accion: 'ADD' | 'EDIT' | 'SEARCH' | 'DELETE'
-//   - overrides: objeto que sobreescribe el payload base válido que arma
-//     pruebas/backend/backend_fixtures.js (crearContextoBackend) para esa entidad/acción
-//   - esperado: true si se espera que el backend acepte la petición (res.ok === true),
-//     o un código de error (string, solo informativo) si se espera que la rechace
-
 // =====================================================================================
 // usuario
 // =====================================================================================
@@ -118,9 +98,6 @@ let opcion_backend_tests = [
     { accion: 'ADD', descripcion: 'ADD sin nombre_opcion', overrides: { nombre_opcion: '' }, esperado: 'nombre_opcion_es_nulo_KO' },
     { accion: 'ADD', descripcion: 'ADD sin valor', overrides: { valor: '' }, esperado: 'valor_es_nulo_KO' },
     { accion: 'ADD', descripcion: 'ADD sin id_criterio', overrides: { id_criterio: '' }, esperado: 'id_criterio_es_nulo_KO' },
-    // regla de negocio real (opcion_SERVICE::validarExcluyenteRequiereCriterioRestrictivo): una
-    // opcion excluyente solo puede asociarse a un criterio marcado como restrictivo; el criterio
-    // de fixture (crearCriterioFixture) se crea con restrictivo = 0, así que esto debe fallar.
     { accion: 'ADD', descripcion: 'ADD excluyente=1 sobre un criterio NO restrictivo', overrides: { excluyente: '1' }, esperado: 'EXCLUYENTE_REQUIERE_CRITERIO_RESTRICTIVO_KO' },
 
     { accion: 'SEARCH', descripcion: 'SEARCH sin filtros devuelve listado', overrides: {}, esperado: true },
@@ -143,10 +120,6 @@ let usuario_vivienda_backend_tests = [
     { accion: 'ADD', descripcion: 'ADD sin id_usuario', overrides: { id_usuario: '' }, esperado: 'id_usuario_es_nulo_KO' },
     { accion: 'ADD', descripcion: 'ADD sin id_vivienda', overrides: { id_vivienda: '' }, esperado: 'id_vivienda_es_nulo_KO' },
     { accion: 'ADD', descripcion: 'ADD sin fecha_inicio', overrides: { fecha_inicio: '' }, esperado: 'fecha_inicio_es_nulo_KO' },
-    // reglas de negocio reales (usuario_vivienda_SERVICE::ADD). Fechas relativas a hoy (ver
-    // fechaOffset en backend_fixtures.js) en vez de fijas, para que no se vuelvan obsoletas con
-    // el paso del tiempo (una fecha fija futura como '2027-01-01' deja de ser futura tarde o
-    // temprano, y entonces el test dejaría de probar lo que dice probar).
     { accion: 'ADD', descripcion: 'ADD con fecha_inicio en el pasado', overrides: { fecha_inicio: fechaOffset(-30) }, esperado: 'FECHA_INICIO_PASADA_KO' },
     { accion: 'ADD', descripcion: 'ADD con fecha_fin anterior o igual a fecha_inicio', overrides: { fecha_inicio: fechaOffset(60), fecha_fin: fechaOffset(60) }, esperado: 'FECHA_FIN_ANTERIOR_A_INICIO_KO' },
 
