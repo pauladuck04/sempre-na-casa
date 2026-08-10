@@ -97,7 +97,7 @@ class usuario_SERVICE extends appServiceBase{
         $idUsuario       = intval($_POST['id_usuario']);
         $idRolSolicitado = intval($_POST['id_rol_solicitado']);
 
-        include_once './Base/mapping.php';
+        include_once './base/mapping.php';
         $map = new mapping('usuario');
 
         $res = $map->lanzarqueryconresults(
@@ -138,7 +138,7 @@ class usuario_SERVICE extends appServiceBase{
     function resolverCambioRol($nuevoEstado) {
         $idUsuario = intval($_POST['id_usuario']);
 
-        include_once './Base/mapping.php';
+        include_once './base/mapping.php';
         $map = new mapping('usuario');
 
         $res = $map->lanzarqueryconresults(
@@ -167,7 +167,7 @@ class usuario_SERVICE extends appServiceBase{
 
     // listado para el panel de administrador: usuarios con una solicitud de cambio de rol pendiente
     function getSolicitudesCambioRol() {
-        include_once './Base/mapping.php';
+        include_once './base/mapping.php';
         $map = new mapping('usuario');
         return $map->lanzarqueryconresults(
             "SELECT u.id_usuario, u.nombre_usuario, u.apellidos, u.mail, u.fecha_solicitud_rol,

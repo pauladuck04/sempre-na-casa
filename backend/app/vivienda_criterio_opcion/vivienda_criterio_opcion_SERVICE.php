@@ -54,7 +54,7 @@ class vivienda_criterio_opcion_SERVICE extends appServiceBase {
 
     function getByVivienda() {
         $idVivienda = intval($_POST['id_vivienda']);
-        include_once './Base/mapping.php';
+        include_once './base/mapping.php';
         $map = new mapping('vivienda_criterio_opcion');
         return $map->lanzarqueryconresults(
             "SELECT vco.id_vivienda, vco.id_criterio, vco.id_opcion,
@@ -73,7 +73,7 @@ class vivienda_criterio_opcion_SERVICE extends appServiceBase {
         $idVivienda = intval($_POST['id_vivienda']);
         $idCriterio = intval($_POST['id_criterio']);
         $idOpcion   = intval($_POST['id_opcion']);
-        include_once './Base/mapping.php';
+        include_once './base/mapping.php';
         $map = new mapping('vivienda_criterio_opcion');
         $map->lanzarquery(
             "DELETE FROM vivienda_criterio_opcion

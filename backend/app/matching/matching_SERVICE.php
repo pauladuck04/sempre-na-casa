@@ -27,7 +27,7 @@ class matching_SERVICE extends appServiceBase {
         $idUsuario  = intval($_POST['id_usuario']);
         $idVivienda = intval($_POST['id_vivienda']);
 
-        include_once './Base/mapping.php';
+        include_once './base/mapping.php';
         $map = new mapping('');
 
         $pesos  = $this->cargarPesosCriterios($map);
@@ -62,7 +62,7 @@ class matching_SERVICE extends appServiceBase {
     function rankViviendasParaUsuario() {
         $idUsuario = intval($_POST['id_usuario']);
 
-        include_once './Base/mapping.php';
+        include_once './base/mapping.php';
         $map = new mapping('');
 
         $pesos  = $this->cargarPesosCriterios($map);

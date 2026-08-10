@@ -52,7 +52,7 @@ class usuario_vivienda_SERVICE extends appServiceBase {
     // esperada y todavia no llega a la fecha_fin. Si no hay fecha_fin definida se considera
     // activa sin limite.
     function promoverConvivenciasActivas() {
-        include_once './Base/mapping.php';
+        include_once './base/mapping.php';
         $map = new mapping('usuario_vivienda');
         $ahora = date('Y-m-d H:i:s');
         $map->lanzarquery(
@@ -82,7 +82,7 @@ class usuario_vivienda_SERVICE extends appServiceBase {
             return array('ok' => false, 'code' => 'FECHA_FIN_ANTERIOR_A_INICIO_KO');
         }
 
-        include_once './Base/mapping.php';
+        include_once './base/mapping.php';
         $map = new mapping('usuario_vivienda');
 
         $yaActivo = $map->lanzarqueryconresults(
@@ -117,7 +117,7 @@ class usuario_vivienda_SERVICE extends appServiceBase {
         $idUsuario  = intval($_POST['id_usuario']);
         $idVivienda = intval($_POST['id_vivienda']);
 
-        include_once './Base/mapping.php';
+        include_once './base/mapping.php';
         $map = new mapping('usuario_vivienda');
 
         $res = $map->lanzarqueryconresults(
@@ -149,7 +149,7 @@ class usuario_vivienda_SERVICE extends appServiceBase {
     // listado para el panel de administrador: solo las solicitudes pendientes de resolver, con
     // los datos de huesped, vivienda y anfitrion
     function getSolicitudes() {
-        include_once './Base/mapping.php';
+        include_once './base/mapping.php';
         $map = new mapping('usuario_vivienda');
         return $map->lanzarqueryconresults(
             "SELECT uv.id_usuario, uv.id_vivienda, uv.estado_usuario_vivienda, uv.fecha_solicitud,
@@ -182,7 +182,7 @@ class usuario_vivienda_SERVICE extends appServiceBase {
 
     function getHuespedesByVivienda() {
         $idVivienda = intval($_POST['id_vivienda']);
-        include_once './Base/mapping.php';
+        include_once './base/mapping.php';
         $map = new mapping('usuario_vivienda');
         return $map->lanzarqueryconresults(
             "SELECT uv.id_usuario, uv.activo_usuario_vivienda, uv.fecha_inicio,
@@ -196,7 +196,7 @@ class usuario_vivienda_SERVICE extends appServiceBase {
 
     function getHuespedesByAnfitrion() {
         $idAnfitrion = intval($_POST['id_anfitrion']);
-        include_once './Base/mapping.php';
+        include_once './base/mapping.php';
         $map = new mapping('usuario_vivienda');
         return $map->lanzarqueryconresults(
             "SELECT uv.id_usuario, uv.fecha_inicio,
@@ -218,7 +218,7 @@ class usuario_vivienda_SERVICE extends appServiceBase {
     function getConvivenciaByUsuario() {
         $idUsuario = intval($_POST['id_usuario']);
 
-        include_once './Base/mapping.php';
+        include_once './base/mapping.php';
         $map = new mapping('usuario_vivienda');
 
         $res = $map->lanzarqueryconresults(

@@ -11,16 +11,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 session_start();
 
-include_once './Comun/config.php';
-include_once './Comun/FuncionesGenerales.php';
-include_once './Comun/literalesbase.php';
-include_once './Comun/LogHelper.php';
+// Do not rely on PHP's current working directory: it may differ depending on
+// the web-server configuration. Linux hosting is also case-sensitive.
+$basePath = __DIR__;
+$configPath = $basePath . '/comun/config.php';
+
+if (is_file($configPath)) {
+	include_once $configPath;
+} else {
+	// The deployed project keeps its connection settings here when no local
+	// Comun/config.php override has been created.
+	include_once $basePath . '/bd/DBCredentials.php';
+}
+
+include_once $basePath . '/comun/funcionesGenerales.php';
+include_once $basePath . '/comun/literalesbase.php';
+include_once $basePath . '/comun/logHelper.php';
 
 error_reporting(E_ALL & ~E_DEPRECATED & ~E_WARNING);
 
 if (isset($_POST['managementCore'])){
 	if ($_POST['managementCore']=='crear'){
-		include_once './core/CrearGestionEntidad.php';
+		include_once './core/crearGestionEntidad.php';
 		$managementCore = new managementCore();
 		$respuesta = $managementCore->ejecutarmanagementCore();
 		header('Content-type: application/json');
@@ -81,7 +93,7 @@ else{ //peticion sin upload
 if (isset($_POST['controlador'])){
 	$rest = $_POST['controlador'];
 /*	if ($rest == 'funcionesesquema'){
-		include './Comun/funcionesEsquema.php';
+		include './comun/funcionesEsquema.php';
 		funcionesesquema();
 	}*/
 }

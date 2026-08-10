@@ -66,7 +66,7 @@ function mapRolToId($rol){
 	}
 
 	$rolLower = mb_strtolower(trim($rol), 'UTF-8');
-	include_once './Base/mapping.php';
+	include_once './base/mapping.php';
 	$mapRol = new mapping('rol');
 	$query = "SELECT id_rol, nombre_rol FROM rol";
 	$resRole = $mapRol->lanzarqueryconresults($query);
@@ -150,7 +150,7 @@ function mapRolToId($rol){
 
 		// Obtener nombre del rol
 		$nombreRol = '';
-		include_once './Base/mapping.php';
+		include_once './base/mapping.php';
 		$mapRol = new mapping('rol');
 		$resRol = $mapRol->lanzarqueryconresults(
 			"SELECT nombre_rol FROM rol WHERE id_rol = " . intval($fila['id_rol']) . " LIMIT 1"
@@ -166,7 +166,7 @@ function mapRolToId($rol){
 			}
 		}
 
-		include_once './Base/JWT/token.php';
+		include_once './base/JWT/token.php';
 		$datosUsuario = array(
 			'id_usuario' => $fila['id_usuario'],
 			'mail' => $fila['mail'],
@@ -201,7 +201,7 @@ function mapRolToId($rol){
 			$_POST['id_rol'] = 5;
 		}
 
-		include_once './Base/mapping.php';
+		include_once './base/mapping.php';
 		$map = new mapping('usuario');
 		$mail = addslashes($_POST['mail']);
 		$dni  = addslashes($_POST['dni']);
@@ -233,7 +233,7 @@ function mapRolToId($rol){
 		$mail           = addslashes($_POST['mail']);
 		$passwordActual = $_POST['password_actual'];
 
-		include_once './Base/mapping.php';
+		include_once './base/mapping.php';
 		$map = new mapping('usuario');
 
 		$res = $map->lanzarqueryconresults(
@@ -269,7 +269,7 @@ function mapRolToId($rol){
 	function RECUPERAR_PASSWORD(){
 		$mail = addslashes(trim($_POST['mail']));
 
-		include_once './Base/mapping.php';
+		include_once './base/mapping.php';
 		$map = new mapping('usuario');
 
 		$res = $map->lanzarqueryconresults(
@@ -281,7 +281,7 @@ function mapRolToId($rol){
 
 		$fila = $res['resource'][0];
 
-		include_once './Base/JWT/token.php';
+		include_once './base/JWT/token.php';
 		$datosToken = array(
 			'purpose'    => 'reset_password',
 			'id_usuario' => intval($fila['id_usuario']),
@@ -297,14 +297,14 @@ function mapRolToId($rol){
 	// dentro del token). Cambia en cuanto la contrasena cambia, asi que sirve para invalidar el
 	// enlace de recuperacion automaticamente tras usarlo una vez, sin guardar ni borrar nada en BD.
 	function huellaPassword($passwordHashActual){
-		include_once './Base/JWT/token.php';
+		include_once './base/JWT/token.php';
 		return substr(hash('sha256', $passwordHashActual . SECRET_KEY), 0, 16);
 	}
 
 	// Valida el token (firma + caducidad, vía MiToken) y comprueba que la huella de contrasena
 	// siga coincidiendo (si no, es que el enlace ya se uso o quedo obsoleto por uno mas reciente).
 	function RESTABLECER_PASSWORD(){
-		include_once './Base/JWT/token.php';
+		include_once './base/JWT/token.php';
 
 		try {
 			$payload = MiToken::devuelveToken($_POST['token']);
@@ -319,7 +319,7 @@ function mapRolToId($rol){
 
 		$idUsuario = intval($payload->data->id_usuario);
 
-		include_once './Base/mapping.php';
+		include_once './base/mapping.php';
 		$map = new mapping('usuario');
 
 		$res = $map->lanzarqueryconresults(
@@ -358,7 +358,7 @@ function mapRolToId($rol){
 		$idUsuario = intval($_POST['id_usuario']);
 		$password = md5($_POST['password']);
 
-		include_once './Base/mapping.php';
+		include_once './base/mapping.php';
 		$map = new mapping('usuario');
 		$res = $map->lanzarquery("UPDATE usuario SET password = '".$password."', fecha_modificacion_usuario = '".date('Y-m-d H:i:s')."' WHERE id_usuario = ".$idUsuario);
 
@@ -379,7 +379,7 @@ function mapRolToId($rol){
 	// $resultado->data suelto, sin envolver, inconsistente con todo lo demas).
 	function validar_token(){
 
-		include_once './Base/JWT/token.php';
+		include_once './base/JWT/token.php';
 		$current_token = $this->cargarTokenCabecera();
 
 		try {

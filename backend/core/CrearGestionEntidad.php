@@ -26,7 +26,7 @@ class managementCore{
         
         $this->tabla = $_POST['entidad'];
         
-        include_once './Base/mapping.php';
+        include_once './base/mapping.php';
         $query = "show columns from ".$this->tabla;
         $mapping = new mapping('');
         $res = $mapping->lanzarqueryconresults($query);
@@ -290,7 +290,7 @@ class managementCore{
 
     function rellenarOptions($tabla, $nombrecampo){
 
-        include_once './Base/mapping.php';
+        include_once './base/mapping.php';
         $query = "show columns from ".$this->tabla;
         $mapping = new mapping('');
         $res = $mapping->lanzarqueryconresults($query);

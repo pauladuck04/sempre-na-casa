@@ -147,7 +147,7 @@ function presentarResultadosPruebas($resultadoTest){
 
 function escribirLogInterno($entradalog){
 
-	$fp = fopen("./Comun/loginterno.txt", "a");
+	$fp = fopen("./comun/loginterno.txt", "a");
 	fputs($fp, $entradalog.PHP_EOL);
 	fclose($fp);
 

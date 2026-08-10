@@ -1,6 +1,6 @@
 <?php
 
-include_once './base/mappingBase.php';
+include_once __DIR__ . '/mappingBase.php';
 
 class mapping extends mappingBase{
 

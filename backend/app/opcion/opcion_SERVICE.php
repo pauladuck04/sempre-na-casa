@@ -88,7 +88,7 @@ class opcion_SERVICE extends appServiceBase {
 
         $idCriterio = intval($_POST['id_criterio']);
 
-        include_once './Base/mapping.php';
+        include_once './base/mapping.php';
         $map = new mapping('criterio');
         $res = $map->lanzarqueryconresults(
             "SELECT restrictivo FROM criterio WHERE id_criterio = {$idCriterio} LIMIT 1"

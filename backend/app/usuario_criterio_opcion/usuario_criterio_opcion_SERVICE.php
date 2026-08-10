@@ -78,7 +78,7 @@ class usuario_criterio_opcion_SERVICE extends appServiceBase {
     public function getResumenByUsuario() {
         $idUsuario = intval($_POST['id_usuario']);
 
-        include_once './Base/mapping.php';
+        include_once './base/mapping.php';
         $map = new mapping('usuario_criterio_opcion');
 
         $res = $map->lanzarqueryconresults(
@@ -101,7 +101,7 @@ class usuario_criterio_opcion_SERVICE extends appServiceBase {
         $idCriterio = intval($_POST['id_criterio']);
         $idOpcion   = intval($_POST['id_opcion']);
 
-        include_once './Base/mapping.php';
+        include_once './base/mapping.php';
         $map = new mapping('usuario_criterio_opcion');
 
         $map->lanzarquery(
