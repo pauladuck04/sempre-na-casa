@@ -15,16 +15,17 @@ class Backend_Test {
         this.nombreEntidad = nombreEntidad;
         this.dom = new DOM_class();
         this.casos = eval(nombreEntidad + '_backend_tests');
-        this.contextoBackend = null;
+        this.fixtures = null;
         this.ventanaResultados = ventanaResultados || null;
     }
 
     async ejecutar() {
         try {
-            this.contextoBackend = await crearContextoBackend(this.nombreEntidad);
+            this.fixtures = await prepararFixtures();
         } catch (e) {
-            console.error('No se pudo preparar el contexto de backend:', e);
-            this.contextoBackend = { idPrincipal: null, async payloadPara() { throw e; } };
+            console.error('No se pudieron preparar las fixtures de backend:', e);
+            this.fixtures = null;
+            this.errorFixtures = e;
         }
         const salida = await this._ejecutarCasos();
         this._mostrarResultados(salida);
@@ -41,7 +42,9 @@ class Backend_Test {
                 valorprueba += clave + '=' + JSON.stringify(overrides[clave]) + '<br>';
             }
 
-            const resultado = await compararConBackend(this.nombreEntidad, accion, this.contextoBackend, i, overrides, esperado);
+            const resultado = this.fixtures
+                ? await compararConBackend(this.nombreEntidad, accion, this.fixtures, overrides, esperado)
+                : { backend_status: 'SIN_CONEXION', backend_code: this.errorFixtures?.message || 'no se pudieron preparar las fixtures' };
 
             salida.push({
                 entidad: this.nombreEntidad, accion, descripcion,
