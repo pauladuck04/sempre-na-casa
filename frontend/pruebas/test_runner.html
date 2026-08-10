@@ -2,15 +2,15 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <script src="../../frontend/js/cookies.js?v=3"></script>
-    <script src="../../frontend/js/route-guard.js?v=3"></script>
-    <script>protegerRuta(['admin'], '../../frontend/');</script>
+    <script src="../js/cookies.js?v=3"></script>
+    <script src="../js/route-guard.js?v=3"></script>
+    <script>protegerRuta(['admin'], '../frontend/');</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test Runner - Sempre na Casa</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="../../frontend/css/main.css?v=3">
+    <link rel="stylesheet" href="../css/main.css?v=3">
 
     <style>
         /* Contenedores internos ocultos — data.js los usa para construir resultados */
@@ -34,7 +34,7 @@
         <div id="frontend-test-card" class="login-card" style="max-width: 640px;">
 
             <div class="text-center mb-2">
-                <img src="../../frontend/assets/images/logo.JPG" alt="Logo" class="rounded-circle mb-2 logo-shadow"
+                <img src="../assets/images/logo.JPG" alt="Logo" class="rounded-circle mb-2 logo-shadow"
                      onerror="this.src='https://ui-avatars.com/api/?name=QA&background=7A99DD&color=fff'">
                 <h2 class="fw-bold mb-1" style="font-size: 1.4rem;">Frontend Test Runner</h2>
                 <p class="text-muted small mb-0">Ejecuta la batería de tests de las entidades del frontend</p>
@@ -80,28 +80,28 @@
     <!-- Resultados: fallback en la propia página si no se pudo abrir la ventana emergente -->
     <div id="resultados_panel" class="container-fluid px-4 pb-5" style="display:none;"></div>
     <script type="module">
-        window._reglasListo = import('../../frontend/js/validaciones-campos.js?v=3').then(reglasMod => {
+        window._reglasListo = import('../js/validaciones-campos.js?v=3').then(reglasMod => {
             window.REGLAS_CAMPOS = reglasMod.REGLAS_CAMPOS;
             window.Validadores = reglasMod;
         });
 
-        window._i18nListo = import('../../frontend/js/i18n.js?v=3').then(i18nMod => i18nMod.initI18n());
+        window._i18nListo = import('../js/i18n.js?v=3').then(i18nMod => i18nMod.initI18n());
     </script>
 
     <!-- 2. Validaciones y DOM -->
-    <script src="../common/validaciones.js?v=3"></script>
-    <script src="../common/DOM_class.js?v=3"></script>
+    <script src="../../backend/pruebas/common/validaciones.js?v=3"></script>
+    <script src="../../backend/pruebas/common/DOM_class.js?v=3"></script>
 
     <!-- 3. Clase base -->
     <script src="Entidad_Abstracta.js?v=3"></script>
 
     <!-- 4. Clases de entidad -->
-    <script src="../entidades/usuario.js?v=3"></script>
-    <script src="../entidades/vivienda.js?v=3"></script>
-    <script src="../entidades/criterio.js?v=3"></script>
-    <script src="../entidades/opcion.js?v=3"></script>
-    <script src="../entidades/usuario_vivienda.js?v=3"></script>
-    <script src="../entidades/usuario_criterio_opcion.js?v=3"></script>
+    <script src="../../backend/pruebas/entidades/usuario.js?v=3"></script>
+    <script src="../../backend/pruebas/entidades/vivienda.js?v=3"></script>
+    <script src="../../backend/pruebas/entidades/criterio.js?v=3"></script>
+    <script src="../../backend/pruebas/entidades/opcion.js?v=3"></script>
+    <script src="../../backend/pruebas/entidades/usuario_vivienda.js?v=3"></script>
+    <script src="../../backend/pruebas/entidades/usuario_criterio_opcion.js?v=3"></script>
     <script src="../entidades/vivienda_criterio_opcion.js?v=3"></script>
 
     <!-- 5. Datos de prueba y runner -->
