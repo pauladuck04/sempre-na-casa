@@ -1,5 +1,5 @@
 //cambiar url de la api según el entorno
-const API_URL = 'http://localhost:8081/index.php';
+const API_URL = 'http://backsemprenacasa.atwebpages.com/index.php'; // Cambiar a la URL de tu API
 
 async function apiPost(controlador, action, params = {}) {
     const body = new URLSearchParams({ controlador, action, ...params });
@@ -8,8 +8,16 @@ async function apiPost(controlador, action, params = {}) {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: body.toString()
     });
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    return response.json();
+    const responseText = await response.text();
+    let data;
+    try {
+        data = JSON.parse(responseText);
+    } catch (error) {
+        const detail = responseText.replace(/\s+/g, ' ').trim().slice(0, 300);
+        throw new Error(`La API no devolvió JSON (HTTP ${response.status}): ${detail || 'respuesta vacía'}`);
+    }
+    if (!response.ok) throw new Error(data.code || `HTTP ${response.status}`);
+    return data;
 }
 
 async function hashPassword(password) {

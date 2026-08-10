@@ -33,28 +33,6 @@ class JWT
         'EdDSA' => array('sodium_crypto', 'EdDSA'),
     );
 
-    /**
-     * Decodes a JWT string into a PHP object.
-     *
-     * @param string                    $jwt            The JWT
-     * @param string|array|resource     $key            The key, or map of keys.
-     *                                                  If the algorithm used is asymmetric, this is the public key
-     * @param array                     $allowed_algs   List of supported verification algorithms
-     *                                                  Supported algorithms are 'ES384','ES256', 'HS256', 'HS384',
-     *                                                  'HS512', 'RS256', 'RS384', and 'RS512'
-     *
-     * @return object The JWT's payload as a PHP object
-     *
-     * @throws InvalidArgumentException     Provided JWT was empty
-     * @throws UnexpectedValueException     Provided JWT was invalid
-     * @throws SignatureInvalidException    Provided JWT was invalid because the signature verification failed
-     * @throws BeforeValidException         Provided JWT is trying to be used before it's eligible as defined by 'nbf'
-     * @throws BeforeValidException         Provided JWT is trying to be used before it's been created as defined by 'iat'
-     * @throws ExpiredException             Provided JWT has since expired, as defined by the 'exp' claim
-     *
-     * @uses jsonDecode
-     * @uses urlsafeB64Decode
-     */
     public static function decode($jwt, $key)
     {       
         

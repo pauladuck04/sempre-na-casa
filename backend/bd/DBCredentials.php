@@ -1,6 +1,6 @@
 <?php
-//cambiar bd por: http://fdb1032.awardspace.net:3306
-define ('host', 'db');
+//cambiar bd por: 
+define('host', 'fdb1032.awardspace.net');
 define ('user', '4740201_semprenacasa');
 define ('pass', 'SempreNaCasa_2026');
 define ('BD', '4740201_semprenacasa');

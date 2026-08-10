@@ -1,8 +1,14 @@
 <?php
-header('Access-Control-Allow-Origin: http://127.0.0.1:5500');
+header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 header('Access-Control-Allow-Credentials: true');
+header('Content-Type: application/json; charset=utf-8');
+
+// Los errores se registran en el servidor: no deben mezclarse con las
+// respuestas JSON que consume el frontend.
+error_reporting(E_ALL);
+ini_set('display_errors', '0');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
@@ -11,24 +17,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 session_start();
 
-// Do not rely on PHP's current working directory: it may differ depending on
-// the web-server configuration. Linux hosting is also case-sensitive.
 $basePath = __DIR__;
 $configPath = $basePath . '/comun/config.php';
 
-if (is_file($configPath)) {
-	include_once $configPath;
-} else {
-	// The deployed project keeps its connection settings here when no local
-	// Comun/config.php override has been created.
-	include_once $basePath . '/bd/DBCredentials.php';
+if (!is_file($configPath)) {
+    http_response_code(500);
+    echo json_encode(array(
+        'ok' => false,
+        'code' => 'CONFIGURACION_NO_ENCONTRADA_KO',
+        'resource' => 'Falta comun/config.php'
+    ));
+    exit();
 }
 
-include_once $basePath . '/comun/funcionesGenerales.php';
+include_once $configPath;
 include_once $basePath . '/comun/literalesbase.php';
+include_once $basePath . '/comun/funcionesGenerales.php';
 include_once $basePath . '/comun/logHelper.php';
 
-error_reporting(E_ALL & ~E_DEPRECATED & ~E_WARNING);
 
 if (isset($_POST['managementCore'])){
 	if ($_POST['managementCore']=='crear'){
@@ -93,7 +99,7 @@ else{ //peticion sin upload
 if (isset($_POST['controlador'])){
 	$rest = $_POST['controlador'];
 /*	if ($rest == 'funcionesesquema'){
-		include './comun/funcionesEsquema.php';
+		include './Comun/funcionesEsquema.php';
 		funcionesesquema();
 	}*/
 }

@@ -1,4 +1,11 @@
 $kind: http-request
-url: ""
-method: GET
+url: http://backsemprenacasa.atwebpages.com/index.php
+method: POST
+body:
+  type: urlencoded
+  content:
+    action: LOGIN
+    controlador: auth
+    mail: ppgomez22@esei.uvigo.es
+    password: 0f2390714bbacc6259240626462260e7c821d33e59d09b510a64a41020a07d87
 order: 1786030896787
