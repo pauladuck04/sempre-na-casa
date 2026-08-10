@@ -1,6 +1,6 @@
 <?php
 
-
+//revisar si es necesaria
 class managementCore{
 
     private $estructura=array();

@@ -1,5 +1,5 @@
 <?php
-
+//revisar si es necesaria
 function ejecutarCurl($parametros){
 
 define('urlnoRest','http://localhost/webProjects/webs6uvigo/repoEducacion/Back/index.php');

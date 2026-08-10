@@ -1,8 +1,8 @@
 <?php
 
-include_once './Base/ControllerBase.php';
+include_once './base/controllerBase.php';
 
-class xxentidadxx extends ControllerBase{
+class xxentidadxx extends controllerBase{
 
 
 	function __construct(){

@@ -1,8 +1,8 @@
 <?php
 
-include_once './Base/mapping.php';
+include_once './base/mapping.php';
 
-class ModelBase {
+class modelBase {
 
     public $tabla;
     public $clave       = array();

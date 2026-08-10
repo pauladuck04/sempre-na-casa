@@ -1,8 +1,8 @@
 <?php
 
-include_once './Base/ControllerBase.php';
+include_once './base/controllerBase.php';
 
-class vivienda extends ControllerBase{
+class vivienda extends controllerBase{
 
 
 	function __construct(){

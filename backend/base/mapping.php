@@ -1,8 +1,8 @@
 <?php
 
-include_once './base/MappingBase.php';
+include_once './base/mappingBase.php';
 
-class mapping extends MappingBase{
+class mapping extends mappingBase{
 
 	var $tabla;
 

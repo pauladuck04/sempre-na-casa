@@ -1,8 +1,8 @@
 <?php
 
-include_once './Base/ControllerBase.php';
+include_once './base/controllerBase.php';
 
-class usuario_criterio_opcion extends ControllerBase{
+class usuario_criterio_opcion extends controllerBase{
 
 
 	function __construct(){

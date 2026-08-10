@@ -1,8 +1,8 @@
 <?php
 
-include_once './Base/ModelBase.php';
+include_once './base/modelBase.php';
 
-class usuario_vivienda_MODEL extends ModelBase {
+class usuario_vivienda_MODEL extends modelBase {
 
     function __construct() {
         $this->tabla         = 'usuario_vivienda';

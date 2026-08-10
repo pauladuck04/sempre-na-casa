@@ -1,6 +1,6 @@
 <?php
 
-class ControllerBase {
+class controllerBase {
 
     function __construct() {
         $controlador = get_class($this);

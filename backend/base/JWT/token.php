@@ -1,10 +1,10 @@
 <?php
-
+//revisar
 define('SERVER', "http://localhost");
 define('SECRET_KEY', '71YMT');  /// secret key can be a random string and keep in secret from anyone
 define('ALGORITHM', 'HS256');
 
-require_once "./Base/JWT/JWT.php";
+require_once "./base/JWT/JWT.php";
 
 class MiToken {
 

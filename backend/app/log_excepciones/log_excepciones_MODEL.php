@@ -1,8 +1,8 @@
 <?php
 
-include_once './Base/ModelBase.php';
+include_once './base/modelBase.php';
 
-class log_excepciones_MODEL extends ModelBase {
+class log_excepciones_MODEL extends modelBase {
 
     function __construct() {
         $this->tabla         = 'log_excepciones';

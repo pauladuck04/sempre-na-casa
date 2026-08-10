@@ -25,7 +25,7 @@ function funcionesesquema(){
     }
 
     if (($_POST['action'] == 'listatablas')){
-        include_once './Base/mapping.php';
+        include_once './base/mapping.php';
         $query = "show tables";
         $mapping = new mapping('');
         $res = $mapping->lanzarqueryconresults($query);
@@ -52,7 +52,7 @@ function funcionesesquema(){
             exit();
         }
         $tabla = $_POST['tabla'];
-        include_once './Base/mapping.php';
+        include_once './base/mapping.php';
         $query = "show columns from ".$tabla;
         $mapping = new mapping('');
         $res = $mapping->lanzarqueryconresults($query);

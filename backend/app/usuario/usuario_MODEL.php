@@ -1,8 +1,8 @@
 <?php
 
-include_once './Base/ModelBase.php';
+include_once './base/modelBase.php';
 
-class usuario_MODEL extends ModelBase{
+class usuario_MODEL extends modelBase{
 
 	function __construct(){
 

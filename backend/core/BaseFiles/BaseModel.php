@@ -1,8 +1,8 @@
 <?php
 
-include_once './Base/ModelBase.php';
+include_once './base/modelBase.php';
 
-class xxentidadxx_MODEL extends ModelBase{
+class xxentidadxx_MODEL extends modelBase{
 
 
 	//METODOS

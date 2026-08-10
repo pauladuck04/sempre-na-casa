@@ -1,6 +1,6 @@
 <?php
 
-include_once './Base/appServiceBase.php';
+include_once './base/appServiceBase.php';
 
 class vivienda_criterio_opcion_SERVICE extends appServiceBase {
 

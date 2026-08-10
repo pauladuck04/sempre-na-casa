@@ -1,6 +1,6 @@
 <?php
 
-class MappingBase {
+class mappingBase {
 
     public $query;
     public $feedback = array();

@@ -1,6 +1,6 @@
 <?php
 
-include_once './Base/mapping.php';
+include_once './base/mapping.php';
 
 function guardarLogExcepcion($controlador, $accion, $codigo, $id_usuario = null) {
     $map   = new mapping('log_excepciones');

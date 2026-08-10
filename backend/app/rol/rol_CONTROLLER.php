@@ -1,8 +1,7 @@
 <?php
 
-include_once './Base/ControllerBase.php';
-
-class rol extends ControllerBase{
+include_once './base/controllerBase.php';
+class rol extends controllerBase{
 
 
 	function __construct(){

@@ -1,6 +1,6 @@
 <?php
 
-include_once './Base/appServiceBase.php';
+include_once './base/appServiceBase.php';
 
 class log_excepciones_SERVICE extends appServiceBase {
 

@@ -1,8 +1,8 @@
 <?php
 
-include_once './Base/ControllerBase.php';
+include_once './base/controllerBase.php';
 
-class criterio extends ControllerBase{
+class criterio extends controllerBase{
 
 
 	function __construct(){

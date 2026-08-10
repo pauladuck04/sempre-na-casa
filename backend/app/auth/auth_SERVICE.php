@@ -1,8 +1,8 @@
 <?php
 
-include_once './Base/appServiceBase.php';
+include_once './base/appServiceBase.php';
 
-class AUTH_SERVICE extends appServiceBase{
+class auth_SERVICE extends appServiceBase{
 
 	public $modelo;
 

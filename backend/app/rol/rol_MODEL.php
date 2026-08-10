@@ -1,8 +1,8 @@
 <?php
 
-include_once './Base/ModelBase.php';
+include_once './base/modelBase.php';
 
-class rol_MODEL extends ModelBase {
+class rol_MODEL extends modelBase {
 
     function __construct() {
         $this->tabla         = 'rol';

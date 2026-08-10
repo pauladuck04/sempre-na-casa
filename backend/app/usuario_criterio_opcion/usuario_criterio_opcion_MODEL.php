@@ -1,8 +1,8 @@
 <?php
 
-include_once './Base/ModelBase.php';
+include_once './base/modelBase.php';
 
-class usuario_criterio_opcion_MODEL extends ModelBase {
+class usuario_criterio_opcion_MODEL extends modelBase {
 
     function __construct() {
         $this->tabla         = 'usuario_criterio_opcion';
