@@ -10,40 +10,49 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="css/main.css">
-    <style>@media (min-width: 992px) { main { margin-left: 280px; } }</style>
 </head>
 <body class="bg-light">
-    <!-- SIDEBAR -->
-    <aside class="sidebar bg-white shadow-sm d-none d-lg-block flex-column p-4" style="position: fixed; left: 0; top: 0; height: 100vh; width: 280px;">
-        <div class="d-flex flex-column align-items-center mb-4">
-            <img src="assets/images/logo.JPG" width="60" class="rounded-circle mb-2" alt="Logo"
-                 onerror="this.src='https://ui-avatars.com/api/?name=Anfitrion&background=7A99DD&color=fff'">
-            <span class="badge bg-dark rounded-pill mb-2" data-i18n="anfitrion.badge"></span>
-            <h5 class="fw-bold mb-0" style="color: var(--color-primario);">Sempre na Casa</h5>
-        </div>
-        <nav class="nav flex-column gap-2 flex-grow-1">
-            <a href="#" class="nav-link active-custom transition section-link" data-section="general">
-                <i class="bi bi-speedometer2 me-2"></i> <span data-i18n="anfitrion.nav.general"></span>
-            </a>
-            <a href="#" class="nav-link text-muted transition section-link" data-section="vivienda">
-                <i class="bi bi-house-heart me-2"></i> <span data-i18n="anfitrion.nav.home"></span>
-            </a>
-            <a href="#" class="nav-link text-muted transition section-link" data-section="criterios">
-                <i class="bi bi-sliders me-2"></i> <span data-i18n="anfitrion.nav.criteria"></span>
-            </a>
-            <a href="#" class="nav-link text-muted transition section-link" data-section="huespedes">
-                <i class="bi bi-people me-2"></i> <span data-i18n="anfitrion.nav.tenants"></span>
-            </a>
-            <a href="#" class="nav-link d-none section-link" data-section="perfil"></a>
-            <hr class="my-3">
-            <a href="public.html" id="btnLogout" class="nav-link text-danger transition">
-                <i class="bi bi-box-arrow-left me-2"></i> <span data-i18n="nav.logout"></span>
-            </a>
-        </nav>
-    </aside>
-
     <div class="d-flex dashboard-layout" style="min-height: 100vh;">
+        <!-- SIDEBAR: offcanvas responsive -- fijo y siempre visible desde el breakpoint lg,
+             panel deslizante (con botón para abrirlo en <main>) por debajo de lg. -->
+        <div class="offcanvas offcanvas-lg offcanvas-start bg-white shadow-sm" tabindex="-1" id="sidebarOffcanvas" style="--bs-offcanvas-width: 280px;">
+            <div class="offcanvas-header d-lg-none">
+                <h5 class="offcanvas-title fw-bold mb-0" style="color: var(--color-primario);">Sempre na Casa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebarOffcanvas" aria-label="Cerrar"></button>
+            </div>
+            <div class="offcanvas-body d-flex flex-column p-lg-4">
+                <div class="d-none d-lg-flex flex-column align-items-center mb-4">
+                    <img src="assets/images/logo.JPG" width="60" class="rounded-circle mb-2" alt="Logo"
+                         onerror="this.src='https://ui-avatars.com/api/?name=Anfitrion&background=7A99DD&color=fff'">
+                    <span class="badge bg-dark rounded-pill mb-2" data-i18n="anfitrion.badge"></span>
+                    <h5 class="fw-bold mb-0" style="color: var(--color-primario);">Sempre na Casa</h5>
+                </div>
+                <nav class="nav flex-column gap-2 flex-grow-1">
+                    <a href="#" class="nav-link active-custom transition section-link" data-section="general" data-bs-dismiss="offcanvas">
+                        <i class="bi bi-speedometer2 me-2"></i> <span data-i18n="anfitrion.nav.general"></span>
+                    </a>
+                    <a href="#" class="nav-link text-muted transition section-link" data-section="vivienda" data-bs-dismiss="offcanvas">
+                        <i class="bi bi-house-heart me-2"></i> <span data-i18n="anfitrion.nav.home"></span>
+                    </a>
+                    <a href="#" class="nav-link text-muted transition section-link" data-section="criterios" data-bs-dismiss="offcanvas">
+                        <i class="bi bi-sliders me-2"></i> <span data-i18n="anfitrion.nav.criteria"></span>
+                    </a>
+                    <a href="#" class="nav-link text-muted transition section-link" data-section="huespedes" data-bs-dismiss="offcanvas">
+                        <i class="bi bi-people me-2"></i> <span data-i18n="anfitrion.nav.tenants"></span>
+                    </a>
+                    <a href="#" class="nav-link d-none section-link" data-section="perfil"></a>
+                    <hr class="my-3">
+                    <a href="public.html" id="btnLogout" class="nav-link text-danger transition">
+                        <i class="bi bi-box-arrow-left me-2"></i> <span data-i18n="nav.logout"></span>
+                    </a>
+                </nav>
+            </div>
+        </div>
+
         <main class="flex-grow-1 p-4 p-md-3">
+            <button class="btn btn-outline-secondary d-lg-none mb-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas" aria-controls="sidebarOffcanvas">
+                <i class="bi bi-list fs-5"></i>
+            </button>
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <div>
                     <h1 class="fw-bold mb-2" id="section-title" data-i18n="anfitrion.sections.general.title"></h1>
@@ -79,7 +88,7 @@
                 <!-- SECCIÓN: GENERAL -->
                 <div class="section-content active" data-section="general">
                     <div class="row g-3 mb-4">
-                        <div class="col-md-4">
+                        <div class="col-12 col-md-4">
                             <div class="card border-0 shadow-sm rounded-4 h-100">
                                 <div class="card-body p-4 d-flex align-items-center gap-3">
                                     <div class="rounded-3 p-3" style="background-color: #EBF0FF;">
@@ -92,7 +101,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-12 col-md-4">
                             <div class="card border-0 shadow-sm rounded-4 h-100">
                                 <div class="card-body p-4 d-flex align-items-center gap-3">
                                     <div class="rounded-3 p-3" style="background-color: #E8F5E9;">
@@ -169,11 +178,11 @@
                                         <input name="ciudad" class="form-control" required>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-6 mb-3">
+                                        <div class="col-12 col-md-6 mb-3">
                                             <label class="form-label fw-bold" data-i18n="anfitrion.home.totalSlots"></label>
                                             <input type="number" name="plazas_totales" class="form-control" min="1" required>
                                         </div>
-                                        <div class="col-md-6 mb-3">
+                                        <div class="col-12 col-md-6 mb-3">
                                             <label class="form-label fw-bold" data-i18n="anfitrion.home.freeSlots"></label>
                                             <input type="number" name="plazas_libres" class="form-control" min="0" required>
                                         </div>
@@ -298,7 +307,7 @@
                 <!-- SECCIÓN: PERFIL -->
                 <div class="section-content" data-section="perfil">
                     <div class="row g-4">
-                        <div class="col-lg-4">
+                        <div class="col-12 col-lg-4">
                             <div class="card border-0 shadow-sm rounded-4 text-center p-4 mb-4">
                                 <div class="avatar-iniciales avatar-iniciales-lg mx-auto mb-3" id="perfil-avatar"></div>
                                 <h5 class="fw-bold mb-1" id="perfil-display-nombre"></h5>
@@ -321,7 +330,7 @@
                                 </button>
                             </div>
                         </div>
-                        <div class="col-lg-8">
+                        <div class="col-12 col-lg-8">
                             <div class="card border-0 shadow-sm rounded-4 mb-4">
                                 <div class="card-header bg-white border-bottom py-4 d-flex justify-content-between align-items-center">
                                     <h5 class="fw-bold mb-0">
@@ -335,19 +344,19 @@
                                 <div class="card-body p-4">
                                     <form id="perfil-form" novalidate>
                                         <div class="row g-3">
-                                            <div class="col-md-6">
+                                            <div class="col-12 col-md-6">
                                                 <label class="form-label fw-semibold text-muted small" data-i18n="profile.fullNameLabel"></label>
                                                 <input type="text" class="form-control" id="perfil-nombre" value="" disabled>
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-12 col-md-6">
                                                 <label class="form-label fw-semibold text-muted small" data-i18n="profile.dniLabel"></label>
                                                 <input type="text" class="form-control" id="perfil-dni" value="" disabled>
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-12 col-md-6">
                                                 <label class="form-label fw-semibold text-muted small" data-i18n="profile.emailLabel"></label>
                                                 <input type="email" class="form-control" id="perfil-email" value="" disabled>
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-12 col-md-6">
                                                 <label class="form-label fw-semibold text-muted small" data-i18n="profile.phoneLabel"></label>
                                                 <input type="tel" class="form-control" id="perfil-telefono" value="" disabled>
                                             </div>

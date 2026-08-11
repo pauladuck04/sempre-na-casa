@@ -270,7 +270,7 @@ function renderizarCandidatos(containerId = 'grid-candidatos') {
         const inis = cand.anfitrion.split(' ').slice(0, 2).map(n => n[0]).join('').toUpperCase();
         const slotsKey = cand.plazasLibres !== 1 ? t('huesped.candidates.freeSlotsPlural') : t('huesped.candidates.freeSlotsSingular');
         return `
-            <div class="col-md-6 col-xl-3">
+            <div class="col-12 col-md-6 col-xl-3">
                 <div class="card border-0 shadow-sm rounded-4 h-100 p-3 candidato-card" data-id="${cand.id}" style="cursor:pointer;">
                     <div class="d-flex align-items-center gap-3 mb-3">
                         <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
@@ -379,19 +379,19 @@ async function mostrarDetalleVivienda(idVivienda) {
     document.getElementById('modalDetalleTitle').textContent = direccion || t('modal.details');
     document.getElementById('modalDetalleContent').innerHTML = `
         <div class="row mb-3">
-            <div class="col-md-6"><h6 class="text-muted small mb-1">${t('huesped.table.host')}</h6><p class="fw-semibold mb-0">${anfitrion}</p></div>
-            <div class="col-md-6"><h6 class="text-muted small mb-1">${t('common.city')}</h6><p class="fw-semibold mb-0">${ciudad}</p></div>
+            <div class="col-12 col-md-6"><h6 class="text-muted small mb-1">${t('huesped.table.host')}</h6><p class="fw-semibold mb-0">${anfitrion}</p></div>
+            <div class="col-12 col-md-6"><h6 class="text-muted small mb-1">${t('common.city')}</h6><p class="fw-semibold mb-0">${ciudad}</p></div>
         </div>
         <div class="row mb-3">
-            <div class="col-md-12"><h6 class="text-muted small mb-1">${t('common.address')}</h6><p class="fw-semibold mb-0">${direccion}</p></div>
+            <div class="col-12 col-md-12"><h6 class="text-muted small mb-1">${t('common.address')}</h6><p class="fw-semibold mb-0">${direccion}</p></div>
         </div>
-        ${descripcion ? `<div class="row mb-3"><div class="col-md-12"><h6 class="text-muted small mb-1">${t('common.description')}</h6><p class="mb-0">${descripcion}</p></div></div>` : ''}
+        ${descripcion ? `<div class="row mb-3"><div class="col-12 col-md-12"><h6 class="text-muted small mb-1">${t('common.description')}</h6><p class="mb-0">${descripcion}</p></div></div>` : ''}
         <div class="row mb-3">
-            <div class="col-md-6"><h6 class="text-muted small mb-1">${t('anfitrion.home.freeSlots')}</h6><p class="fw-semibold mb-0">${plazasLibres ?? '-'}</p></div>
-            ${plazasTotales !== null ? `<div class="col-md-6"><h6 class="text-muted small mb-1">${t('anfitrion.home.totalSlots')}</h6><p class="fw-semibold mb-0">${plazasTotales}</p></div>` : ''}
+            <div class="col-12 col-md-6"><h6 class="text-muted small mb-1">${t('anfitrion.home.freeSlots')}</h6><p class="fw-semibold mb-0">${plazasLibres ?? '-'}</p></div>
+            ${plazasTotales !== null ? `<div class="col-12 col-md-6"><h6 class="text-muted small mb-1">${t('anfitrion.home.totalSlots')}</h6><p class="fw-semibold mb-0">${plazasTotales}</p></div>` : ''}
         </div>
         ${compatibilidad !== null ? `
-        <div class="row mb-3"><div class="col-md-12">
+        <div class="row mb-3"><div class="col-12 col-md-12">
             <h6 class="text-muted small mb-1">${t('huesped.candidates.compatibility')}</h6>
             <p class="fw-semibold mb-0">${compatibilidad}%</p>
         </div></div>` : ''}
@@ -401,11 +401,11 @@ async function mostrarDetalleVivienda(idVivienda) {
         <hr>
         <h6 class="fw-bold mb-2">${t('huesped.candidates.expectedDates') || 'Fechas propuestas para la convivencia'}</h6>
         <div class="row g-2 mb-3">
-            <div class="col-md-6">
+            <div class="col-12 col-md-6">
                 <label class="form-label small fw-bold" for="solicitud-fecha-inicio">${t('huesped.candidates.expectedStart') || 'Fecha de inicio esperada'}</label>
                 <input type="date" class="form-control form-control-sm" id="solicitud-fecha-inicio" min="${new Date().toISOString().split('T')[0]}" required>
             </div>
-            <div class="col-md-6">
+            <div class="col-12 col-md-6">
                 <label class="form-label small fw-bold" for="solicitud-fecha-fin">${t('huesped.candidates.expectedEnd') || 'Fecha de fin esperada (opcional)'}</label>
                 <input type="date" class="form-control form-control-sm" id="solicitud-fecha-fin">
             </div>

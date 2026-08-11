@@ -38,16 +38,16 @@ const CONFIG_MODALES = {
                 : '<option value="" disabled>No hay roles activos disponibles</option>';
             return `
             <div class="row">
-                <div class="col-md-6 mb-3"><label class="form-label fw-bold">Nombre</label><input name="nombre_usuario" class="form-control" required></div>
-                <div class="col-md-6 mb-3"><label class="form-label fw-bold">Apellidos</label><input name="apellidos" class="form-control" required></div>
+                <div class="col-12 col-md-6 mb-3"><label class="form-label fw-bold">Nombre</label><input name="nombre_usuario" class="form-control" required></div>
+                <div class="col-12 col-md-6 mb-3"><label class="form-label fw-bold">Apellidos</label><input name="apellidos" class="form-control" required></div>
             </div>
             <div class="mb-3"><label class="form-label fw-bold">${t('admin.users.email')}</label><input type="email" name="mail" class="form-control" required></div>
             <div class="row">
-                <div class="col-md-6 mb-3">
+                <div class="col-12 col-md-6 mb-3">
                     <label class="form-label fw-bold">${t('admin.users.dni')}</label>
                     <input name="dni" class="form-control" required maxlength="9">
                 </div>
-                <div class="col-md-6 mb-3">
+                <div class="col-12 col-md-6 mb-3">
                     <label class="form-label fw-bold">${t('admin.users.phone')}</label>
                     <input name="telefono" class="form-control" required maxlength="9">
                 </div>
@@ -899,13 +899,13 @@ window.verUsuario = function(id) {
 
     document.getElementById('modalDetalleTitle').textContent = `${t('admin.users.detailTitle')}: ${u.nombre}`;
     document.getElementById('modalDetalleContent').innerHTML = `
-        <div class="row mb-3"><div class="col-md-6"><h6 class="text-muted small mb-1">${t('admin.users.fullName')}</h6><p class="fw-semibold mb-0">${u.nombre}</p></div>
-        <div class="col-md-6"><h6 class="text-muted small mb-1">${t('admin.users.email')}</h6><p class="fw-semibold mb-0">${u.email}</p></div></div>
-        <div class="row mb-3"><div class="col-md-6"><h6 class="text-muted small mb-1">${t('admin.users.dni')}</h6><p class="fw-semibold mb-0">${u.dni}</p></div>
-        <div class="col-md-6"><h6 class="text-muted small mb-1">${t('admin.users.phone')}</h6><p class="fw-semibold mb-0">${u.telefono}</p></div></div>
-        <div class="row mb-3"><div class="col-md-6"><h6 class="text-muted small mb-1">${t('admin.users.role')}</h6><p class="mb-0">${rolBadge}</p></div>
-        <div class="col-md-6"><h6 class="text-muted small mb-1">${t('common.status')}</h6><p class="mb-0">${estadoBadge}</p></div></div>
-        <div class="row"><div class="col-md-12"><h6 class="text-muted small mb-1">${t('admin.users.registerDate')}</h6><p class="fw-semibold mb-0">${u.fechaRegistro}</p></div></div>
+        <div class="row mb-3"><div class="col-12 col-md-6"><h6 class="text-muted small mb-1">${t('admin.users.fullName')}</h6><p class="fw-semibold mb-0">${u.nombre}</p></div>
+        <div class="col-12 col-md-6"><h6 class="text-muted small mb-1">${t('admin.users.email')}</h6><p class="fw-semibold mb-0">${u.email}</p></div></div>
+        <div class="row mb-3"><div class="col-12 col-md-6"><h6 class="text-muted small mb-1">${t('admin.users.dni')}</h6><p class="fw-semibold mb-0">${u.dni}</p></div>
+        <div class="col-12 col-md-6"><h6 class="text-muted small mb-1">${t('admin.users.phone')}</h6><p class="fw-semibold mb-0">${u.telefono}</p></div></div>
+        <div class="row mb-3"><div class="col-12 col-md-6"><h6 class="text-muted small mb-1">${t('admin.users.role')}</h6><p class="mb-0">${rolBadge}</p></div>
+        <div class="col-12 col-md-6"><h6 class="text-muted small mb-1">${t('common.status')}</h6><p class="mb-0">${estadoBadge}</p></div></div>
+        <div class="row"><div class="col-12 col-md-12"><h6 class="text-muted small mb-1">${t('admin.users.registerDate')}</h6><p class="fw-semibold mb-0">${u.fechaRegistro}</p></div></div>
     `;
     bootstrap.Modal.getOrCreateInstance(document.getElementById('modalDetalle')).show();
 };
@@ -922,12 +922,12 @@ window.verVivienda = function(id) {
 
     document.getElementById('modalDetalleTitle').textContent = `${t('admin.homes.detailTitle')}: ${v.direccion}`;
     document.getElementById('modalDetalleContent').innerHTML = `
-        <div class="row mb-3"><div class="col-md-12"><h6 class="text-muted small mb-1">${t('admin.homes.address')}</h6><p class="fw-semibold mb-0">${v.direccion}</p></div></div>
-        <div class="row mb-3"><div class="col-md-6"><h6 class="text-muted small mb-1">${t('admin.homes.city')}</h6><p class="fw-semibold mb-0">${v.ciudad}</p></div>
-        <div class="col-md-6"><h6 class="text-muted small mb-1">${t('admin.homes.host')}</h6><p class="fw-semibold mb-0">${v.anfitrion}</p></div></div>
-        <div class="row mb-3"><div class="col-md-6"><h6 class="text-muted small mb-1">${t('admin.homes.totalSlots')}</h6><p class="fw-semibold mb-0">${v.plazas_totales}</p></div>
-        <div class="col-md-6"><h6 class="text-muted small mb-1">${t('admin.homes.freeSlots')}</h6><p class="fw-semibold text-success mb-0">${v.plazas_libres}</p></div></div>
-        <div class="row"><div class="col-md-12"><h6 class="text-muted small mb-1">${t('common.status')}</h6><p class="mb-0">${estadoBadge}</p></div></div>
+        <div class="row mb-3"><div class="col-12 col-md-12"><h6 class="text-muted small mb-1">${t('admin.homes.address')}</h6><p class="fw-semibold mb-0">${v.direccion}</p></div></div>
+        <div class="row mb-3"><div class="col-12 col-md-6"><h6 class="text-muted small mb-1">${t('admin.homes.city')}</h6><p class="fw-semibold mb-0">${v.ciudad}</p></div>
+        <div class="col-12 col-md-6"><h6 class="text-muted small mb-1">${t('admin.homes.host')}</h6><p class="fw-semibold mb-0">${v.anfitrion}</p></div></div>
+        <div class="row mb-3"><div class="col-12 col-md-6"><h6 class="text-muted small mb-1">${t('admin.homes.totalSlots')}</h6><p class="fw-semibold mb-0">${v.plazas_totales}</p></div>
+        <div class="col-12 col-md-6"><h6 class="text-muted small mb-1">${t('admin.homes.freeSlots')}</h6><p class="fw-semibold text-success mb-0">${v.plazas_libres}</p></div></div>
+        <div class="row"><div class="col-12 col-md-12"><h6 class="text-muted small mb-1">${t('common.status')}</h6><p class="mb-0">${estadoBadge}</p></div></div>
     `;
     bootstrap.Modal.getOrCreateInstance(document.getElementById('modalDetalle')).show();
 };
@@ -942,8 +942,8 @@ window.verRol = function(id) {
 
     document.getElementById('modalDetalleTitle').textContent = `${t('admin.roles.detailTitle')}: ${r.nombre}`;
     document.getElementById('modalDetalleContent').innerHTML = `
-        <div class="row mb-3"><div class="col-md-12"><h6 class="text-muted small mb-1">${t('admin.roles.roleName')}</h6><p class="fw-semibold mb-0">${r.nombre}</p></div></div>
-        <div class="row"><div class="col-md-12"><h6 class="text-muted small mb-1">${t('common.status')}</h6><p class="mb-0">${estadoBadge}</p></div></div>
+        <div class="row mb-3"><div class="col-12 col-md-12"><h6 class="text-muted small mb-1">${t('admin.roles.roleName')}</h6><p class="fw-semibold mb-0">${r.nombre}</p></div></div>
+        <div class="row"><div class="col-12 col-md-12"><h6 class="text-muted small mb-1">${t('common.status')}</h6><p class="mb-0">${estadoBadge}</p></div></div>
     `;
     bootstrap.Modal.getOrCreateInstance(document.getElementById('modalDetalle')).show();
 };
@@ -960,12 +960,12 @@ window.verCriterio = function(id) {
 
     document.getElementById('modalDetalleTitle').textContent = `${t('admin.criteria.detailTitle')}: ${c.nombre}`;
     document.getElementById('modalDetalleContent').innerHTML = `
-        <div class="row mb-3"><div class="col-md-12"><h6 class="text-muted small mb-1">${t('admin.criteria.criteriaName')}</h6><p class="fw-semibold mb-0">${c.nombre}</p></div></div>
-        <div class="row mb-3"><div class="col-md-12"><h6 class="text-muted small mb-1">${t('admin.criteria.weight')}</h6><p class="fw-semibold mb-0">${c.peso}</p></div></div>
-        <div class="row mb-3"><div class="col-md-12"><h6 class="text-muted small mb-1">${t('admin.criteria.restrictive')}</h6><p class="mb-0">${c.restrictivo == 1 ? `<span class="badge bg-danger">${t('common.yes') || 'Sí'}</span>` : `<span class="badge bg-secondary">${t('common.no') || 'No'}</span>`}</p></div></div>
-        <div class="row ${opcionesDelCriterio.length ? 'mb-3' : ''}"><div class="col-md-12"><h6 class="text-muted small mb-1">${t('common.status')}</h6><p class="mb-0">${estadoBadge}</p></div></div>
+        <div class="row mb-3"><div class="col-12 col-md-12"><h6 class="text-muted small mb-1">${t('admin.criteria.criteriaName')}</h6><p class="fw-semibold mb-0">${c.nombre}</p></div></div>
+        <div class="row mb-3"><div class="col-12 col-md-12"><h6 class="text-muted small mb-1">${t('admin.criteria.weight')}</h6><p class="fw-semibold mb-0">${c.peso}</p></div></div>
+        <div class="row mb-3"><div class="col-12 col-md-12"><h6 class="text-muted small mb-1">${t('admin.criteria.restrictive')}</h6><p class="mb-0">${c.restrictivo == 1 ? `<span class="badge bg-danger">${t('common.yes') || 'Sí'}</span>` : `<span class="badge bg-secondary">${t('common.no') || 'No'}</span>`}</p></div></div>
+        <div class="row ${opcionesDelCriterio.length ? 'mb-3' : ''}"><div class="col-12 col-md-12"><h6 class="text-muted small mb-1">${t('common.status')}</h6><p class="mb-0">${estadoBadge}</p></div></div>
         ${opcionesDelCriterio.length ? `
-        <div class="row"><div class="col-md-12"><h6 class="text-muted small mb-1">${t('admin.criteria.tabOptions')}</h6>
+        <div class="row"><div class="col-12 col-md-12"><h6 class="text-muted small mb-1">${t('admin.criteria.tabOptions')}</h6>
             <ul class="list-unstyled mb-0">
                 ${opcionesDelCriterio.map(o => `<li><span class="fw-semibold">${o.opcion}</span> <span class="text-muted">(${t('admin.criteria.value')}: ${o.valor})</span>${o.excluyente == 1 ? ` <span class="badge bg-danger rounded-pill">${t('admin.criteria.excluding') || 'Excluyente'}</span>` : ''}</li>`).join('')}
             </ul>

@@ -151,10 +151,40 @@
 .alert-danger,
 .alert-success {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 0.5rem;
     border: none;
     border-radius: var(--border-radius-lg);
+}
+
+/* mostrarErrorFormulario() rellena estas alertas con <i>...</i><span>mensaje</span>. Sin
+   min-width: 0 aquí, un hijo flex con texto largo no se encoge por debajo de su ancho de
+   contenido y se sale de la caja en vez de hacer salto de línea en pantallas estrechas. */
+.alert-danger > span,
+.alert-success > span {
+    min-width: 0;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+.alert-danger > i,
+.alert-success > i {
+    flex-shrink: 0;
+}
+
+/* Mismo problema que las alertas de arriba, pero para filas "icono + texto" de una sola línea
+   de código en varias páginas (listas de características en tipos-usuarios.html/contacto.html:
+   <div class="d-flex align-items-start gap-2"><i>...</i><span>...</span></div>). Sin
+   min-width: 0, el <span> no se encoge para saltar de línea y se sale del contenedor en
+   pantallas estrechas. */
+.d-flex.align-items-start > span {
+    min-width: 0;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+.d-flex.align-items-start > i {
+    flex-shrink: 0;
 }
 
 .alert-danger {

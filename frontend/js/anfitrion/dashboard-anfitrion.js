@@ -26,8 +26,8 @@ const CONFIG_MODALES = {
             <div class="mb-3"><label class="form-label fw-bold">${t('anfitrion.home.address')}</label><input name="direccion" class="form-control" required></div>
             <div class="mb-3"><label class="form-label fw-bold">${t('anfitrion.home.city')}</label><input name="ciudad" class="form-control" required></div>
             <div class="row">
-                <div class="col-md-6 mb-3"><label class="form-label fw-bold">${t('anfitrion.home.totalSlots')}</label><input type="number" name="plazas_totales" class="form-control" min="1" required></div>
-                <div class="col-md-6 mb-3"><label class="form-label fw-bold">${t('anfitrion.home.freeSlots')}</label><input type="number" name="plazas_libres" class="form-control" min="0" required></div>
+                <div class="col-12 col-md-6 mb-3"><label class="form-label fw-bold">${t('anfitrion.home.totalSlots')}</label><input type="number" name="plazas_totales" class="form-control" min="1" required></div>
+                <div class="col-12 col-md-6 mb-3"><label class="form-label fw-bold">${t('anfitrion.home.freeSlots')}</label><input type="number" name="plazas_libres" class="form-control" min="0" required></div>
             </div>
             <div class="mb-3"><label class="form-label fw-bold">${t('anfitrion.home.descriptionOptional')}</label><textarea name="descripcion" class="form-control" rows="2"></textarea></div>`
     }
@@ -548,7 +548,7 @@ async function renderizarVivienda() {
 
     document.getElementById('ficha-vivienda').innerHTML = `
         <div class="row g-4">
-            <div class="col-md-8">
+            <div class="col-12 col-md-8">
                 <h6 class="text-muted small mb-1">${t('anfitrion.home.address')}</h6>
                 <p class="fw-semibold mb-3">${viviendaActual.direccion}</p>
                 <h6 class="text-muted small mb-1">${t('anfitrion.home.city')}</h6>
@@ -556,7 +556,7 @@ async function renderizarVivienda() {
                 <h6 class="text-muted small mb-1">${t('anfitrion.home.description')}</h6>
                 <p class="mb-0">${viviendaActual.descripcion || '-'}</p>
             </div>
-            <div class="col-md-4">
+            <div class="col-12 col-md-4">
                 <div class="card border-0 bg-light rounded-3 p-3 mb-3">
                     <p class="text-muted small mb-1">${t('anfitrion.home.totalSlots')}</p>
                     <h4 class="fw-bold mb-0">${viviendaActual.plazas_totales}</h4>
@@ -613,11 +613,11 @@ window.verHuesped = function(id) {
             </div>
         </div>
         <div class="row mb-3">
-            <div class="col-md-6"><h6 class="text-muted small mb-1">${t('anfitrion.tenants.email')}</h6><p class="fw-semibold mb-0">${i.email}</p></div>
-            <div class="col-md-6"><h6 class="text-muted small mb-1">${t('anfitrion.tenants.phone')}</h6><p class="fw-semibold mb-0">${i.telefono}</p></div>
+            <div class="col-12 col-md-6"><h6 class="text-muted small mb-1">${t('anfitrion.tenants.email')}</h6><p class="fw-semibold mb-0">${i.email}</p></div>
+            <div class="col-12 col-md-6"><h6 class="text-muted small mb-1">${t('anfitrion.tenants.phone')}</h6><p class="fw-semibold mb-0">${i.telefono}</p></div>
         </div>
         <div class="row">
-            <div class="col-md-6"><h6 class="text-muted small mb-1">${t('anfitrion.tenants.joinDate')}</h6><p class="fw-semibold mb-0">${i.fechaIngreso || t('anfitrion.tenants.pending')}</p></div>
+            <div class="col-12 col-md-6"><h6 class="text-muted small mb-1">${t('anfitrion.tenants.joinDate')}</h6><p class="fw-semibold mb-0">${i.fechaIngreso || t('anfitrion.tenants.pending')}</p></div>
         </div>
     `;
     bootstrap.Modal.getOrCreateInstance(document.getElementById('modalDetalle')).show();

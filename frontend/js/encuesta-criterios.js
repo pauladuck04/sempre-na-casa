@@ -39,7 +39,7 @@ export async function renderPreguntasEncuesta(contenedor, opciones = {}) {
         opcionesCriterio.forEach(opcion => {
             const id = `${nombreCampo}-${opcion.id_opcion}`;
             html += `
-                <div class="col-md-4">
+                <div class="col-12 col-md-4">
                     <input type="radio" class="btn-check" name="${nombreCampo}" id="${id}" value="${opcion.id_opcion}">
                     <label class="btn btn-outline-light-custom w-100 p-3" for="${id}">${opcion.nombre_opcion}</label>
                 </div>`;

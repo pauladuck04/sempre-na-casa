@@ -17,6 +17,8 @@
     padding: 2.5rem 2rem;
     width: 100%;
     max-width: 440px;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 .link-custom {
@@ -51,6 +53,8 @@
     max-width: 500px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
     margin-bottom: 0;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 /* ============================================

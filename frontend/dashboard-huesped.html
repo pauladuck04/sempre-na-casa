@@ -13,37 +13,47 @@
 </head>
 <body class="bg-light">
     <div class="d-flex" style="min-height: 100vh;">
-        <!-- SIDEBAR -->
-        <aside class="sidebar bg-white shadow-sm d-none d-lg-flex flex-column p-4" style="position: fixed; left: 0; top: 0; height: 100vh; width: 280px; overflow-y: auto;">
-            <div class="d-flex flex-column align-items-center mb-4">
-                <img src="assets/images/logo.JPG" width="60" class="rounded-circle mb-2" alt="Logo"
-                     onerror="this.src='https://ui-avatars.com/api/?name=huesped&background=7A99DD&color=fff'">
-                <span class="badge bg-dark rounded-pill mb-2" data-i18n="huesped.badge"></span>
-                <h5 class="fw-bold mb-0" style="color: var(--color-primario);">Sempre na Casa</h5>
+        <!-- SIDEBAR: offcanvas responsive -- fijo y siempre visible desde el breakpoint lg,
+             panel deslizante (con botón para abrirlo en <main>) por debajo de lg. -->
+        <div class="offcanvas offcanvas-lg offcanvas-start bg-white shadow-sm" tabindex="-1" id="sidebarOffcanvas" style="--bs-offcanvas-width: 280px;">
+            <div class="offcanvas-header d-lg-none">
+                <h5 class="offcanvas-title fw-bold mb-0" style="color: var(--color-primario);">Sempre na Casa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebarOffcanvas" aria-label="Cerrar"></button>
             </div>
-            <nav class="nav flex-column gap-2 flex-grow-1">
-                <a href="#" class="nav-link active-custom transition section-link" data-section="general">
-                    <i class="bi bi-speedometer2 me-2"></i> <span data-i18n="huesped.nav.general"></span>
-                </a>
-                <a href="#" class="nav-link text-muted transition section-link" data-section="convivencia" id="nav-convivencia">
-                    <i class="bi bi-house-heart me-2"></i> <span data-i18n="huesped.nav.convivencia"></span>
-                </a>
-                <a href="#" class="nav-link text-muted transition section-link" data-section="recomendadas">
-                    <i class="bi bi-star me-2"></i> <span data-i18n="huesped.nav.recommended"></span>
-                </a>
-                <a href="#" class="nav-link text-muted transition section-link" data-section="preferencias">
-                    <i class="bi bi-sliders me-2"></i> <span data-i18n="huesped.nav.preferences"></span>
-                </a>
-                <a href="#" class="nav-link d-none section-link" data-section="perfil"></a>
-                <hr class="my-3">
-                <a href="public.html" id="btnLogout" class="nav-link text-danger transition">
-                    <i class="bi bi-box-arrow-left me-2"></i> <span data-i18n="nav.logout"></span>
-                </a>
-            </nav>
-        </aside>
+            <div class="offcanvas-body d-flex flex-column p-lg-4">
+                <div class="d-none d-lg-flex flex-column align-items-center mb-4">
+                    <img src="assets/images/logo.JPG" width="60" class="rounded-circle mb-2" alt="Logo"
+                         onerror="this.src='https://ui-avatars.com/api/?name=huesped&background=7A99DD&color=fff'">
+                    <span class="badge bg-dark rounded-pill mb-2" data-i18n="huesped.badge"></span>
+                    <h5 class="fw-bold mb-0" style="color: var(--color-primario);">Sempre na Casa</h5>
+                </div>
+                <nav class="nav flex-column gap-2 flex-grow-1">
+                    <a href="#" class="nav-link active-custom transition section-link" data-section="general" data-bs-dismiss="offcanvas">
+                        <i class="bi bi-speedometer2 me-2"></i> <span data-i18n="huesped.nav.general"></span>
+                    </a>
+                    <a href="#" class="nav-link text-muted transition section-link" data-section="convivencia" id="nav-convivencia" data-bs-dismiss="offcanvas">
+                        <i class="bi bi-house-heart me-2"></i> <span data-i18n="huesped.nav.convivencia"></span>
+                    </a>
+                    <a href="#" class="nav-link text-muted transition section-link" data-section="recomendadas" data-bs-dismiss="offcanvas">
+                        <i class="bi bi-star me-2"></i> <span data-i18n="huesped.nav.recommended"></span>
+                    </a>
+                    <a href="#" class="nav-link text-muted transition section-link" data-section="preferencias" data-bs-dismiss="offcanvas">
+                        <i class="bi bi-sliders me-2"></i> <span data-i18n="huesped.nav.preferences"></span>
+                    </a>
+                    <a href="#" class="nav-link d-none section-link" data-section="perfil"></a>
+                    <hr class="my-3">
+                    <a href="public.html" id="btnLogout" class="nav-link text-danger transition">
+                        <i class="bi bi-box-arrow-left me-2"></i> <span data-i18n="nav.logout"></span>
+                    </a>
+                </nav>
+            </div>
+        </div>
 
         <!-- CONTENIDO PRINCIPAL -->
-        <main class="flex-grow-1 p-4 p-md-3" style="margin-left: 280px;">
+        <main class="flex-grow-1 p-4 p-md-3">
+            <button class="btn btn-outline-secondary d-lg-none mb-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas" aria-controls="sidebarOffcanvas">
+                <i class="bi bi-list fs-5"></i>
+            </button>
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <div>
                     <h1 class="fw-bold mb-2" id="section-title" data-i18n="huesped.sections.general.title"></h1>
@@ -81,7 +91,7 @@
                     <!-- SIN CONVIVENCIA -->
                     <div id="general-sin-convivencia" class="d-none">
                         <div class="row g-3 mb-4">
-                            <div class="col-md-4">
+                            <div class="col-12 col-md-4">
                                 <div class="card border-0 shadow-sm rounded-4 h-100">
                                     <div class="card-body p-4 d-flex align-items-center gap-3">
                                         <div class="rounded-3 p-3" style="background-color: #EBF0FF;">
@@ -94,7 +104,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-12 col-md-4">
                                 <div class="card border-0 shadow-sm rounded-4 h-100">
                                     <div class="card-body p-4 d-flex align-items-center gap-3">
                                         <div class="rounded-3 p-3" style="background-color: #E8F5E9;">
@@ -107,7 +117,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-12 col-md-4">
                                 <div class="card border-0 shadow-sm rounded-4 h-100">
                                     <div class="card-body p-4 d-flex align-items-center gap-3">
                                         <div class="rounded-3 p-3" style="background-color: #FFF8E1;">
@@ -137,7 +147,7 @@
                     <!-- CON CONVIVENCIA -->
                     <div id="general-con-convivencia" class="d-none">
                         <div class="row g-3 mb-4">
-                            <div class="col-md-4">
+                            <div class="col-12 col-md-4">
                                 <div class="card border-0 shadow-sm rounded-4 h-100">
                                     <div class="card-body p-4 d-flex align-items-center gap-3">
                                         <div class="rounded-3 p-3" style="background-color: #EBF0FF;">
@@ -150,7 +160,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-12 col-md-4">
                                 <div class="card border-0 shadow-sm rounded-4 h-100">
                                     <div class="card-body p-4 d-flex align-items-center gap-3">
                                         <div class="rounded-3 p-3" style="background-color: #E8F5E9;">
@@ -163,7 +173,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-12 col-md-4">
                                 <div class="card border-0 shadow-sm rounded-4 h-100">
                                     <div class="card-body p-4 d-flex align-items-center gap-3">
                                         <div class="rounded-3 p-3" style="background-color: #FFF8E1;">
@@ -266,7 +276,7 @@
                 <!-- SECCIÓN: MI PERFIL -->
                 <div class="section-content" data-section="perfil">
                     <div class="row g-4">
-                        <div class="col-lg-4">
+                        <div class="col-12 col-lg-4">
                             <div class="card border-0 shadow-sm rounded-4 text-center p-4 mb-4">
                                 <div class="avatar-iniciales avatar-iniciales-lg mx-auto mb-3" id="perfil-avatar"></div>
                                 <h5 class="fw-bold mb-1" id="perfil-display-nombre"></h5>
@@ -289,7 +299,7 @@
                                 </button>
                             </div>
                         </div>
-                        <div class="col-lg-8">
+                        <div class="col-12 col-lg-8">
                             <div class="card border-0 shadow-sm rounded-4 mb-4">
                                 <div class="card-header bg-white border-bottom py-4 d-flex justify-content-between align-items-center">
                                     <h5 class="fw-bold mb-0">
@@ -303,19 +313,19 @@
                                 <div class="card-body p-4">
                                     <form id="perfil-form" novalidate>
                                         <div class="row g-3">
-                                            <div class="col-md-6">
+                                            <div class="col-12 col-md-6">
                                                 <label class="form-label fw-semibold text-muted small" data-i18n="profile.fullNameLabel"></label>
                                                 <input type="text" class="form-control" id="perfil-nombre" value="" disabled>
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-12 col-md-6">
                                                 <label class="form-label fw-semibold text-muted small" data-i18n="profile.dniLabel"></label>
                                                 <input type="text" class="form-control" id="perfil-dni" value="" disabled>
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-12 col-md-6">
                                                 <label class="form-label fw-semibold text-muted small" data-i18n="profile.emailLabel"></label>
                                                 <input type="email" class="form-control" id="perfil-email" value="" disabled>
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-12 col-md-6">
                                                 <label class="form-label fw-semibold text-muted small" data-i18n="profile.phoneLabel"></label>
                                                 <input type="tel" class="form-control" id="perfil-telefono" value="" disabled>
                                             </div>
