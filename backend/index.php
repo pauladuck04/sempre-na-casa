@@ -18,14 +18,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 session_start();
 
 $basePath = __DIR__;
-$configPath = $basePath . '/comun/config.php';
+$configPath = $basePath . '/bd/DBCredentials.php';
 
 if (!is_file($configPath)) {
     http_response_code(500);
     echo json_encode(array(
         'ok' => false,
         'code' => 'CONFIGURACION_NO_ENCONTRADA_KO',
-        'resource' => 'Falta comun/config.php'
+        'resource' => 'Falta bd/DBCredentials.php'
     ));
     exit();
 }
