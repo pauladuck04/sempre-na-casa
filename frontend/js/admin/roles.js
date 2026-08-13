@@ -49,22 +49,39 @@ function _renderFilasRoles(pagina) {
     pagina.forEach(rol => {
         const esActivo = rol.estado === 'activo';
         const row = document.createElement('tr');
+        row.className = 'rol-row';
+        row.style.cursor = 'pointer';
         row.innerHTML = `
-            <td>
+            <input class="form-check-input rol-checkbox" type="checkbox" value="${rol.id}" style="display: none;">
+            <td data-label="Rol">
                 <div class="d-flex align-items-center gap-2">
-                    <input class="form-check-input rol-checkbox align-self-start mt-1" type="checkbox" value="${rol.id}">
                     <div>
                         <span class="fw-semibold d-block rol-nombre" data-id="${rol.id}" style="cursor:pointer;">${rol.nombre}</span>
                     </div>
                 </div>
             </td>
-            <td>
+            <td data-label="Estado">
                 <span class="badge ${esActivo ? 'bg-success' : 'bg-secondary'} rounded-pill px-3">
                     ${esActivo ? t('common.active') : t('common.inactive')}
                 </span>
             </td>
         `;
         tbody.appendChild(row);
+    });
+
+    // Click en la fila para seleccionar
+    tbody.querySelectorAll('.rol-row').forEach(row => {
+        row.addEventListener('click', function(e) {
+            if (e.target.closest('.rol-nombre')) {
+                e.stopPropagation();
+                if (typeof verRol === 'function') verRol(this.querySelector('.rol-nombre').getAttribute('data-id'), e);
+                return;
+            }
+            const checkbox = this.querySelector('.rol-checkbox');
+            checkbox.checked = !checkbox.checked;
+            this.classList.toggle('row-selected');
+            checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+        });
     });
 
     tbody.querySelectorAll('.rol-nombre').forEach(span => {

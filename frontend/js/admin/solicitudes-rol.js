@@ -38,12 +38,14 @@ function _renderFilasSolicitudesRol(pagina) {
 
     pagina.forEach(s => {
         const row = document.createElement('tr');
+        row.className = 'solicitud-rol-row';
+        row.style.cursor = 'pointer';
         row.innerHTML = `
-            <td class="fw-semibold">${s.usuario}<br><span class="text-muted small">${s.mail.replace('@', '@<wbr>')}</span></td>
-            <td>${s.rolActual}</td>
-            <td>${s.rolSolicitado}</td>
-            <td>${s.fechaSolicitud}</td>
-            <td>
+            <td data-label="Usuario" class="fw-semibold">${s.usuario}<br><span class="text-muted small">${s.mail.replace('@', '@<wbr>')}</span></td>
+            <td data-label="Rol Actual">${s.rolActual}</td>
+            <td data-label="Rol Solicitado">${s.rolSolicitado}</td>
+            <td data-label="Fecha Solicitud">${s.fechaSolicitud}</td>
+            <td data-label="Acciones">
                 <div class="d-flex flex-wrap gap-1">
                     <button type="button" class="btn btn-sm btn-success rounded-pill btn-aceptar-cambio-rol" data-id-usuario="${s.id_usuario}">
                         <i class="bi bi-check-lg"></i> ${t('buttons.accept')}

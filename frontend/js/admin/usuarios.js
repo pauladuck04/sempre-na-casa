@@ -63,28 +63,46 @@ function _renderFilasUsuarios(pagina) {
         const textoEstado = usuario.estado === 'activo'   ? t('admin.users.statusActive')
                           : usuario.estado === 'inactivo' ? t('admin.users.statusInactive')
                                                           : t('admin.users.statusPending');
+
         const rolLabel = usuario.id_rol == 2
             ? `<span class="badge rounded-pill bg-success-subtle text-success px-3">${rolNombre}</span>`
             : `<span class="badge rounded-pill bg-info-subtle text-info px-3">${rolNombre}</span>`;
 
         const row = document.createElement('tr');
+        row.className = 'usuario-row';
+        row.style.cursor = 'pointer';
         row.innerHTML = `
-            <td>
+            <input class="form-check-input usuario-checkbox" type="checkbox" value="${usuario.id}" style="display: none;">
+            <td data-label="Usuario">
                 <div class="d-flex align-items-center gap-2">
-                    <input class="form-check-input usuario-checkbox align-self-start mt-1" type="checkbox" value="${usuario.id}">
                     <div>
                         <span class="fw-semibold d-block usuario-nombre" data-id="${usuario.id}" style="cursor:pointer;">${usuario.nombre}</span>
                         <span class="text-muted small d-block">${usuario.email.replace('@', '@<wbr>')}</span>
                     </div>
                 </div>
             </td>
-            <td>${rolLabel}</td>
-            <td>${usuario.fechaRegistro}</td>
-            <td>${usuario.dni}</td>
-            <td>${usuario.telefono}</td>
-            <td><span class="badge ${badgeEstado} rounded-pill px-3">${textoEstado}</span></td>
+            <td data-label="Rol">${rolLabel}</td>
+            <td data-label="Fecha Reg">${usuario.fechaRegistro}</td>
+            <td data-label="DNI">${usuario.dni}</td>
+            <td data-label="Teléfono">${usuario.telefono}</td>
+            <td data-label="Estado"><span class="badge ${badgeEstado} rounded-pill px-3">${textoEstado}</span></td>
         `;
         tbody.appendChild(row);
+    });
+
+    // Click en la fila para seleccionar
+    tbody.querySelectorAll('.usuario-row').forEach(row => {
+        row.addEventListener('click', function(e) {
+            if (e.target.closest('.usuario-nombre')) {
+                e.stopPropagation();
+                if (typeof verUsuario === 'function') verUsuario(this.querySelector('.usuario-nombre').getAttribute('data-id'), e);
+                return;
+            }
+            const checkbox = this.querySelector('.usuario-checkbox');
+            checkbox.checked = !checkbox.checked;
+            this.classList.toggle('row-selected');
+            checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+        });
     });
 
     tbody.querySelectorAll('.usuario-nombre').forEach(span => {

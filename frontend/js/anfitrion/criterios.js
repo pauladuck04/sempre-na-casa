@@ -56,14 +56,14 @@ export function renderizarCriterios(lista) {
     lista.forEach(c => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>
+            <td data-label="${t('anfitrion.table.criteria')}">
                 <div class="d-flex align-items-center gap-2">
                     <input class="form-check-input criterio-checkbox align-self-start mt-1" type="checkbox" value="${c.id}">
                     <span class="fw-semibold">${c.criterio}</span>
                 </div>
             </td>
-            <td>${c.valor}</td>
-            <td><span class="badge bg-success rounded-pill px-3">${t('anfitrion.criteria.active')}</span></td>
+            <td data-label="${t('anfitrion.table.preferredValue')}">${c.valor}</td>
+            <td data-label="${t('anfitrion.table.status')}"><span class="badge bg-success rounded-pill px-3">${t('anfitrion.criteria.active')}</span></td>
         `;
         tbody.appendChild(row);
     });

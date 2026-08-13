@@ -68,16 +68,18 @@ function _renderFilasCriterios(pagina) {
     pagina.forEach(c => {
         const esActivo = c.estado === 'activo';
         const row = document.createElement('tr');
+        row.className = 'criterio-row';
+        row.style.cursor = 'pointer';
         row.innerHTML = `
-            <td>
+            <input class="form-check-input criterio-checkbox" type="checkbox" value="${c.id}" style="display: none;">
+            <td data-label="Criterio">
                 <div class="d-flex align-items-center gap-2">
-                    <input class="form-check-input criterio-checkbox align-self-start mt-1" type="checkbox" value="${c.id}">
                     <span class="fw-semibold criterio-nombre" data-id="${c.id}" style="cursor:pointer;">${c.nombre}</span>
                     ${c.restrictivo == 1 ? `<span class="badge bg-danger rounded-pill" title="${t('admin.criteria.restrictive') || 'Restrictivo'}">R</span>` : ''}
                 </div>
             </td>
-            <td>${c.peso}</td>
-            <td>
+            <td data-label="Peso">${c.peso}</td>
+            <td data-label="Estado">
                 <span class="badge ${esActivo ? 'bg-success' : 'bg-secondary'} rounded-pill px-3">
                     ${esActivo ? t('common.active') : t('common.inactive')}
                 </span>
@@ -85,6 +87,22 @@ function _renderFilasCriterios(pagina) {
         `;
         tbody.appendChild(row);
     });
+
+    // Click en la fila para seleccionar
+    tbody.querySelectorAll('.criterio-row').forEach(row => {
+        row.addEventListener('click', function(e) {
+            if (e.target.closest('.criterio-nombre')) {
+                e.stopPropagation();
+                if (typeof verCriterio === 'function') verCriterio(this.querySelector('.criterio-nombre').getAttribute('data-id'), e);
+                return;
+            }
+            const checkbox = this.querySelector('.criterio-checkbox');
+            checkbox.checked = !checkbox.checked;
+            this.classList.toggle('row-selected');
+            checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+        });
+    });
+
     tbody.querySelectorAll('.criterio-nombre').forEach(span => {
         span.addEventListener('click', function(e) {
             e.stopPropagation();
@@ -123,22 +141,34 @@ function _renderFilasOpciones(pagina) {
     pagina.forEach(o => {
         const esActivo = o.estado === 'activo';
         const row = document.createElement('tr');
+        row.className = 'opcion-row';
+        row.style.cursor = 'pointer';
         row.innerHTML = `
-            <td>
+            <input class="form-check-input opcion-checkbox" type="checkbox" value="${o.id}" style="display: none;">
+            <td data-label="Opción">
                 <div class="d-flex align-items-center gap-2">
-                    <input class="form-check-input opcion-checkbox align-self-start mt-1" type="checkbox" value="${o.id}">
                     <span class="fw-semibold">${o.opcion}</span>
                     ${o.excluyente == 1 ? `<span class="badge bg-danger rounded-pill" title="${t('admin.criteria.excluding') || 'Excluyente'}">X</span>` : ''}
                 </div>
             </td>
-            <td>${o.criterio}</td>
-            <td>${o.valor}</td>
-            <td>
+            <td data-label="Criterio">${o.criterio}</td>
+            <td data-label="Valor">${o.valor}</td>
+            <td data-label="Estado">
                 <span class="badge ${esActivo ? 'bg-success' : 'bg-secondary'} rounded-pill px-3">
                     ${esActivo ? t('common.active') : t('common.inactive')}
                 </span>
             </td>
         `;
         tbody.appendChild(row);
+    });
+
+    // Click en la fila para seleccionar
+    tbody.querySelectorAll('.opcion-row').forEach(row => {
+        row.addEventListener('click', function(e) {
+            const checkbox = this.querySelector('.opcion-checkbox');
+            checkbox.checked = !checkbox.checked;
+            this.classList.toggle('row-selected');
+            checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+        });
     });
 }

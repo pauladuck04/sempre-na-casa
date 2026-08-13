@@ -127,6 +127,26 @@
     pointer-events: none;
 }
 
+/* Reduce avatar circle sizes on small screens */
+@media (max-width: 576px) {
+    .avatar-iniciales {
+        width: 36px;
+        height: 36px;
+        font-size: 0.75rem;
+    }
+
+    .avatar-iniciales-lg {
+        width: 56px;
+        height: 56px;
+        font-size: 1.05rem;
+    }
+
+    .icon-wrapper {
+        width: 56px;
+        height: 56px;
+    }
+}
+
 /* TOGGLE OJO CONTRASEÑA */
 .btn-pwd-toggle {
     position: absolute;
@@ -214,4 +234,132 @@
 .footer-link:hover {
     color: var(--color-primario) !important;
     padding-right: 5px;
+}
+
+/* ============================================
+   SIDEBAR / OFFCANVAS EN PANTALLAS GRANDES
+   ============================================ */
+/* Mostrar sidebar a partir de tablet y en escritorio; ocultarla solo en pantallas pequeñas */
+@media (min-width: 576px) {
+    #sidebarOffcanvas {
+        position: static !important;
+        width: 280px !important;
+        max-width: 280px !important;
+        flex: 0 0 280px;
+        display: flex !important;
+        visibility: visible !important;
+        transform: none !important;
+        height: auto !important;
+        min-height: 100% !important;
+        align-self: stretch;
+        background-color: var(--color-blanco);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    #sidebarOffcanvas.offcanvas-start {
+        --bs-offcanvas-zindex: auto;
+    }
+
+    #sidebarOffcanvas .offcanvas-header {
+        display: none !important;
+    }
+
+    #sidebarOffcanvas .offcanvas-body {
+        padding: var(--space-lg);
+        width: 100%;
+        height: 100%;
+    }
+
+    .offcanvas-backdrop {
+        display: none !important;
+    }
+}
+
+@media (max-width: 575px) {
+    #sidebarOffcanvas {
+        display: block !important;
+        visibility: hidden !important;
+        transform: translateX(-100%) !important;
+        width: 280px !important;
+        max-width: 85vw;
+        height: 100vh !important;
+        background-color: var(--color-blanco);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    #sidebarOffcanvas.show,
+    #sidebarOffcanvas.offcanvas.show {
+        visibility: visible !important;
+        transform: translateX(0) !important;
+    }
+}
+
+.dashboard-layout {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    min-height: 100vh;
+    flex: 1 0 auto;
+}
+
+.dashboard-layout > main {
+    min-height: 100vh;
+    flex: 1 1 auto;
+}
+
+
+/* ============================================
+   SELECCIÓN DE FILAS EN TABLAS
+   ============================================ */
+tbody tr.row-selected {
+    border-left: 4px solid var(--color-primario);
+    background-color: rgba(122, 153, 221, 0.05);
+}
+
+/* En móvil y tablet (vista de tarjetas), no mostrar el fondo gris en las tarjetas seleccionadas */
+@media (max-width: 991px) {
+    tbody tr.row-selected {
+        background-color: var(--color-blanco) !important;
+        border-left: 4px solid var(--color-primario);
+    }
+}
+
+tbody .usuario-row,
+tbody .rol-row,
+tbody .criterio-row,
+tbody .opcion-row,
+tbody .vivienda-row {
+    transition: all 0.2s ease;
+}
+
+tbody .usuario-row:hover,
+tbody .rol-row:hover,
+tbody .criterio-row:hover,
+tbody .opcion-row:hover,
+tbody .vivienda-row:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* ============================================
+   ESTILOS PARA CONTENIDO EN CELDAS DE TABLA
+   ============================================ */
+/* Asegurar que el contenido de usuario se muestra correctamente */
+td[data-label="Usuario"] .d-flex > div,
+td[data-label="Dirección"] .d-flex > div {
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+}
+
+td[data-label="Usuario"] .usuario-nombre,
+td[data-label="Dirección"] .vivienda-direccion {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Permitir que los emails se rompan si son muy largos */
+td[data-label="Usuario"] .text-muted {
+    word-break: break-word;
+    overflow-wrap: break-word;
 }

@@ -68,25 +68,43 @@ function _renderFilasViviendas(pagina) {
                                                             : t('admin.homes.statusAvailable');
 
         const row = document.createElement('tr');
+        row.className = 'vivienda-row';
+        row.style.cursor = 'pointer';
         if (Number(vivienda.plazas_libres) === 0) row.classList.add('table-danger');
         row.innerHTML = `
-            <td>
+            <input class="form-check-input vivienda-checkbox" type="checkbox" value="${vivienda.id}" style="display: none;">
+            <td data-label="Dirección">
                 <div class="d-flex align-items-center gap-2">
-                    <input class="form-check-input vivienda-checkbox align-self-start mt-1" type="checkbox" value="${vivienda.id}">
                     <div>
                         <span class="fw-semibold d-block vivienda-direccion" data-id="${vivienda.id}" style="cursor:pointer;">${vivienda.direccion}</span>
                         <span class="text-muted small d-block">${vivienda.ciudad}</span>
                     </div>
                 </div>
             </td>
-            <td>${vivienda.plazas_libres}</td>
-            <td>${vivienda.plazas_totales}</td>
-            <td>${vivienda.anfitrionNombre || vivienda.anfitrion}</td>
-            <td><span class="badge ${badgeEstado} rounded-pill px-3">${textoEstado}</span></td>
+            <td data-label="Plazas libres">${vivienda.plazas_libres}</td>
+            <td data-label="Plazas totales">${vivienda.plazas_totales}</td>
+            <td data-label="Anfitrión">${vivienda.anfitrionNombre || vivienda.anfitrion}</td>
+            <td data-label="Estado"><span class="badge ${badgeEstado} rounded-pill px-3">${textoEstado}</span></td>
         `;
         tbody.appendChild(row);
     });
 
+    // Click en la fila para seleccionar
+    tbody.querySelectorAll('.vivienda-row').forEach(row => {
+        row.addEventListener('click', function(e) {
+            if (e.target.closest('.vivienda-direccion')) {
+                e.stopPropagation();
+                if (typeof verVivienda === 'function') verVivienda(this.querySelector('.vivienda-direccion').getAttribute('data-id'), e);
+                return;
+            }
+            const checkbox = this.querySelector('.vivienda-checkbox');
+            checkbox.checked = !checkbox.checked;
+            this.classList.toggle('row-selected');
+            checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+        });
+    });
+
+    // clicking the address still opens the vivienda detail
     tbody.querySelectorAll('.vivienda-direccion').forEach(span => {
         span.addEventListener('click', function(e) {
             e.stopPropagation();

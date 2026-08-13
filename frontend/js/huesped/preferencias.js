@@ -36,14 +36,14 @@ function _renderFilasPreferencias(pagina) {
             ? `<span class="fw-semibold">${r.nombre_opcion}</span>`
             : `<span class="text-muted fst-italic">${t('huesped.preferences.noAnswer') || 'Sin respuesta'}</span>`;
         row.innerHTML = `
-            <td>
+            <td data-label="${t('huesped.table.preference')}">
                 <div class="d-flex align-items-center gap-2">
                     <input class="form-check-input preferencia-checkbox align-self-start mt-1"
                            type="checkbox" value="${r.id_criterio}">
                     <span class="fw-semibold">${r.nombre_criterio}</span>
                 </div>
             </td>
-            <td>${respuesta}</td>
+            <td data-label="${t('huesped.table.myValue')}">${respuesta}</td>
         `;
         tbody.appendChild(row);
     });

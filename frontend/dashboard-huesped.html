@@ -51,8 +51,8 @@
 
         <!-- CONTENIDO PRINCIPAL -->
         <main class="flex-grow-1 p-4 p-md-3">
-            <button class="btn btn-outline-secondary d-lg-none mb-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas" aria-controls="sidebarOffcanvas">
-                <i class="bi bi-list fs-5"></i>
+            <button class="btn btn-outline-secondary d-lg-none mb-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas" aria-controls="sidebarOffcanvas" aria-label="Abrir menú">
+                <i class="bi bi-three-dots fs-5"></i>
             </button>
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <div>
@@ -66,7 +66,7 @@
 
             <div id="content-sections">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div class="gap-2 d-none" id="acciones-globales">
+                    <div class="gap-2 d-none flex-wrap" id="acciones-globales">
                         <button type="button" class="btn btn-primary rounded-pill px-2 shadow-sm" id="btnCrear">
                             <i class="bi bi-plus-circle me-2"></i> <span data-i18n="buttons.add"></span>
                         </button>
@@ -76,9 +76,21 @@
                         <button type="button" class="btn btn-outline-danger rounded-pill px-2" id="btnEliminar" disabled>
                             <i class="bi bi-x-circle me-2"></i> <span data-i18n="buttons.deactivate"></span>
                         </button>
-                        <button type="button" class="btn btn-outline-success rounded-pill px-2" id="btnReactivar" disabled>
+                            <button type="button" class="btn btn-outline-success rounded-pill px-2" id="btnReactivar" disabled>
                             <i class="bi bi-check-circle me-2"></i> <span data-i18n="buttons.activate"></span>
-                        </button>
+                            </button>
+                            <button type="button" class="btn btn-primary rounded-pill px-2 shadow-sm" id="btnCrear">
+                                <i class="bi bi-plus-circle me-2"></i><span class="btn-label" data-i18n="buttons.add"></span>
+                            </button>
+                            <button type="button" class="btn btn-primary-inverse rounded-pill px-2" id="btnEditar" disabled>
+                                <i class="bi bi-pencil me-2"></i><span class="btn-label" data-i18n="buttons.edit"></span>
+                            </button>
+                            <button type="button" class="btn btn-primary-inverse rounded-pill px-2" id="btnEliminar" disabled>
+                                <i class="bi bi-x-circle me-2"></i><span class="btn-label" data-i18n="buttons.deactivate"></span>
+                            </button>
+                            <button type="button" class="btn btn-outline-success rounded-pill px-2" id="btnReactivar" disabled>
+                                <i class="bi bi-check-circle me-2"></i><span class="btn-label" data-i18n="buttons.activate"></span>
+                            </button>
                     </div>
                     <div class="gap-2 flex-wrap d-none" id="filtros-globales">
                         <input type="search" class="form-control" id="filtroTexto" data-i18n-ph="nav.filterList">

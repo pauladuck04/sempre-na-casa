@@ -220,6 +220,622 @@
     margin-bottom: var(--space-md);
 }
 
+/* Users table: limit role badge width and truncate to avoid overlap */
+.section-content[data-section="usuarios"] .table td:nth-child(2) .badge {
+    padding-left: 0.4rem;
+    padding-right: 0.4rem;
+    max-width: 120px;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+@media (min-width: 768px) {
+    .section-content[data-section="usuarios"] .table td:nth-child(2) .badge {
+        max-width: 160px;
+    }
+}
+
+/* Force fixed layout for users table and set a column width for the Role column
+   so truncation works reliably across browsers. This only affects the users table.
+   Scoped to desktop (>=992px) since below that the table renders as cards, where
+   these fixed column widths would fight with the card row's width:100%. */
+@media (min-width: 992px) {
+    .section-content[data-section="usuarios"] .table {
+        table-layout: auto;
+    }
+
+    .section-content[data-section="usuarios"] .table th:nth-child(1),
+    .section-content[data-section="usuarios"] .table td:nth-child(1) {
+        width: 40%;
+        min-width: 250px;
+    }
+
+    .section-content[data-section="usuarios"] .table th:nth-child(2),
+    .section-content[data-section="usuarios"] .table td:nth-child(2) {
+        width: 160px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
+/* Mobile & tablet: stack table rows as card-like blocks with data-labels.
+   Tables only render as real <table> layout on desktop (>=992px). */
+@media (max-width: 991px) {
+    .section-content[data-section="usuarios"] .table thead {
+        display: none;
+    }
+    .section-content[data-section="usuarios"] .table,
+    .section-content[data-section="usuarios"] .table tbody,
+    .section-content[data-section="usuarios"] .table tr,
+    .section-content[data-section="usuarios"] .table td {
+        display: block;
+        width: 100%;
+        background-color: transparent !important;
+        background-image: none !important;
+    }
+    .section-content[data-section="usuarios"] .table tr {
+        margin-bottom: 0.75rem;
+        background-color: #ffffff !important;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        box-shadow: var(--sombra-md);
+    }
+
+    .section-content[data-section="usuarios"] .table tr.row-selected {
+        background-color: #ffffff !important;
+        border-left: 4px solid var(--color-primario);
+        padding-left: calc(0.75rem - 4px);
+    }
+
+    .section-content[data-section="usuarios"] .table td {
+        padding: 0.35rem 0;
+        border: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        background-color: transparent !important;
+    }
+    .section-content[data-section="usuarios"] .table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--color-texto-muted, #6c757d);
+        margin-right: 0.75rem;
+        flex: 0 0 auto;
+        white-space: nowrap;
+    }
+    .section-content[data-section="usuarios"] .table td > div {
+        flex: 1 1 auto;
+        min-width: 0;
+        word-break: break-word;
+        overflow-wrap: break-word;
+    }
+    .section-content[data-section="usuarios"] .usuario-nombre,
+    .section-content[data-section="usuarios"] .text-muted.small {
+        white-space: normal;
+        overflow: visible;
+        user-select: none;
+    }
+
+    .section-content[data-section="usuarios"] .table tr,
+    .section-content[data-section="usuarios"] .table td,
+    .section-content[data-section="usuarios"] .table span,
+    .section-content[data-section="usuarios"] .usuario-nombre,
+    .section-content[data-section="usuarios"] .text-muted {
+        user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+    }
+
+    .section-content[data-section="usuarios"] *::selection,
+    .section-content[data-section="usuarios"] *::-moz-selection {
+        background-color: transparent !important;
+        color: inherit;
+    }
+
+    /* Viviendas: stack table rows as card-like blocks with data-labels */
+    .section-content[data-section="viviendas"] .table thead {
+        display: none;
+    }
+    .section-content[data-section="viviendas"] .table,
+    .section-content[data-section="viviendas"] .table tbody,
+    .section-content[data-section="viviendas"] .table tr,
+    .section-content[data-section="viviendas"] .table td {
+        display: block;
+        width: 100%;
+        background-color: transparent !important;
+        background-image: none !important;
+    }
+    .section-content[data-section="viviendas"] .table tr {
+        margin-bottom: 0.75rem;
+        background-color: #ffffff !important;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        box-shadow: var(--sombra-md);
+    }
+    
+    /* No mostrar el fondo gris cuando la tarjeta está seleccionada en móvil */
+    .section-content[data-section="viviendas"] .table tr.row-selected {
+        background-color: #ffffff !important;
+        border-left: 4px solid var(--color-primario);
+        padding-left: calc(0.75rem - 4px);
+    }
+    
+    .section-content[data-section="viviendas"] .table td {
+        padding: 0.35rem 0;
+        border: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        background-color: transparent !important;
+    }
+    .section-content[data-section="viviendas"] .table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--color-texto-muted, #6c757d);
+        margin-right: 0.75rem;
+        flex: 0 0 auto;
+        white-space: nowrap;
+    }
+    .section-content[data-section="viviendas"] .table td > div {
+        flex: 1 1 auto;
+        min-width: 0;
+        word-break: break-word;
+        overflow-wrap: break-word;
+    }
+    .section-content[data-section="viviendas"] .vivienda-direccion,
+    .section-content[data-section="viviendas"] .text-muted.small {
+        white-space: normal;
+        overflow: visible;
+        user-select: none;
+    }
+    
+    /* Remover el sombreado gris de la selección de texto */
+    .section-content[data-section="viviendas"] *::selection,
+    .section-content[data-section="viviendas"] *::-moz-selection {
+        background-color: transparent !important;
+        color: inherit;
+    }
+
+    /* hide vivienda checkbox on xs (selection via tapping the card) */
+    .section-content[data-section="viviendas"] .vivienda-checkbox {
+        display: none;
+    }
+
+    /* Criterios: stack table rows as card-like blocks with data-labels */
+    .section-content[data-section="criterios"] .table thead {
+        display: none;
+    }
+    .section-content[data-section="criterios"] .table,
+    .section-content[data-section="criterios"] .table tbody,
+    .section-content[data-section="criterios"] .table tr,
+    .section-content[data-section="criterios"] .table td {
+        display: block;
+        width: 100%;
+        background-color: transparent !important;
+        background-image: none !important;
+    }
+    .section-content[data-section="criterios"] .table tr {
+        margin-bottom: 0.75rem;
+        background-color: #ffffff !important;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        box-shadow: var(--sombra-md);
+    }
+    
+    .section-content[data-section="criterios"] .table tr.row-selected {
+        background-color: #ffffff !important;
+        border-left: 4px solid var(--color-primario);
+        padding-left: calc(0.75rem - 4px);
+    }
+    
+    .section-content[data-section="criterios"] .table td {
+        padding: 0.35rem 0;
+        border: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        background-color: transparent !important;
+    }
+    .section-content[data-section="criterios"] .table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--color-texto-muted, #6c757d);
+        margin-right: 0.75rem;
+        flex: 0 0 auto;
+        white-space: nowrap;
+    }
+    .section-content[data-section="criterios"] .table td > div {
+        flex: 1 1 auto;
+        min-width: 0;
+        word-break: break-word;
+        overflow-wrap: break-word;
+    }
+    .section-content[data-section="criterios"] *::selection,
+    .section-content[data-section="criterios"] *::-moz-selection {
+        background-color: transparent !important;
+        color: inherit;
+    }
+    .section-content[data-section="criterios"] .criterio-checkbox {
+        display: none;
+    }
+
+    /* Opciones: stack table rows as card-like blocks with data-labels */
+    .section-content[data-section="criterios"] #tab-opciones .table thead {
+        display: none;
+    }
+    .section-content[data-section="criterios"] #tab-opciones .table,
+    .section-content[data-section="criterios"] #tab-opciones .table tbody,
+    .section-content[data-section="criterios"] #tab-opciones .table tr,
+    .section-content[data-section="criterios"] #tab-opciones .table td {
+        display: block;
+        width: 100%;
+        background-color: transparent !important;
+        background-image: none !important;
+    }
+    .section-content[data-section="criterios"] #tab-opciones .table tr {
+        margin-bottom: 0.75rem;
+        background-color: #ffffff !important;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        box-shadow: var(--sombra-md);
+    }
+    
+    .section-content[data-section="criterios"] #tab-opciones .table tr.row-selected {
+        background-color: #ffffff !important;
+        border-left: 4px solid var(--color-primario);
+        padding-left: calc(0.75rem - 4px);
+    }
+    
+    .section-content[data-section="criterios"] #tab-opciones .table td {
+        padding: 0.35rem 0;
+        border: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        background-color: transparent !important;
+    }
+    .section-content[data-section="criterios"] #tab-opciones .table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--color-texto-muted, #6c757d);
+        margin-right: 0.75rem;
+        flex: 0 0 auto;
+        white-space: nowrap;
+    }
+    .section-content[data-section="criterios"] #tab-opciones .table td > div {
+        flex: 1 1 auto;
+        min-width: 0;
+        word-break: break-word;
+        overflow-wrap: break-word;
+    }
+    .section-content[data-section="criterios"] #tab-opciones *::selection,
+    .section-content[data-section="criterios"] #tab-opciones *::-moz-selection {
+        background-color: transparent !important;
+        color: inherit;
+    }
+    .section-content[data-section="criterios"] #tab-opciones .opcion-checkbox {
+        display: none;
+    }
+
+    /* Roles: stack table rows as card-like blocks with data-labels */
+    .section-content[data-section="roles"] .table thead {
+        display: none;
+    }
+    .section-content[data-section="roles"] .table,
+    .section-content[data-section="roles"] .table tbody,
+    .section-content[data-section="roles"] .table tr,
+    .section-content[data-section="roles"] .table td {
+        display: block;
+        width: 100%;
+        background-color: transparent !important;
+        background-image: none !important;
+    }
+    .section-content[data-section="roles"] .table tr {
+        margin-bottom: 0.75rem;
+        background-color: #ffffff !important;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        box-shadow: var(--sombra-md);
+    }
+    
+    .section-content[data-section="roles"] .table tr.row-selected {
+        background-color: #ffffff !important;
+        border-left: 4px solid var(--color-primario);
+        padding-left: calc(0.75rem - 4px);
+    }
+    
+    .section-content[data-section="roles"] .table td {
+        padding: 0.35rem 0;
+        border: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        background-color: transparent !important;
+    }
+    .section-content[data-section="roles"] .table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--color-texto-muted, #6c757d);
+        margin-right: 0.75rem;
+        flex: 0 0 auto;
+        white-space: nowrap;
+    }
+    .section-content[data-section="roles"] .table td > div {
+        flex: 1 1 auto;
+        min-width: 0;
+        word-break: break-word;
+        overflow-wrap: break-word;
+    }
+    .section-content[data-section="roles"] *::selection,
+    .section-content[data-section="roles"] *::-moz-selection {
+        background-color: transparent !important;
+        color: inherit;
+    }
+    .section-content[data-section="roles"] .rol-checkbox {
+        display: none;
+    }
+
+    /* Convivencias: stack table rows as card-like blocks with data-labels */
+    .section-content[data-section="general"] .table thead {
+        display: none;
+    }
+    .section-content[data-section="general"] .table,
+    .section-content[data-section="general"] .table tbody,
+    .section-content[data-section="general"] .table tr,
+    .section-content[data-section="general"] .table td {
+        display: block;
+        width: 100%;
+        background-color: transparent !important;
+        background-image: none !important;
+    }
+    .section-content[data-section="general"] .table tr {
+        margin-bottom: 0.75rem;
+        background-color: #ffffff !important;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        box-shadow: var(--sombra-md);
+    }
+    
+    .section-content[data-section="general"] .table tr.row-selected {
+        background-color: #ffffff !important;
+        border-left: 4px solid var(--color-primario);
+        padding-left: calc(0.75rem - 4px);
+    }
+    
+    .section-content[data-section="general"] .table td {
+        padding: 0.35rem 0;
+        border: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        background-color: transparent !important;
+    }
+    .section-content[data-section="general"] .table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--color-texto-muted, #6c757d);
+        margin-right: 0.75rem;
+        flex: 0 0 auto;
+        white-space: nowrap;
+    }
+    .section-content[data-section="general"] .table td > div {
+        flex: 1 1 auto;
+        min-width: 0;
+        word-break: break-word;
+        overflow-wrap: break-word;
+    }
+    .section-content[data-section="general"] *::selection,
+    .section-content[data-section="general"] *::-moz-selection {
+        background-color: transparent !important;
+        color: inherit;
+    }
+
+    /* Solicitudes de vivienda: stack table rows as card-like blocks */
+    .section-content[data-section="solicitudes"] .table thead {
+        display: none;
+    }
+    .section-content[data-section="solicitudes"] .table,
+    .section-content[data-section="solicitudes"] .table tbody,
+    .section-content[data-section="solicitudes"] .table tr,
+    .section-content[data-section="solicitudes"] .table td {
+        display: block;
+        width: 100%;
+        background-color: transparent !important;
+        background-image: none !important;
+    }
+    .section-content[data-section="solicitudes"] .table tr {
+        margin-bottom: 0.75rem;
+        background-color: #ffffff !important;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        box-shadow: var(--sombra-md);
+    }
+    
+    .section-content[data-section="solicitudes"] .table td {
+        padding: 0.35rem 0;
+        border: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        background-color: transparent !important;
+    }
+    .section-content[data-section="solicitudes"] .table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--color-texto-muted, #6c757d);
+        margin-right: 0.75rem;
+        flex: 0 0 auto;
+        white-space: nowrap;
+    }
+    .section-content[data-section="solicitudes"] .table td > div {
+        flex: 1 1 auto;
+        min-width: 0;
+        word-break: break-word;
+        overflow-wrap: break-word;
+    }
+    .section-content[data-section="solicitudes"] *::selection,
+    .section-content[data-section="solicitudes"] *::-moz-selection {
+        background-color: transparent !important;
+        color: inherit;
+    }
+
+    /* Centrar textos "no hay..." en todas las secciones, pero sin tarjeta ni sombra cuando la tabla está vacía */
+    .section-content .table tr:has(> td.text-center) {
+        display: flex !important;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        min-height: auto;
+        background-color: transparent !important;
+        margin-bottom: 0;
+        padding: 0;
+        border: none !important;
+        border-radius: 0;
+        box-shadow: none !important;
+    }
+    .section-content .table tr:has(> td.text-center) > td {
+        width: 100% !important;
+        display: flex !important;
+        justify-content: center;
+        text-align: center;
+        padding: 0.75rem 0 !important;
+        border: none !important;
+        background-color: transparent !important;
+    }
+    .section-content .table tr:has(> td.text-center) > td::before {
+        display: none !important;
+    }
+}
+
+/* make sure role dot and compact badge align nicely */
+.section-content[data-section="usuarios"] .role-dot {
+    margin-right: 0.5rem;
+}
+
+@media (max-width: 991px) {
+    .section-content .table thead {
+        display: none;
+    }
+
+    .section-content .table,
+    .section-content .table tbody,
+    .section-content .table tr,
+    .section-content .table td {
+        display: block;
+        width: 100%;
+        background-color: transparent !important;
+        background-image: none !important;
+    }
+
+    .section-content .table tr {
+        margin-bottom: 0.75rem;
+        background-color: #ffffff !important;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        box-shadow: var(--sombra-md);
+    }
+
+    .section-content .table tr.row-selected {
+        background-color: #ffffff !important;
+        border-left: 4px solid var(--color-primario);
+        padding-left: calc(0.75rem - 4px);
+    }
+
+    .section-content .table td {
+        padding: 0.35rem 0;
+        border: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        background-color: transparent !important;
+    }
+
+    .section-content .table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--color-texto-muted, #6c757d);
+        margin-right: 0.75rem;
+        flex: 0 0 auto;
+        white-space: nowrap;
+    }
+
+    .section-content .table td > div {
+        flex: 1 1 auto;
+        min-width: 0;
+        word-break: break-word;
+        overflow-wrap: break-word;
+    }
+
+    .section-content .table *::selection,
+    .section-content .table *::-moz-selection {
+        background-color: transparent !important;
+        color: inherit;
+    }
+
+    .section-content .table tr:has(> td.text-center) {
+        display: flex !important;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        min-height: auto;
+        background-color: transparent !important;
+        margin-bottom: 0;
+        padding: 0;
+        border: none !important;
+        border-radius: 0;
+        box-shadow: none !important;
+    }
+
+    .section-content .table tr:has(> td.text-center) > td {
+        width: 100% !important;
+        display: flex !important;
+        justify-content: center;
+        text-align: center;
+        padding: 0.75rem 0 !important;
+        border: none !important;
+        background-color: transparent !important;
+    }
+
+    .section-content .table tr:has(> td.text-center) > td::before {
+        display: none !important;
+    }
+}
+
+/* Role dot styles */
+.role-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 0 0 3px rgba(0,0,0,0.03);
+}
+
+/* Ensure the compact badge only shows on small+ screens; on xs the dot is the main indicator */
+.section-content[data-section="usuarios"] .role-dot + .badge {
+    vertical-align: middle;
+}
+
 .property-specs {
     display: flex;
     gap: var(--space-md);
@@ -234,7 +850,7 @@
 .table-responsive {
     width: 100%;
     max-width: 100%;
-    overflow-x: hidden;
+    overflow-x: auto; /* allow horizontal scroll for wide tables on small screens */
 }
 
 .table {
@@ -410,7 +1026,45 @@
     }
 }
 
-@media (max-width: 576px) {   
+/* Small-screen adjustments for dashboard action buttons */
+@media (max-width: 768px) {
+    #acciones-globales {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem !important;
+    }
+
+    #acciones-globales .btn {
+        width: 100%;
+        display: block;
+        text-align: center;
+        white-space: normal;
+        padding: 0.35rem 0.75rem; /* slightly smaller padding */
+        font-size: 0.9rem; /* reduce font size on small screens */
+        border-radius: 0.5rem;
+    }
+
+    #filtros-globales {
+        margin-top: 0.5rem;
+        width: 100%;
+    }
+
+    /* reduce icon spacing inside compact buttons */
+    #acciones-globales .btn .bi {
+        margin-right: 0.5rem;
+        font-size: 1rem;
+    }
+    /* hide textual labels and show only icons on small screens */
+    #acciones-globales .btn .btn-label {
+        display: none;
+    }
+    /* reduce icon-right spacing when label is hidden */
+    #acciones-globales .btn .bi.me-2 {
+        margin-right: 0.25rem;
+    }
+}
+
+@media (max-width: 768px) {
     .encuesta-container {
         margin-top: -60px;
         margin-bottom: var(--space-2xl);
@@ -449,6 +1103,37 @@
     .how-works h2 {
         font-size: 1.75rem;
     }
+}
+
+/* Make action buttons circular and inline on very small screens */
+@media (max-width: 576px) {
+    #acciones-globales {
+        flex-direction: row !important;
+        flex-wrap: nowrap;
+        gap: 0.5rem !important;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    #acciones-globales .btn {
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        font-size: 1rem;
+    }
+
+    /* center icons and remove extra margin */
+    #acciones-globales .btn .bi {
+        margin-right: 0 !important;
+        font-size: 1.1rem;
+    }
+
+    /* textual labels remain hidden for screen real estate */
+    #acciones-globales .btn .btn-label { display: none; }
 }
 
 /* ============================================

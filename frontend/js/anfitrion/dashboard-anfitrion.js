@@ -491,7 +491,11 @@ function renderizarConvivencias(lista) {
         const badge  = r.activo_usuario_vivienda == 1
             ? `<span class="badge rounded-pill px-3 py-2" style="background-color:#D1E7DD;color:#0F5132;">${t('anfitrion.convivencias.statusActive')}</span>`
             : `<span class="badge rounded-pill px-3 py-2" style="background-color:#F8D7DA;color:#842029;">${t('anfitrion.convivencias.statusInactive')}</span>`;
-        return `<tr><td class="fw-semibold">${nombre}</td><td>${fecha}</td><td>${badge}</td></tr>`;
+        return `<tr>
+            <td data-label="${t('anfitrion.table.tenant')}" class="fw-semibold">${nombre}</td>
+            <td data-label="${t('anfitrion.table.startDate')}">${fecha}</td>
+            <td data-label="${t('anfitrion.table.status')}">${badge}</td>
+        </tr>`;
     }).join('');
 }
 
@@ -650,11 +654,11 @@ function actualizarControlesSeccion(seccion) {
         btnCrear?.classList.add('d-none');
         btnEliminar?.classList.add('d-none');
         btnReactivar?.classList.add('d-none');
-        if (btnEditar) btnEditar.innerHTML = `<i class="bi bi-pencil me-2"></i> ${t('buttons.edit')}`;
+            if (btnEditar) btnEditar.innerHTML = `<i class="bi bi-pencil me-2"></i><span class="btn-label">${t('buttons.edit')}</span>`;
     } else if (seccion === 'huespedes') {
         btnCrear?.classList.add('d-none');
         btnEditar?.classList.add('d-none');
-        if (btnEliminar) btnEliminar.innerHTML = `<i class="bi bi-box-arrow-right me-2"></i> ${t('common.notifyLeave')}`;
+            if (btnEliminar) btnEliminar.innerHTML = `<i class="bi bi-box-arrow-right me-2"></i><span class="btn-label">${t('common.notifyLeave')}</span>`;
         btnReactivar?.classList.add('d-none');
     }
 

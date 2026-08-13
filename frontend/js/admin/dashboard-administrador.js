@@ -680,18 +680,26 @@ function _renderFilasConvivencias(pagina) {
     pagina.forEach(c => {
         const activo = c.estado === 'activo';
         const row = document.createElement('tr');
+        row.className = 'convivencia-row';
+        row.style.cursor = 'pointer';
         row.innerHTML = `
-            <td class="fw-semibold">${c.anfitrion}</td>
-            <td>${c.huesped}</td>
-            <td>
+            <td data-label="Anfitrión" class="fw-semibold">${c.anfitrion}</td>
+            <td data-label="Huésped">${c.huesped}</td>
+            <td data-label="Estado">
                 <span class="badge rounded-pill px-3 ${activo ? 'bg-success' : 'bg-secondary'}">
                     ${activo ? 'Activo' : 'Inactivo'}
                 </span>
             </td>
-            <td class="text-muted small">${c.fecha_inicio}</td>
-            <td class="text-muted small">${c.fecha_fin}</td>
+            <td data-label="Fecha inicio" class="text-muted small">${c.fecha_inicio}</td>
+            <td data-label="Fecha fin" class="text-muted small">${c.fecha_fin}</td>
         `;
         tbody.appendChild(row);
+
+        // Click en la fila para editar
+        row.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (typeof editarConvivencia === 'function') editarConvivencia(c.id);
+        });
     });
 }
 

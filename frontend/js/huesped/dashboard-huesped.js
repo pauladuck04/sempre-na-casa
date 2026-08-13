@@ -448,10 +448,10 @@ function renderizarResumenConvivencia(c) {
         pagina.forEach(item => {
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td class="fw-semibold">${item.anfitrion}</td>
-                <td>${item.direccion}, ${item.ciudad}</td>
-                <td>${item.fechaInicio || '-'}</td>
-                <td>${badges[item.estado] || `<span class="badge bg-secondary rounded-pill px-3 py-2">${item.estado}</span>`}</td>
+                <td data-label="${t('huesped.table.host')}" class="fw-semibold">${item.anfitrion}</td>
+                <td data-label="${t('huesped.table.address')}">${item.direccion}, ${item.ciudad}</td>
+                <td data-label="${t('huesped.table.startDate')}">${item.fechaInicio || '-'}</td>
+                <td data-label="${t('huesped.table.status')}">${badges[item.estado] || `<span class="badge bg-secondary rounded-pill px-3 py-2">${item.estado}</span>`}</td>
             `;
             tbody.appendChild(row);
         });
@@ -495,7 +495,7 @@ function actualizarControlesSeccion(seccion) {
         btnCrear?.classList.add('d-none');
         btnEliminar?.classList.add('d-none');
         btnReactivar?.classList.add('d-none');
-        if (btnEditar) btnEditar.innerHTML = `<i class="bi bi-pencil me-2"></i> ${t('buttons.edit')}`;
+        if (btnEditar) btnEditar.innerHTML = `<i class="bi bi-pencil me-2"></i><span class="btn-label">${t('buttons.edit')}</span>`;
     }
 
     configurarFiltros(seccion);

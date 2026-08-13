@@ -42,7 +42,7 @@ export function renderizarHuespedes(lista) {
     lista.forEach(i => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>
+            <td data-label="${t('anfitrion.table.tenant')}">
                 <div class="d-flex align-items-center gap-2">
                     <input class="form-check-input huesped-checkbox align-self-start mt-1" type="checkbox" value="${i.id}">
                     <div>
@@ -51,8 +51,8 @@ export function renderizarHuespedes(lista) {
                     </div>
                 </div>
             </td>
-            <td>${i.fechaIngreso || '-'}</td>
-            <td>${badgeEstado(i.estado)}</td>
+            <td data-label="${t('anfitrion.table.startDate')}">${i.fechaIngreso || '-'}</td>
+            <td data-label="${t('anfitrion.table.status')}">${badgeEstado(i.estado)}</td>
         `;
         tbody.appendChild(row);
     });

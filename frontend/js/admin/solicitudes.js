@@ -41,6 +41,8 @@ function _renderFilasSolicitudes(pagina) {
 
     pagina.forEach(s => {
         const row = document.createElement('tr');
+        row.className = 'solicitud-vivienda-row';
+        row.style.cursor = 'pointer';
         const acciones = s.estado === 'PENDIENTE' ? `
             <div class="d-flex flex-wrap gap-1">
                 <button type="button" class="btn btn-sm btn-success rounded-pill btn-aceptar-solicitud" data-id-usuario="${s.id_usuario}" data-id-vivienda="${s.id_vivienda}">
@@ -54,13 +56,13 @@ function _renderFilasSolicitudes(pagina) {
         const fechasPropuestas = `${s.fechaInicio} ${t('admin.requests.dateRangeTo') || 'a'} ${s.fechaFin || (t('admin.requests.openEnded') || '-')}`;
 
         row.innerHTML = `
-            <td class="fw-semibold">${s.huesped}<br><span class="text-muted small">${s.mail.replace('@', '@<wbr>')}</span></td>
-            <td>${s.vivienda}</td>
-            <td>${s.anfitrion}</td>
-            <td>${s.fechaSolicitud}</td>
-            <td>${fechasPropuestas}</td>
-            <td>${badgeEstado(s.estado)}</td>
-            <td>${acciones}</td>
+            <td data-label="Huésped" class="fw-semibold">${s.huesped}<br><span class="text-muted small">${s.mail.replace('@', '@<wbr>')}</span></td>
+            <td data-label="Vivienda">${s.vivienda}</td>
+            <td data-label="Anfitrión">${s.anfitrion}</td>
+            <td data-label="Fecha Solicitud">${s.fechaSolicitud}</td>
+            <td data-label="Fechas Propuestas">${fechasPropuestas}</td>
+            <td data-label="Estado">${badgeEstado(s.estado)}</td>
+            <td data-label="Acciones">${acciones}</td>
         `;
         tbody.appendChild(row);
     });

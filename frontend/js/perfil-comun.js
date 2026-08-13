@@ -12,6 +12,46 @@ export function mostrarToast(mensaje, tipo = 'success') {
 }
 
 /**
+ * Asigna `data-label` a las celdas de todas las tablas dentro de `.table-responsive`
+ * tomando los textos de los `th` del `thead`. Útil para la vista apilada en móviles.
+ */
+export function aplicarDataLabelsATodasLasTablas() {
+    document.querySelectorAll('.table-responsive table').forEach(table => {
+        const headers = Array.from(table.querySelectorAll('thead th')).map(th => th.textContent.trim());
+        table.querySelectorAll('tbody tr').forEach(row => {
+            Array.from(row.querySelectorAll('td')).forEach((td, i) => {
+                if (!td.hasAttribute('data-label')) {
+                    const label = headers[i] || '';
+                    td.setAttribute('data-label', label);
+                }
+            });
+        });
+    });
+}
+
+/**
+ * Inicializa Bootstrap tooltips para elementos con `title`. Marca los elementos con
+ * `data-bs-toggle="tooltip"` y crea las instancias Tooltip.
+ */
+export function inicializarTooltipsBootstrap() {
+    // marcar elementos con title para que Bootstrap los use
+    document.querySelectorAll('[title]').forEach(el => {
+        if (!el.hasAttribute('data-bs-toggle')) el.setAttribute('data-bs-toggle', 'tooltip');
+    });
+    // crear tooltips
+    const triggers = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    triggers.forEach(el => {
+        try { new bootstrap.Tooltip(el); } catch (e) { /* ignore if bootstrap not available */ }
+    });
+}
+
+// Ejecutar automáticamente cuando el DOM esté listo (la mayoría de las páginas importan este módulo)
+document.addEventListener('DOMContentLoaded', () => {
+    try { aplicarDataLabelsATodasLasTablas(); } catch (e) { /* ignore */ }
+    try { inicializarTooltipsBootstrap(); } catch (e) { /* ignore */ }
+});
+
+/**
  * Busca el usuario logueado por email y rellena la tarjeta de "Perfil" (nombre, dni, email,
  * teléfono, fecha de alta, avatar con iniciales). Devuelve los datos cargados (o null).
  *
@@ -177,6 +217,8 @@ export async function inicializarCambioRol(usuario) {
     const select = document.getElementById('cambio-rol-select');
     const aviso  = document.getElementById('cambio-rol-pendiente');
     if (!form || !select || !usuario) return;
+
+    
 
     const res = await apiPost('rol', 'getAll');
     const roles = (res.ok && Array.isArray(res.resource)) ? res.resource.filter(r => r.activo_rol == 1) : [];

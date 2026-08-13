@@ -13,9 +13,9 @@
     <link rel="stylesheet" href="css/main.css">
 </head>
 <body class="bg-light">
-    <div class="d-flex" style="min-height: 100vh;">
-        <!-- SIDEBAR: offcanvas responsive -- fijo y siempre visible desde el breakpoint lg,
-             panel deslizante (con botón para abrirlo en <main>) por debajo de lg. -->
+    <div class="d-flex dashboard-layout" style="min-height: 100vh;">
+        <!-- SIDEBAR: offcanvas responsive -- fijo y siempre visible desde tablet,
+             panel deslizante (con botón para abrirlo en <main>) por debajo de tablet. -->
         <div class="offcanvas offcanvas-lg offcanvas-start bg-white shadow-sm" tabindex="-1" id="sidebarOffcanvas" style="--bs-offcanvas-width: 280px;">
             <div class="offcanvas-header d-lg-none">
                 <h5 class="offcanvas-title fw-bold mb-0" style="color: var(--color-primario);">Sempre na Casa</h5>
@@ -66,8 +66,8 @@
 
         <!-- CONTENIDO PRINCIPAL -->
         <main class="flex-grow-1 p-4 p-md-3">
-            <button class="btn btn-outline-secondary d-lg-none mb-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas" aria-controls="sidebarOffcanvas">
-                <i class="bi bi-list fs-5"></i>
+            <button class="btn btn-outline-secondary d-sm-none mb-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas" aria-controls="sidebarOffcanvas" aria-label="Abrir menú">
+                <i class="bi bi-three-dots fs-5"></i>
             </button>
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <div>
@@ -81,18 +81,18 @@
 
             <div id="content-sections">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div class="gap-2 d-none" id="acciones-globales">
+                    <div class="gap-2 d-none flex-wrap" id="acciones-globales">
                         <button type="button" class="btn btn-primary rounded-pill px-2 shadow-sm" id="btnCrear">
-                            <i class="bi bi-plus-circle me-2"></i> <span data-i18n="buttons.create"></span>
+                            <i class="bi bi-plus-circle me-2"></i><span class="btn-label" data-i18n="buttons.create"></span>
                         </button>
                         <button type="button" class="btn btn-outline-secondary rounded-pill px-2" id="btnEditar" disabled>
-                            <i class="bi bi-pencil me-2"></i> <span data-i18n="buttons.edit"></span>
+                            <i class="bi bi-pencil me-2"></i><span class="btn-label" data-i18n="buttons.edit"></span>
                         </button>
                         <button type="button" class="btn btn-outline-danger rounded-pill px-2" id="btnEliminar" disabled>
-                            <i class="bi bi-trash me-2"></i> <span data-i18n="buttons.delete"></span>
+                            <i class="bi bi-trash me-2"></i><span class="btn-label" data-i18n="buttons.delete"></span>
                         </button>
                         <button type="button" class="btn btn-outline-success rounded-pill px-2" id="btnReactivar" disabled>
-                            <i class="bi bi-arrow-clockwise me-2"></i> <span data-i18n="buttons.reactivate"></span>
+                            <i class="bi bi-arrow-clockwise me-2"></i><span class="btn-label" data-i18n="buttons.reactivate"></span>
                         </button>
                     </div>
                     <div class="gap-2 flex-wrap d-none" id="filtros-globales">
