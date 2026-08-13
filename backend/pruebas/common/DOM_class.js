@@ -45,6 +45,10 @@ class DOM_class {
             };
             return `<span class="badge rounded-pill px-3 ${clases[valor] || 'bg-light text-dark'}">${valor}</span>`;
         }
+        if (columna === 'resultado') {
+            const esOk = valor === 'OK';
+            return `<span class="badge rounded-pill px-3 ${esOk ? 'bg-success' : 'bg-danger'}">${valor}</span>`;
+        }
         return valor;
     }
 
@@ -58,7 +62,8 @@ class DOM_class {
             descripcion: '12%', accion: '6%', valorprueba: '15%',
             respuestaesperada: '11%', resultadoprueba: '9%',
             pruebastatus: '8%', textoidiomaerror: '14%',
-            backend_status: '11%', backend_code: '13%'
+            backend_status: '11%', backend_code: '13%',
+            paso: '22%', esperado: '20%', obtenido: '24%', resultado: '9%'
         };
         return anchos[campo] || 'auto';
     }
