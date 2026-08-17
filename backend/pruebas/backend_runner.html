@@ -68,9 +68,31 @@
                 Ejecutar Tests contra Backend
             </button>
 
+            <hr class="my-3">
+
+            <div class="mb-2">
+                <label for="escenario_select" class="form-label fw-semibold mb-1">Escenario de negocio (caja negra)</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0">
+                        <i class="bi bi-signpost-split text-muted"></i>
+                    </span>
+                    <select id="escenario_select" class="form-select border-start-0 bg-light">
+                        <option value="login">Login</option>
+                        <option value="registro">Registro</option>
+                        <option value="recuperar_password">Recuperar / restablecer contraseña</option>
+                        <option value="matching">Matching (afinidad + ranking)</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="button" class="btn btn-primary-inverse w-100 fw-bold py-2 rounded-pill mb-2" onclick="ejecutarEscenario()">
+                <i class="bi bi-play-circle me-1"></i>
+                Ejecutar Escenario
+            </button>
+
             <div id="runner_status" class="alert alert-info d-flex align-items-start gap-2 mb-0" role="status">
                 <i class="bi bi-info-circle mt-1"></i>
-                <span>Selecciona una entidad y pulsa "Ejecutar Tests contra Backend". Los resultados aparecen debajo.</span>
+                <span>Elige una entidad o un escenario y pulsa el botón correspondiente. Los resultados aparecen debajo.</span>
             </div>
 
         </div>
@@ -88,6 +110,9 @@
     <script src="../../backend/pruebas/backend_pruebas.js"></script>
     <script src="../../backend/pruebas/backend_test.js?v=3"></script>
 
+    <script src="../../backend/pruebas/escenarios_pruebas.js?v=3"></script>
+    <script src="../../backend/pruebas/escenario_test.js?v=3"></script>
+
     <script>
         async function ejecutarTestsBackend() {
             const nombre = document.getElementById('entidad_select').value;
@@ -104,6 +129,30 @@
                 statusEl.className = 'alert alert-success d-flex align-items-start gap-2 mb-0';
                 const dondeVerlo = ventanaResultados ? 'la nueva ventana' : 'la tabla de resultados debajo';
                 statusEl.innerHTML = '<i class="bi bi-check-circle mt-1"></i><span>Tests de backend completados para: ' + nombre + '. Revisa ' + dondeVerlo + '.</span>';
+                if (!ventanaResultados) document.getElementById('resultados_panel').scrollIntoView({ behavior: 'smooth' });
+            } catch (e) {
+                statusEl.className = 'alert alert-danger d-flex align-items-start gap-2 mb-0';
+                statusEl.innerHTML = '<i class="bi bi-x-circle mt-1"></i><span>Error al ejecutar: ' + e.message + '</span>';
+                console.error(e);
+            }
+        }
+
+        async function ejecutarEscenario() {
+            const nombre = document.getElementById('escenario_select').value;
+            const statusEl = document.getElementById('runner_status');
+            const nombreEscenario = ESCENARIOS[nombre] ? ESCENARIOS[nombre].nombre : nombre;
+
+            const ventanaResultados = Escenario_Test.abrirVentanaResultados();
+
+            statusEl.className = 'alert alert-info d-flex align-items-start gap-2 mb-0';
+            statusEl.innerHTML = '<i class="bi bi-hourglass-split mt-1"></i><span>Ejecutando escenario: ' + nombreEscenario + '... (varios pasos encadenados, puede tardar)</span>';
+
+            try {
+                const et = new Escenario_Test(nombre, ventanaResultados);
+                await et.ejecutar();
+                statusEl.className = 'alert alert-success d-flex align-items-start gap-2 mb-0';
+                const dondeVerlo = ventanaResultados ? 'la nueva ventana' : 'la tabla de resultados debajo';
+                statusEl.innerHTML = '<i class="bi bi-check-circle mt-1"></i><span>Escenario completado: ' + nombreEscenario + '. Revisa ' + dondeVerlo + '.</span>';
                 if (!ventanaResultados) document.getElementById('resultados_panel').scrollIntoView({ behavior: 'smooth' });
             } catch (e) {
                 statusEl.className = 'alert alert-danger d-flex align-items-start gap-2 mb-0';
