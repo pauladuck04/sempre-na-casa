@@ -4,12 +4,11 @@ import * as roles     from './roles.js';
 import * as criterios from './criterios.js';
 import * as viviendas from './viviendas.js';
 import * as solicitudes from './solicitudes.js';
-import * as solicitudesRol from './solicitudes-rol.js';
 import { aplicarPaginacion, resetPagina } from './paginacion.js';
 import { mostrarErrorFormulario, ocultarErrorFormulario, mostrarErrorCampo, ocultarErrorCampo, validarCampoTexto } from '../form-errors.js';
 import { REGLAS_CAMPOS } from '../validaciones-campos.js';
 import { cargarPartials } from '../partials.js';
-import { mostrarToast, cargarPerfilPorMail, inicializarMedidorFortaleza, inicializarTogglePassword, inicializarCambioPassword, inicializarCambioRol } from '../perfil-comun.js';
+import { mostrarToast, cargarPerfilPorMail, inicializarMedidorFortaleza, inicializarTogglePassword, inicializarCambioPassword } from '../perfil-comun.js';
 
 const TABLA_POR_SECCION = {
     usuarios: 'tabla-usuarios',
@@ -606,8 +605,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                 case 'general':   cargarSeguimientoConvivencias(); break;
                 case 'usuarios':
                     roles.cargarRoles().then(() => usuarios.cargarUsuarios());
-                    resetPagina('tabla-solicitudes-rol');
-                    solicitudesRol.cargarSolicitudesRol();
                     break;
                 case 'roles':     roles.cargarRoles();        break;
                 case 'viviendas': viviendas.cargarViviendas();break;

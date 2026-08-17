@@ -221,21 +221,7 @@
     "strengthStrong": "Fuerte",
     "deleteAccount": "Eliminar Cuenta",
     "deleteConfirm": "¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer.",
-    "deleteSuccess": "Cuenta eliminada. Redirigiendo...",
-    "changeRole": {
-      "title": "Cambiar de rol",
-      "subtitle": "Solicita pasar a otro rol dentro de la plataforma. Un administrador revisará tu solicitud.",
-      "selectLabel": "Nuevo rol deseado",
-      "selectPlaceholder": "-- Selecciona un rol --",
-      "submit": "Solicitar cambio de rol",
-      "pendingPrefix": "Tienes una solicitud pendiente para pasar a ser",
-      "pendingSince": "Enviada el",
-      "success": "Solicitud de cambio de rol enviada correctamente.",
-      "errorSameRole": "Ya tienes ese rol.",
-      "errorAlreadyPending": "Ya tienes una solicitud de cambio de rol pendiente.",
-      "errorSelectRole": "Selecciona un rol.",
-      "errorGeneric": "No se pudo enviar la solicitud. Inténtalo de nuevo."
-    }
+    "deleteSuccess": "Cuenta eliminada. Redirigiendo..."
   },
   "admin": {
     "badge": "Administrador",
@@ -293,16 +279,6 @@
       "rejectSuccess": "Solicitud rechazada.",
       "dateRangeTo": " ",
       "openEnded": "sin definir",
-      "actionError": "No se pudo completar la acción"
-    },
-    "roleRequests": {
-      "title": "Solicitudes de Cambio de Rol",
-      "noRequests": "No hay solicitudes de cambio de rol",
-      "currentRole": "Rol actual",
-      "requestedRole": "Rol solicitado",
-      "requestDate": "Fecha de solicitud",
-      "acceptSuccess": "Cambio de rol aceptado correctamente.",
-      "rejectSuccess": "Cambio de rol rechazado.",
       "actionError": "No se pudo completar la acción"
     },
     "sections": {
