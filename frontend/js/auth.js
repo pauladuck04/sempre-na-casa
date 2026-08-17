@@ -166,7 +166,7 @@ if (registroForm) {
         if (!valido) return;
 
         const rolSeleccionado   = rolInput.value === 'anfitrion' ? 'anfitrion' : 'huesped';
-        const idRolSeleccionado = rolSeleccionado === 'anfitrion' ? 4 : 5;
+        const idRolSeleccionado = rolSeleccionado === 'anfitrion' ? 3 : 4;
 
         const formData = {
             dni:       dniInput.value,
@@ -178,6 +178,11 @@ if (registroForm) {
             rol:       rolSeleccionado,
             id_rol:    idRolSeleccionado
         };
+
+        // Si quedaba una sesión antigua abierta en este navegador, la limpiamos:
+        // de lo contrario encuesta.html la detectaría como "usuario ya logueado"
+        // y el registro nuevo (con su rol elegido) nunca llegaría a crearse.
+        ['user_token', 'user_id', 'user_email', 'user_nombre', 'user_id_rol', 'user_rol'].forEach(eraseCookie);
 
         sessionStorage.setItem('newUser', JSON.stringify(formData));
         window.location.href = `encuesta.html?rol=${formData.rol}`;
@@ -359,11 +364,11 @@ if (encuestaForm) {
         try {
             let idUsuario;
 
-            if (usuarioLogueadoId) {
-                // Usuario ya registrado que no ha rellenado la encuesta aún
-                idUsuario = usuarioLogueadoId;
-            } else {
-                // Flujo normal de registro: crear la cuenta primero
+            if (userData) {
+                // Flujo normal de registro: crear la cuenta primero.
+                // Prioridad sobre usuarioLogueadoId: si venimos de registro.html con
+                // datos nuevos en sessionStorage, es un registro nuevo, aunque quede
+                // una cookie de sesión antigua sin limpiar en el navegador.
                 const resRegistro = await registerUser({
                     nombre:    userData.nombre,
                     apellidos: userData.apellidos,
@@ -382,6 +387,9 @@ if (encuestaForm) {
                 }
 
                 idUsuario = resRegistro.resource;
+            } else if (usuarioLogueadoId) {
+                // Usuario ya registrado (login) que no ha rellenado la encuesta aún
+                idUsuario = usuarioLogueadoId;
             }
 
             // Guardar respuestas de la encuesta
@@ -404,11 +412,11 @@ if (encuestaForm) {
 
             await Promise.all(promesas);
 
-            if (usuarioLogueadoId) {
-                window.location.href = 'dashboard-huesped.html';
-            } else {
+            if (userData) {
                 sessionStorage.removeItem('newUser');
                 window.location.href = 'login.html';
+            } else if (usuarioLogueadoId) {
+                window.location.href = 'dashboard-huesped.html';
             }
 
         } catch (error) {

@@ -4,7 +4,7 @@ import * as preferencias from './preferencias.js';
 import { aplicarPaginacion, resetPagina } from '../admin/paginacion.js';
 import { mostrarErrorFormulario, ocultarErrorFormulario, mostrarErrorCampo, ocultarErrorCampo } from '../form-errors.js';
 import { cargarPartials } from '../partials.js';
-import { mostrarToast, cargarPerfilPorMail, inicializarMedidorFortaleza, inicializarTogglePassword, inicializarCambioPassword, inicializarCambioRol } from '../perfil-comun.js';
+import { mostrarToast, cargarPerfilPorMail, inicializarMedidorFortaleza, inicializarTogglePassword, inicializarCambioPassword } from '../perfil-comun.js';
 
 const FILTROS_POR_SECCION = {};
 
@@ -41,7 +41,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             usuarioActual.telefono = u.telefono;
             usuarioActual.ciudad = u.ciudad;
             usuarioActual.fechaAlta = u.fechaRegistro;
-            inicializarCambioRol(u);
 
             await convivencia.cargarMiConvivencia(usuarioActual.id);
             if (!convivencia.convivenciaMemoria) {

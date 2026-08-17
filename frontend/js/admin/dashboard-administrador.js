@@ -182,8 +182,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     applyTranslations();
     cargarPerfilPorMail({
         colorAvatar: (u) => (u.id_rol == 2) ? 'var(--color-secundario)' : 'var(--color-primario)',
-        conFallbackLocal: true,
-        onDatos: (u) => inicializarCambioRol(u)
+        conFallbackLocal: true
     });
 
     const seccionActiva = document.querySelector('.section-link.active-custom')?.getAttribute('data-section');

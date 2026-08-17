@@ -4,7 +4,7 @@ import * as huespedes from './huespedes.js';
 import { mostrarErrorFormulario, ocultarErrorFormulario, mostrarErrorCampo, ocultarErrorCampo } from '../form-errors.js';
 import { renderPreguntasEncuesta } from '../encuesta-criterios.js';
 import { cargarPartials } from '../partials.js';
-import { mostrarToast, cargarPerfilPorMail, inicializarMedidorFortaleza, inicializarTogglePassword, inicializarCambioPassword, inicializarCambioRol } from '../perfil-comun.js';
+import { mostrarToast, cargarPerfilPorMail, inicializarMedidorFortaleza, inicializarTogglePassword, inicializarCambioPassword } from '../perfil-comun.js';
 
 const FILTROS_POR_SECCION = {
     criterios:  [],
@@ -80,7 +80,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             usuarioActual.telefono = u.telefono;
             usuarioActual.ciudad = u.ciudad;
             usuarioActual.fechaAlta = u.fechaRegistro;
-            inicializarCambioRol(u);
         }
     });
     const seccionActiva = document.querySelector('.section-link.active-custom')?.getAttribute('data-section');
