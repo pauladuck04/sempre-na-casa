@@ -1,5 +1,5 @@
 //cambiar url de la api según el entorno
-const API_URL = 'https://backsemprenacasa.atwebpages.com/index.php'; // Cambiar a la URL de tu API (usar HTTPS to avoid mixed-content errors)
+const API_URL = 'http://backsemprenacasa.atwebpages.com/index.php'; // Cambiar a la URL de tu API (usar HTTPS to avoid mixed-content errors)
 
 async function apiPost(controlador, action, params = {}) {
     const body = new URLSearchParams({ controlador, action, ...params });
