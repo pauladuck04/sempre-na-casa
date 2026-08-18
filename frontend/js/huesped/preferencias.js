@@ -32,19 +32,31 @@ function _renderFilasPreferencias(pagina) {
     tbody.innerHTML = '';
     pagina.forEach(r => {
         const row = document.createElement('tr');
+        row.className = 'preferencia-row';
+        row.style.cursor = 'pointer';
         const respuesta = r.nombre_opcion
             ? `<span class="fw-semibold">${r.nombre_opcion}</span>`
             : `<span class="text-muted fst-italic">${t('huesped.preferences.noAnswer') || 'Sin respuesta'}</span>`;
         row.innerHTML = `
+            <input class="form-check-input preferencia-checkbox" type="checkbox" value="${r.id_criterio}" style="display: none;">
             <td data-label="${t('huesped.table.preference')}">
                 <div class="d-flex align-items-center gap-2">
-                    <input class="form-check-input preferencia-checkbox align-self-start mt-1"
-                           type="checkbox" value="${r.id_criterio}">
                     <span class="fw-semibold">${r.nombre_criterio}</span>
                 </div>
             </td>
             <td data-label="${t('huesped.table.myValue')}">${respuesta}</td>
         `;
         tbody.appendChild(row);
+    });
+
+    // Click en la fila para seleccionar (mismo patrón que usuarios/roles/viviendas/criterios
+    // del panel admin: checkbox oculto + borde azul .row-selected, ver components.css).
+    tbody.querySelectorAll('.preferencia-row').forEach(row => {
+        row.addEventListener('click', function() {
+            const checkbox = this.querySelector('.preferencia-checkbox');
+            checkbox.checked = !checkbox.checked;
+            this.classList.toggle('row-selected');
+            checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+        });
     });
 }

@@ -418,7 +418,10 @@
       "expectedStartPast": "A data de inicio non pode estar no pasado.",
       "expectedEndInvalid": "A data de fin debe ser posterior á de inicio."
     },
-    "summary_status": { "statusActive": "Activa", "statusInterview": "En Entrevista", "statusTrial": "Período de Proba", "statusFinished": "Rematada", "pending": "Pendente" }
+    "summary_status": { "statusActive": "Activa", "statusInterview": "En Entrevista", "statusTrial": "Período de Proba", "statusFinished": "Rematada", "pending": "Pendente" },
+    "modal":{
+      "editPreference": "Editar preferencia"
+    }
   },
   "public": {
     "brand": "SEMPRE NA CASA",

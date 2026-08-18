@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="css/main.css">
 </head>
 <body class="bg-light">
-    <div class="d-flex" style="min-height: 100vh;">
+    <div class="d-flex dashboard-layout" style="min-height: 100vh;">
         <!-- SIDEBAR: offcanvas responsive -- fijo y siempre visible desde el breakpoint lg,
              panel deslizante (con botón para abrirlo en <main>) por debajo de lg. -->
         <div class="offcanvas offcanvas-lg offcanvas-start bg-white shadow-sm" tabindex="-1" id="sidebarOffcanvas" style="--bs-offcanvas-width: 280px;">
@@ -76,21 +76,9 @@
                         <button type="button" class="btn btn-outline-danger rounded-pill px-2" id="btnEliminar" disabled>
                             <i class="bi bi-x-circle me-2"></i> <span data-i18n="buttons.deactivate"></span>
                         </button>
-                            <button type="button" class="btn btn-outline-success rounded-pill px-2" id="btnReactivar" disabled>
+                        <button type="button" class="btn btn-outline-success rounded-pill px-2" id="btnReactivar" disabled>
                             <i class="bi bi-check-circle me-2"></i> <span data-i18n="buttons.activate"></span>
-                            </button>
-                            <button type="button" class="btn btn-primary rounded-pill px-2 shadow-sm" id="btnCrear">
-                                <i class="bi bi-plus-circle me-2"></i><span class="btn-label" data-i18n="buttons.add"></span>
-                            </button>
-                            <button type="button" class="btn btn-primary-inverse rounded-pill px-2" id="btnEditar" disabled>
-                                <i class="bi bi-pencil me-2"></i><span class="btn-label" data-i18n="buttons.edit"></span>
-                            </button>
-                            <button type="button" class="btn btn-primary-inverse rounded-pill px-2" id="btnEliminar" disabled>
-                                <i class="bi bi-x-circle me-2"></i><span class="btn-label" data-i18n="buttons.deactivate"></span>
-                            </button>
-                            <button type="button" class="btn btn-outline-success rounded-pill px-2" id="btnReactivar" disabled>
-                                <i class="bi bi-check-circle me-2"></i><span class="btn-label" data-i18n="buttons.activate"></span>
-                            </button>
+                        </button>
                     </div>
                     <div class="gap-2 flex-wrap d-none" id="filtros-globales">
                         <input type="search" class="form-control" id="filtroTexto" data-i18n-ph="nav.filterList">

@@ -99,9 +99,9 @@
   "register": {
     "pageTitle": "Crear cuenta",
     "joinAs": "Únete como",
-    "studentRole": "🎓 huesped/Estudiante",
+    "studentRole": "🎓 Huesped/Estudiante",
     "roleAnfitrion": "🏠 Anfitrión",
-    "roleHuesped": "huesped",
+    "roleHuesped": "Huesped",
     "dniPassport": "DNI / Pasaporte",
     "firstName": "Nombre",
     "surnames": "Apellidos",
@@ -464,7 +464,7 @@
     }
   },
   "huesped": {
-    "badge": "huesped",
+    "badge": "Huesped",
     "nav": {
       "general": "Vista General",
       "convivencia": "Mi Convivencia",
@@ -555,6 +555,9 @@
       "statusTrial": "Periodo de Prueba",
       "statusFinished": "Finalizada",
       "pending": "Pendiente"
+    },
+    "modal":{
+      "editPreference": "Editar preferencia"
     }
   },
   "public": {

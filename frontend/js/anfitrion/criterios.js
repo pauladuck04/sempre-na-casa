@@ -55,10 +55,12 @@ export function renderizarCriterios(lista) {
 
     lista.forEach(c => {
         const row = document.createElement('tr');
+        row.className = 'criterio-row';
+        row.style.cursor = 'pointer';
         row.innerHTML = `
+            <input class="form-check-input criterio-checkbox" type="checkbox" value="${c.id}" style="display: none;">
             <td data-label="${t('anfitrion.table.criteria')}">
                 <div class="d-flex align-items-center gap-2">
-                    <input class="form-check-input criterio-checkbox align-self-start mt-1" type="checkbox" value="${c.id}">
                     <span class="fw-semibold">${c.criterio}</span>
                 </div>
             </td>
@@ -66,5 +68,16 @@ export function renderizarCriterios(lista) {
             <td data-label="${t('anfitrion.table.status')}"><span class="badge bg-success rounded-pill px-3">${t('anfitrion.criteria.active')}</span></td>
         `;
         tbody.appendChild(row);
+    });
+
+    // Click en la fila para seleccionar (mismo patrón que las tablas del panel admin:
+    // checkbox oculto + borde azul .row-selected, ver components.css).
+    tbody.querySelectorAll('.criterio-row').forEach(row => {
+        row.addEventListener('click', function() {
+            const checkbox = this.querySelector('.criterio-checkbox');
+            checkbox.checked = !checkbox.checked;
+            this.classList.toggle('row-selected');
+            checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+        });
     });
 }

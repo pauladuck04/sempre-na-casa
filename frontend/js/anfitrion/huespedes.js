@@ -41,10 +41,12 @@ export function renderizarHuespedes(lista) {
 
     lista.forEach(i => {
         const row = document.createElement('tr');
+        row.className = 'huesped-row';
+        row.style.cursor = 'pointer';
         row.innerHTML = `
+            <input class="form-check-input huesped-checkbox" type="checkbox" value="${i.id}" style="display: none;">
             <td data-label="${t('anfitrion.table.tenant')}">
                 <div class="d-flex align-items-center gap-2">
-                    <input class="form-check-input huesped-checkbox align-self-start mt-1" type="checkbox" value="${i.id}">
                     <div>
                         <span class="fw-semibold d-block huesped-nombre" data-id="${i.id}" style="cursor:pointer;">${i.nombre}</span>
                         <span class="text-muted small d-block">${i.email.replace('@', '@<wbr>')}</span>
@@ -57,10 +59,20 @@ export function renderizarHuespedes(lista) {
         tbody.appendChild(row);
     });
 
-    tbody.querySelectorAll('.huesped-nombre').forEach(span => {
-        span.addEventListener('click', function(e) {
-            e.stopPropagation();
-            if (typeof verHuesped === 'function') verHuesped(this.getAttribute('data-id'));
+    // Click en la fila para seleccionar (mismo patrón que las tablas del panel admin:
+    // checkbox oculto + borde azul .row-selected, ver components.css); clic en el nombre
+    // sigue abriendo el detalle en vez de seleccionar la fila.
+    tbody.querySelectorAll('.huesped-row').forEach(row => {
+        row.addEventListener('click', function(e) {
+            if (e.target.closest('.huesped-nombre')) {
+                e.stopPropagation();
+                if (typeof verHuesped === 'function') verHuesped(this.querySelector('.huesped-nombre').getAttribute('data-id'));
+                return;
+            }
+            const checkbox = this.querySelector('.huesped-checkbox');
+            checkbox.checked = !checkbox.checked;
+            this.classList.toggle('row-selected');
+            checkbox.dispatchEvent(new Event('change', { bubbles: true }));
         });
     });
 }
