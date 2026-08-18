@@ -6,6 +6,68 @@
 
 .navbar-brand {
     letter-spacing: 1px;
+    font-size: clamp(1.1rem, 1rem + 0.6vw, 1.75rem);
+}
+
+.navbar-brand img {
+    width: clamp(36px, 20px + 2vw, 56px) !important;
+    height: clamp(36px, 20px + 2vw, 56px) !important;
+}
+
+.navbar .btn {
+    font-size: clamp(0.8rem, 0.75rem + 0.2vw, 1rem);
+    padding-top: clamp(0.25rem, 0.15rem + 0.2vw, 0.5rem);
+    padding-bottom: clamp(0.25rem, 0.15rem + 0.2vw, 0.5rem);
+}
+
+.intro .badge {
+    font-size: clamp(0.8rem, 0.7rem + 0.3vw, 1.05rem);
+}
+
+.intro h1 {
+    font-size: clamp(2.25rem, 1.75rem + 1.5vw, 4.5rem);
+}
+
+.intro .lead {
+    font-size: clamp(1.05rem, 0.95rem + 0.4vw, 1.5rem);
+}
+
+.how-works h2 {
+    font-size: clamp(1.75rem, 1.4rem + 1.2vw, 3rem);
+}
+
+.how-works .lead {
+    font-size: clamp(1rem, 0.95rem + 0.3vw, 1.35rem);
+}
+
+.how-works .icon-wrapper {
+    width: clamp(70px, 40px + 4vw, 110px);
+    height: clamp(70px, 40px + 4vw, 110px);
+}
+
+.how-works .icon-wrapper i {
+    font-size: clamp(1.75rem, 1.4rem + 1.2vw, 2.75rem) !important;
+}
+
+.how-works .card h5 {
+    font-size: clamp(1.1rem, 1rem + 0.4vw, 1.4rem);
+}
+
+.how-works .card p {
+    font-size: clamp(0.9rem, 0.85rem + 0.25vw, 1.1rem);
+}
+
+footer .fs-4 {
+    font-size: clamp(1.1rem, 0.95rem + 0.6vw, 1.75rem) !important;
+}
+
+footer img.rounded-circle {
+    width: clamp(44px, 28px + 2vw, 64px) !important;
+    height: clamp(44px, 28px + 2vw, 64px) !important;
+}
+
+footer p[style*="max-width"] {
+    font-size: clamp(1rem, 0.9rem + 0.3vw, 1.35rem) !important;
 }
 
 /* BOTONES ROUNDED-PILL */
@@ -163,6 +225,10 @@
     z-index: 5;
 }
 
+.form-control.is-invalid ~ .btn-pwd-toggle {
+    display: none;
+}
+
 .btn-pwd-toggle:hover {
     color: var(--color-primario);
 }
@@ -177,9 +243,6 @@
     border-radius: var(--border-radius-lg);
 }
 
-/* mostrarErrorFormulario() rellena estas alertas con <i>...</i><span>mensaje</span>. Sin
-   min-width: 0 aquí, un hijo flex con texto largo no se encoge por debajo de su ancho de
-   contenido y se sale de la caja en vez de hacer salto de línea en pantallas estrechas. */
 .alert-danger > span,
 .alert-success > span {
     min-width: 0;
@@ -192,11 +255,6 @@
     flex-shrink: 0;
 }
 
-/* Mismo problema que las alertas de arriba, pero para filas "icono + texto" de una sola línea
-   de código en varias páginas (listas de características en tipos-usuarios.html/contacto.html:
-   <div class="d-flex align-items-start gap-2"><i>...</i><span>...</span></div>). Sin
-   min-width: 0, el <span> no se encoge para saltar de línea y se sale del contenedor en
-   pantallas estrechas. */
 .d-flex.align-items-start > span {
     min-width: 0;
     overflow-wrap: break-word;

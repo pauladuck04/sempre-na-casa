@@ -48,9 +48,6 @@ class usuario_vivienda_SERVICE extends appServiceBase {
         }
     }
 
-    // una convivencia ACEPTADA pasa a ACTIVA en cuanto la fecha actual supera la fecha_inicio
-    // esperada y todavia no llega a la fecha_fin. Si no hay fecha_fin definida se considera
-    // activa sin limite.
     function promoverConvivenciasActivas() {
         include_once './base/mapping.php';
         $map = new mapping('usuario_vivienda');
@@ -63,12 +60,44 @@ class usuario_vivienda_SERVICE extends appServiceBase {
                AND fecha_inicio < '{$ahora}'
                AND (fecha_fin IS NULL OR fecha_fin > '{$ahora}')"
         );
+
+        $viviendasFinalizadas = $map->lanzarqueryconresults(
+            "SELECT DISTINCT id_vivienda FROM usuario_vivienda
+             WHERE estado_usuario_vivienda = 'ACTIVA'
+               AND activo_usuario_vivienda = 1
+               AND fecha_fin IS NOT NULL
+               AND fecha_fin <= '{$ahora}'"
+        );
+
+        $map->lanzarquery(
+            "UPDATE usuario_vivienda
+             SET estado_usuario_vivienda = 'FINALIZADA', activo_usuario_vivienda = 0
+             WHERE estado_usuario_vivienda = 'ACTIVA'
+               AND activo_usuario_vivienda = 1
+               AND fecha_fin IS NOT NULL
+               AND fecha_fin <= '{$ahora}'"
+        );
+
+        if ($viviendasFinalizadas['ok'] && !empty($viviendasFinalizadas['resource'])) {
+            foreach ($viviendasFinalizadas['resource'] as $fila) {
+                $this->recalcularPlazasLibres($map, $fila['id_vivienda']);
+            }
+        }
     }
 
-    // una solicitud es unica por (usuario, vivienda). Tampoco se puede solicitar una vivienda 
-    // nueva si ya se tiene una convivencia activa en otra. La solicitud incluye fecha_inicio
-    //  (obligatoria) y fecha_fin (opcional, estancia abierta) que el huesped propone; si se acepta, 
-    // esas son las fechas reales de la convivencia.
+    function recalcularPlazasLibres($map, $idVivienda) {
+        $idVivienda = intval($idVivienda);
+        $map->lanzarquery(
+            "UPDATE vivienda
+             SET plazas_libres = GREATEST(
+                 plazas_totales - (
+                     SELECT COUNT(*) FROM usuario_vivienda
+                     WHERE id_vivienda = {$idVivienda} AND activo_usuario_vivienda = 1
+                 ), 0)
+             WHERE id_vivienda = {$idVivienda}"
+        );
+    }
+
     function ADD() {
         $idUsuario  = intval($_POST['id_usuario']);
         $idVivienda = intval($_POST['id_vivienda']);
@@ -140,14 +169,17 @@ class usuario_vivienda_SERVICE extends appServiceBase {
             "UPDATE usuario_vivienda SET {$set} WHERE id_usuario = {$idUsuario} AND id_vivienda = {$idVivienda}"
         );
 
+        if ($resUpdate['ok'] && $nuevoEstado === 'ACEPTADA') {
+            $this->recalcularPlazasLibres($map, $idVivienda);
+        }
+
         if ($resUpdate['ok']) {
             $resUpdate['code'] = $nuevoEstado === 'ACEPTADA' ? 'SOLICITUD_ACEPTADA_OK' : 'SOLICITUD_RECHAZADA_OK';
         }
         return $resUpdate;
     }
 
-    // listado para el panel de administrador: solo las solicitudes pendientes de resolver, con
-    // los datos de huesped, vivienda y anfitrion
+
     function getSolicitudes() {
         include_once './base/mapping.php';
         $map = new mapping('usuario_vivienda');
@@ -167,7 +199,14 @@ class usuario_vivienda_SERVICE extends appServiceBase {
     }
 
     function DELETE() {
-        return $this->softDelete('activo_usuario_vivienda');
+        $idVivienda = intval($_POST['id_vivienda']);
+        $res = $this->softDelete('activo_usuario_vivienda');
+        if ($res['ok']) {
+            include_once './base/mapping.php';
+            $map = new mapping('usuario_vivienda');
+            $this->recalcularPlazasLibres($map, $idVivienda);
+        }
+        return $res;
     }
 
     function REACTIVAR() {
@@ -210,11 +249,6 @@ class usuario_vivienda_SERVICE extends appServiceBase {
         );
     }
 
-    // Convivencia activa de un huesped: vivienda + anfitrion + companeros (otros huespedes
-    // activos en la misma vivienda) + % de afinidad real con esa vivienda. Se considera que el
-    // huesped "tiene vivienda" desde que su solicitud esta ACEPTADA (activo_usuario_vivienda = 1),
-    // aunque el estado real pueda ser ACEPTADA (todavia no llega la fecha_inicio) o ACTIVA
-    // (dentro del rango fecha_inicio/fecha_fin)
     function getConvivenciaByUsuario() {
         $idUsuario = intval($_POST['id_usuario']);
 
