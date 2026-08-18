@@ -94,7 +94,10 @@
     "noAccount": "Don't have an account yet?",
     "isHost": "I'm a host",
     "isTenant": "I'm a tenant",
-    "error": "Login failed. Please check your credentials."
+    "error": "Login failed. Please check your credentials.",
+    "userNotFound": "User not found.",
+    "wrongPassword": "Incorrect password.",
+    "inactiveUser": "This account is deactivated."
   },
   "register": {
     "pageTitle": "Create account",
@@ -131,7 +134,8 @@
     "continue": "Continue",
     "alreadyHaveAccount": "Already have an account?",
     "goToLogin": "Sign in",
-    "submit": "Create Account"
+    "submit": "Create Account",
+    "emailOrDniTaken": "An account with that email or ID already exists."
   },
   "recoverPassword": {
     "pageTitle": "Forgot your password?",
@@ -222,6 +226,8 @@
     "deleteAccount": "Delete Account",
     "deleteConfirm": "Are you sure you want to delete your account? This action cannot be undone.",
     "deleteSuccess": "Account deleted. Redirecting...",
+    "currentPasswordIncorrect": "The current password is not correct.",
+    "changePasswordError": "Error changing the password.",
     "changeRole": {
       "title": "Change role",
       "subtitle": "Request to switch to a different role on the platform. An administrator will review your request.",
@@ -444,7 +450,7 @@
       "noHome": "No home registered",
       "registerHome": "Register Home",
       "editHome": "Edit Home",
-      "descriptionOptional": "Description (optional)"
+      "descriptionOptional": "Description"
     },
     "criteria": {
       "add": "Add Criteria",
@@ -705,5 +711,17 @@
       "successTitle": "Message sent!",
       "successText": "Thanks for writing to us, we'll get back to you as soon as possible."
     }
+  },
+  "errors": {
+    "generic": "An error occurred. Please try again.",
+    "campoObligatorio": "A required field is missing.",
+    "adminNoModificable": "The administrator account cannot be modified.",
+    "solicitudNoEncontrada": "The request was not found.",
+    "solicitudYaResuelta": "This request has already been resolved.",
+    "upsertRespuesta": "Could not save the answer.",
+    "sinCriteriosComunes": "There are no shared criteria to calculate compatibility.",
+    "rankViviendas": "Could not calculate the home ranking.",
+    "registroNoEncontrado": "Record not found.",
+    "registroYaActivo": "The record is already active."
   }
 }

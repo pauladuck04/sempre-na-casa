@@ -3,6 +3,7 @@ import { mostrarErrorFormulario, ocultarErrorFormulario, mostrarErrorCampo, ocul
 import { inicializarTogglePassword, inicializarMedidorFortaleza } from './perfil-comun.js';
 import { renderPreguntasEncuesta } from './encuesta-criterios.js';
 import { REGLAS_CAMPOS } from './validaciones-campos.js';
+import { mensajeError } from './error-codes.js';
 
 const contenedorPreguntas = document.getElementById('preguntas-encuesta');
 if (contenedorPreguntas) {
@@ -43,12 +44,7 @@ if (loginForm) {
             const res = await loginUser(email, password);
 
             if (!res.ok) {
-                const mensajes = {
-                    'USUARIO_LOGIN_KO': t('login.userNotFound') || 'Usuario no encontrado.',
-                    'USUARIO_PASS_KO':  t('login.wrongPassword') || 'Contraseña incorrecta.',
-                    'USUARIO_INACTIVO_KO': t('login.inactiveUser') || 'La cuenta está desactivada.'
-                };
-                mostrarErrorFormulario(errorMessage, mensajes[res.code] || t('login.error') || 'Error al iniciar sesión.');
+                mostrarErrorFormulario(errorMessage, mensajeError(res.code, 'login.error'));
                 return;
             }
 
@@ -83,6 +79,7 @@ if (loginForm) {
 // ================== REGISTRO, paso 1: datos (registro.html) ==================
 const registroForm = document.getElementById('registro-form');
 if (registroForm) {
+    const errorMessage    = document.getElementById('error-message');
     const rolInput        = document.getElementById('rol');
     const rolLabel        = document.getElementById('rol-label');
     const dniInput        = document.getElementById('dni');
@@ -148,8 +145,9 @@ if (registroForm) {
         }
     });
 
-    registroForm.addEventListener('submit', (e) => {
+    registroForm.addEventListener('submit', async (e) => {
         e.preventDefault();
+        ocultarErrorFormulario(errorMessage);
         [dniInput, nombreInput, apellidosInput, telefonoInput, emailInput, password2].forEach(ocultarErrorCampo);
 
         let valido = true;
@@ -183,6 +181,29 @@ if (registroForm) {
         // de lo contrario encuesta.html la detectaría como "usuario ya logueado"
         // y el registro nuevo (con su rol elegido) nunca llegaría a crearse.
         ['user_token', 'user_id', 'user_email', 'user_nombre', 'user_id_rol', 'user_rol'].forEach(eraseCookie);
+
+        if (rolSeleccionado === 'anfitrion') {
+            // Los anfitriones no tienen encuesta de "compañero ideal": sus criterios se
+            // asocian a la vivienda (vivienda_criterio_opcion) y se rellenan al darla de
+            // alta desde su panel, así que la cuenta se crea directamente aquí.
+            const submitBtn = registroForm.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+
+            try {
+                const resRegistro = await registerUser(formData);
+
+                if (!resRegistro.ok) {
+                    throw new Error(mensajeError(resRegistro.code, 'errors.generic'));
+                }
+
+                window.location.href = 'login.html';
+            } catch (error) {
+                console.error('Error en registro de anfitrión:', error);
+                mostrarErrorFormulario(errorMessage, error.message || 'Error al crear la cuenta.');
+                submitBtn.disabled = false;
+            }
+            return;
+        }
 
         sessionStorage.setItem('newUser', JSON.stringify(formData));
         window.location.href = `encuesta.html?rol=${formData.rol}`;
@@ -218,10 +239,7 @@ if (recuperarForm) {
             const res = await requestPasswordReset(email);
 
             if (!res.ok) {
-                const mensaje = res.code === 'USUARIO_NO_ENCONTRADO_KO'
-                    ? t('recoverPassword.userNotFound')
-                    : t('recoverPassword.error');
-                mostrarErrorFormulario(errorMessage, mensaje);
+                mostrarErrorFormulario(errorMessage, mensajeError(res.code, 'recoverPassword.error'));
                 return;
             }
 
@@ -283,11 +301,8 @@ if (resetForm) {
             const res = await resetPassword(token, nuevaInput.value);
 
             if (!res.ok) {
-                const mensajes = {
-                    TOKEN_INVALIDO_KO: t('resetPassword.invalidToken'),
-                    TOKEN_EXPIRADO_KO: t('resetPassword.expiredToken')
-                };
-                mostrarSoloError(mensajes[res.code] || t('resetPassword.error'), { conEnlaceNuevo: res.code in mensajes });
+                const esTokenInvalidoOCaducado = res.code === 'TOKEN_INVALIDO_KO' || res.code === 'TOKEN_EXPIRADO_KO';
+                mostrarSoloError(mensajeError(res.code, 'resetPassword.error'), { conEnlaceNuevo: esTokenInvalidoOCaducado });
                 return;
             }
 
@@ -381,9 +396,7 @@ if (encuestaForm) {
                 });
 
                 if (!resRegistro.ok) {
-                    throw new Error(resRegistro.code === 'USUARIO_YA_EXISTE_KO'
-                        ? 'Ya existe una cuenta con ese email o DNI.'
-                        : 'Error al crear la cuenta. Inténtalo de nuevo.');
+                    throw new Error(mensajeError(resRegistro.code, 'errors.generic'));
                 }
 
                 idUsuario = resRegistro.resource;
@@ -392,25 +405,29 @@ if (encuestaForm) {
                 idUsuario = usuarioLogueadoId;
             }
 
-            // Guardar respuestas de la encuesta
-            const secciones = document.querySelectorAll('[data-criterio]');
-            const promesas = [];
+            // Guardar respuestas de la encuesta. Los anfitriones no tienen criterios de
+            // convivencia propios: los suyos se asocian a la vivienda (vivienda_criterio_opcion),
+            // no al usuario, y se rellenan al dar de alta la vivienda desde su panel.
+            if (!userData || userData.rol !== 'anfitrion') {
+                const secciones = document.querySelectorAll('[data-criterio]');
+                const promesas = [];
 
-            secciones.forEach(seccion => {
-                const idCriterio = seccion.getAttribute('data-criterio');
-                const radioMarcado = seccion.querySelector('.btn-check:checked');
-                if (radioMarcado) {
-                    promesas.push(
-                        apiPost('usuario_criterio_opcion', 'ADD', {
-                            id_usuario:  idUsuario,
-                            id_criterio: idCriterio,
-                            id_opcion:   radioMarcado.value
-                        })
-                    );
-                }
-            });
+                secciones.forEach(seccion => {
+                    const idCriterio = seccion.getAttribute('data-criterio');
+                    const radioMarcado = seccion.querySelector('.btn-check:checked');
+                    if (radioMarcado) {
+                        promesas.push(
+                            apiPost('usuario_criterio_opcion', 'ADD', {
+                                id_usuario:  idUsuario,
+                                id_criterio: idCriterio,
+                                id_opcion:   radioMarcado.value
+                            })
+                        );
+                    }
+                });
 
-            await Promise.all(promesas);
+                await Promise.all(promesas);
+            }
 
             if (userData) {
                 sessionStorage.removeItem('newUser');

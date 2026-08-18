@@ -94,7 +94,10 @@
     "noAccount": "¿Aún no tienes cuenta?",
     "isHost": "Soy anfitrión",
     "isTenant": "Soy huesped",
-    "error": "Error al iniciar sesión. Verifica tus credenciales."
+    "error": "Error al iniciar sesión. Verifica tus credenciales.",
+    "userNotFound": "Usuario no encontrado.",
+    "wrongPassword": "Contraseña incorrecta.",
+    "inactiveUser": "La cuenta está desactivada."
   },
   "register": {
     "pageTitle": "Crear cuenta",
@@ -131,7 +134,8 @@
     "continue": "Continuar",
     "alreadyHaveAccount": "¿Ya tienes cuenta?",
     "goToLogin": "Iniciar sesión",
-    "submit": "Crear Cuenta"
+    "submit": "Crear Cuenta",
+    "emailOrDniTaken": "Ya existe una cuenta con ese email o DNI."
   },
   "recoverPassword": {
     "pageTitle": "¿Olvidaste tu contraseña?",
@@ -221,7 +225,9 @@
     "strengthStrong": "Fuerte",
     "deleteAccount": "Eliminar Cuenta",
     "deleteConfirm": "¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer.",
-    "deleteSuccess": "Cuenta eliminada. Redirigiendo..."
+    "deleteSuccess": "Cuenta eliminada. Redirigiendo...",
+    "currentPasswordIncorrect": "La contraseña actual no es correcta.",
+    "changePasswordError": "Error al cambiar la contraseña."
   },
   "admin": {
     "badge": "Administrador",
@@ -420,7 +426,7 @@
       "noHome": "Sin vivienda",
       "registerHome": "Dar de Alta Vivienda",
       "editHome": "Editar Vivienda",
-      "descriptionOptional": "Descripción (opcional)",
+      "descriptionOptional": "Descripción",
       "registerStep1": "Alta de Vivienda (Paso 1 de 2)",
       "registerStep2": "Preferencias de Convivencia (Paso 2 de 2)",
       "next": "Siguiente",
@@ -690,5 +696,17 @@
       "successTitle": "¡Mensaje enviado!",
       "successText": "Gracias por escribirnos, te responderemos lo antes posible."
     }
+  },
+  "errors": {
+    "generic": "Ha ocurrido un error. Inténtalo de nuevo.",
+    "campoObligatorio": "Falta rellenar un campo obligatorio.",
+    "adminNoModificable": "La cuenta de administrador no se puede modificar.",
+    "solicitudNoEncontrada": "No se ha encontrado la solicitud.",
+    "solicitudYaResuelta": "Esta solicitud ya ha sido resuelta.",
+    "upsertRespuesta": "No se pudo guardar la respuesta.",
+    "sinCriteriosComunes": "No hay criterios comunes para calcular la compatibilidad.",
+    "rankViviendas": "No se pudo calcular el ranking de viviendas.",
+    "registroNoEncontrado": "No se ha encontrado el registro.",
+    "registroYaActivo": "El registro ya está activo."
   }
 }

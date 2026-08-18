@@ -1,6 +1,7 @@
 import { t } from './i18n.js';
 import { mostrarErrorFormulario, ocultarErrorFormulario, mostrarErrorCampo, ocultarErrorCampo } from './form-errors.js';
 import { REGLAS_CAMPOS, validarTexto } from './validaciones-campos.js';
+import { mensajeError } from './error-codes.js';
 
 /** Muestra un toast en el `#toastDashboard` de la página actual. */
 export function mostrarToast(mensaje, tipo = 'success') {
@@ -187,10 +188,7 @@ export function inicializarCambioPassword(obtenerEmail) {
         bootstrap.Modal.getInstance(document.getElementById('modalConfirmarPassword')).hide();
 
         if (!res.ok) {
-            const msg = res.code === 'PASSWORD_ACTUAL_INCORRECTA_KO'
-                ? 'La contraseña actual no es correcta.'
-                : 'Error al cambiar la contraseña.';
-            mostrarErrorFormulario(feedback, msg);
+            mostrarErrorFormulario(feedback, mensajeError(res.code, 'profile.changePasswordError'));
             return;
         }
 

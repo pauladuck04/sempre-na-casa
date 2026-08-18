@@ -5,6 +5,7 @@ import { aplicarPaginacion, resetPagina } from '../admin/paginacion.js';
 import { mostrarErrorFormulario, ocultarErrorFormulario, mostrarErrorCampo, ocultarErrorCampo } from '../form-errors.js';
 import { cargarPartials } from '../partials.js';
 import { mostrarToast, cargarPerfilPorMail, inicializarMedidorFortaleza, inicializarTogglePassword, inicializarCambioPassword } from '../perfil-comun.js';
+import { mensajeError } from '../error-codes.js';
 
 const FILTROS_POR_SECCION = {};
 
@@ -341,13 +342,7 @@ async function solicitarVivienda(btn) {
         renderizarCandidatos('grid-recomendadas');
         bootstrap.Modal.getInstance(document.getElementById('modalDetalle'))?.hide();
     } else {
-        const mensajes = {
-            USUARIO_YA_TIENE_CONVIVENCIA_ACTIVA_KO: t('huesped.candidates.requestErrorActive') || 'Ya tienes una convivencia activa en otra vivienda.',
-            SOLICITUD_YA_EXISTE_KO: t('huesped.candidates.requestErrorExists') || 'Ya has solicitado esta vivienda.',
-            FECHA_INICIO_PASADA_KO: t('huesped.candidates.expectedStartPast') || 'La fecha de inicio no puede estar en el pasado.',
-            FECHA_FIN_ANTERIOR_A_INICIO_KO: t('huesped.candidates.expectedEndInvalid') || 'La fecha de fin debe ser posterior a la de inicio.'
-        };
-        mostrarToast(mensajes[res.code] || t('huesped.candidates.requestError') || 'Error al enviar la solicitud.', 'danger');
+        mostrarToast(mensajeError(res.code, 'huesped.candidates.requestError'), 'danger');
         btn.disabled = false;
     }
 }

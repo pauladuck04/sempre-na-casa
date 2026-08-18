@@ -39,9 +39,12 @@
    ESTILOS ADICIONALES PERSONALIZADOS
    (Aquí puedes agregar ajustes finales si es necesario)
    ============================================ */
+/* Solo se fija el gutter horizontal para alinearlo con la escala de espaciados
+   del sistema de diseño. El gutter vertical se deja en manos de las utilidades
+   de Bootstrap (.g-*/.gy-*) que cada .row use — forzarlo a 0 aquí anulaba esas
+   utilidades y pegaba entre sí las tarjetas que se apilan en móvil. */
 .row {
     --bs-gutter-x: var(--space-lg);
-    --bs-gutter-y: 0;
 }
 
 /* Columnas de Bootstrap */

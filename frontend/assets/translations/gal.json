@@ -94,7 +94,10 @@
     "noAccount": "Aínda non tes conta?",
     "isHost": "Son anfitrión",
     "isTenant": "Son convidado",
-    "error": "Erro ao iniciar sesión. Verifica as túas credenciais."
+    "error": "Erro ao iniciar sesión. Verifica as túas credenciais.",
+    "userNotFound": "Usuario non atopado.",
+    "wrongPassword": "Contrasinal incorrecto.",
+    "inactiveUser": "A conta está desactivada."
   },
   "register": {
     "pageTitle": "Crear conta",
@@ -131,7 +134,8 @@
     "continue": "Continuar",
     "alreadyHaveAccount": "Xa tes conta?",
     "goToLogin": "Iniciar sesión",
-    "submit": "Crear Conta"
+    "submit": "Crear Conta",
+    "emailOrDniTaken": "Xa existe unha conta con ese email ou DNI."
   },
   "recoverPassword": {
     "pageTitle": "Esqueciche o teu contrasinal?",
@@ -221,7 +225,9 @@
     "strengthStrong": "Forte",
     "deleteAccount": "Eliminar Conta",
     "deleteConfirm": "Estás seguro de que desexas eliminar a túa conta? Esta acción non se pode desfacer.",
-    "deleteSuccess": "Conta eliminada. Redirixindo..."
+    "deleteSuccess": "Conta eliminada. Redirixindo...",
+    "currentPasswordIncorrect": "O contrasinal actual non é correcto.",
+    "changePasswordError": "Erro ao cambiar o contrasinal."
   },
   "admin": {
     "badge": "Administrador",
@@ -352,7 +358,7 @@
       "address": "Enderezo", "city": "Cidade", "description": "Descrición",
       "totalSlots": "Prazas Totais", "freeSlots": "Prazas Libres", "status": "Estado",
       "available": "Dispoñible", "complete": "Completa", "noHome": "Sen vivenda",
-      "registerHome": "Dar de Alta Vivenda", "editHome": "Editar Vivenda", "descriptionOptional": "Descrición (opcional)"
+      "registerHome": "Dar de Alta Vivenda", "editHome": "Editar Vivenda", "descriptionOptional": "Descrición"
     },
     "criteria": {
       "add": "Engadir Criterio", "criteriaLabel": "Criterio", "preferredValue": "Valor Preferido",
@@ -550,5 +556,17 @@
       "successTitle": "Mensaxe enviada!",
       "successText": "Grazas por escribirnos, responderémosche canto antes."
     }
+  },
+  "errors": {
+    "generic": "Ocorreu un erro. Téntao de novo.",
+    "campoObligatorio": "Falta cubrir un campo obrigatorio.",
+    "adminNoModificable": "A conta de administrador non se pode modificar.",
+    "solicitudNoEncontrada": "Non se atopou a solicitude.",
+    "solicitudYaResuelta": "Esta solicitude xa foi resolta.",
+    "upsertRespuesta": "Non se puido gardar a resposta.",
+    "sinCriteriosComunes": "Non hai criterios comúns para calcular a compatibilidade.",
+    "rankViviendas": "Non se puido calcular o ranking de vivendas.",
+    "registroNoEncontrado": "Non se atopou o rexistro.",
+    "registroYaActivo": "O rexistro xa está activo."
   }
 }
