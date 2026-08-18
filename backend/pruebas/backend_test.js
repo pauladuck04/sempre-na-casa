@@ -1,12 +1,12 @@
 class Backend_Test {
 
     static abrirVentanaResultados() {
-        const anchoVentana = Math.round(screen.availWidth * 0.9);
-        const altoVentana  = Math.round(screen.availHeight * 0.9);
+        const anchoVentana = screen.availWidth;
+        const altoVentana  = screen.availHeight;
         const newWindow = window.open("", "Nueva Ventana Backend", `width=${anchoVentana},height=${altoVentana}`);
         if (!newWindow) return null;
-        newWindow.resizeTo(anchoVentana, altoVentana);
         newWindow.moveTo(0, 0);
+        newWindow.resizeTo(anchoVentana, altoVentana);
         newWindow.focus();
         return newWindow;
     }
@@ -83,30 +83,32 @@ class Backend_Test {
                     html, body { height: 100% !important; margin: 0 !important; padding: 0 !important; }
                     body { display: flex !important; flex-direction: column !important; overflow: hidden !important; }
 
-                    /* Contenedor principal: activa scroll vertical y horizontal si no caben las columnas */
+                    /* Contenedor principal: activa scroll vertical si no caben las filas */
                     #resultados-wrap {
                         flex: 1 1 0 !important;
                         min-height: 0 !important;
                         overflow-y: auto !important;
-                        overflow-x: auto !important; /* Permite scroll horizontal solo si la pantalla es más estrecha que la suma de los títulos */
-                        padding: 0 1rem 1rem 1rem !important;
+                        overflow-x: hidden !important; /* La tabla nunca debe ser más ancha que la ventana */
+                        padding: 0 !important;
                     }
 
                     .table-responsive {
                         overflow: visible !important;
                         height: auto !important;
+                        max-width: 100% !important;
                     }
 
                     table {
-                        table-layout: auto !important; /* Permite que el ancho se adapte dinámicamente al contenido */
+                        table-layout: fixed !important; /* Ancho de columnas fijado por el colgroup: la tabla no puede desbordar la ventana */
                         width: 100% !important;
-                        font-size: 0.75rem !important;
+                        max-width: 100% !important;
+                        font-size: 0.65rem !important;
                         border-collapse: separate !important;
                         border-spacing: 0 !important;
-                        margin-top: 0 !important;
+                        margin: 0 !important;
                     }
 
-                    /* 1. ENCABEZADOS: Nunca se dividen y dictan el ancho mínimo de la columna */
+                    /* 1. ENCABEZADOS: se ajustan al ancho de columna, partiendo el texto si hace falta */
                     thead th {
                         position: sticky !important;
                         top: 0 !important;
@@ -117,9 +119,12 @@ class Backend_Test {
                         background-clip: padding-box !important;
 
                         /* REGLAS CLAVE PARA TÍTULOS */
-                        white-space: nowrap !important; /* EL TÍTULO NUNCA SE ROMPE EN VARIAS LÍNEAS */
+                        white-space: normal !important; /* El título se parte si no cabe en la columna */
+                        word-break: break-word !important;
+                        overflow-wrap: anywhere !important;
                         padding: 0.6rem 0.8rem !important;
                         text-align: left !important;
+                        font-size: 0.75rem !important; /* Independiente del tamaño de letra del cuerpo */
                     }
 
                     /* 2. CELDAS DE DATOS: Se adaptan al ancho fijado por el título y parten el texto si es largo */
@@ -127,8 +132,10 @@ class Backend_Test {
                         white-space: normal !important;      /* Permite saltos de línea */
                         word-break: break-word !important;   /* Corta palabras largas o rutas */
                         overflow-wrap: anywhere !important;
-                        padding: 0.5rem 0.8rem !important;
+                        padding: 0.35rem 0.6rem !important;
                         vertical-align: top !important;
+                        font-size: 0.65rem !important;
+                        line-height: 1.3 !important;
                     }
 
                     tbody tr, tbody td {

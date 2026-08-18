@@ -89,8 +89,8 @@ export async function cargarPerfilPorMail(opciones = {}) {
                 email: ures.mail,
                 dni: ures.dni,
                 telefono: ures.telefono,
-                ciudad: ures.ciudad || '',
-                id_rol: ures.id_rol
+                id_rol: ures.id_rol,
+                fechaRegistro: ures.fecha_alta_usuario
             };
             pintarPerfil(u.nombre, u.email, u.dni, u.telefono, u.fechaRegistro, colorAvatar(u));
             onDatos?.(u);

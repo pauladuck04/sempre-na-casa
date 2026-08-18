@@ -1,15 +1,12 @@
-// Runner de pruebas de caja negra por ESCENARIO de negocio (ver escenarios_pruebas.js).
-// Mismo mecanismo de ventana/panel de resultados que Backend_Test (backend_test.js), pero las
-// filas que pinta son pasos de un flujo, no casos aislados de un campo.
 class Escenario_Test {
 
     static abrirVentanaResultados() {
-        const anchoVentana = Math.round(screen.availWidth * 0.9);
-        const altoVentana  = Math.round(screen.availHeight * 0.9);
+        const anchoVentana = screen.availWidth;
+        const altoVentana  = screen.availHeight;
         const newWindow = window.open("", "Nueva Ventana Escenario", `width=${anchoVentana},height=${altoVentana}`);
         if (!newWindow) return null;
-        newWindow.resizeTo(anchoVentana, altoVentana);
         newWindow.moveTo(0, 0);
+        newWindow.resizeTo(anchoVentana, altoVentana);
         newWindow.focus();
         return newWindow;
     }
@@ -60,23 +57,25 @@ class Escenario_Test {
                     body { display: flex !important; flex-direction: column !important; overflow: hidden !important; }
                     #resultados-wrap {
                         flex: 1 1 0 !important; min-height: 0 !important;
-                        overflow-y: auto !important; overflow-x: auto !important;
-                        padding: 0 1rem 1rem 1rem !important;
+                        overflow-y: auto !important; overflow-x: hidden !important;
+                        padding: 0 !important;
                     }
-                    .table-responsive { overflow: visible !important; height: auto !important; }
+                    .table-responsive { overflow: visible !important; height: auto !important; max-width: 100% !important; }
                     table {
-                        table-layout: auto !important; width: 100% !important; font-size: 0.8rem !important;
-                        border-collapse: separate !important; border-spacing: 0 !important; margin-top: 0 !important;
+                        table-layout: fixed !important; width: 100% !important; max-width: 100% !important; font-size: 0.65rem !important;
+                        border-collapse: separate !important; border-spacing: 0 !important; margin: 0 !important;
                     }
                     thead th {
                         position: sticky !important; top: 0 !important; z-index: 9999 !important;
                         background-color: #e9ecef !important; color: #000 !important;
-                        border-bottom: 2px solid #dee2e6 !important; white-space: nowrap !important;
-                        padding: 0.6rem 0.8rem !important; text-align: left !important;
+                        border-bottom: 2px solid #dee2e6 !important; white-space: normal !important;
+                        word-break: break-word !important; overflow-wrap: anywhere !important;
+                        padding: 0.6rem 0.8rem !important; text-align: left !important; font-size: 0.75rem !important;
                     }
                     tbody td {
                         white-space: normal !important; word-break: break-word !important;
-                        overflow-wrap: anywhere !important; padding: 0.5rem 0.8rem !important; vertical-align: top !important;
+                        overflow-wrap: anywhere !important; padding: 0.35rem 0.6rem !important; vertical-align: top !important;
+                        font-size: 0.65rem !important; line-height: 1.3 !important;
                     }
                     tbody tr, tbody td { position: static !important; }
                 </style>

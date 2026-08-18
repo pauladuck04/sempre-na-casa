@@ -78,7 +78,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             usuarioActual.email = u.email;
             usuarioActual.dni = u.dni;
             usuarioActual.telefono = u.telefono;
-            usuarioActual.ciudad = u.ciudad;
             usuarioActual.fechaAlta = u.fechaRegistro;
         }
     });

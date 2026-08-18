@@ -1,34 +1,9 @@
-// Fixtures para pruebas/backend/backend_pruebas.js: datos reales contra los que se llama al
-// backend. Diseño deliberadamente simple -- una única preparación por ejecución, sin
-// "contextos" por entidad ni funciones async anidadas:
-//
-//  1. prepararFixtures() crea, UNA vez por ejecución (da igual qué entidad se vaya a probar),
-//     una fila propia de cada entidad base: un usuario, una vivienda de ese usuario, un
-//     criterio y una opción de ese criterio. Sale un poco "de más" si solo hace falta una,
-//     pero son 4-5 llamadas HTTP triviales a cambio de no tener que calcular qué depende de
-//     qué entidad por entidad.
-//  2. payloadValido(entidad, fx) arma el payload ADD/EDIT completo y válido de esa entidad a
-//     partir de esas filas (fx). Cada fila propia sirve a la vez de "dato para EDIT/DELETE de
-//     su propia entidad" y de "FK para quien la necesite" (p.ej. el usuario creado aquí es a
-//     la vez el que se edita/borra en las pruebas de "usuario" Y el id_anfitrion de la
-//     vivienda) -- así no hace falta una fixture distinta para editar y otra para borrar.
-//  3. idPrincipalPayload(entidad, fx) da la clave (o claves, en las tablas de relación) que
-//     identifica esa fila propia, para los payloads de EDIT/DELETE.
-//
-// Los valores que tienen que ser únicos (dni, mail, teléfono) se generan con sufijo(), que
-// combina el reloj con un contador que solo crece durante toda la ejecución -- así nunca dos
-// llamadas de la misma tanda de pruebas usan el mismo valor, sin tener que pasarle a cada
-// llamada en qué fila de la lista de casos está.
-
 let _sufijoContador = 0;
 function sufijo(digitos) {
     _sufijoContador++;
     return String(Date.now() + _sufijoContador).slice(-digitos).padStart(digitos, '0');
 }
 
-// Fecha 'YYYY-MM-DD' relativa a hoy (positivo = futuro, negativo = pasado). Necesario porque
-// usuario_vivienda_SERVICE::ADD() rechaza fecha_inicio en el pasado -- una fecha fija como
-// '2026-01-01' es "futura" solo hasta que el reloj real la alcanza.
 function fechaOffset(diasDesdeHoy) {
     const d = new Date();
     d.setDate(d.getDate() + diasDesdeHoy);
@@ -131,15 +106,6 @@ function idPrincipalPayload(entidad, fx) {
     }
 }
 
-/**
- * Ejecuta la llamada real al backend para un caso de prueba y clasifica el resultado:
- *  - 'OK': backend y expectativa están de acuerdo (los dos aceptan, o los dos rechazan con el
- *    mismo motivo esperado).
- *  - 'DIVERGENCIA': se esperaba un error y el backend acepta igualmente.
- *  - 'BACKEND_MAS_ESTRICTO': se esperaba éxito y el backend rechaza -- normalmente apunta a un
- *    problema real (fixture mal construido, regla de negocio no esperada...).
- *  - 'SIN_CONEXION': la llamada ha fallado (backend caído, etc.).
- */
 async function compararConBackend(nombreEntidad, accion, fixtures, overrides, respuestaEsperadaLocal) {
     if (accion !== 'ADD' && accion !== 'EDIT' && accion !== 'SEARCH' && accion !== 'DELETE') {
         return { backend_status: 'N/A', backend_code: '' };
