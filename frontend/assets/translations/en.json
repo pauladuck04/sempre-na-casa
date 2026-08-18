@@ -570,6 +570,9 @@
       "statusTrial": "Trial Period",
       "statusFinished": "Finished",
       "pending": "Pending"
+    },
+    "modal":{
+      "editPreference": "Edit preference"
     }
   },
   "public": {

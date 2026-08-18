@@ -64,18 +64,12 @@ export function renderizarConvivencia() {
                 <p class="fw-semibold mb-3">${c.direccion}</p>
                 <h6 class="text-muted small mb-1">${t('huesped.convivencia.city')}</h6>
                 <p class="fw-semibold mb-3">${c.ciudad}</p>
-                <div class="row g-3">
-                    <div class="col-12 col-md-6">
-                        <h6 class="text-muted small mb-1">${t('huesped.convivencia.hostEmail')}</h6>
-                        <p class="fw-semibold mb-0">${c.emailAnfitrion}</p>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <h6 class="text-muted small mb-1">${t('huesped.convivencia.hostPhone')}</h6>
-                        <p class="fw-semibold mb-0">${c.telefonoAnfitrion}</p>
-                    </div>
-                </div>
+                <h6 class="text-muted small mb-1">${t('huesped.convivencia.hostEmail')}</h6>
+                <p class="fw-semibold mb-3">${c.emailAnfitrion}</p>
+                <h6 class="text-muted small mb-1">${t('huesped.convivencia.hostPhone')}</h6>
+                <p class="fw-semibold mb-0">${c.telefonoAnfitrion}</p>
             </div>
-            <div class="col-12 col-md-5">
+            <div class="col-12 col-md-5 mt-4 mt-md-0">
                 <div class="card border-0 bg-light rounded-3 p-3 mb-3">
                     <p class="text-muted small mb-1">${t('huesped.convivencia.status')}</p>
                     <div>${badgeHtml}</div>

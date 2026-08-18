@@ -555,6 +555,9 @@
       "statusTrial": "Periodo de Prueba",
       "statusFinished": "Finalizada",
       "pending": "Pendiente"
+    },
+    "modal":{
+      "editPreference": "Editar preferencia"
     }
   },
   "public": {
