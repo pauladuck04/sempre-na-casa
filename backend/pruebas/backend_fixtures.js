@@ -21,10 +21,12 @@ async function crear(entidad, payload) {
     return res.ok ? res.resource : null;
 }
 
-/** Prepara las filas base que necesita cualquier entidad, una sola vez por ejecución. */
+/** Prepara las filas base que necesita cualquier entidad, una sola vez por ejecución.
+ * Todas las filas son fixtures QA desechables creadas aquí mismo: nunca se reutiliza una fila
+ * ya existente (p.ej. vía SEARCH), porque los tests de EDIT/DELETE la modificarían/borrarían
+ * de verdad, con el riesgo de corromper datos reales de la base de datos conectada. */
 async function prepararFixtures() {
-    const rolExistente = await primeraFila('rol');
-    const idRol = rolExistente ? rolExistente.id_rol : await crear('rol', { nombre_rol: 'QA Rol Fixture' });
+    const idRol = await crear('rol', { nombre_rol: 'QA Rol Fixture' });
 
     const idUsuario = await crear('usuario', {
         dni: sufijo(8) + 'A',

@@ -42,6 +42,7 @@ let vivienda_backend_tests = [
     { accion: 'SEARCH', descripcion: 'SEARCH sin filtros devuelve listado', overrides: {}, esperado: true },
 
     { accion: 'EDIT', descripcion: 'EDIT de una vivienda existente', overrides: {}, esperado: true },
+    { accion: 'EDIT', descripcion: 'EDIT sin id_vivienda', overrides: { id_vivienda: '' }, esperado: 'id_vivienda_es_nulo_KO' },
     { accion: 'EDIT', descripcion: 'EDIT sin descripcion', overrides: { descripcion: '' }, esperado: 'descripcion_es_nulo_KO' },
     { accion: 'EDIT', descripcion: 'EDIT sin plazas_libres', overrides: { plazas_libres: '' }, esperado: 'plazas_libres_es_nulo_KO' },
     { accion: 'EDIT', descripcion: 'EDIT sin plazas_totales', overrides: { plazas_totales: '' }, esperado: 'plazas_totales_es_nulo_KO' },
@@ -84,8 +85,9 @@ let rol_backend_tests = [
     { accion: 'EDIT', descripcion: 'EDIT sin nombre_rol', overrides: { nombre_rol: '' }, esperado: 'nombre_rol_es_nulo_KO' },
 
     // DELETE de rol también desactiva (soft delete) a los usuarios con ese id_rol (ver
-    // rol_SERVICE::DELETE), pero el fixture de DELETE es un rol nuevo sin usuarios asociados,
-    // así que no tiene ese efecto secundario aquí.
+    // rol_SERVICE::DELETE). El fixture de rol se crea siempre desde cero en prepararFixtures()
+    // (nunca se reutiliza uno existente), así que el único usuario afectado es el propio
+    // usuario QA de este fixture, no datos reales.
     { accion: 'DELETE', descripcion: 'DELETE de un rol existente (baja lógica)', overrides: {}, esperado: true },
     { accion: 'DELETE', descripcion: 'DELETE sin id_rol', overrides: { id_rol: '' }, esperado: 'id_rol_es_nulo_KO' }
 ];

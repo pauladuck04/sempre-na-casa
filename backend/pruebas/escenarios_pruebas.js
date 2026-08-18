@@ -1,13 +1,3 @@
-// Pruebas de caja negra por ESCENARIO de negocio (no por campo/entidad como
-// backend_pruebas.js): cada función es una secuencia de llamadas reales al backend
-// (controlador=auth / controlador=matching) con estado compartido entre pasos -- se trata el
-// backend como una caja cerrada, comprobando el contrato observable (código de respuesta,
-// datos devueltos), nunca su código interno.
-//
-// Usa los helpers ya definidos en backend_fixtures.js: apiPost (frontend/js/api.js), sufijo(),
-// primeraFila(), crear(). Cada escenario crea sus propios datos (usuarios/vivienda/criterio de
-// prueba, marcados "QA...") para no depender de lo que exista ya en la base de datos.
-
 function registrarPaso(pasos, paso, esperado, res, cumple) {
     pasos.push({
         paso,

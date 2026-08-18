@@ -22,7 +22,7 @@ class vivienda_SERVICE extends appServiceBase {
 
         $this->notnull = array(
             'ADD'    => array('descripcion', 'plazas_libres', 'plazas_totales', 'id_anfitrion', 'direccion', 'ciudad'),
-            'EDIT'   => array('descripcion', 'plazas_libres', 'plazas_totales', 'id_anfitrion', 'direccion', 'ciudad'),
+            'EDIT'   => array('id_vivienda', 'descripcion', 'plazas_libres', 'plazas_totales', 'id_anfitrion', 'direccion', 'ciudad'),
             'DELETE'    => array('id_vivienda'),
             'REACTIVAR' => array('id_vivienda'),
         );
