@@ -2,15 +2,20 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <script src="../../frontend/js/cookies.js?v=3"></script>
-    <script src="../../frontend/js/route-guard.js?v=3"></script>
-    <script>protegerRuta(['admin'], '../../frontend/');</script>
+    <script>
+        window.__FRONTEND_BASE__ = (window.location.hostname === 'backsemprenacasa.atwebpages.com')
+            ? 'http://semprenacasa.atwebpages.com/'
+            : '../../frontend/';
+        document.write('<script src="' + window.__FRONTEND_BASE__ + 'js/cookies.js?v=3"><\/script>');
+        document.write('<script src="' + window.__FRONTEND_BASE__ + 'js/route-guard.js?v=3"><\/script>');
+    </script>
+    <script>protegerRuta(['admin'], window.__FRONTEND_BASE__);</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Backend Runner - Sempre na Casa</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="../../frontend/css/main.css?v=3">
+    <script>document.write('<link rel="stylesheet" href="' + window.__FRONTEND_BASE__ + 'css/main.css?v=3">');</script>
 
     <style>
         #IU_Test_result_nofile { display: none; }
@@ -33,8 +38,9 @@
         <div id="backend-test-card" class="login-card" style="max-width: 640px;">
 
             <div class="text-center mb-2">
-                <img src="../../frontend/assets/images/logo.JPG" alt="Logo" class="rounded-circle mb-2 logo-shadow"
+                <img id="qa-logo" alt="Logo" class="rounded-circle mb-2 logo-shadow"
                      onerror="this.src='https://ui-avatars.com/api/?name=QA&background=7A99DD&color=fff'">
+                <script>document.getElementById('qa-logo').src = window.__FRONTEND_BASE__ + 'assets/images/logo.JPG';</script>
                 <h2 class="fw-bold mb-1" style="font-size: 1.4rem;">Backend Test Runner</h2>
                 <p class="text-muted small mb-0">Ejecuta los mismos casos de prueba contra el backend real (apiPost)</p>
             </div>
@@ -102,16 +108,16 @@
 
     <div id="resultados_panel" class="container-fluid px-4 pb-5" style="display:none;"></div>
 
-    <script src="../../frontend/js/api.js?v=3"></script>
+    <script>document.write('<script src="' + window.__FRONTEND_BASE__ + 'js/api.js?v=3"><\/script>');</script>
 
-    <script src="../../backend/pruebas/common/DOM_class.js?v=3"></script>
-    <script src="../../backend/pruebas/backend_fixtures.js?v=3"></script>
+    <script src="common/DOM_class.js?v=3"></script>
+    <script src="backend_fixtures.js?v=3"></script>
 
-    <script src="../../backend/pruebas/backend_pruebas.js"></script>
-    <script src="../../backend/pruebas/backend_test.js?v=3"></script>
+    <script src="backend_pruebas.js"></script>
+    <script src="backend_test.js?v=3"></script>
 
-    <script src="../../backend/pruebas/escenarios_pruebas.js?v=3"></script>
-    <script src="../../backend/pruebas/escenario_test.js?v=3"></script>
+    <script src="escenarios_pruebas.js?v=3"></script>
+    <script src="escenario_test.js?v=3"></script>
 
     <script>
         async function ejecutarTestsBackend() {

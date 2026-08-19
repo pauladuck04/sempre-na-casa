@@ -132,9 +132,13 @@ const sectionDescriptions = {
     'backend-test':  () => t('admin.sections.backendTest.description')
 };
 
+const PROD_FRONTEND_HOST = 'semprenacasa.atwebpages.com';
+
 function cargarIframeSiHaceFalta(idIframe) {
     const iframe = document.getElementById(idIframe);
-    if (iframe && !iframe.src) iframe.src = iframe.dataset.src;
+    if (!iframe || iframe.src) return;
+    const esProduccion = window.location.hostname === PROD_FRONTEND_HOST;
+    iframe.src = (esProduccion && iframe.dataset.srcProd) ? iframe.dataset.srcProd : iframe.dataset.src;
 }
 
 function getActiveCriteriosSubTab() {

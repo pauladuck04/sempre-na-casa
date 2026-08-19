@@ -288,7 +288,7 @@ function cargarResumenGeneral() {
     }
 }
 
-function renderizarCandidatos(containerId = 'grid-candidatos') {
+function renderizarCandidatos(containerId = 'grid-candidatos', permitirDetalle = containerId !== 'grid-candidatos') {
     const candidatos = [...convivencia.candidatosMemoria].sort((a, b) => b.compatibilidad - a.compatibilidad);
 
     const totalEl = document.getElementById('total-candidatos');
@@ -307,7 +307,7 @@ function renderizarCandidatos(containerId = 'grid-candidatos') {
         const slotsKey = cand.plazasLibres !== 1 ? t('huesped.candidates.freeSlotsPlural') : t('huesped.candidates.freeSlotsSingular');
         return `
             <div class="col-12 col-md-6 col-xl-3">
-                <div class="card border-0 shadow-sm rounded-4 h-100 p-3 candidato-card" data-id="${cand.id}" style="cursor:pointer;">
+                <div class="card border-0 shadow-sm rounded-4 h-100 p-3 candidato-card" data-id="${cand.id}" ${permitirDetalle ? 'style="cursor:pointer;"' : ''}>
                     <div class="d-flex align-items-center gap-3 mb-3">
                         <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
                              style="width:44px;height:44px;background-color:#EBF0FF;color:var(--color-primario);font-weight:700;font-size:.9rem;">${inis}</div>
@@ -323,17 +323,20 @@ function renderizarCandidatos(containerId = 'grid-candidatos') {
                             <small class="text-muted">${t('huesped.candidates.compatibility')}</small>
                             <small class="fw-bold text-${pctColor}">${cand.compatibilidad}%</small>
                         </div>
-                        <div class="progress mb-3" style="height:6px;">
+                        <div class="progress ${permitirDetalle ? 'mb-3' : 'mb-0'}" style="height:6px;">
                             <div class="progress-bar bg-${pctColor}" style="width:${cand.compatibilidad}%;"></div>
                         </div>
+                        ${permitirDetalle ? `
                         <button type="button" class="btn btn-sm btn-primary rounded-pill w-100 btn-ver-detalle-vivienda" data-id="${cand.id}">
                             <i class="bi bi-eye me-1"></i>${t('huesped.candidates.viewDetail') || 'Ver detalle'}
-                        </button>
+                        </button>` : ''}
                     </div>
                 </div>
             </div>
         `;
     }).join('');
+
+    if (!permitirDetalle) return;
 
     grid.querySelectorAll('.candidato-card').forEach(card => {
         card.addEventListener('dblclick', () => mostrarDetalleVivienda(card.getAttribute('data-id')));

@@ -88,21 +88,24 @@
         window._i18nListo = import('../js/i18n.js?v=3').then(i18nMod => i18nMod.initI18n());
     </script>
 
-    <!-- 2. Validaciones y DOM -->
-    <script src="../../backend/pruebas/common/validaciones.js?v=3"></script>
-    <script src="../../backend/pruebas/common/DOM_class.js?v=3"></script>
+    <script>
+        window.__BACKEND_BASE__ = (window.location.hostname === 'semprenacasa.atwebpages.com')
+            ? 'http://backsemprenacasa.atwebpages.com/pruebas/'
+            : '../../backend/pruebas/';
+
+        // 2. Validaciones y DOM
+        document.write('<script src="' + window.__BACKEND_BASE__ + 'common/validaciones.js?v=3"><\/script>');
+        document.write('<script src="' + window.__BACKEND_BASE__ + 'common/DOM_class.js?v=3"><\/script>');
+    </script>
 
     <!-- 3. Clase base -->
     <script src="Entidad_Abstracta.js?v=3"></script>
 
     <!-- 4. Clases de entidad -->
-    <script src="../../backend/pruebas/entidades/usuario.js?v=3"></script>
-    <script src="../../backend/pruebas/entidades/vivienda.js?v=3"></script>
-    <script src="../../backend/pruebas/entidades/criterio.js?v=3"></script>
-    <script src="../../backend/pruebas/entidades/opcion.js?v=3"></script>
-    <script src="../../backend/pruebas/entidades/usuario_vivienda.js?v=3"></script>
-    <script src="../../backend/pruebas/entidades/usuario_criterio_opcion.js?v=3"></script>
-    <script src="../../backend/pruebas/entidades/vivienda_criterio_opcion.js?v=3"></script>
+    <script>
+        ['usuario', 'vivienda', 'criterio', 'opcion', 'usuario_vivienda', 'usuario_criterio_opcion', 'vivienda_criterio_opcion']
+            .forEach(entidad => document.write('<script src="' + window.__BACKEND_BASE__ + 'entidades/' + entidad + '.js?v=3"><\/script>'));
+    </script>
 
     <!-- 5. Datos de prueba y runner -->
     <script src="pruebas.js"></script>
