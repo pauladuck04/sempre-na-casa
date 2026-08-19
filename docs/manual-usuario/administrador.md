@@ -77,29 +77,24 @@ Esta sección tiene dos pestañas:
 
 ### Criterios
 
-El catálogo de las 10 preguntas de la encuesta de convivencia. Cada criterio
-tiene:
-
-- Un **peso / importancia** del 1 (baja) al 5 (alta), que pondera cuánto
-  influye esa pregunta en el cálculo de compatibilidad.
-- Un marcador opcional **restrictivo**: si se activa, ese criterio puede
-  descartar una convivencia por completo (no solo restar puntos de
-  compatibilidad) cuando la respuesta del huésped y de la vivienda no
-  encajan. En la tabla, los criterios restrictivos llevan una insignia roja
-  **R**.
+El catálogo de las 10 preguntas de la encuesta de convivencia. Aquí solo se
+gestiona el **nombre** de cada criterio (crear, editar, dar de baja).
 
 ### Opciones
 
 Las respuestas posibles de cada criterio (por ejemplo, para "Nivel de
 ruido": Silencio absoluto / Ruido moderado / No me importa), cada una con su
-**valor** asociado. Una opción puede marcarse como **excluyente** — esto solo
-tiene efecto si su criterio es restrictivo, y significa que elegir
-justamente esa opción descarta el match si no coincide con la de la otra
-parte. En la tabla, las opciones excluyentes llevan una insignia roja **X**.
+**valor** asociado (la posición de esa respuesta en la escala del criterio).
 
 > Cambiar el catálogo de criterios/opciones afecta a **todas** las viviendas
 > y huéspedes de la plataforma (es el cuestionario que responden al
 > registrarse), no a una convivencia en concreto.
+>
+> La **importancia** de cada criterio y si una respuesta es **imprescindible**
+> o **innegociable** ya no las fija el administrador aquí: cada huésped y cada
+> anfitrión las decide para sí mismo al responder la encuesta (ver
+> [manual del huésped](./huesped.md)), y el cálculo de compatibilidad combina
+> lo que haya marcado cada parte.
 
 ## 6. Solicitudes
 

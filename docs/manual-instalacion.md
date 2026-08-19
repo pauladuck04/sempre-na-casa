@@ -186,7 +186,7 @@ y es responsabilidad de quien lo administre.
 |---|---|
 | La app se queda cargando / errores `Failed to fetch` en la consola | El backend no está levantado, o `BASE_URL` en `frontend/js/api.js` no apunta a donde realmente corre. |
 | `curl` al backend devuelve error de conexión a MySQL | Credenciales incorrectas en `backend/Comun/config.php`, o el servidor MySQL no permite conexiones desde donde corre el backend (firewall/whitelist de IP). |
-| Login o registro fallan con "criterio no encontrado" o similar | La base de datos del servidor no tiene cargadas las tablas `criterio`/`opcion` (ver `backend/bd/migrations/seed_criterio_opcion.sql` como referencia de qué debería contener). |
-| Las preferencias de vivienda no muestran peso/restrictivo, o las solicitudes de vivienda/rol no aparecen | La base de datos del servidor no tiene aplicadas todas las migraciones de `backend/bd/migrations/`; habría que pedir que se pongan al día ahí. |
+| Login o registro fallan con "criterio no encontrado" o similar | La base de datos del servidor no tiene cargadas las tablas `criterio`/`opcion`. |
+| La encuesta no deja marcar peso/imprescindible/innegociable, o las solicitudes de vivienda/rol no aparecen | La base de datos del servidor no tiene aplicadas todas las migraciones de `backend/bd/migrations/`; habría que pedir que se pongan al día ahí. |
 | La página se ve en blanco o con errores de `fetch` de traducciones/parciales | Se abrió el `.html` con doble clic (`file://`) en vez de servirlo por `http://`. |
 | Puerto ocupado al hacer `php -S localhost:8081` | Otro proceso ya usa el 8081 — arranca con otro puerto (`php -S localhost:8091`) y actualiza `API_URL` en `frontend/js/api.js` a juego. |

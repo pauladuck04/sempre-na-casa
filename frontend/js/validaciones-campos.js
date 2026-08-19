@@ -15,8 +15,7 @@ export const REGLAS_CAMPOS = {
         plazas_libres:  { regex: '^[0-9]+$', regexBusqueda: '^[0-9]+$' }
     },
     criterio: {
-        nombre_criterio: { min: 3, max: 50, regex: '^[A-Za-zÀ-ÿ ]+$', regexBusqueda: null },
-        peso_criterio:   { regex: '^[0-9]+$', regexBusqueda: '^[0-9]+$' }
+        nombre_criterio: { min: 3, max: 50, regex: '^[A-Za-zÀ-ÿ ]+$', regexBusqueda: null }
     },
     opcion: {
         nombre_opcion: { min: 2, max: 100, regex: null,        regexBusqueda: null },
@@ -30,12 +29,14 @@ export const REGLAS_CAMPOS = {
     usuario_criterio_opcion: {
         id_usuario:  { regex: '^[0-9]+$', regexBusqueda: '^[0-9]+$' },
         id_criterio: { regex: '^[0-9]+$', regexBusqueda: '^[0-9]+$' },
-        id_opcion:   { regex: '^[0-9]+$', regexBusqueda: '^[0-9]+$' }
+        id_opcion:   { regex: '^[0-9]+$', regexBusqueda: '^[0-9]+$' },
+        peso:        { regex: '^[1-5]$', regexBusqueda: '^[1-5]$' }
     },
     vivienda_criterio_opcion: {
         id_vivienda: { regex: '^[0-9]+$', regexBusqueda: '^[0-9]+$' },
         id_criterio: { regex: '^[0-9]+$', regexBusqueda: '^[0-9]+$' },
-        id_opcion:   { regex: '^[0-9]+$', regexBusqueda: '^[0-9]+$' }
+        id_opcion:   { regex: '^[0-9]+$', regexBusqueda: '^[0-9]+$' },
+        peso:        { regex: '^[1-5]$', regexBusqueda: '^[1-5]$' }
     }
 };
 

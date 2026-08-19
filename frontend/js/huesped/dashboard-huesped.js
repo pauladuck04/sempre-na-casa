@@ -84,6 +84,14 @@ document.addEventListener('DOMContentLoaded', async function() {
             `<option value="${o.id_opcion}" ${respActual && String(respActual.id_opcion) === String(o.id_opcion) ? 'selected' : ''}>${o.nombre_opcion}</option>`
         ).join('');
 
+        const peso        = respActual?.peso ?? 3;
+        const restrictivo = respActual?.restrictivo == 1;
+        const idOpcionExcluyente = respActual?.id_opcion_excluyente ?? '';
+
+        const optsExcluyenteHtml = opciones.map(o =>
+            `<option value="${o.id_opcion}" ${String(idOpcionExcluyente) === String(o.id_opcion) ? 'selected' : ''}>${o.nombre_opcion}</option>`
+        ).join('');
+
         document.getElementById('modalTitle').textContent    = t('huesped.modal.editPreference') || 'Editar respuesta';
         document.getElementById('modalFormContent').innerHTML = `
             <p class="fw-semibold mb-3">${respActual?.nombre_criterio || ''}</p>
@@ -94,8 +102,34 @@ document.addEventListener('DOMContentLoaded', async function() {
                     ${optsHtml}
                 </select>
             </div>
+            <div class="mb-3">
+                <label class="form-label fw-bold">${t('survey.weightLabel') || 'Importancia para mí'}</label>
+                <select name="peso" class="form-select">
+                    <option value="1" ${peso == 1 ? 'selected' : ''}>1 - ${t('survey.weightLow') || 'Baja'}</option>
+                    <option value="2" ${peso == 2 ? 'selected' : ''}>2</option>
+                    <option value="3" ${peso == 3 ? 'selected' : ''}>3 - ${t('survey.weightMedium') || 'Media'}</option>
+                    <option value="4" ${peso == 4 ? 'selected' : ''}>4</option>
+                    <option value="5" ${peso == 5 ? 'selected' : ''}>5 - ${t('survey.weightHigh') || 'Alta'}</option>
+                </select>
+            </div>
+            <div class="form-check mb-1">
+                <input type="checkbox" class="form-check-input" name="restrictivo" id="chk-pref-restrictivo" value="1" ${restrictivo ? 'checked' : ''}>
+                <label class="form-check-label" for="chk-pref-restrictivo">${t('survey.restrictiveLabel') || 'Es imprescindible para mí'}</label>
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-bold">${t('survey.exclusionOptionLabel') || 'Opción que no acepto'}</label>
+                <select name="id_opcion_excluyente" class="form-select" id="sel-pref-excluyente" ${restrictivo ? '' : 'disabled'}>
+                    <option value="">${t('survey.exclusionOptionNone') || 'Ninguna'}</option>
+                    ${optsExcluyenteHtml}
+                </select>
+            </div>
             <input type="hidden" name="id_criterio" value="${criterioId}">
         `;
+        document.getElementById('chk-pref-restrictivo').addEventListener('change', function() {
+            const selExcluyente = document.getElementById('sel-pref-excluyente');
+            selExcluyente.disabled = !this.checked;
+            if (!this.checked) selExcluyente.value = '';
+        });
         ocultarErrorFormulario(document.getElementById('formGenerico-error'));
         bootstrap.Modal.getOrCreateInstance(document.getElementById('modalGenerico')).show();
     });
@@ -118,9 +152,12 @@ document.addEventListener('DOMContentLoaded', async function() {
             const idUsuario = usuarioActual.id || getCookie('user_id');
             if (!idUsuario) { mostrarErrorFormulario(errorEl, 'Error: usuario no identificado.'); return; }
             const res = await apiPost('usuario_criterio_opcion', 'UPSERT_RESPUESTA', {
-                id_usuario:  idUsuario,
-                id_criterio: data.id_criterio,
-                id_opcion:   data.id_opcion
+                id_usuario:           idUsuario,
+                id_criterio:          data.id_criterio,
+                id_opcion:            data.id_opcion,
+                peso:                 data.peso,
+                restrictivo:          data.restrictivo ? 1 : 0,
+                id_opcion_excluyente: data.id_opcion_excluyente || ''
             });
             if (!res.ok) { mostrarErrorFormulario(errorEl, 'Error al guardar la respuesta.'); return; }
             bootstrap.Modal.getInstance(document.getElementById('modalGenerico')).hide();
@@ -416,11 +453,11 @@ async function mostrarDetalleVivienda(idVivienda) {
 }
 
 function renderizarResumenConvivencia(c) {
+    // getConvivenciaByUsuario() solo devuelve fila cuando hay una convivencia con
+    // activo_usuario_vivienda = 1, y siempre marca estado 'activo' en ese caso (ver
+    // usuario_vivienda_SERVICE.php) — no hay otros valores posibles aquí.
     const textos = {
-        activo:     t('huesped.summary_status.statusActive'),
-        entrevista: t('huesped.summary_status.statusInterview'),
-        prueba:     t('huesped.summary_status.statusTrial'),
-        inactivo:   t('huesped.summary_status.statusFinished')
+        activo: t('huesped.summary_status.statusActive')
     };
     const estadoEl = document.getElementById('estado-solicitud');
     const compatEl = document.getElementById('compatibilidad-score');
@@ -430,9 +467,7 @@ function renderizarResumenConvivencia(c) {
     if (fechaEl)  fechaEl.textContent  = c.fechaInicio || t('huesped.summary_status.pending');
 
     const badges = {
-        activo:     `<span class="badge rounded-pill px-3 py-2" style="background-color:#D1E7DD;color:#0F5132;">${t('huesped.convivencia.statusActive')}</span>`,
-        entrevista: `<span class="badge rounded-pill px-3 py-2" style="background-color:#FFF3CD;color:#856404;">${t('huesped.convivencia.statusInterview')}</span>`,
-        prueba:     `<span class="badge rounded-pill px-3 py-2" style="background-color:#CFE2FF;color:#084298;">${t('huesped.convivencia.statusTrial')}</span>`
+        activo: `<span class="badge rounded-pill px-3 py-2" style="background-color:#D1E7DD;color:#0F5132;">${t('huesped.convivencia.statusActive')}</span>`
     };
     aplicarPaginacion('tabla-resumen-convivencia', [c], (pagina) => {
         const tbody = document.getElementById('tabla-resumen-convivencia');

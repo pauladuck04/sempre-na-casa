@@ -100,7 +100,6 @@ let opcion_backend_tests = [
     { accion: 'ADD', descripcion: 'ADD sin nombre_opcion', overrides: { nombre_opcion: '' }, esperado: 'nombre_opcion_es_nulo_KO' },
     { accion: 'ADD', descripcion: 'ADD sin valor', overrides: { valor: '' }, esperado: 'valor_es_nulo_KO' },
     { accion: 'ADD', descripcion: 'ADD sin id_criterio', overrides: { id_criterio: '' }, esperado: 'id_criterio_es_nulo_KO' },
-    { accion: 'ADD', descripcion: 'ADD excluyente=1 sobre un criterio NO restrictivo', overrides: { excluyente: '1' }, esperado: 'EXCLUYENTE_REQUIERE_CRITERIO_RESTRICTIVO_KO' },
 
     { accion: 'SEARCH', descripcion: 'SEARCH sin filtros devuelve listado', overrides: {}, esperado: true },
 
@@ -144,6 +143,7 @@ let usuario_criterio_opcion_backend_tests = [
     { accion: 'ADD', descripcion: 'ADD sin id_usuario', overrides: { id_usuario: '' }, esperado: 'id_usuario_es_nulo_KO' },
     { accion: 'ADD', descripcion: 'ADD sin id_criterio', overrides: { id_criterio: '' }, esperado: 'id_criterio_es_nulo_KO' },
     { accion: 'ADD', descripcion: 'ADD sin id_opcion', overrides: { id_opcion: '' }, esperado: 'id_opcion_es_nulo_KO' },
+    { accion: 'ADD', descripcion: 'ADD id_opcion_excluyente sin restrictivo=1', overrides: { id_opcion_excluyente: '1' }, esperado: 'EXCLUYENTE_REQUIERE_CRITERIO_RESTRICTIVO_KO' },
 
     { accion: 'SEARCH', descripcion: 'SEARCH sin filtros devuelve listado', overrides: {}, esperado: true },
 
@@ -166,6 +166,7 @@ let vivienda_criterio_opcion_backend_tests = [
     { accion: 'ADD', descripcion: 'ADD sin id_vivienda', overrides: { id_vivienda: '' }, esperado: 'id_vivienda_es_nulo_KO' },
     { accion: 'ADD', descripcion: 'ADD sin id_criterio', overrides: { id_criterio: '' }, esperado: 'id_criterio_es_nulo_KO' },
     { accion: 'ADD', descripcion: 'ADD sin id_opcion', overrides: { id_opcion: '' }, esperado: 'id_opcion_es_nulo_KO' },
+    { accion: 'ADD', descripcion: 'ADD id_opcion_excluyente sin restrictivo=1', overrides: { id_opcion_excluyente: '1' }, esperado: 'EXCLUYENTE_REQUIERE_CRITERIO_RESTRICTIVO_KO' },
 
     { accion: 'SEARCH', descripcion: 'SEARCH sin filtros devuelve listado', overrides: {}, esperado: true },
 

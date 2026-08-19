@@ -147,12 +147,12 @@ async function escenarioMatching() {
     });
 
     // Criterio normal (no restrictivo), 2 opciones en los extremos de su rango (1 y 5)
-    const idCriterio = await crear('criterio', { nombre_criterio: 'QA Matching Criterio', peso_criterio: '1', restrictivo: '0' });
+    const idCriterio = await crear('criterio', { nombre_criterio: 'QA Matching Criterio' });
     const idOpcionBaja = await crear('opcion', { nombre_opcion: 'QA Baja', valor: '1', id_criterio: idCriterio });
     const idOpcionAlta = await crear('opcion', { nombre_opcion: 'QA Alta', valor: '5', id_criterio: idCriterio });
 
-    await apiPost('usuario_criterio_opcion', 'UPSERT_RESPUESTA', { id_usuario: idUsuario, id_criterio: idCriterio, id_opcion: idOpcionBaja });
-    await apiPost('vivienda_criterio_opcion', 'updateOpcion', { id_vivienda: idVivienda, id_criterio: idCriterio, id_opcion: idOpcionBaja });
+    await apiPost('usuario_criterio_opcion', 'UPSERT_RESPUESTA', { id_usuario: idUsuario, id_criterio: idCriterio, id_opcion: idOpcionBaja, peso: '1', restrictivo: '0' });
+    await apiPost('vivienda_criterio_opcion', 'updateOpcion', { id_vivienda: idVivienda, id_criterio: idCriterio, id_opcion: idOpcionBaja, peso: '1', restrictivo: '0' });
 
     let res = await apiPost('matching', 'calcularAfinidad', { id_usuario: idUsuario, id_vivienda: idVivienda });
     let pct = res.ok && res.resource ? res.resource.porcentaje : null;
@@ -177,19 +177,23 @@ async function escenarioMatching() {
     registrarPaso(pasos, 'Usuario sin respuestas a ningún criterio común', "ok:false, code:SIN_CRITERIOS_COMUNES_KO", res,
         res.ok === false && res.code === 'SIN_CRITERIOS_COMUNES_KO');
 
-    // Criterio restrictivo con una opción excluyente
-    const idCriterioR = await crear('criterio', { nombre_criterio: 'QA Matching Restrictivo', peso_criterio: '1', restrictivo: '1' });
-    const idOpcionExcl = await crear('opcion', { nombre_opcion: 'QA Excluyente', valor: '1', id_criterio: idCriterioR, excluyente: '1' });
+    // Criterio con una respuesta que el propio usuario marca como imprescindible, señalando una
+    // opción específica ("Normal") como innegociable: si la vivienda elige justo esa, se excluye.
+    const idCriterioR = await crear('criterio', { nombre_criterio: 'QA Matching Restrictivo' });
+    const idOpcionExcl = await crear('opcion', { nombre_opcion: 'QA Excluyente', valor: '1', id_criterio: idCriterioR });
     const idOpcionNorm = await crear('opcion', { nombre_opcion: 'QA Normal', valor: '2', id_criterio: idCriterioR });
 
-    await apiPost('usuario_criterio_opcion', 'UPSERT_RESPUESTA', { id_usuario: idUsuario, id_criterio: idCriterioR, id_opcion: idOpcionExcl });
+    await apiPost('usuario_criterio_opcion', 'UPSERT_RESPUESTA', {
+        id_usuario: idUsuario, id_criterio: idCriterioR, id_opcion: idOpcionExcl,
+        restrictivo: '1', id_opcion_excluyente: idOpcionNorm
+    });
     await apiPost('vivienda_criterio_opcion', 'updateOpcion', { id_vivienda: idVivienda, id_criterio: idCriterioR, id_opcion: idOpcionNorm });
 
     res = await apiPost('matching', 'calcularAfinidad', { id_usuario: idUsuario, id_vivienda: idVivienda });
     const excluido = res.ok && res.resource ? res.resource.excluido : null;
     pct = res.ok && res.resource ? res.resource.porcentaje : null;
     pasos.push({
-        paso: 'Usuario elige la opción excluyente, la vivienda otra distinta',
+        paso: 'La vivienda elige la opción que el usuario marcó como excluyente',
         esperado: 'ok:true, excluido:true, porcentaje:0',
         obtenido: `ok:${res.ok}, excluido:${excluido}, porcentaje:${pct}`,
         resultado: (res.ok === true && excluido === true && pct === 0) ? 'OK' : 'FALLO'

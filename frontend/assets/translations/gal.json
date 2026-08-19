@@ -113,6 +113,8 @@
     "password": "Contrasinal",
     "repeatPassword": "Repetir contrasinal",
     "passwordMismatch": "Os contrasinais non coinciden.",
+    "passwordMinSize": "O contrasinal debe ter polo menos 8 caracteres.",
+    "passwordMaxSize": "O contrasinal non pode ter máis de 15 caracteres.",
     "dniInvalid": "O DNI debe ter 8 díxitos seguidos dunha letra maiúscula (ex: 12345678A).",
     "phoneInvalid": "O teléfono debe ter exactamente 9 díxitos.",
     "emailInvalid": "O formato do email non é válido.",
@@ -173,6 +175,13 @@
     "processing": "Procesando...",
     "finishBtn": "Crear conta",
     "error": "Erro ao gardar a enquisa.",
+    "weightLabel": "Importancia para min",
+    "weightLow": "Baixa",
+    "weightMedium": "Media",
+    "weightHigh": "Alta",
+    "restrictiveLabel": "E imprescindible para min",
+    "exclusionOptionLabel": "Opción que non acepto",
+    "exclusionOptionNone": "Ningunha",
     "q1": { "title": "1. Nivel de ruído", "o1": "Silencio absoluto", "o2": "Ruído moderado (TV, música)", "o3": "Non me importa o ruído" },
     "q2": { "title": "2. Hábito de tabaco", "o1": "Prohibido totalmente", "o2": "Só no exterior", "o3": "Permítese fumar" },
     "q3": { "title": "3. Frecuencia de visitas", "o1": "Sen visitas", "o2": "Visitas ocasionais (avisando)", "o3": "Visitas libres" },
@@ -258,7 +267,6 @@
       "criteria": "Criterios",
       "options": "Opcións",
       "values": "Valores",
-      "weight": "Peso",
       "guest": "Hóspede",
       "home": "Vivenda",
       "requestDate": "Data solicitude",
@@ -297,7 +305,14 @@
       "frontendTest": { "title": "Frontend Test", "description": "Batería de probas de validación das entidades do frontend" },
       "backendTest": { "title": "Backend Test", "description": "Probas contra as accións reais do backend (ADD/EDIT/SEARCH/DELETE)" }
     },
-    "convivencias": { "noActive": "Non hai convivencias activas" },
+    "convivencias": {
+      "noActive": "Non hai convivencias activas",
+      "statusPending": "Pendente",
+      "statusAccepted": "Aceptada",
+      "statusActive": "Activa",
+      "statusRejected": "Rexeitada",
+      "statusFinished": "Rematada"
+    },
     "users": {
       "fullName": "Nome Completo", "email": "Correo Electrónico", "dni": "DNI", "phone": "Teléfono",
       "role": "Rol de Usuario", "registerDate": "Data de Rexistro",
@@ -320,9 +335,6 @@
     "criteria": {
       "criteriaName": "Nome do Criterio", "compatibilityCriteria": "Criterio de Compatibilidade",
       "option": "Opción", "value": "Valor",
-      "weight": "Peso / Importancia", "weightLow": "Baixa", "weightMedium": "Media", "weightHigh": "Alta",
-      "restrictive": "Restritivo (pode descartar matches por completo)", "excluding": "Excluinte (descarta o match se o criterio e restritivo)",
-      "excludingRequiresRestrictive": "So dispoñible se o criterio e restritivo.",
       "filterActive": "Activos", "filterInactive": "Inactivos",
       "createTitle": "Novo Criterio", "editTitle": "Editar Criterio", "detailTitle": "Detalles do Criterio",
       "tabCriteria": "Criterios", "tabOptions": "Opcións",
@@ -332,7 +344,7 @@
   "anfitrion": {
     "badge": "Anfitrión",
     "nav": { "general": "Vista Xeral", "home": "A Miña Vivenda", "criteria": "Criterios", "tenants": "Convidades" },
-    "summary": { "homeStatus": "Estado Vivenda", "occupiedSlots": "Prazas Ocupadas", "inInterview": "En Entrevista" },
+    "summary": { "homeStatus": "Estado Vivenda", "occupiedSlots": "Prazas Ocupadas" },
     "table": { "tenant": "Convidado", "startDate": "Inicio", "status": "Estado", "criteria": "Criterio", "preferredValue": "Valor Preferido", "compatibility": "Compatibilidade" },
     "cardTitles": {
       "currentConvivencia": "A Miña Convivencia Actual", "homeDetails": "Detalles da Miña Vivenda",
@@ -424,7 +436,7 @@
       "expectedStartPast": "A data de inicio non pode estar no pasado.",
       "expectedEndInvalid": "A data de fin debe ser posterior á de inicio."
     },
-    "summary_status": { "statusActive": "Activa", "statusInterview": "En Entrevista", "statusTrial": "Período de Proba", "statusFinished": "Rematada", "pending": "Pendente" },
+    "summary_status": { "statusActive": "Activa", "pending": "Pendente" },
     "modal":{
       "editPreference": "Editar preferencia"
     }
@@ -564,6 +576,7 @@
     "solicitudNoEncontrada": "Non se atopou a solicitude.",
     "solicitudYaResuelta": "Esta solicitude xa foi resolta.",
     "upsertRespuesta": "Non se puido gardar a resposta.",
+    "excluyenteRequiereRestrictivo": "So podes marcar unha opción a excluír se tamén marcas a pregunta como imprescindible.",
     "sinCriteriosComunes": "Non hai criterios comúns para calcular a compatibilidade.",
     "rankViviendas": "Non se puido calcular o ranking de vivendas.",
     "registroNoEncontrado": "Non se atopou o rexistro.",

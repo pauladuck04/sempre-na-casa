@@ -30,13 +30,13 @@ class matching_SERVICE extends appServiceBase {
         include_once './base/mapping.php';
         $map = new mapping('');
 
-        $pesos  = $this->cargarPesosCriterios($map);
-        $rangos = $this->cargarRangosCriterios($map);
+        $nombres = $this->cargarNombresCriterios($map);
+        $rangos  = $this->cargarRangosCriterios($map);
 
         $respuestasUsuario  = $this->cargarRespuestas($map, 'usuario_criterio_opcion', 'id_usuario', $idUsuario, 'activo_usuario_criterio_opcion');
         $respuestasVivienda = $this->cargarRespuestas($map, 'vivienda_criterio_opcion', 'id_vivienda', $idVivienda, 'activo_vivienda_criterio_opcion');
 
-        $exclusion = $this->detectarExclusion($pesos, $respuestasUsuario, $respuestasVivienda);
+        $exclusion = $this->detectarExclusion($nombres, $respuestasUsuario, $respuestasVivienda);
         if ($exclusion !== null) {
             return array('ok' => true, 'code' => 'CALCULO_AFINIDAD_OK', 'resource' => array(
                 'porcentaje'           => 0,
@@ -47,7 +47,7 @@ class matching_SERVICE extends appServiceBase {
             ));
         }
 
-        $resultado = $this->calcularScore($pesos, $rangos, $respuestasUsuario, $respuestasVivienda);
+        $resultado = $this->calcularScore($nombres, $rangos, $respuestasUsuario, $respuestasVivienda);
         $resultado['excluido'] = false;
 
         if ($resultado['porcentaje'] === null) {
@@ -65,8 +65,8 @@ class matching_SERVICE extends appServiceBase {
         include_once './base/mapping.php';
         $map = new mapping('');
 
-        $pesos  = $this->cargarPesosCriterios($map);
-        $rangos = $this->cargarRangosCriterios($map);
+        $nombres = $this->cargarNombresCriterios($map);
+        $rangos  = $this->cargarRangosCriterios($map);
 
         $respuestasUsuario = $this->cargarRespuestas($map, 'usuario_criterio_opcion', 'id_usuario', $idUsuario, 'activo_usuario_criterio_opcion');
 
@@ -92,9 +92,9 @@ class matching_SERVICE extends appServiceBase {
                 $map, 'vivienda_criterio_opcion', 'id_vivienda', intval($vivienda['id_vivienda']), 'activo_vivienda_criterio_opcion'
             );
 
-            if ($this->detectarExclusion($pesos, $respuestasUsuario, $respuestasVivienda) !== null) continue;
+            if ($this->detectarExclusion($nombres, $respuestasUsuario, $respuestasVivienda) !== null) continue;
 
-            $score = $this->calcularScore($pesos, $rangos, $respuestasUsuario, $respuestasVivienda);
+            $score = $this->calcularScore($nombres, $rangos, $respuestasUsuario, $respuestasVivienda);
             if ($score['porcentaje'] === null) continue;
 
             $ranking[] = array(
@@ -114,21 +114,19 @@ class matching_SERVICE extends appServiceBase {
         return array('ok' => true, 'code' => 'RANK_VIVIENDAS_OK', 'resource' => $ranking);
     }
 
-    function cargarPesosCriterios($map) {
+    // nombres de los criterios activos, solo para etiquetar exclusiones y el detalle del score
+    // (peso/restrictivo ya no son globales: viven en la propia respuesta de cada parte, ver cargarRespuestas())
+    function cargarNombresCriterios($map) {
         $res = $map->lanzarqueryconresults(
-            "SELECT id_criterio, nombre_criterio, peso_criterio, restrictivo FROM criterio WHERE activo_criterio = 1"
+            "SELECT id_criterio, nombre_criterio FROM criterio WHERE activo_criterio = 1"
         );
-        $pesos = array();
+        $nombres = array();
         if ($res['ok'] && !empty($res['resource'])) {
             foreach ($res['resource'] as $fila) {
-                $pesos[intval($fila['id_criterio'])] = array(
-                    'peso'        => intval($fila['peso_criterio']),
-                    'nombre'      => $fila['nombre_criterio'],
-                    'restrictivo' => intval($fila['restrictivo']) === 1
-                );
+                $nombres[intval($fila['id_criterio'])] = $fila['nombre_criterio'];
             }
         }
-        return $pesos;
+        return $nombres;
     }
 
     // rango de valores (min/max) de las opciones de cada criterio, para normalizar la distancia
@@ -149,10 +147,12 @@ class matching_SERVICE extends appServiceBase {
         return $rangos;
     }
 
-    // respuestas de un usuario/vivienda por criterio, con el valor de la opcion elegida y si esa opcion es excluyente
+    // respuestas de un usuario/vivienda por criterio: la opcion elegida (id + su valor en la
+    // escala compartida, que sigue viviendo en opcion) y el peso/restrictivo/opcion-a-excluir que
+    // ESA parte declaro para su propia respuesta a ese criterio
     function cargarRespuestas($map, $tabla, $campoId, $idValor, $campoActivo) {
         $res = $map->lanzarqueryconresults(
-            "SELECT tco.id_criterio, o.valor, o.excluyente
+            "SELECT tco.id_criterio, tco.id_opcion, o.valor, tco.peso, tco.restrictivo, tco.id_opcion_excluyente
              FROM {$tabla} tco
              JOIN opcion o ON o.id_opcion = tco.id_opcion
              WHERE tco.{$campoId} = {$idValor} AND tco.{$campoActivo} = 1"
@@ -161,62 +161,64 @@ class matching_SERVICE extends appServiceBase {
         if ($res['ok'] && !empty($res['resource'])) {
             foreach ($res['resource'] as $fila) {
                 $respuestas[intval($fila['id_criterio'])] = array(
-                    'valor'      => intval($fila['valor']),
-                    'excluyente' => intval($fila['excluyente']) === 1
+                    'id_opcion'            => intval($fila['id_opcion']),
+                    'valor'                => intval($fila['valor']),
+                    'peso'                 => intval($fila['peso']),
+                    'restrictivo'          => intval($fila['restrictivo']) === 1,
+                    'id_opcion_excluyente' => $fila['id_opcion_excluyente'] !== null ? intval($fila['id_opcion_excluyente']) : null
                 );
             }
         }
         return $respuestas;
     }
 
-    // recorre los criterios restrictivos: si cualquiera de las dos partes eligio la opcion
-    // excluyente de uno de ellos Y la otra parte no eligio esa misma opcion, el match se 
-    // descarta sin comprobar el resto
-    function detectarExclusion($pesos, $respuestasA, $respuestasB) {
-        foreach ($pesos as $idCriterio => $infoCriterio) {
-            if (!$infoCriterio['restrictivo']) continue;
-            if (!isset($respuestasA[$idCriterio]) || !isset($respuestasB[$idCriterio])) continue;
+    // por cada criterio respondido por las dos partes, cada parte decide su propia exclusion con
+    // sus propios campos: si marco esa respuesta como restrictiva y señalo una opcion concreta
+    // como excluyente, y la otra parte eligio justamente esa opcion, el match se descarta sin
+    // comprobar el resto (la opcion a excluir puede ser distinta de la propia respuesta: "prefiero
+    // A, pero si eligen Z para mi es un dealbreaker")
+    function detectarExclusion($nombres, $respuestasA, $respuestasB) {
+        foreach ($respuestasA as $idCriterio => $rA) {
+            if (!isset($respuestasB[$idCriterio])) continue;
+            $rB = $respuestasB[$idCriterio];
 
-            $valorA = $respuestasA[$idCriterio]['valor'];
-            $valorB = $respuestasB[$idCriterio]['valor'];
-
-            $excluyeA = $respuestasA[$idCriterio]['excluyente'] && $valorA !== $valorB;
-            $excluyeB = $respuestasB[$idCriterio]['excluyente'] && $valorB !== $valorA;
+            $excluyeA = $rA['restrictivo'] && $rA['id_opcion_excluyente'] !== null && $rA['id_opcion_excluyente'] === $rB['id_opcion'];
+            $excluyeB = $rB['restrictivo'] && $rB['id_opcion_excluyente'] !== null && $rB['id_opcion_excluyente'] === $rA['id_opcion'];
 
             if ($excluyeA || $excluyeB) {
                 return array(
                     'id_criterio'     => $idCriterio,
-                    'nombre_criterio' => $infoCriterio['nombre']
+                    'nombre_criterio' => isset($nombres[$idCriterio]) ? $nombres[$idCriterio] : ''
                 );
             }
         }
         return null;
     }
 
-    // media ponderada de similitud (1 - distancia normalizada) sobre los criterios respondidos por ambas partes
-    function calcularScore($pesos, $rangos, $respuestasA, $respuestasB) {
+    // media ponderada de similitud (1 - distancia normalizada) sobre los criterios respondidos
+    // por ambas partes; el peso de cada criterio para el par es la media de lo que cada parte le
+    // dio de importancia a su propia respuesta
+    function calcularScore($nombres, $rangos, $respuestasA, $respuestasB) {
         $sumaPesos     = 0;
         $sumaPonderada = 0;
         $detalle       = array();
 
-        foreach ($pesos as $idCriterio => $infoCriterio) {
-            if (!isset($respuestasA[$idCriterio]) || !isset($respuestasB[$idCriterio])) continue;
-
-            $valorA = $respuestasA[$idCriterio]['valor'];
-            $valorB = $respuestasB[$idCriterio]['valor'];
+        foreach ($respuestasA as $idCriterio => $rA) {
+            if (!isset($respuestasB[$idCriterio])) continue;
+            $rB = $respuestasB[$idCriterio];
 
             $rango = isset($rangos[$idCriterio]) ? max($rangos[$idCriterio]['max'] - $rangos[$idCriterio]['min'], 1) : 1;
-            $diff  = abs($valorA - $valorB);
+            $diff  = abs($rA['valor'] - $rB['valor']);
             $similitud = max(0, 1 - ($diff / $rango));
 
-            $peso = $infoCriterio['peso'];
+            $peso = ($rA['peso'] + $rB['peso']) / 2;
             $sumaPonderada += $similitud * $peso;
             $sumaPesos     += $peso;
 
             $detalle[] = array(
                 'id_criterio'     => $idCriterio,
-                'nombre_criterio' => $infoCriterio['nombre'],
-                'peso_criterio'   => $peso,
+                'nombre_criterio' => isset($nombres[$idCriterio]) ? $nombres[$idCriterio] : '',
+                'peso_efectivo'   => $peso,
                 'similitud'       => round($similitud * 100, 1)
             );
         }

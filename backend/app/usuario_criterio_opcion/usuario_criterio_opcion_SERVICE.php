@@ -13,11 +13,11 @@ class usuario_criterio_opcion_SERVICE extends appServiceBase {
     function inicializarRest() {
 
         $this->listaAtributos = array(
-            'id_usuario', 'id_criterio', 'id_opcion', 'activo_usuario_criterio_opcion'
+            'id_usuario', 'id_criterio', 'id_opcion', 'peso', 'restrictivo', 'id_opcion_excluyente', 'activo_usuario_criterio_opcion'
         );
 
         $this->listaAtributosSelect = array(
-            'id_usuario', 'id_criterio', 'id_opcion', 'activo_usuario_criterio_opcion'
+            'id_usuario', 'id_criterio', 'id_opcion', 'peso', 'restrictivo', 'id_opcion_excluyente', 'activo_usuario_criterio_opcion'
         );
 
         $this->notnull = array(
@@ -37,6 +37,18 @@ class usuario_criterio_opcion_SERVICE extends appServiceBase {
         if (isset($_POST['action']) && $_POST['action'] == 'ADD') {
             $_POST['activo_usuario_criterio_opcion'] = 1;
         }
+        if (empty($_POST['peso'])) {
+            $_POST['peso'] = 3;
+        }
+        if (!isset($_POST['restrictivo']) || $_POST['restrictivo'] === '') {
+            $_POST['restrictivo'] = 0;
+        }
+        // id_opcion_excluyente es un INT nullable: 'NULL' (sin comillas) es literalmente la
+        // palabra clave SQL, no la cadena vacia que rompería el INSERT/UPDATE en una columna
+        // numerica (ver mapping::ADD/EDIT, que vuelca los atributos numericos sin comillas).
+        if (empty($_POST['id_opcion_excluyente'])) {
+            $_POST['id_opcion_excluyente'] = 'NULL';
+        }
     }
 
     function DELETE() {
@@ -45,6 +57,32 @@ class usuario_criterio_opcion_SERVICE extends appServiceBase {
 
     function REACTIVAR() {
         return $this->reactivarRegistro('activo_usuario_criterio_opcion');
+    }
+
+    function ADD() {
+        $errorExcluyente = $this->validarOpcionExcluyenteRequiereRestrictivo();
+        if ($errorExcluyente !== true) return $errorExcluyente;
+        return $this->modelo->ADD();
+    }
+
+    function EDIT() {
+        $errorExcluyente = $this->validarOpcionExcluyenteRequiereRestrictivo();
+        if ($errorExcluyente !== true) return $errorExcluyente;
+        return $this->modelo->EDIT();
+    }
+
+    // solo se puede marcar una opcion a excluir si esa misma respuesta tambien es restrictiva
+    // (ya no depende de otra tabla: los dos campos llegan siempre juntos en la misma peticion)
+    function validarOpcionExcluyenteRequiereRestrictivo() {
+        $tieneOpcionExcluyente = !empty($_POST['id_opcion_excluyente']) && $_POST['id_opcion_excluyente'] !== 'NULL';
+        if (!$tieneOpcionExcluyente) return true;
+
+        $esRestrictivo = isset($_POST['restrictivo']) && intval($_POST['restrictivo']) === 1;
+        if (!$esRestrictivo) {
+            return array('ok' => false, 'code' => 'EXCLUYENTE_REQUIERE_CRITERIO_RESTRICTIVO_KO');
+        }
+
+        return true;
     }
 
     function getAll() {
@@ -82,7 +120,8 @@ class usuario_criterio_opcion_SERVICE extends appServiceBase {
         $map = new mapping('usuario_criterio_opcion');
 
         $res = $map->lanzarqueryconresults(
-            "SELECT c.id_criterio, c.nombre_criterio, uco.id_opcion, o.nombre_opcion
+            "SELECT c.id_criterio, c.nombre_criterio, uco.id_opcion, o.nombre_opcion,
+                    uco.peso, uco.restrictivo, uco.id_opcion_excluyente
              FROM criterio c
              LEFT JOIN usuario_criterio_opcion uco
                 ON uco.id_criterio = c.id_criterio
@@ -97,9 +136,15 @@ class usuario_criterio_opcion_SERVICE extends appServiceBase {
     }
 
     function UPSERT_RESPUESTA() {
-        $idUsuario  = intval($_POST['id_usuario']);
-        $idCriterio = intval($_POST['id_criterio']);
-        $idOpcion   = intval($_POST['id_opcion']);
+        $errorExcluyente = $this->validarOpcionExcluyenteRequiereRestrictivo();
+        if ($errorExcluyente !== true) return $errorExcluyente;
+
+        $idUsuario          = intval($_POST['id_usuario']);
+        $idCriterio         = intval($_POST['id_criterio']);
+        $idOpcion           = intval($_POST['id_opcion']);
+        $peso               = !empty($_POST['peso']) ? intval($_POST['peso']) : 3;
+        $restrictivo        = (isset($_POST['restrictivo']) && intval($_POST['restrictivo']) === 1) ? 1 : 0;
+        $idOpcionExcluyente = !empty($_POST['id_opcion_excluyente']) ? intval($_POST['id_opcion_excluyente']) : null;
 
         include_once './base/mapping.php';
         $map = new mapping('usuario_criterio_opcion');
@@ -108,8 +153,10 @@ class usuario_criterio_opcion_SERVICE extends appServiceBase {
             "DELETE FROM usuario_criterio_opcion WHERE id_usuario = {$idUsuario} AND id_criterio = {$idCriterio}"
         );
 
+        $valorOpcionExcluyente = $idOpcionExcluyente !== null ? $idOpcionExcluyente : 'NULL';
         $res = $map->lanzarquery(
-            "INSERT INTO usuario_criterio_opcion (id_usuario, id_criterio, id_opcion, activo_usuario_criterio_opcion) VALUES ({$idUsuario}, {$idCriterio}, {$idOpcion}, 1)"
+            "INSERT INTO usuario_criterio_opcion (id_usuario, id_criterio, id_opcion, peso, restrictivo, id_opcion_excluyente, activo_usuario_criterio_opcion)
+             VALUES ({$idUsuario}, {$idCriterio}, {$idOpcion}, {$peso}, {$restrictivo}, {$valorOpcionExcluyente}, 1)"
         );
 
         if ($res['ok']) return array('ok' => true,  'code' => 'UPSERT_RESPUESTA_OK');

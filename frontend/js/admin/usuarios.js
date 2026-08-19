@@ -8,18 +8,22 @@ export async function cargarUsuarios() {
     if (listaUsuariosMemoria.length === 0) {
         const res = await apiPost('usuario', 'getAll');
         if (res.ok && Array.isArray(res.resource)) {
-            listaUsuariosMemoria = res.resource.map((u) => ({
-                id: u.id_usuario,
-                nombre: `${u.nombre_usuario} ${u.apellidos}`.trim(),
-                nombre_usuario: u.nombre_usuario,
-                apellidos: u.apellidos,
-                email: u.mail,
-                id_rol: u.id_rol,
-                fechaRegistro: u.fecha_alta_usuario ? u.fecha_alta_usuario.split(' ')[0] : '-',
-                dni: u.dni,
-                telefono: u.telefono,
-                estado: u.activo_usuario == 1 ? 'activo' : 'inactivo'
-            }));
+            listaUsuariosMemoria = res.resource.map((u) => {
+                const rolObj = listaRolesMemoria.find(r => r.id == u.id_rol);
+                return {
+                    id: u.id_usuario,
+                    nombre: `${u.nombre_usuario} ${u.apellidos}`.trim(),
+                    nombre_usuario: u.nombre_usuario,
+                    apellidos: u.apellidos,
+                    email: u.mail,
+                    id_rol: u.id_rol,
+                    rol: rolObj ? rolObj.nombre : `Rol ${u.id_rol}`,
+                    fechaRegistro: u.fecha_alta_usuario ? u.fecha_alta_usuario.split(' ')[0] : '-',
+                    dni: u.dni,
+                    telefono: u.telefono,
+                    estado: u.activo_usuario == 1 ? 'activo' : 'inactivo'
+                };
+            });
         }
     }
     renderizarUsuarios(listaUsuariosMemoria);
@@ -55,8 +59,7 @@ function _renderFilasUsuarios(pagina) {
     tbody.innerHTML = '';
 
     pagina.forEach(usuario => {
-        const rolObj    = listaRolesMemoria.find(r => r.id == usuario.id_rol);
-        const rolNombre = rolObj ? rolObj.nombre : `Rol ${usuario.id_rol}`;
+        const rolNombre = usuario.rol;
         const badgeEstado = usuario.estado === 'activo'   ? 'bg-success'
                           : usuario.estado === 'inactivo' ? 'bg-secondary'
                                                           : 'bg-warning text-dark';
@@ -64,7 +67,7 @@ function _renderFilasUsuarios(pagina) {
                           : usuario.estado === 'inactivo' ? t('admin.users.statusInactive')
                                                           : t('admin.users.statusPending');
 
-        const rolLabel = usuario.id_rol == 2
+        const rolLabel = usuario.id_rol == 3
             ? `<span class="badge rounded-pill bg-success-subtle text-success px-3">${rolNombre}</span>`
             : `<span class="badge rounded-pill bg-info-subtle text-info px-3">${rolNombre}</span>`;
 

@@ -109,6 +109,9 @@ CREATE TABLE `usuario_criterio_opcion` (
   `id_usuario` int NOT NULL,
   `id_criterio` int NOT NULL,
   `id_opcion` int NOT NULL,
+  `peso` tinyint NOT NULL DEFAULT '3',
+  `restrictivo` tinyint(1) NOT NULL DEFAULT '0',
+  `id_opcion_excluyente` int DEFAULT NULL,
   `activo_usuario_criterio_opcion` tinyint(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -153,6 +156,9 @@ CREATE TABLE `vivienda_criterio_opcion` (
   `id_vivienda` int NOT NULL,
   `id_criterio` int NOT NULL,
   `id_opcion` int NOT NULL,
+  `peso` tinyint NOT NULL DEFAULT '3',
+  `restrictivo` tinyint(1) NOT NULL DEFAULT '0',
+  `id_opcion_excluyente` int DEFAULT NULL,
   `activo_vivienda_criterio_opcion` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 

@@ -2,7 +2,7 @@ import { initI18n, t, applyTranslations } from '../i18n.js';
 import * as criterios  from './criterios.js';
 import * as huespedes from './huespedes.js';
 import { mostrarErrorFormulario, ocultarErrorFormulario, mostrarErrorCampo, ocultarErrorCampo } from '../form-errors.js';
-import { renderPreguntasEncuesta } from '../encuesta-criterios.js';
+import { renderPreguntasEncuesta, leerRespuestaCriterio } from '../encuesta-criterios.js';
 import { cargarPartials } from '../partials.js';
 import { mostrarToast, cargarPerfilPorMail, inicializarMedidorFortaleza, inicializarTogglePassword, inicializarCambioPassword } from '../perfil-comun.js';
 
@@ -100,7 +100,13 @@ document.addEventListener('DOMContentLoaded', async function() {
             const c = criterios.listaCriteriosMemoria.find(x => String(x.id) === String(seleccionado.value));
             if (!c) return;
 
-            const opciones = criterios.listaOpcionesMemoria.filter(o => String(o.id_criterio) === String(c.id_criterio));
+            const opciones    = criterios.listaOpcionesMemoria.filter(o => String(o.id_criterio) === String(c.id_criterio));
+            const peso        = c.peso ?? 3;
+            const restrictivo = c.restrictivo == 1;
+            const idOpcionExcluyente = c.id_opcion_excluyente ?? '';
+            const optsExcluyenteHtml = opciones.map(o =>
+                `<option value="${o.id_opcion}" ${String(idOpcionExcluyente) === String(o.id_opcion) ? 'selected' : ''}>${o.nombre_opcion}</option>`
+            ).join('');
             document.getElementById('modalTitle').textContent = `${t('anfitrion.criteria.editTitle')}: ${c.criterio}`;
             document.getElementById('modalFormContent').innerHTML = `
                 <input type="hidden" name="id_criterio" value="${c.id_criterio}">
@@ -111,9 +117,35 @@ document.addEventListener('DOMContentLoaded', async function() {
                         <input type="radio" class="btn-check" name="id_opcion" id="copt-${o.id_opcion}" value="${o.id_opcion}">
                         <label class="btn btn-outline-secondary w-100 p-3 text-start rounded-3" for="copt-${o.id_opcion}">${o.nombre_opcion}</label>
                     </div>`).join('')}
+                <div class="mb-3 mt-3">
+                    <label class="form-label fw-bold">${t('survey.weightLabel') || 'Importancia para mí'}</label>
+                    <select name="peso" class="form-select">
+                        <option value="1" ${peso == 1 ? 'selected' : ''}>1 - ${t('survey.weightLow') || 'Baja'}</option>
+                        <option value="2" ${peso == 2 ? 'selected' : ''}>2</option>
+                        <option value="3" ${peso == 3 ? 'selected' : ''}>3 - ${t('survey.weightMedium') || 'Media'}</option>
+                        <option value="4" ${peso == 4 ? 'selected' : ''}>4</option>
+                        <option value="5" ${peso == 5 ? 'selected' : ''}>5 - ${t('survey.weightHigh') || 'Alta'}</option>
+                    </select>
+                </div>
+                <div class="form-check mb-1">
+                    <input type="checkbox" class="form-check-input" name="restrictivo" id="chk-crit-restrictivo" value="1" ${restrictivo ? 'checked' : ''}>
+                    <label class="form-check-label" for="chk-crit-restrictivo">${t('survey.restrictiveLabel') || 'Es imprescindible para mí'}</label>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label fw-bold">${t('survey.exclusionOptionLabel') || 'Opción que no acepto'}</label>
+                    <select name="id_opcion_excluyente" class="form-select" id="sel-crit-excluyente" ${restrictivo ? '' : 'disabled'}>
+                        <option value="">${t('survey.exclusionOptionNone') || 'Ninguna'}</option>
+                        ${optsExcluyenteHtml}
+                    </select>
+                </div>
             `;
             const currentRadio = document.getElementById(`copt-${c.id_opcion}`);
             if (currentRadio) currentRadio.checked = true;
+            document.getElementById('chk-crit-restrictivo').addEventListener('change', function() {
+                const selExcluyente = document.getElementById('sel-crit-excluyente');
+                selExcluyente.disabled = !this.checked;
+                if (!this.checked) selExcluyente.value = '';
+            });
             ocultarErrorFormulario(document.getElementById('formGenerico-error'));
             bootstrap.Modal.getOrCreateInstance(document.getElementById('modalGenerico')).show();
         } else if (seccion === 'huespedes') {
@@ -168,9 +200,12 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
             bootstrap.Modal.getInstance(document.getElementById('modalGenerico')).hide();
             apiPost('vivienda_criterio_opcion', 'updateOpcion', {
-                id_vivienda: data.id_vivienda,
-                id_criterio: data.id_criterio,
-                id_opcion:   data.id_opcion
+                id_vivienda:          data.id_vivienda,
+                id_criterio:          data.id_criterio,
+                id_opcion:            data.id_opcion,
+                peso:                 data.peso,
+                restrictivo:          data.restrictivo ? 1 : 0,
+                id_opcion_excluyente: data.id_opcion_excluyente || ''
             }).then(res => {
                 if (res.ok) {
                     mostrarToast(t('anfitrion.criteria.updateSuccess'), 'success');
@@ -296,12 +331,15 @@ document.addEventListener('DOMContentLoaded', async function() {
         const promesas = [];
         secciones.forEach(sec => {
             const idCriterio = sec.getAttribute('data-criterio');
-            const checked = sec.querySelector('.btn-check:checked');
-            if (checked) {
+            const respuesta  = leerRespuestaCriterio(sec);
+            if (respuesta) {
                 promesas.push(apiPost('vivienda_criterio_opcion', 'ADD', {
-                    id_vivienda:  pendingViviendaId,
-                    id_criterio:  idCriterio,
-                    id_opcion:    checked.value
+                    id_vivienda:          pendingViviendaId,
+                    id_criterio:          idCriterio,
+                    id_opcion:            respuesta.idOpcion,
+                    peso:                 respuesta.peso,
+                    restrictivo:          respuesta.restrictivo,
+                    id_opcion_excluyente: respuesta.idOpcionExcluyente
                 }));
             }
         });

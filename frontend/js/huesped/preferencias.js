@@ -13,7 +13,10 @@ export async function cargarPreferencias(idUsuario) {
             id_criterio:     r.id_criterio,
             nombre_criterio: r.nombre_criterio,
             id_opcion:       r.id_opcion   ?? null,
-            nombre_opcion:   r.nombre_opcion ?? null
+            nombre_opcion:   r.nombre_opcion ?? null,
+            peso:                r.peso        ?? 3,
+            restrictivo:         r.restrictivo ?? 0,
+            id_opcion_excluyente: r.id_opcion_excluyente ?? null
         }))
         : [];
 

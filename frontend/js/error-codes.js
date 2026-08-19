@@ -28,7 +28,7 @@ const MAPA_ERRORES = {
 
     // Encuestas / criterios / matching
     UPSERT_RESPUESTA_KO:                         'errors.upsertRespuesta',
-    EXCLUYENTE_REQUIERE_CRITERIO_RESTRICTIVO_KO: 'admin.criteria.excludingRequiresRestrictive',
+    EXCLUYENTE_REQUIERE_CRITERIO_RESTRICTIVO_KO: 'errors.excluyenteRequiereRestrictivo',
     SIN_CRITERIOS_COMUNES_KO:                    'errors.sinCriteriosComunes',
     RANK_VIVIENDAS_KO:                           'errors.rankViviendas',
 

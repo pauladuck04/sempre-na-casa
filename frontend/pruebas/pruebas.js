@@ -207,13 +207,7 @@ let criterio_def_tests = Array(
     ['criterio', 'nombre_criterio', 'input', 4, 'es correcto', 'ADD', true],
     ['criterio', 'nombre_criterio', 'input', 5, 'es correcto', 'EDIT', true],
     ['criterio', 'nombre_criterio', 'input', 6, 'es correcto vacío', 'SEARCH', true],
-    ['criterio', 'nombre_criterio', 'input', 7, 'es correcto como substring', 'SEARCH', true],
-
-    ['criterio', 'peso_criterio', 'input', 8, 'cumple formato', 'ADD', 'peso_criterio_format_KO'],
-    ['criterio', 'peso_criterio', 'input', 9, 'es correcto', 'ADD', true],
-    ['criterio', 'peso_criterio', 'input', 10, 'es correcto', 'EDIT', true],
-    ['criterio', 'peso_criterio', 'input', 11, 'es correcto vacío', 'SEARCH', true],
-    ['criterio', 'peso_criterio', 'input', 12, 'cumple formato', 'SEARCH', 'peso_criterio_format_KO']
+    ['criterio', 'nombre_criterio', 'input', 7, 'es correcto como substring', 'SEARCH', true]
 );
 
 let criterio_tests_fields = Array(
@@ -223,13 +217,7 @@ let criterio_tests_fields = Array(
     ['criterio', 'nombre_criterio', 4, 4, 'ADD', [{ nombre_criterio: 'Nivel de ruido' }], true],
     ['criterio', 'nombre_criterio', 5, 5, 'EDIT', [{ nombre_criterio: 'Nivel de ruido' }], true],
     ['criterio', 'nombre_criterio', 6, 6, 'SEARCH', [{ nombre_criterio: '' }], true],
-    ['criterio', 'nombre_criterio', 7, 7, 'SEARCH', [{ nombre_criterio: 'ruido' }], true],
-
-    ['criterio', 'peso_criterio', 8, 8, 'ADD', [{ peso_criterio: 'alto' }], 'peso_criterio_format_KO'],
-    ['criterio', 'peso_criterio', 9, 9, 'ADD', [{ peso_criterio: '5' }], true],
-    ['criterio', 'peso_criterio', 10, 10, 'EDIT', [{ peso_criterio: '1' }], true],
-    ['criterio', 'peso_criterio', 11, 11, 'SEARCH', [{ peso_criterio: '' }], true],
-    ['criterio', 'peso_criterio', 12, 12, 'SEARCH', [{ peso_criterio: 'alto' }], 'peso_criterio_format_KO']
+    ['criterio', 'nombre_criterio', 7, 7, 'SEARCH', [{ nombre_criterio: 'ruido' }], true]
 );
 
 let criterio_tests_files = Array();

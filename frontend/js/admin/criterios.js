@@ -11,8 +11,6 @@ export async function cargarCriterios() {
             listaCriteriosMemoria = resCriterios.resource.map(c => ({
                 id: c.id_criterio,
                 nombre: c.nombre_criterio,
-                peso: c.peso_criterio,
-                restrictivo: c.restrictivo,
                 estado: c.activo_criterio == 1 ? 'activo' : 'inactivo'
             }));
         }
@@ -28,7 +26,6 @@ export async function cargarCriterios() {
                     criterio: criterio ? criterio.nombre : o.id_criterio,
                     opcion: o.nombre_opcion,
                     valor: o.valor,
-                    excluyente: o.excluyente,
                     estado: o.activo_opcion == 1 ? 'activo' : 'inactivo'
                 };
             });
@@ -75,10 +72,8 @@ function _renderFilasCriterios(pagina) {
             <td data-label="Criterio">
                 <div class="d-flex align-items-center gap-2">
                     <span class="fw-semibold criterio-nombre" data-id="${c.id}" style="cursor:pointer;">${c.nombre}</span>
-                    ${c.restrictivo == 1 ? `<span class="badge bg-danger rounded-pill" title="${t('admin.criteria.restrictive') || 'Restrictivo'}">R</span>` : ''}
                 </div>
             </td>
-            <td data-label="Peso">${c.peso}</td>
             <td data-label="Estado">
                 <span class="badge ${esActivo ? 'bg-success' : 'bg-secondary'} rounded-pill px-3">
                     ${esActivo ? t('common.active') : t('common.inactive')}
@@ -148,7 +143,6 @@ function _renderFilasOpciones(pagina) {
             <td data-label="Opción">
                 <div class="d-flex align-items-center gap-2">
                     <span class="fw-semibold">${o.opcion}</span>
-                    ${o.excluyente == 1 ? `<span class="badge bg-danger rounded-pill" title="${t('admin.criteria.excluding') || 'Excluyente'}">X</span>` : ''}
                 </div>
             </td>
             <td data-label="Criterio">${o.criterio}</td>

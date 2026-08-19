@@ -31,10 +31,9 @@ const CONFIG_MODALES = {
     usuarios: {
         getTitulo: () => t('admin.users.createTitle'),
         getHtml: () => {
-            const rolesActivos = roles.listaRolesMemoria.filter(r => r.estado === 'activo');
-            const rolesOpts = rolesActivos.length > 0
-                ? rolesActivos.map(r => `<option value="${r.id}">${r.nombre}</option>`).join('')
-                : '<option value="" disabled>No hay roles activos disponibles</option>';
+            const rolesOpts = roles.listaRolesMemoria.length > 0
+                ? roles.listaRolesMemoria.map(r => `<option value="${r.id}">${r.nombre}</option>`).join('')
+                : '<option value="" disabled>No hay roles disponibles</option>';
             return `
             <div class="row">
                 <div class="col-12 col-md-6 mb-3"><label class="form-label fw-bold">Nombre</label><input name="nombre_usuario" class="form-control" required></div>
@@ -93,21 +92,7 @@ const CONFIG_MODALES = {
     criterios: {
         getTitulo: () => t('admin.criteria.createTitle'),
         getHtml: () => `
-            <div class="mb-3"><label class="form-label fw-bold">${t('admin.criteria.criteriaName')}</label><input name="nombre" class="form-control" required></div>
-            <div class="mb-3">
-                <label class="form-label fw-bold">${t('admin.criteria.weight') || 'Peso / Importancia'}</label>
-                <select name="peso" class="form-select">
-                    <option value="1">1 - ${t('admin.criteria.weightLow') || 'Baja'}</option>
-                    <option value="2">2</option>
-                    <option value="3" selected>3 - ${t('admin.criteria.weightMedium') || 'Media'}</option>
-                    <option value="4">4</option>
-                    <option value="5">5 - ${t('admin.criteria.weightHigh') || 'Alta'}</option>
-                </select>
-            </div>
-            <div class="form-check mb-3">
-                <input type="checkbox" class="form-check-input" name="restrictivo" id="chk-criterio-restrictivo" value="1">
-                <label class="form-check-label" for="chk-criterio-restrictivo">${t('admin.criteria.restrictive') || 'Restrictivo (puede descartar matches por completo)'}</label>
-            </div>`
+            <div class="mb-3"><label class="form-label fw-bold">${t('admin.criteria.criteriaName')}</label><input name="nombre" class="form-control" required></div>`
     },
     opciones: {
         getTitulo: () => t('admin.criteria.createOptionTitle'),
@@ -119,26 +104,7 @@ const CONFIG_MODALES = {
                 </select>
             </div>
             <div class="mb-3"><label class="form-label fw-bold">${t('admin.criteria.option')}</label><input name="opcion" class="form-control" required></div>
-            <div class="mb-3"><label class="form-label fw-bold">${t('admin.criteria.value')}</label><input name="valor" class="form-control" required></div>
-            <div class="form-check mb-1">
-                <input type="checkbox" class="form-check-input" name="excluyente" id="chk-opcion-excluyente" value="1">
-                <label class="form-check-label" for="chk-opcion-excluyente">${t('admin.criteria.excluding') || 'Excluyente (descarta el match si el criterio es restrictivo)'}</label>
-            </div>
-            <div id="hint-excluyente-no-restrictivo" class="form-text text-muted mb-3 d-none">${t('admin.criteria.excludingRequiresRestrictive') || 'Solo disponible si el criterio es restrictivo.'}</div>`
-    },
-    convivencias: {
-        getTitulo: () => 'Editar Estado de Convivencia',
-        getHtml: () => `
-            <div class="mb-3">
-                <label class="form-label fw-bold">Estado</label>
-                <select name="estado" class="form-select">
-                    <option value="entrevista">⏳ En Entrevista</option>
-                    <option value="prueba">⚠️ Periodo de Prueba</option>
-                    <option value="activa">✓ Activa</option>
-                    <option value="finalizada">✕ Finalizada</option>
-                </select>
-            </div>
-            <input type="hidden" name="tipo" value="convivencia">`
+            <div class="mb-3"><label class="form-label fw-bold">${t('admin.criteria.value')}</label><input name="valor" class="form-control" required></div>`
     }
 };
 
@@ -181,7 +147,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     await initI18n();
     applyTranslations();
     cargarPerfilPorMail({
-        colorAvatar: (u) => (u.id_rol == 2) ? 'var(--color-secundario)' : 'var(--color-primario)',
+        colorAvatar: (u) => (u.id_rol == 3) ? 'var(--color-secundario)' : 'var(--color-primario)',
         conFallbackLocal: true
     });
 
@@ -267,10 +233,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             const c = criterios.listaCriteriosMemoria.find(x => String(x.id) === id);
             if (c) {
                 form.querySelector('[name="nombre"]').value = c.nombre;
-                const selPeso = form.querySelector('[name="peso"]');
-                if (selPeso) selPeso.value = c.peso;
-                const chkRestrictivo = form.querySelector('[name="restrictivo"]');
-                if (chkRestrictivo) chkRestrictivo.checked = c.restrictivo == 1;
                 document.getElementById('modalTitle').textContent = `${t('admin.criteria.editTitle')}: ${c.nombre}`;
             }
         } else if (efectiva === 'opciones') {
@@ -280,9 +242,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                 if (selCrit) Array.from(selCrit.options).forEach(opt => { opt.selected = String(opt.value) === String(o.criterio_id); });
                 form.querySelector('[name="opcion"]').value = o.opcion;
                 form.querySelector('[name="valor"]').value  = o.valor;
-                sincronizarExcluyente();
-                const chkExcluyente = form.querySelector('[name="excluyente"]');
-                if (chkExcluyente && !chkExcluyente.disabled) chkExcluyente.checked = o.excluyente == 1;
                 document.getElementById('modalTitle').textContent = `${t('admin.criteria.editOptionTitle')}: ${o.opcion}`;
             }
         } else if (efectiva === 'viviendas') {
@@ -349,6 +308,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             await desactivarSeleccion(_pendingEliminar.seccion, _pendingEliminar.seleccionados);
             aplicarFiltros();
             actualizarBotones();
+            mostrarToast('Eliminado correctamente', 'success');
             _pendingEliminar = null;
         }
         bootstrap.Modal.getInstance(document.getElementById('modalConfirmarEliminar')).hide();
@@ -370,6 +330,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             await reactivarSeleccion(_pendingReactivar.seccion, _pendingReactivar.seleccionados);
             aplicarFiltros();
             actualizarBotones();
+            mostrarToast('Reactivado correctamente', 'success');
             _pendingReactivar = null;
         }
         bootstrap.Modal.getInstance(document.getElementById('modalConfirmarReactivar')).hide();
@@ -390,12 +351,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         try {
         const seccionActual = document.querySelector('.section-link.active-custom').getAttribute('data-section');
         const data = Object.fromEntries(new FormData(this));
-
-        if (data.tipo === 'convivencia') {
-            const c = listaConvivenciasMemoria.find(x => x.id === parseInt(data.id_edit));
-            if (c) c.estado = data.estado;
-            renderizarConvivencias(listaConvivenciasMemoria);
-        }
 
         if (seccionActual === 'viviendas') {
             const libresInput = this.querySelector('[name="plazas_libres"]');
@@ -494,8 +449,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 const params = {
                     nombre_opcion: data.opcion,
                     valor:         data.valor,
-                    id_criterio:   data.criterio_id,
-                    excluyente:    data.excluyente ? 1 : 0
+                    id_criterio:   data.criterio_id
                 };
                 if (data.id_edit) {
                     params.id_opcion = data.id_edit;
@@ -508,7 +462,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     mostrarToast('Guardado correctamente', 'success');
                 }
             } else {
-                const params = { nombre_criterio: data.nombre, peso_criterio: data.peso, restrictivo: data.restrictivo ? 1 : 0 };
+                const params = { nombre_criterio: data.nombre };
                 if (data.id_edit) {
                     params.id_criterio = data.id_edit;
                     const res = await apiPost('criterio', 'EDIT', params);
@@ -649,7 +603,7 @@ async function cargarSeguimientoConvivencias() {
             id:           `${r.id_usuario}_${r.id_vivienda}`,
             anfitrion:    vivienda ? nombreCompleto(vivienda.id_anfitrion) : '-',
             huesped:    nombreCompleto(r.id_usuario),
-            estado:       r.activo_usuario_vivienda == 1 ? 'activo' : 'inactivo',
+            estado:       r.estado_usuario_vivienda || '-',
             fecha_inicio: r.fecha_inicio || '-',
             fecha_fin:    r.fecha_fin    || '-'
         };
@@ -669,47 +623,42 @@ function renderizarConvivencias(convivencias) {
     aplicarPaginacion('tabla-convivencias', convivencias, _renderFilasConvivencias);
 }
 
+function badgeEstadoConvivencia(estado) {
+    const labels = {
+        PENDIENTE:  t('admin.convivencias.statusPending'),
+        ACEPTADA:   t('admin.convivencias.statusAccepted'),
+        ACTIVA:     t('admin.convivencias.statusActive'),
+        RECHAZADA:  t('admin.convivencias.statusRejected'),
+        FINALIZADA: t('admin.convivencias.statusFinished')
+    };
+    const colores = {
+        PENDIENTE:  ['#FFF3CD', '#856404'],
+        ACEPTADA:   ['#CFE2FF', '#084298'],
+        ACTIVA:     ['#D1E7DD', '#0F5132'],
+        RECHAZADA:  ['#F8D7DA', '#842029'],
+        FINALIZADA: ['#e2e3e5', '#383d41']
+    };
+    const [bg, fg] = colores[estado] || ['#e2e3e5', '#383d41'];
+    return `<span class="badge rounded-pill px-3" style="background-color:${bg};color:${fg};">${labels[estado] || estado}</span>`;
+}
+
 function _renderFilasConvivencias(pagina) {
     const tbody = document.getElementById('tabla-convivencias');
     if (!tbody) return;
     tbody.innerHTML = '';
     pagina.forEach(c => {
-        const activo = c.estado === 'activo';
         const row = document.createElement('tr');
         row.className = 'convivencia-row';
-        row.style.cursor = 'pointer';
         row.innerHTML = `
             <td data-label="Anfitrión" class="fw-semibold">${c.anfitrion}</td>
             <td data-label="Huésped">${c.huesped}</td>
-            <td data-label="Estado">
-                <span class="badge rounded-pill px-3 ${activo ? 'bg-success' : 'bg-secondary'}">
-                    ${activo ? 'Activo' : 'Inactivo'}
-                </span>
-            </td>
+            <td data-label="Estado">${badgeEstadoConvivencia(c.estado)}</td>
             <td data-label="Fecha inicio" class="text-muted small">${c.fecha_inicio}</td>
             <td data-label="Fecha fin" class="text-muted small">${c.fecha_fin}</td>
         `;
         tbody.appendChild(row);
-
-        // Click en la fila para editar
-        row.addEventListener('click', function(e) {
-            e.stopPropagation();
-            if (typeof editarConvivencia === 'function') editarConvivencia(c.id);
-        });
     });
 }
-
-window.editarConvivencia = async function(id) {
-    const c = listaConvivenciasMemoria.find(x => x.id === id);
-    if (!c) return;
-
-    await abrirModalGenerico('convivencias');
-
-    const form = document.getElementById('formGenerico');
-    form.querySelector('[name="estado"]').value = c.estado;
-    form.insertAdjacentHTML('beforeend', `<input type="hidden" name="id_edit" value="${id}">`);
-    document.getElementById('modalTitle').textContent = `Editar Convivencia: ${c.anfitrion} — ${c.huesped}`;
-};
 
 async function abrirModalGenerico(seccion) {
     const config = CONFIG_MODALES[seccion];
@@ -727,30 +676,7 @@ async function abrirModalGenerico(seccion) {
     form.querySelector('input[name="id_edit"]')?.remove();
     ocultarErrorFormulario(document.getElementById('formGenerico-error'));
 
-    if (seccion === 'opciones') inicializarControlExcluyente();
-
     bootstrap.Modal.getOrCreateInstance(document.getElementById('modalGenerico')).show();
-}
-
-// El checkbox "excluyente" solo tiene sentido si el criterio seleccionado es restrictivo
-function inicializarControlExcluyente() {
-    const selCriterio = document.querySelector('#formGenerico [name="criterio_id"]');
-    if (!selCriterio) return;
-    selCriterio.addEventListener('change', sincronizarExcluyente);
-    sincronizarExcluyente();
-}
-
-function sincronizarExcluyente() {
-    const selCriterio   = document.querySelector('#formGenerico [name="criterio_id"]');
-    const chkExcluyente = document.querySelector('#formGenerico [name="excluyente"]');
-    const hint          = document.getElementById('hint-excluyente-no-restrictivo');
-    if (!selCriterio || !chkExcluyente) return;
-
-    const criterioSeleccionado = criterios.listaCriteriosMemoria.find(c => String(c.id) === String(selCriterio.value));
-    const esRestrictivo = !!criterioSeleccionado && criterioSeleccionado.restrictivo == 1;
-    chkExcluyente.disabled = !esRestrictivo;
-    if (!esRestrictivo) chkExcluyente.checked = false;
-    hint?.classList.toggle('d-none', esRestrictivo);
 }
 
 function obtenerIdsSeleccionados(seccionEfectiva) {
@@ -897,7 +823,7 @@ window.verUsuario = function(id) {
 
     const rolObj = roles.listaRolesMemoria.find(r => String(r.id) === String(u.id_rol));
     const rolNombre = rolObj ? rolObj.nombre : `Rol ${u.id_rol}`;
-    const rolBadge = u.id_rol == 2
+    const rolBadge = u.id_rol == 3
         ? `<span class="badge bg-success-subtle text-success">${rolNombre}</span>`
         : `<span class="badge bg-info-subtle text-info">${rolNombre}</span>`;
 
@@ -965,13 +891,11 @@ window.verCriterio = function(id) {
     document.getElementById('modalDetalleTitle').textContent = `${t('admin.criteria.detailTitle')}: ${c.nombre}`;
     document.getElementById('modalDetalleContent').innerHTML = `
         <div class="row mb-3"><div class="col-12 col-md-12"><h6 class="text-muted small mb-1">${t('admin.criteria.criteriaName')}</h6><p class="fw-semibold mb-0">${c.nombre}</p></div></div>
-        <div class="row mb-3"><div class="col-12 col-md-12"><h6 class="text-muted small mb-1">${t('admin.criteria.weight')}</h6><p class="fw-semibold mb-0">${c.peso}</p></div></div>
-        <div class="row mb-3"><div class="col-12 col-md-12"><h6 class="text-muted small mb-1">${t('admin.criteria.restrictive')}</h6><p class="mb-0">${c.restrictivo == 1 ? `<span class="badge bg-danger">${t('common.yes') || 'Sí'}</span>` : `<span class="badge bg-secondary">${t('common.no') || 'No'}</span>`}</p></div></div>
         <div class="row ${opcionesDelCriterio.length ? 'mb-3' : ''}"><div class="col-12 col-md-12"><h6 class="text-muted small mb-1">${t('common.status')}</h6><p class="mb-0">${estadoBadge}</p></div></div>
         ${opcionesDelCriterio.length ? `
         <div class="row"><div class="col-12 col-md-12"><h6 class="text-muted small mb-1">${t('admin.criteria.tabOptions')}</h6>
             <ul class="list-unstyled mb-0">
-                ${opcionesDelCriterio.map(o => `<li><span class="fw-semibold">${o.opcion}</span> <span class="text-muted">(${t('admin.criteria.value')}: ${o.valor})</span>${o.excluyente == 1 ? ` <span class="badge bg-danger rounded-pill">${t('admin.criteria.excluding') || 'Excluyente'}</span>` : ''}</li>`).join('')}
+                ${opcionesDelCriterio.map(o => `<li><span class="fw-semibold">${o.opcion}</span> <span class="text-muted">(${t('admin.criteria.value')}: ${o.valor})</span></li>`).join('')}
             </ul>
         </div></div>` : ''}
     `;

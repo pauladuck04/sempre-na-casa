@@ -1,4 +1,4 @@
-const ITEMS_POR_PAGINA = 5;
+const ITEMS_POR_PAGINA = 7;
 const _estado = new Map();
 
 function _get(tablaId) {

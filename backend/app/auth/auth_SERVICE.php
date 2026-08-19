@@ -159,9 +159,9 @@ function mapRolToId($rol){
 			$nombreRol = $resRol['resource'][0]['nombre_rol'];
 		}
 		if (empty($nombreRol)) {
-			if (intval($fila['id_rol']) === 4) {
+			if (intval($fila['id_rol']) === 3) {
 				$nombreRol = 'anfitrion';
-			} elseif (intval($fila['id_rol']) === 5) {
+			} elseif (intval($fila['id_rol']) === 4) {
 				$nombreRol = 'huesped';
 			}
 		}
@@ -198,7 +198,7 @@ function mapRolToId($rol){
 	function REGISTRAR(){
 
 		if (!isset($_POST['id_rol']) || $_POST['id_rol'] == ''){
-			$_POST['id_rol'] = 5;
+			$_POST['id_rol'] = 4; // huesped por defecto
 		}
 
 		include_once './base/mapping.php';

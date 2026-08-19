@@ -28,7 +28,10 @@ export async function cargarCriterios(idVivienda) {
             id_criterio: r.id_criterio,
             id_opcion:   r.id_opcion,
             criterio:    r.nombre_criterio,
-            valor:       r.nombre_opcion
+            valor:       r.nombre_opcion,
+            peso:                 r.peso        ?? 3,
+            restrictivo:          r.restrictivo ?? 0,
+            id_opcion_excluyente: r.id_opcion_excluyente ?? null
           }))
         : [];
 

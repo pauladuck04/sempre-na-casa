@@ -1,7 +1,7 @@
 import { initI18n, t, applyTranslations, initLangDropdown } from './i18n.js';
 import { mostrarErrorFormulario, ocultarErrorFormulario, mostrarErrorCampo, ocultarErrorCampo, validarCampoTexto } from './form-errors.js';
 import { inicializarTogglePassword, inicializarMedidorFortaleza } from './perfil-comun.js';
-import { renderPreguntasEncuesta } from './encuesta-criterios.js';
+import { renderPreguntasEncuesta, leerRespuestaCriterio } from './encuesta-criterios.js';
 import { REGLAS_CAMPOS } from './validaciones-campos.js';
 import { mensajeError } from './error-codes.js';
 
@@ -99,6 +99,7 @@ if (registroForm) {
     const mensajesApellidos = { min_size: t('register.surnamesMinSize'), max_size: t('register.surnamesMaxSize'), format: t('register.surnamesFormat') };
     const mensajesTelefono  = { min_size: t('register.phoneMinSize'),    max_size: t('register.phoneMaxSize'),    format: t('register.phoneFormat') };
     const mensajesEmail     = { min_size: t('register.emailMinSize'),    max_size: t('register.emailMaxSize'),    format: t('register.emailFormat') };
+    const mensajesPassword  = { min_size: t('register.passwordMinSize'), max_size: t('register.passwordMaxSize') };
 
     // Validación en vivo al salir de cada campo
     dniInput.addEventListener('blur',       () => validarCampoTexto(dniInput,       REGLAS_CAMPOS.usuario.dni,            mensajesDni));
@@ -106,6 +107,7 @@ if (registroForm) {
     apellidosInput.addEventListener('blur', () => validarCampoTexto(apellidosInput, REGLAS_CAMPOS.usuario.apellidos,      mensajesApellidos));
     telefonoInput.addEventListener('blur',  () => validarCampoTexto(telefonoInput,  REGLAS_CAMPOS.usuario.telefono,       mensajesTelefono));
     emailInput.addEventListener('blur',     () => validarCampoTexto(emailInput,     REGLAS_CAMPOS.usuario.mail,           mensajesEmail));
+    password.addEventListener('blur',       () => validarCampoTexto(password,       REGLAS_CAMPOS.usuario.password,       mensajesPassword));
 
     const urlParams = new URLSearchParams(window.location.search);
     const rolParam  = (urlParams.get('rol') || '').toLowerCase();
@@ -148,7 +150,7 @@ if (registroForm) {
     registroForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         ocultarErrorFormulario(errorMessage);
-        [dniInput, nombreInput, apellidosInput, telefonoInput, emailInput, password2].forEach(ocultarErrorCampo);
+        [dniInput, nombreInput, apellidosInput, telefonoInput, emailInput, password, password2].forEach(ocultarErrorCampo);
 
         let valido = true;
         if (!validarCampoTexto(dniInput,       REGLAS_CAMPOS.usuario.dni,            mensajesDni))       valido = false;
@@ -156,6 +158,7 @@ if (registroForm) {
         if (!validarCampoTexto(apellidosInput, REGLAS_CAMPOS.usuario.apellidos,      mensajesApellidos)) valido = false;
         if (!validarCampoTexto(telefonoInput,  REGLAS_CAMPOS.usuario.telefono,       mensajesTelefono))  valido = false;
         if (!validarCampoTexto(emailInput,     REGLAS_CAMPOS.usuario.mail,           mensajesEmail))     valido = false;
+        if (!validarCampoTexto(password,       REGLAS_CAMPOS.usuario.password,       mensajesPassword))  valido = false;
         if (password.value !== password2.value) {
             mostrarErrorCampo(password2, t('register.passwordMismatch'));
             valido = false;
@@ -414,13 +417,16 @@ if (encuestaForm) {
 
                 secciones.forEach(seccion => {
                     const idCriterio = seccion.getAttribute('data-criterio');
-                    const radioMarcado = seccion.querySelector('.btn-check:checked');
-                    if (radioMarcado) {
+                    const respuesta  = leerRespuestaCriterio(seccion);
+                    if (respuesta) {
                         promesas.push(
                             apiPost('usuario_criterio_opcion', 'ADD', {
-                                id_usuario:  idUsuario,
-                                id_criterio: idCriterio,
-                                id_opcion:   radioMarcado.value
+                                id_usuario:           idUsuario,
+                                id_criterio:          idCriterio,
+                                id_opcion:            respuesta.idOpcion,
+                                peso:                 respuesta.peso,
+                                restrictivo:          respuesta.restrictivo,
+                                id_opcion_excluyente: respuesta.idOpcionExcluyente
                             })
                         );
                     }
