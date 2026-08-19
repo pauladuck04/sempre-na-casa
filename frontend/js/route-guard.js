@@ -20,7 +20,7 @@
         return null;
     }
 
-    window.protegerRuta = function (rolesPermitidos, basePath = '') {
+    function comprobarSesion(rolesPermitidos, basePath) {
         if (!getCookie('user_token')) {
             window.location.replace(basePath + 'login.html');
             return;
@@ -29,6 +29,19 @@
         if (!rolesPermitidos.includes(rol)) {
             window.location.replace(basePath + (DASHBOARD_POR_ROL[rol] || 'login.html'));
         }
+    }
+
+    window.protegerRuta = function (rolesPermitidos, basePath = '') {
+        comprobarSesion(rolesPermitidos, basePath);
+
+        // Si el navegador restaura esta página desde la bfcache (p.ej. pulsando "atrás"
+        // tras cerrar sesión), los scripts no se vuelven a ejecutar por sí solos: hay que
+        // revalidar la sesión en ese momento para que la redirección se aplique siempre.
+        window.addEventListener('pageshow', function (event) {
+            if (event.persisted) {
+                comprobarSesion(rolesPermitidos, basePath);
+            }
+        });
     };
 
     // Borra todos los datos de sesión sin redirigir (útil tras eliminar/desactivar la cuenta).

@@ -16,7 +16,7 @@ export async function cargarSolicitudes() {
             vivienda:       `${r.direccion || ''}, ${r.ciudad || ''}`,
             anfitrion:      `${r.anfitrion_nombre || ''} ${r.anfitrion_apellidos || ''}`.trim(),
             estado:         r.estado_usuario_vivienda,
-            fechaSolicitud: r.fecha_solicitud ? r.fecha_solicitud.split(' ')[0] : '-',
+            fechaSolicitud: r.fecha_solicitud_usuario_vivienda ? r.fecha_solicitud_usuario_vivienda.split(' ')[0] : '-',
             fechaInicio:    r.fecha_inicio ? r.fecha_inicio.split(' ')[0] : '-',
             fechaFin:       r.fecha_fin ? r.fecha_fin.split(' ')[0] : null
           }))

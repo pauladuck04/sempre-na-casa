@@ -474,22 +474,21 @@
       "email": "Email",
       "phone": "Phone",
       "joinDate": "Join Date",
-      "compatibility": "Compatibility",
       "pending": "Pending",
+      "noVivienda": "Register your home to see tenants.",
+      "noTenants": "No tenants assigned to your home.",
       "statusActive": "Active",
-      "statusInterview": "In Interview",
-      "statusTrial": "Trial",
       "statusInactive": "Inactive",
       "filterActive": "Active",
-      "filterInterview": "In Interview",
-      "filterTrial": "In Trial",
       "filterInactive": "Inactive"
     },
     "convivencias": {
-      "statusActive": "✓ Active",
-      "statusInterview": "⏳ In Interview",
-      "statusTrial": "⚠️ Trial Period",
-      "noActive": "No active cohabitations"
+      "statusActive": "Active",
+      "statusAccepted": "Accepted",
+      "statusFinished": "Finished",
+      "statusPending": "Pending",
+      "statusRejected": "Rejected",
+      "noActive": "No tenants registered in this home."
     }
   },
   "huesped": {
@@ -545,10 +544,12 @@
       "roommates": "Roommates",
       "noRoommates": "No other tenants in this home.",
       "since": "Since",
-      "statusActive": "✓ Active",
-      "statusInterview": "⏳ In Interview",
-      "statusTrial": "⚠️ Trial Period",
-      "statusFinished": "✕ Finished"
+      "statusActive": "Active",
+      "statusAccepted": "Accepted",
+      "statusFinished": "Finished",
+      "statusPending": "Pending",
+      "statusRejected": "Rejected",
+      "noActive": "No tenants registered in this home."
     },
     "preferences": {
       "add": "Add Preference",

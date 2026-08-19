@@ -378,11 +378,20 @@
     },
     "tenants": {
       "profileTitle": "Perfil do convidado", "email": "Correo Electrónico", "phone": "Teléfono",
-      "joinDate": "Data de Ingreso", "compatibility": "Compatibilidade", "pending": "Pendente",
-      "statusActive": "Activo", "statusInterview": "En Entrevista", "statusTrial": "Proba", "statusInactive": "Inactivo",
-      "filterActive": "Activos", "filterInterview": "En Entrevista", "filterTrial": "En Proba", "filterInactive": "Inactivos"
+      "joinDate": "Data de Ingreso", "pending": "Pendente",
+      "noVivienda": "Rexistra a túa vivenda para ver os convidados.",
+      "noTenants": "Non hai convidados asignados á túa vivenda.",
+      "statusActive": "Activo", "statusInactive": "Inactivo",
+      "filterActive": "Activos", "filterInactive": "Inactivos"
     },
-    "convivencias": { "statusActive": "✓ Activa", "statusInterview": "⏳ En Entrevista", "statusTrial": "⚠️ Período de Proba", "noActive": "Non hai convivencias activas" }
+    "convivencias": {
+      "statusActive": "Activa",
+      "statusAccepted": "Aceptada",
+      "statusFinished": "Finalizada",
+      "statusPending": "Pendente",
+      "statusRejected": "Rechazada",
+      "noActive": "Non hai convivencias activas"
+    }
   },
   "huesped": {
     "badge": "convidado",
@@ -412,8 +421,12 @@
       "status": "Estado", "compatibility": "Compatibilidade", "totalSlots": "Prazas na Vivenda",
       "startDate": "Data de Inicio", "roommates": "Compañeiros de Piso",
       "noRoommates": "Non hai outros convidados nesta vivenda.", "since": "Desde",
-      "statusActive": "✓ Activa", "statusInterview": "⏳ En Entrevista",
-      "statusTrial": "⚠️ Período de Proba", "statusFinished": "✕ Rematada"
+      "statusActive": "Activa",
+      "statusAccepted": "Aceptada",
+      "statusFinished": "Finalizada",
+      "statusPending": "Pendente",
+      "statusRejected": "Rexeitada",
+      "noActive": "Non hai convivencias activas"
     },
     "preferences": {
       "add": "Engadir Preferencia", "preferenceLabel": "Preferencia", "myValue": "O Meu Valor",

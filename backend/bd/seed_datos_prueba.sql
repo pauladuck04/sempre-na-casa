@@ -13,9 +13,9 @@
 -- y 20260818_opcion_excluyente_especifica.sql ya estén aplicadas (columnas peso/restrictivo/
 -- id_opcion_excluyente en usuario_criterio_opcion y vivienda_criterio_opcion).
 --
--- NOTA: dump.sql tiene desactualizada la tabla `usuario_vivienda` (le faltan las columnas
--- estado_usuario_vivienda/fecha_solicitud/fecha_inicio/fecha_fin que usuario_vivienda_SERVICE.php
--- usa activamente) — este script asume que tu BD real SÍ las tiene, como el resto del código.
+-- NOTA: este script asume que tu BD real ya tiene las columnas estado_usuario_vivienda/
+-- fecha_solicitud_usuario_vivienda/fecha_inicio/fecha_fin en `usuario_vivienda` (ver migración
+-- backend/bd/migrations/20260819_estado_solicitud_usuario_vivienda.sql).
 -- =====================================================================================
 
 START TRANSACTION;
@@ -239,24 +239,24 @@ INSERT INTO usuario_criterio_opcion (id_usuario, id_criterio, id_opcion, peso, r
 -- ---------------------------------------------------------------------------
 
 -- Ana -> vivienda de Xoan: convivencia ya ACTIVA (empezo hace 2 meses)
-INSERT INTO usuario_vivienda (id_usuario, id_vivienda, activo_usuario_vivienda, estado_usuario_vivienda, fecha_solicitud, fecha_inicio, fecha_fin)
+INSERT INTO usuario_vivienda (id_usuario, id_vivienda, activo_usuario_vivienda, estado_usuario_vivienda, fecha_solicitud_usuario_vivienda, fecha_inicio, fecha_fin)
 VALUES (@u_ana, @v_xoan, 1, 'ACTIVA', DATE_SUB(NOW(), INTERVAL 10 WEEK), DATE_SUB(CURDATE(), INTERVAL 2 MONTH), NULL);
 
 -- Carlos -> vivienda de Xoan: solicitud PENDIENTE (para el panel de admin)
-INSERT INTO usuario_vivienda (id_usuario, id_vivienda, activo_usuario_vivienda, estado_usuario_vivienda, fecha_solicitud, fecha_inicio, fecha_fin)
-VALUES (@u_carlos, @v_xoan, 0, 'PENDIENTE', NOW(), DATE_ADD(CURDATE(), INTERVAL 3 WEEK), NULL);
+INSERT INTO usuario_vivienda (id_usuario, id_vivienda, activo_usuario_vivienda, estado_usuario_vivienda, fecha_solicitud_usuario_vivienda, fecha_inicio, fecha_fin)
+VALUES (@u_carlos, @v_xoan, 1, 'PENDIENTE', NOW(), DATE_ADD(CURDATE(), INTERVAL 3 WEEK), NULL);
 
 -- Sofia -> vivienda de Lucia: ACEPTADA, todavia no ha llegado la fecha de inicio
-INSERT INTO usuario_vivienda (id_usuario, id_vivienda, activo_usuario_vivienda, estado_usuario_vivienda, fecha_solicitud, fecha_inicio, fecha_fin)
+INSERT INTO usuario_vivienda (id_usuario, id_vivienda, activo_usuario_vivienda, estado_usuario_vivienda, fecha_solicitud_usuario_vivienda, fecha_inicio, fecha_fin)
 VALUES (@u_sofia, @v_lucia, 1, 'ACEPTADA', DATE_SUB(NOW(), INTERVAL 3 DAY), DATE_ADD(CURDATE(), INTERVAL 2 WEEK), NULL);
 
 -- Diego -> vivienda de Lucia: RECHAZADA
-INSERT INTO usuario_vivienda (id_usuario, id_vivienda, activo_usuario_vivienda, estado_usuario_vivienda, fecha_solicitud, fecha_inicio, fecha_fin)
+INSERT INTO usuario_vivienda (id_usuario, id_vivienda, activo_usuario_vivienda, estado_usuario_vivienda, fecha_solicitud_usuario_vivienda, fecha_inicio, fecha_fin)
 VALUES (@u_diego, @v_lucia, 0, 'RECHAZADA', DATE_SUB(NOW(), INTERVAL 1 WEEK), DATE_ADD(CURDATE(), INTERVAL 1 MONTH), NULL);
 
 -- Elena -> vivienda de Marcos: PENDIENTE, con fecha de fin propuesta (estancia con limite)
-INSERT INTO usuario_vivienda (id_usuario, id_vivienda, activo_usuario_vivienda, estado_usuario_vivienda, fecha_solicitud, fecha_inicio, fecha_fin)
-VALUES (@u_elena, @v_marcos, 0, 'PENDIENTE', NOW(), DATE_ADD(CURDATE(), INTERVAL 1 MONTH), DATE_ADD(CURDATE(), INTERVAL 7 MONTH));
+INSERT INTO usuario_vivienda (id_usuario, id_vivienda, activo_usuario_vivienda, estado_usuario_vivienda, fecha_solicitud_usuario_vivienda, fecha_inicio, fecha_fin)
+VALUES (@u_elena, @v_marcos, 1, 'PENDIENTE', NOW(), DATE_ADD(CURDATE(), INTERVAL 1 MONTH), DATE_ADD(CURDATE(), INTERVAL 7 MONTH));
 
 COMMIT;
 

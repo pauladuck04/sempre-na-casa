@@ -471,9 +471,12 @@
       "filterInactive": "Inactivos"
     },
     "convivencias": {
-      "statusActive": "✓ Activa",
-      "statusInactive": "✕ Baja",
-      "noActive": "No hay huéspedes registrados en esta vivienda."
+      "statusActive": "Activa",
+      "statusAccepted": "Aceptada",
+      "statusFinished": "Finalizada",
+      "statusPending": "Pendiente",
+      "statusRejected": "Rechazada",
+      "noActive": "No hay convivencias activas"
     }
   },
   "huesped": {
@@ -528,7 +531,13 @@
       "startDate": "Fecha de Inicio",
       "roommates": "Compañeros de Piso",
       "noRoommates": "No hay otros huespedes en esta vivienda.",
-      "since": "Desde"
+      "since": "Desde",
+      "statusActive": "Activa",
+      "statusAccepted": "Aceptada",
+      "statusFinished": "Finalizada",
+      "statusPending": "Pendiente",
+      "statusRejected": "Rechazada",
+      "noActive": "No hay convivencias activas"
     },
     "preferences": {
       "add": "Añadir Preferencia",

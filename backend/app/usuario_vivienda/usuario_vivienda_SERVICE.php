@@ -13,11 +13,11 @@ class usuario_vivienda_SERVICE extends appServiceBase {
     function inicializarRest() {
 
         $this->listaAtributos = array(
-            'id_usuario', 'id_vivienda', 'activo_usuario_vivienda', 'estado_usuario_vivienda', 'fecha_solicitud', 'fecha_inicio', 'fecha_fin'
+            'id_usuario', 'id_vivienda', 'activo_usuario_vivienda', 'estado_usuario_vivienda', 'fecha_solicitud_usuario_vivienda', 'fecha_inicio', 'fecha_fin'
         );
 
         $this->listaAtributosSelect = array(
-            'id_usuario', 'id_vivienda', 'activo_usuario_vivienda', 'estado_usuario_vivienda', 'fecha_solicitud', 'fecha_inicio', 'fecha_fin'
+            'id_usuario', 'id_vivienda', 'activo_usuario_vivienda', 'estado_usuario_vivienda', 'fecha_solicitud_usuario_vivienda', 'fecha_inicio', 'fecha_fin'
         );
 
         $this->notnull = array(
@@ -41,10 +41,11 @@ class usuario_vivienda_SERVICE extends appServiceBase {
         $this->promoverConvivenciasActivas();
 
         if (isset($_POST['action']) && $_POST['action'] == 'ADD') {
-            // un ADD siempre nace como solicitud pendiente; solo se activa cuando el admin la acepta
-            $_POST['activo_usuario_vivienda'] = 0;
+            // un ADD siempre nace como solicitud pendiente; activo_usuario_vivienda ya se marca a 1
+            // para reservar la plaza mientras se resuelve (getSolicitudes exige activo=1 + PENDIENTE)
+            $_POST['activo_usuario_vivienda'] = 1;
             $_POST['estado_usuario_vivienda'] = 'PENDIENTE';
-            $_POST['fecha_solicitud']         = date('Y-m-d H:i:s');
+            $_POST['fecha_solicitud_usuario_vivienda']         = date('Y-m-d H:i:s');
         }
     }
 
@@ -129,7 +130,11 @@ class usuario_vivienda_SERVICE extends appServiceBase {
             return array('ok' => false, 'code' => 'SOLICITUD_YA_EXISTE_KO');
         }
 
-        return $this->modelo->ADD();
+        $res = $this->modelo->ADD();
+        if ($res['ok']) {
+            $this->recalcularPlazasLibres($map, $idVivienda);
+        }
+        return $res;
     }
 
     function ACEPTAR() {
@@ -163,13 +168,16 @@ class usuario_vivienda_SERVICE extends appServiceBase {
         $set = "estado_usuario_vivienda = '{$nuevoEstado}'";
         if ($nuevoEstado === 'ACEPTADA') {
             $set .= ", activo_usuario_vivienda = 1";
+        } elseif ($nuevoEstado === 'RECHAZADA') {
+            // libera la plaza que la solicitud reservaba desde el ADD
+            $set .= ", activo_usuario_vivienda = 0";
         }
 
         $resUpdate = $map->lanzarquery(
             "UPDATE usuario_vivienda SET {$set} WHERE id_usuario = {$idUsuario} AND id_vivienda = {$idVivienda}"
         );
 
-        if ($resUpdate['ok'] && $nuevoEstado === 'ACEPTADA') {
+        if ($resUpdate['ok'] && ($nuevoEstado === 'ACEPTADA' || $nuevoEstado === 'RECHAZADA')) {
             $this->recalcularPlazasLibres($map, $idVivienda);
         }
 
@@ -184,7 +192,7 @@ class usuario_vivienda_SERVICE extends appServiceBase {
         include_once './base/mapping.php';
         $map = new mapping('usuario_vivienda');
         return $map->lanzarqueryconresults(
-            "SELECT uv.id_usuario, uv.id_vivienda, uv.estado_usuario_vivienda, uv.fecha_solicitud,
+            "SELECT uv.id_usuario, uv.id_vivienda, uv.estado_usuario_vivienda, uv.fecha_solicitud_usuario_vivienda,
                     uv.fecha_inicio, uv.fecha_fin,
                     u.nombre_usuario, u.apellidos, u.mail,
                     v.direccion, v.ciudad, v.id_anfitrion,
@@ -193,8 +201,8 @@ class usuario_vivienda_SERVICE extends appServiceBase {
              JOIN usuario  u  ON u.id_usuario  = uv.id_usuario
              JOIN vivienda v  ON v.id_vivienda = uv.id_vivienda
              JOIN usuario  ua ON ua.id_usuario  = v.id_anfitrion
-             WHERE uv.estado_usuario_vivienda = 'PENDIENTE'
-             ORDER BY uv.fecha_solicitud DESC"
+             WHERE uv.activo_usuario_vivienda = 1 AND uv.estado_usuario_vivienda = 'PENDIENTE'
+             ORDER BY uv.fecha_solicitud_usuario_vivienda DESC"
         );
     }
 

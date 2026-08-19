@@ -79,7 +79,8 @@ document.addEventListener('DOMContentLoaded', async function() {
             usuarioActual.dni = u.dni;
             usuarioActual.telefono = u.telefono;
             usuarioActual.fechaAlta = u.fechaRegistro;
-        }
+        },
+        conFallbackLocal: true
     });
     const seccionActiva = document.querySelector('.section-link.active-custom')?.getAttribute('data-section');
     actualizarControlesSeccion(seccionActiva);
@@ -685,6 +686,11 @@ function actualizarControlesSeccion(seccion) {
     const btnEditar= document.getElementById('btnEditar');
     const btnEliminar  = document.getElementById('btnEliminar');
     const btnReactivar = document.getElementById('btnReactivar');
+
+    // cada seccion oculta un subconjunto distinto de botones, asi que hay que partir siempre de
+    // los 4 visibles antes de aplicar los d-none de la seccion activa (si no, un boton ocultado
+    // por una seccion se queda oculto para siempre al navegar a otra que no lo vuelve a mostrar)
+    [btnCrear, btnEditar, btnEliminar, btnReactivar].forEach(btn => btn?.classList.remove('d-none'));
 
     if (seccion === 'criterios') {
         btnCrear?.classList.add('d-none');

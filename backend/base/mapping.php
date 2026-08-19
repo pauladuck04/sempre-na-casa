@@ -33,6 +33,11 @@ class mapping extends mappingBase{
 
 		foreach ($valores as $key => $value){
 
+			// los campos sin filtro llegan como cadena vacia; si se incluyen igualmente como
+			// "campo LIKE '%%'" y ese campo es NULL en la fila, la condicion evalua a NULL (no a
+			// verdadero) y la fila desaparece de los resultados aunque exista, asi que se omiten.
+			if (strlen($value) == 0) continue;
+
 			if ($primero){
 				$primero = false;
 			}
@@ -42,6 +47,10 @@ class mapping extends mappingBase{
 
 			$cadena = $cadena . "(" . $key . " LIKE " . "'%". $value . "%')";
 
+		}
+
+		if ($cadena === ''){
+			$cadena = '1=1';
 		}
 
 		return $cadena;
