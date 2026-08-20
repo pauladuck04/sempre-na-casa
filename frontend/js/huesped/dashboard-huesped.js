@@ -58,6 +58,15 @@ document.addEventListener('DOMContentLoaded', async function() {
                 navConvivencia.classList.toggle('d-none', !convivencia.convivenciaMemoria);
             }
 
+            const navRecomendadas = document.getElementById('nav-recomendadas');
+            if (navRecomendadas) {
+                navRecomendadas.classList.toggle('d-none', !!convivencia.convivenciaMemoria);
+            }
+
+            if (convivencia.convivenciaMemoria && document.querySelector('.section-link.active-custom')?.getAttribute('data-section') === 'recomendadas') {
+                navegarASeccion('general');
+            }
+
             convivencia.renderizarConvivencia();
             cargarResumenGeneral();
         }
