@@ -141,17 +141,16 @@
   },
   "recoverPassword": {
     "pageTitle": "¿Olvidaste tu contraseña?",
-    "subtitle": "No te preocupes, introduce tu email y generaremos un enlace para restablecerla.",
+    "subtitle": "No te preocupes, introduce tu email y te enviaremos un enlace para restablecerla.",
     "emailLabel": "Email",
-    "emailHelp": "Te mostraremos un enlace para restablecer tu contraseña.",
-    "successText": "Enlace generado correctamente.",
-    "linkIntro": "Aquí tienes tu enlace de restablecimiento:",
-    "openLink": "Abrir enlace",
+    "emailHelp": "Recibirás un email con un enlace para restablecer tu contraseña.",
+    "successText": "Te hemos enviado un correo con el enlace para restablecer tu contraseña.",
     "backToLogin": "Volver al inicio de sesión",
     "emailRequired": "Por favor introduce tu email.",
-    "sending": "Generando enlace...",
+    "sending": "Enviando correo...",
     "submit": "Recuperar contraseña",
-    "error": "No se pudo generar el enlace. Intenta de nuevo.",
+    "error": "No se pudo enviar el correo. Intenta de nuevo.",
+    "emailSendError": "No se pudo enviar el correo de recuperación. Intenta de nuevo más tarde.",
     "userNotFound": "No existe ninguna cuenta con ese email."
   },
   "resetPassword": {

@@ -11,6 +11,7 @@ const MAPA_ERRORES = {
     USUARIO_INACTIVO_KO:            'login.inactiveUser',
     USUARIO_YA_EXISTE_KO:           'register.emailOrDniTaken',
     USUARIO_NO_ENCONTRADO_KO:       'recoverPassword.userNotFound',
+    ENVIO_EMAIL_KO:                 'recoverPassword.emailSendError',
     PASSWORD_ACTUAL_INCORRECTA_KO:  'profile.currentPasswordIncorrect',
     CAMBIAR_PASSWORD_KO:            'profile.changePasswordError',
     TOKEN_INVALIDO_KO:              'resetPassword.invalidToken',

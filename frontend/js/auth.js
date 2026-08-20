@@ -220,7 +220,6 @@ if (recuperarForm) {
     const successMessage = document.getElementById('success-message');
     const errorMessage   = document.getElementById('error-message');
     const btnRecuperar   = document.getElementById('btn-recuperar');
-    const resetLink      = document.getElementById('reset-link');
 
     recuperarForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -246,8 +245,6 @@ if (recuperarForm) {
                 return;
             }
 
-            const url = new URL(`restablecer-password.html?token=${encodeURIComponent(res.resource.token)}`, window.location.href);
-            resetLink.href = url.href;
             successMessage.classList.remove('d-none');
             recuperarForm.reset();
 

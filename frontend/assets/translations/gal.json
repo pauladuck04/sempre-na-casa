@@ -141,17 +141,16 @@
   },
   "recoverPassword": {
     "pageTitle": "Esqueciche o teu contrasinal?",
-    "subtitle": "Non te preocupes, introduce o teu email e xeraremos un enlace para restablecelo.",
+    "subtitle": "Non te preocupes, introduce o teu email e enviarémosche un enlace para restablecelo.",
     "emailLabel": "Email",
-    "emailHelp": "Mostrarémosche un enlace para restablecer o teu contrasinal.",
-    "successText": "Enlace xerado correctamente.",
-    "linkIntro": "Aquí tes o teu enlace de restablecemento",
-    "openLink": "Abrir enlace",
+    "emailHelp": "Recibirás un email cun enlace para restablecer o teu contrasinal.",
+    "successText": "Enviámosche un correo co enlace para restablecer o teu contrasinal.",
     "backToLogin": "Volver ao inicio de sesión",
     "emailRequired": "Por favor introduce o teu email.",
-    "sending": "Xerando enlace...",
+    "sending": "Enviando correo...",
     "submit": "Recuperar contrasinal",
-    "error": "Non se puido xerar o enlace. Tenta de novo.",
+    "error": "Non se puido enviar o correo. Tenta de novo.",
+    "emailSendError": "Non se puido enviar o correo de recuperación. Tenta de novo máis tarde.",
     "userNotFound": "Non existe ningunha conta con ese email."
   },
   "resetPassword": {

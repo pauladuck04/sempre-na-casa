@@ -141,17 +141,16 @@
   },
   "recoverPassword": {
     "pageTitle": "Forgot your password?",
-    "subtitle": "Don't worry, enter your email and we'll generate a link to reset it.",
+    "subtitle": "Don't worry, enter your email and we'll send you a link to reset it.",
     "emailLabel": "Email",
-    "emailHelp": "We'll show you a link to reset your password.",
-    "successText": "Link generated successfully.",
-    "linkIntro": "Here's your reset link",
-    "openLink": "Open link",
+    "emailHelp": "You'll receive an email with a link to reset your password.",
+    "successText": "We've sent you an email with the link to reset your password.",
     "backToLogin": "Back to sign in",
     "emailRequired": "Please enter your email.",
-    "sending": "Generating link...",
+    "sending": "Sending email...",
     "submit": "Recover password",
-    "error": "Could not generate the link. Please try again.",
+    "error": "Could not send the email. Please try again.",
+    "emailSendError": "Could not send the recovery email. Please try again later.",
     "userNotFound": "There's no account with that email."
   },
   "resetPassword": {

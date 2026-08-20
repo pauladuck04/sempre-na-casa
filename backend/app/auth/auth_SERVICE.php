@@ -262,10 +262,10 @@ function mapRolToId($rol){
 
 	// Genera un token JWT stateless (valido 2 horas, mismo mecanismo que el login) que lleva
 	// el id de usuario y una "huella" derivada de su password actual. No se guarda nada en BD:
-	// el propio token se autovalida (firma + caducidad) al restablecer. Todavia no hay servicio
-	// de email configurado, asi que se devuelve el token en la respuesta para que el frontend
-	// construya el enlace y lo muestre directamente en pantalla. El dia que haya SMTP, este
-	// mismo token es lo que habria que mandar por correo en vez de devolverlo en la respuesta.
+	// el propio token se autovalida (firma + caducidad) al restablecer. El token NUNCA se
+	// devuelve en la respuesta: solo viaja dentro del enlace del email. Si se devolviera aqui,
+	// cualquiera podria pedir un reset para el email de otra persona y sacar el token
+	// directamente por la API, sin necesitar acceso a esa bandeja de entrada.
 	function RECUPERAR_PASSWORD(){
 		$mail = addslashes(trim($_POST['mail']));
 
@@ -289,7 +289,33 @@ function mapRolToId($rol){
 		);
 		$token = MiToken::creaToken($mail, '', $datosToken);
 
-		return array('ok' => true, 'code' => 'RECUPERAR_PASSWORD_OK', 'resource' => array('token' => $token));
+		$enlace = rtrim(FRONTEND_URL, '/') . '/restablecer-password.html?token=' . urlencode($token);
+
+		if (!$this->enviarCorreoRecuperacion($mail, $enlace)) {
+			return array('ok' => false, 'code' => 'ENVIO_EMAIL_KO');
+		}
+
+		return array('ok' => true, 'code' => 'RECUPERAR_PASSWORD_OK');
+	}
+
+	// Envio con mail() nativo de PHP: sin SMTP ni credenciales que gestionar, pero en hosting
+	// gratuito (AwardSpace) la entrega no esta garantizada (puede acabar en spam o bloquearse).
+	// Si mas adelante hace falta mas fiabilidad, sustituir el cuerpo de esta funcion por un envio
+	// SMTP (con las credenciales de un buzon real) sin tocar quien la llama.
+	function enviarCorreoRecuperacion($destinatario, $enlace){
+		$asunto = 'Recupera tu contraseña - Sempre na Casa';
+
+		$cuerpo  = '<p>Hola,</p>';
+		$cuerpo .= '<p>Hemos recibido una solicitud para restablecer tu contraseña en Sempre na Casa.</p>';
+		$cuerpo .= '<p><a href="' . htmlspecialchars($enlace) . '">Restablecer mi contraseña</a></p>';
+		$cuerpo .= '<p>Si tú no has solicitado esto, puedes ignorar este correo. El enlace caduca en 2 horas.</p>';
+
+		$dominio = parse_url(FRONTEND_URL, PHP_URL_HOST) ?: 'semprenacasa.atwebpages.com';
+		$cabeceras  = "MIME-Version: 1.0\r\n";
+		$cabeceras .= "Content-Type: text/html; charset=UTF-8\r\n";
+		$cabeceras .= "From: Sempre na Casa <no-reply@{$dominio}>\r\n";
+
+		return @mail($destinatario, $asunto, $cuerpo, $cabeceras);
 	}
 
 	// Huella derivada del hash de la contrasena actual (no es el hash en si: se le aplica otra
