@@ -42,9 +42,15 @@ document.addEventListener('DOMContentLoaded', async function() {
             usuarioActual.telefono = u.telefono;
             usuarioActual.fechaAlta = u.fechaRegistro;
 
-            await convivencia.cargarMiConvivencia(usuarioActual.id);
-            if (!convivencia.convivenciaMemoria) {
-                await convivencia.cargarCandidatos(usuarioActual.id);
+            try {
+                await convivencia.cargarMiConvivencia(usuarioActual.id);
+                if (!convivencia.convivenciaMemoria) {
+                    await convivencia.cargarCandidatos(usuarioActual.id);
+                }
+                await preferencias.cargarPreferencias(usuarioActual.id);
+            } catch (err) {
+                // Un fallo aquí no debe dejar el resto del dashboard sin renderizar
+                console.error('Error cargando convivencia/preferencias:', err);
             }
 
             const navConvivencia = document.getElementById('nav-convivencia');
@@ -411,36 +417,38 @@ async function mostrarDetalleVivienda(idVivienda) {
 
     document.getElementById('modalDetalleTitle').textContent = direccion || t('modal.details');
     document.getElementById('modalDetalleContent').innerHTML = `
-        <div class="row mb-3">
-            <div class="col-12 col-md-6"><h6 class="text-muted small mb-1">${t('huesped.table.host')}</h6><p class="fw-semibold mb-0">${anfitrion}</p></div>
-            <div class="col-12 col-md-6"><h6 class="text-muted small mb-1">${t('common.city')}</h6><p class="fw-semibold mb-0">${ciudad}</p></div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-12 col-md-12"><h6 class="text-muted small mb-1">${t('common.address')}</h6><p class="fw-semibold mb-0">${direccion}</p></div>
-        </div>
-        ${descripcion ? `<div class="row mb-3"><div class="col-12 col-md-12"><h6 class="text-muted small mb-1">${t('common.description')}</h6><p class="mb-0">${descripcion}</p></div></div>` : ''}
-        <div class="row mb-3">
-            <div class="col-12 col-md-6"><h6 class="text-muted small mb-1">${t('anfitrion.home.freeSlots')}</h6><p class="fw-semibold mb-0">${plazasLibres ?? '-'}</p></div>
-            ${plazasTotales !== null ? `<div class="col-12 col-md-6"><h6 class="text-muted small mb-1">${t('anfitrion.home.totalSlots')}</h6><p class="fw-semibold mb-0">${plazasTotales}</p></div>` : ''}
-        </div>
-        ${compatibilidad !== null ? `
-        <div class="row mb-3"><div class="col-12 col-md-12">
-            <h6 class="text-muted small mb-1">${t('huesped.candidates.compatibility')}</h6>
-            <p class="fw-semibold mb-0">${compatibilidad}%</p>
-        </div></div>` : ''}
-        <hr>
-        <h6 class="fw-bold mb-2">${t('huesped.candidates.preferences') || 'Preferencias de la vivienda'}</h6>
-        ${preferenciasHtml}
-        <hr>
-        <h6 class="fw-bold mb-2">${t('huesped.candidates.expectedDates') || 'Fechas propuestas para la convivencia'}</h6>
-        <div class="row g-2 mb-3">
-            <div class="col-12 col-md-6">
-                <label class="form-label small fw-bold" for="solicitud-fecha-inicio">${t('huesped.candidates.expectedStart') || 'Fecha de inicio esperada'}</label>
-                <input type="date" class="form-control form-control-sm" id="solicitud-fecha-inicio" min="${new Date().toISOString().split('T')[0]}" required>
+        <div class="row g-4">
+            <div class="col-12 col-md-5">
+                <h6 class="fw-bold mb-2">${t('huesped.candidates.preferences') || 'Preferencias de la vivienda'}</h6>
+                ${preferenciasHtml}
             </div>
-            <div class="col-12 col-md-6">
-                <label class="form-label small fw-bold" for="solicitud-fecha-fin">${t('huesped.candidates.expectedEnd') || 'Fecha de fin esperada (opcional)'}</label>
-                <input type="date" class="form-control form-control-sm" id="solicitud-fecha-fin">
+            <div class="col-12 col-md-7">
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <h6 class="text-muted small mb-1">${t('huesped.table.host')}</h6><p class="fw-semibold mb-3">${anfitrion}</p>
+                        <h6 class="text-muted small mb-1">${t('common.address')}</h6><p class="fw-semibold mb-3">${direccion}</p>
+                        <h6 class="text-muted small mb-1">${t('anfitrion.home.freeSlots')}</h6><p class="fw-semibold mb-0">${plazasLibres ?? '-'}</p>
+                    </div>
+                    <div class="col-6">
+                        <h6 class="text-muted small mb-1">${t('common.city')}</h6><p class="fw-semibold mb-3">${ciudad}</p>
+                        ${plazasTotales !== null ? `<h6 class="text-muted small mb-1">${t('anfitrion.home.totalSlots')}</h6><p class="fw-semibold mb-3">${plazasTotales}</p>` : ''}
+                        ${compatibilidad !== null ? `<h6 class="text-muted small mb-1">${t('huesped.candidates.compatibility')}</h6><p class="fw-semibold mb-0">${compatibilidad}%</p>` : ''}
+                    </div>
+                </div>
+                ${descripcion ? `<div class="row mb-3"><div class="col-12"><h6 class="text-muted small mb-1">${t('common.description')}</h6><p class="mb-0">${descripcion}</p></div></div>` : ''}
+
+                <hr>
+                <h6 class="fw-bold mb-2">${t('huesped.candidates.expectedDates') || 'Fechas propuestas para la convivencia'}</h6>
+                <div class="row g-2 mb-3">
+                    <div class="col-12 col-md-6">
+                        <label class="form-label small fw-bold" for="solicitud-fecha-inicio">${t('huesped.candidates.expectedStart') || 'Fecha de inicio esperada'}</label>
+                        <input type="date" class="form-control form-control-sm" id="solicitud-fecha-inicio" min="${new Date().toISOString().split('T')[0]}" required>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-label small fw-bold" for="solicitud-fecha-fin">${t('huesped.candidates.expectedEnd') || 'Fecha de fin esperada (opcional)'}</label>
+                        <input type="date" class="form-control form-control-sm" id="solicitud-fecha-fin">
+                    </div>
+                </div>
             </div>
         </div>
         <button type="button" class="btn btn-primary rounded-pill w-100 btn-solicitar-vivienda" data-id="${idVivienda}">

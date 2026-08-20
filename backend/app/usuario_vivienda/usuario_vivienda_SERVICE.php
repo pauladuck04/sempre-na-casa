@@ -341,17 +341,17 @@ class usuario_vivienda_SERVICE extends appServiceBase {
         include_once './app/matching/matching_SERVICE.php';
         $matching = new matching_SERVICE();
 
-        $pesos  = $matching->cargarPesosCriterios($map);
-        $rangos = $matching->cargarRangosCriterios($map);
+        $nombres = $matching->cargarNombresCriterios($map);
+        $rangos  = $matching->cargarRangosCriterios($map);
 
         $respuestasUsuario  = $matching->cargarRespuestas($map, 'usuario_criterio_opcion', 'id_usuario', $idUsuario, 'activo_usuario_criterio_opcion');
         $respuestasVivienda = $matching->cargarRespuestas($map, 'vivienda_criterio_opcion', 'id_vivienda', $idVivienda, 'activo_vivienda_criterio_opcion');
 
-        if ($matching->detectarExclusion($pesos, $respuestasUsuario, $respuestasVivienda) !== null) {
+        if ($matching->detectarExclusion($nombres, $respuestasUsuario, $respuestasVivienda) !== null) {
             return 0;
         }
 
-        $score = $matching->calcularScore($pesos, $rangos, $respuestasUsuario, $respuestasVivienda);
+        $score = $matching->calcularScore($nombres, $rangos, $respuestasUsuario, $respuestasVivienda);
         return $score['porcentaje'] !== null ? $score['porcentaje'] : 0;
     }
 
