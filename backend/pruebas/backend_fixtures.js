@@ -108,6 +108,30 @@ function idPrincipalPayload(entidad, fx) {
     }
 }
 
+/** Clave (tabla + valores) de la fila que un ADD (o un UPSERT_RESPUESTA/updateOpcion) acaba de
+ * crear, para poder borrarla físicamente al terminar. En las tablas de relación no hace falta el
+ * id que devuelve el backend (no tienen autoincremental): la clave ya estaba en el propio payload
+ * enviado. Importante: en usuario_criterio_opcion/vivienda_criterio_opcion la clave primaria real
+ * es (id_usuario|id_vivienda, id_criterio) — id_opcion NO forma parte de ella (updateOpcion la
+ * cambia sin cambiar de fila) — así que no se incluye, o una fila cuyo id_opcion se actualizó
+ * después dejaría de encontrarse al limpiar. */
+function claveFilaCreada(entidad, payload, idBackend) {
+    switch (entidad) {
+        case 'usuario':   return { tabla: 'usuario',   valores: { id_usuario: idBackend } };
+        case 'vivienda':  return { tabla: 'vivienda',  valores: { id_vivienda: idBackend } };
+        case 'criterio':  return { tabla: 'criterio',  valores: { id_criterio: idBackend } };
+        case 'rol':       return { tabla: 'rol',       valores: { id_rol: idBackend } };
+        case 'opcion':    return { tabla: 'opcion',    valores: { id_opcion: idBackend } };
+        case 'usuario_vivienda':
+            return { tabla: entidad, valores: { id_usuario: payload.id_usuario, id_vivienda: payload.id_vivienda } };
+        case 'usuario_criterio_opcion':
+            return { tabla: entidad, valores: { id_usuario: payload.id_usuario, id_criterio: payload.id_criterio } };
+        case 'vivienda_criterio_opcion':
+            return { tabla: entidad, valores: { id_vivienda: payload.id_vivienda, id_criterio: payload.id_criterio } };
+        default: return null;
+    }
+}
+
 async function compararConBackend(nombreEntidad, accion, fixtures, overrides, respuestaEsperadaLocal) {
     if (accion !== 'ADD' && accion !== 'EDIT' && accion !== 'SEARCH' && accion !== 'DELETE') {
         return { backend_status: 'N/A', backend_code: '' };
@@ -139,8 +163,49 @@ async function compararConBackend(nombreEntidad, accion, fixtures, overrides, re
         } else {
             backend_status = 'BACKEND_MAS_ESTRICTO';
         }
-        return { backend_status, backend_code: res.code || '' };
+
+        const filaCreada = (accion === 'ADD' && backendOk) ? claveFilaCreada(nombreEntidad, payload, res.resource) : null;
+
+        return { backend_status, backend_code: res.code || '', filaCreada };
     } catch (e) {
         return { backend_status: 'SIN_CONEXION', backend_code: e.message };
+    }
+}
+
+const TABLAS_RELACION = ['usuario_criterio_opcion', 'vivienda_criterio_opcion', 'usuario_vivienda'];
+
+/** Borra físicamente (DELETE, no baja lógica) las filas QA creadas durante un run. Reordena
+ * siempre las tablas de relación primero: su comprobación de seguridad mira la fila padre
+ * (usuario/vivienda) a la que apuntan (ver qa_cleanup_SERVICE::esFilaQA), así que si esa fila
+ * padre ya no existe la relación se omitiría en vez de borrarse, dejando basura. Después van las
+ * demás filas "extra" (en el orden en que se crearon) y por último las fixtures base, en orden de
+ * dependencia (opcion antes que criterio, vivienda/usuario antes que rol). Los errores de
+ * limpieza no deben romper la ejecución de pruebas: solo se registran en consola. */
+async function limpiarFixtures(filasExtra, fixtures) {
+    const extra = filasExtra.filter(Boolean);
+    const relaciones = extra.filter(f => TABLAS_RELACION.includes(f.tabla));
+    const resto       = extra.filter(f => !TABLAS_RELACION.includes(f.tabla));
+    const filas = [...relaciones, ...resto];
+
+    if (fixtures) {
+        if (fixtures.idOpcion)    filas.push({ tabla: 'opcion',    valores: { id_opcion: fixtures.idOpcion } });
+        if (fixtures.idCriterio) filas.push({ tabla: 'criterio',  valores: { id_criterio: fixtures.idCriterio } });
+        if (fixtures.idVivienda) filas.push({ tabla: 'vivienda',  valores: { id_vivienda: fixtures.idVivienda } });
+        if (fixtures.idUsuario)  filas.push({ tabla: 'usuario',   valores: { id_usuario: fixtures.idUsuario } });
+        if (fixtures.idRol)      filas.push({ tabla: 'rol',       valores: { id_rol: fixtures.idRol } });
+    }
+
+    if (filas.length === 0) return { borradas: [], omitidas: [] };
+
+    try {
+        const res = await apiPost('qa_cleanup', 'LIMPIAR', { filas: JSON.stringify(filas) });
+        if (!res.ok) {
+            console.error('Limpieza de fixtures QA falló:', res.code);
+            return { borradas: [], omitidas: filas.map(f => `${f.tabla}: ${res.code}`) };
+        }
+        return res.resource;
+    } catch (e) {
+        console.error('Limpieza de fixtures QA falló:', e);
+        return { borradas: [], omitidas: filas.map(f => `${f.tabla}: ${e.message}`) };
     }
 }
