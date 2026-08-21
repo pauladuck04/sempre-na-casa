@@ -49,7 +49,18 @@ class DOM_class {
             const esOk = valor === 'OK';
             return `<span class="badge rounded-pill px-3 ${esOk ? 'bg-success' : 'bg-danger'}">${valor}</span>`;
         }
-        return valor;
+
+        if (typeof valor !== 'string') return valor;
+
+        // valores de prueba largos (p.ej. 'D'.repeat(501) para probar max_size) desbordaban la
+        // celda en muchas lineas y deformaban la fila; se recortan con el valor completo en el
+        // title. Se escapa siempre porque algunos valores de prueba son literalmente HTML
+        // (p.ej. '<script>' para probar que se rechacen etiquetas) y se volcaban sin escapar.
+        const escapado = valor.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        if (valor.length <= 60) return escapado;
+
+        const recortado = escapado.slice(0, 60);
+        return `<span title="${escapado.replace(/"/g, '&quot;')}">${recortado}… <span class="text-muted small">(${valor.length} car.)</span></span>`;
     }
 
     _etiquetaColumna(campo) {
