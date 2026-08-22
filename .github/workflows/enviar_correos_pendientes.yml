@@ -1,0 +1,70 @@
+name: Enviar correos pendientes
+
+# El backend (AwardSpace) no tiene salida de red, asi que no puede enviar correo el mismo.
+# Este workflow corre en un runner normal (con salida a internet), recoge los correos que el
+# backend dejo en cola (tabla email_pendiente) y los envia por la API de Brevo.
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+jobs:
+  enviar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Recoger y enviar correos pendientes
+        env:
+          RELAY_SECRET: ${{ secrets.RELAY_SECRET }}
+          BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
+          EMAIL_FROM_ADDRESS: ${{ vars.EMAIL_FROM_ADDRESS }}
+          EMAIL_FROM_NAME: ${{ vars.EMAIL_FROM_NAME }}
+          BACKEND_URL: http://backsemprenacasa.atwebpages.com/index.php
+        run: |
+          set -euo pipefail
+
+          respuesta=$(curl -s -X POST "$BACKEND_URL" \
+            --data-urlencode "controlador=email_pendiente" \
+            --data-urlencode "action=LISTAR_PENDIENTES" \
+            --data-urlencode "secret=$RELAY_SECRET")
+
+          ok=$(echo "$respuesta" | jq -r '.ok')
+          if [ "$ok" != "true" ]; then
+            echo "LISTAR_PENDIENTES fallo: $respuesta"
+            exit 1
+          fi
+
+          total=$(echo "$respuesta" | jq '.resource | length')
+          echo "Pendientes: $total"
+
+          echo "$respuesta" | jq -c '.resource[]' | while read -r fila; do
+            id=$(echo "$fila" | jq -r '.id_email_pendiente')
+            destinatario=$(echo "$fila" | jq -r '.destinatario')
+            asunto=$(echo "$fila" | jq -r '.asunto')
+            cuerpo=$(echo "$fila" | jq -r '.cuerpo')
+
+            payload=$(jq -n \
+              --arg fromEmail "$EMAIL_FROM_ADDRESS" \
+              --arg fromName "$EMAIL_FROM_NAME" \
+              --arg to "$destinatario" \
+              --arg subject "$asunto" \
+              --arg html "$cuerpo" \
+              '{sender: {name: $fromName, email: $fromEmail}, to: [{email: $to}], subject: $subject, htmlContent: $html}')
+
+            codigo=$(curl -s -o /tmp/brevo_resp.json -w '%{http_code}' -X POST "https://api.brevo.com/v3/smtp/email" \
+              -H "accept: application/json" \
+              -H "content-type: application/json" \
+              -H "api-key: $BREVO_API_KEY" \
+              -d "$payload")
+
+            if [ "$codigo" -ge 200 ] && [ "$codigo" -lt 300 ]; then
+              echo "Enviado id=$id a $destinatario"
+              curl -s -X POST "$BACKEND_URL" \
+                --data-urlencode "controlador=email_pendiente" \
+                --data-urlencode "action=MARCAR_ENVIADO" \
+                --data-urlencode "secret=$RELAY_SECRET" \
+                --data-urlencode "id_email_pendiente=$id" > /dev/null
+            else
+              echo "FALLO enviando id=$id (HTTP $codigo): $(cat /tmp/brevo_resp.json)"
+            fi
+          done

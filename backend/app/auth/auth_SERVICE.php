@@ -298,10 +298,10 @@ function mapRolToId($rol){
 		return array('ok' => true, 'code' => 'RECUPERAR_PASSWORD_OK');
 	}
 
-	// Envio con mail() nativo de PHP: sin SMTP ni credenciales que gestionar, pero en hosting
-	// gratuito (AwardSpace) la entrega no esta garantizada (puede acabar en spam o bloquearse).
-	// Si mas adelante hace falta mas fiabilidad, sustituir el cuerpo de esta funcion por un envio
-	// SMTP (con las credenciales de un buzon real) sin tocar quien la llama.
+	// El backend (AwardSpace) no tiene salida de red (ni mail() ni SMTP ni una llamada HTTP a una
+	// API de correo funcionan: confirmado que hasta una conexion a google.com da "Network is
+	// unreachable"), asi que aqui no se envia nada: se deja en cola en email_pendiente y un
+	// proceso externo con salida a internet (GitHub Actions programado) lo recoge y lo envia.
 	function enviarCorreoRecuperacion($destinatario, $enlace){
 		$asunto = 'Recupera tu contraseña - Sempre na Casa';
 
@@ -310,12 +310,20 @@ function mapRolToId($rol){
 		$cuerpo .= '<p><a href="' . htmlspecialchars($enlace) . '">Restablecer mi contraseña</a></p>';
 		$cuerpo .= '<p>Si tú no has solicitado esto, puedes ignorar este correo. El enlace caduca en 2 horas.</p>';
 
-		$dominio = parse_url(FRONTEND_URL, PHP_URL_HOST) ?: 'semprenacasa.atwebpages.com';
-		$cabeceras  = "MIME-Version: 1.0\r\n";
-		$cabeceras .= "Content-Type: text/html; charset=UTF-8\r\n";
-		$cabeceras .= "From: Sempre na Casa <no-reply@{$dominio}>\r\n";
+		include_once './base/mapping.php';
+		$map = new mapping('email_pendiente');
 
-		return @mail($destinatario, $asunto, $cuerpo, $cabeceras);
+		$destinatarioEsc = addslashes($destinatario);
+		$asuntoEsc        = addslashes($asunto);
+		$cuerpoEsc        = addslashes($cuerpo);
+		$fecha            = date('Y-m-d H:i:s');
+
+		$res = $map->lanzarquery(
+			"INSERT INTO email_pendiente (destinatario, asunto, cuerpo, fecha_creacion, enviado) " .
+			"VALUES ('{$destinatarioEsc}', '{$asuntoEsc}', '{$cuerpoEsc}', '{$fecha}', 0)"
+		);
+
+		return $res['ok'];
 	}
 
 	// Huella derivada del hash de la contrasena actual (no es el hash en si: se le aplica otra
