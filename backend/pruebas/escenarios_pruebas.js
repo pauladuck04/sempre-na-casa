@@ -7,16 +7,24 @@ function registrarPaso(pasos, paso, esperado, res, cumple) {
     });
 }
 
+/** Como crear() (backend_fixtures.js), pero además apunta la fila creada en filasCreadas para
+ * poder borrarla físicamente al terminar el escenario. */
+async function crearRegistrado(filasCreadas, entidad, payload) {
+    const id = await crear(entidad, payload);
+    if (id !== null) filasCreadas.push(claveFilaCreada(entidad, payload, id));
+    return id;
+}
+
 // =====================================================================================
 // LOGIN
 // =====================================================================================
-async function escenarioLogin() {
+async function escenarioLogin(filasCreadas) {
     const pasos = [];
     const rol = (await primeraFila('rol')) || {};
     const mail = `qa.login.${sufijo(8)}@example.com`;
     const passwordCorrecta = 'Test1234!';
 
-    const idUsuario = await crear('usuario', {
+    const idUsuario = await crearRegistrado(filasCreadas, 'usuario', {
         dni: sufijo(8) + 'A', mail, nombre_usuario: 'QA', apellidos: 'LoginEscenario',
         telefono: '6' + sufijo(8), password: passwordCorrecta, id_rol: rol.id_rol || ''
     });
@@ -44,7 +52,7 @@ async function escenarioLogin() {
 // =====================================================================================
 // REGISTRO
 // =====================================================================================
-async function escenarioRegistro() {
+async function escenarioRegistro(filasCreadas) {
     const pasos = [];
     const rol = (await primeraFila('rol')) || {};
     const mail = `qa.registro.${sufijo(8)}@example.com`;
@@ -58,6 +66,7 @@ async function escenarioRegistro() {
     let res = await apiPost('auth', 'REGISTRAR', base);
     registrarPaso(pasos, 'Registro con datos nuevos y completos', "ok:true, code:REGISTRAR_OK", res,
         res.ok === true && res.code === 'REGISTRAR_OK');
+    if (res.ok && res.resource) filasCreadas.push(claveFilaCreada('usuario', base, res.resource));
 
     res = await apiPost('auth', 'REGISTRAR', { ...base, dni: sufijo(8) + 'B' });
     registrarPaso(pasos, 'Registro repitiendo el mismo mail (dni distinto)', "ok:false, code:USUARIO_YA_EXISTE_KO", res,
@@ -79,49 +88,31 @@ async function escenarioRegistro() {
 // =====================================================================================
 // RECUPERAR / RESTABLECER CONTRASEÑA
 // =====================================================================================
-async function escenarioRecuperarPassword() {
+async function escenarioRecuperarPassword(filasCreadas) {
     const pasos = [];
     const rol = (await primeraFila('rol')) || {};
     const mail = `qa.recuperar.${sufijo(8)}@example.com`;
 
-    await crear('usuario', {
+    await crearRegistrado(filasCreadas, 'usuario', {
         dni: sufijo(8) + 'A', mail, nombre_usuario: 'QA', apellidos: 'RecuperarEscenario',
         telefono: '6' + sufijo(8), password: 'Test1234!', id_rol: rol.id_rol || ''
     });
 
+    // El token de recuperación ya no viaja en la respuesta de la API (solo dentro del enlace que
+    // se envía por correo, ver auth_SERVICE::RECUPERAR_PASSWORD), así que este escenario ya no
+    // puede probar el restablecimiento con un token real sin acceso al buzón: solo cubre lo que
+    // sigue siendo observable por API (la propia solicitud y el rechazo de un token inventado).
     let res = await apiPost('auth', 'RECUPERAR_PASSWORD', { mail });
-    const token = (res.ok && res.resource) ? res.resource.token : null;
-    registrarPaso(pasos, 'Solicitar recuperación con mail existente', "ok:true, code:RECUPERAR_PASSWORD_OK, token presente", res,
-        res.ok === true && res.code === 'RECUPERAR_PASSWORD_OK' && !!token);
+    registrarPaso(pasos, 'Solicitar recuperación con mail existente', "ok:true, code:RECUPERAR_PASSWORD_OK", res,
+        res.ok === true && res.code === 'RECUPERAR_PASSWORD_OK');
 
     res = await apiPost('auth', 'RECUPERAR_PASSWORD', { mail: `no.existe.${sufijo(6)}@example.com` });
     registrarPaso(pasos, 'Solicitar recuperación con mail inexistente', "ok:false, code:USUARIO_NO_ENCONTRADO_KO", res,
         res.ok === false && res.code === 'USUARIO_NO_ENCONTRADO_KO');
 
-    if (!token) {
-        pasos.push({
-            paso: 'Restablecer con el token del paso 1', esperado: 'ok:true, code:RESTABLECER_PASSWORD_OK',
-            obtenido: 'no se obtuvo token en el paso 1, se omiten los pasos siguientes', resultado: 'FALLO'
-        });
-        return pasos;
-    }
-
-    const nuevaPassword = 'NuevaSegura2!';
-    res = await apiPost('auth', 'RESTABLECER_PASSWORD', { token, password: nuevaPassword });
-    registrarPaso(pasos, 'Restablecer con el token del paso 1', "ok:true, code:RESTABLECER_PASSWORD_OK", res,
-        res.ok === true && res.code === 'RESTABLECER_PASSWORD_OK');
-
-    res = await apiPost('auth', 'RESTABLECER_PASSWORD', { token, password: 'OtraMas3!' });
-    registrarPaso(pasos, 'Reutilizar el mismo token ya usado', "ok:false, code:TOKEN_EXPIRADO_KO", res,
-        res.ok === false && res.code === 'TOKEN_EXPIRADO_KO');
-
     res = await apiPost('auth', 'RESTABLECER_PASSWORD', { token: 'token-invalido-' + sufijo(6), password: 'Otra4!' });
     registrarPaso(pasos, 'Restablecer con un token inválido', "ok:false, code:TOKEN_INVALIDO_KO", res,
         res.ok === false && res.code === 'TOKEN_INVALIDO_KO');
-
-    res = await apiPost('auth', 'LOGIN', { mail, password: nuevaPassword });
-    registrarPaso(pasos, 'Login con la nueva contraseña tras restablecer', "ok:true, code:LOGIN_OK", res,
-        res.ok === true && res.code === 'LOGIN_OK');
 
     return pasos;
 }
@@ -129,30 +120,34 @@ async function escenarioRecuperarPassword() {
 // =====================================================================================
 // MATCHING (calcularAfinidad / rankViviendasParaUsuario)
 // =====================================================================================
-async function escenarioMatching() {
+async function escenarioMatching(filasCreadas) {
     const pasos = [];
     const rol = (await primeraFila('rol')) || {};
 
-    const idUsuario = await crear('usuario', {
+    const idUsuario = await crearRegistrado(filasCreadas, 'usuario', {
         dni: sufijo(8) + 'A', mail: `qa.match.h.${sufijo(8)}@example.com`, nombre_usuario: 'QA',
         apellidos: 'MatchingHuesped', telefono: '6' + sufijo(8), password: 'Test1234!', id_rol: rol.id_rol || ''
     });
-    const idAnfitrion = await crear('usuario', {
+    const idAnfitrion = await crearRegistrado(filasCreadas, 'usuario', {
         dni: sufijo(8) + 'B', mail: `qa.match.a.${sufijo(8)}@example.com`, nombre_usuario: 'QA',
         apellidos: 'MatchingAnfitrion', telefono: '6' + sufijo(8), password: 'Test1234!', id_rol: rol.id_rol || ''
     });
-    const idVivienda = await crear('vivienda', {
+    const idVivienda = await crearRegistrado(filasCreadas, 'vivienda', {
         direccion: 'Rua QA Matching ' + sufijo(4), ciudad: 'Santiago', descripcion: 'QA matching',
         plazas_totales: '2', plazas_libres: '1', id_anfitrion: idAnfitrion
     });
 
     // Criterio normal (no restrictivo), 2 opciones en los extremos de su rango (1 y 5)
-    const idCriterio = await crear('criterio', { nombre_criterio: 'QA Matching Criterio' });
-    const idOpcionBaja = await crear('opcion', { nombre_opcion: 'QA Baja', valor: '1', id_criterio: idCriterio });
-    const idOpcionAlta = await crear('opcion', { nombre_opcion: 'QA Alta', valor: '5', id_criterio: idCriterio });
+    const idCriterio = await crearRegistrado(filasCreadas, 'criterio', { nombre_criterio: 'QA Matching Criterio' });
+    const idOpcionBaja = await crearRegistrado(filasCreadas, 'opcion', { nombre_opcion: 'QA Baja', valor: '1', id_criterio: idCriterio });
+    const idOpcionAlta = await crearRegistrado(filasCreadas, 'opcion', { nombre_opcion: 'QA Alta', valor: '5', id_criterio: idCriterio });
 
     await apiPost('usuario_criterio_opcion', 'UPSERT_RESPUESTA', { id_usuario: idUsuario, id_criterio: idCriterio, id_opcion: idOpcionBaja, peso: '1', restrictivo: '0' });
+    filasCreadas.push(claveFilaCreada('usuario_criterio_opcion', { id_usuario: idUsuario, id_criterio: idCriterio }));
+    // updateOpcion() actualiza id_opcion sobre la misma fila (id_vivienda, id_criterio), así que
+    // una sola entrada de limpieza para este par vale para todas las llamadas siguientes.
     await apiPost('vivienda_criterio_opcion', 'updateOpcion', { id_vivienda: idVivienda, id_criterio: idCriterio, id_opcion: idOpcionBaja, peso: '1', restrictivo: '0' });
+    filasCreadas.push(claveFilaCreada('vivienda_criterio_opcion', { id_vivienda: idVivienda, id_criterio: idCriterio }));
 
     let res = await apiPost('matching', 'calcularAfinidad', { id_usuario: idUsuario, id_vivienda: idVivienda });
     let pct = res.ok && res.resource ? res.resource.porcentaje : null;
@@ -169,7 +164,7 @@ async function escenarioMatching() {
         obtenido: `ok:${res.ok}, porcentaje:${pct}`, resultado: (res.ok === true && pct === 0) ? 'OK' : 'FALLO'
     });
 
-    const idUsuarioSinRespuestas = await crear('usuario', {
+    const idUsuarioSinRespuestas = await crearRegistrado(filasCreadas, 'usuario', {
         dni: sufijo(8) + 'C', mail: `qa.match.h2.${sufijo(8)}@example.com`, nombre_usuario: 'QA',
         apellidos: 'MatchingSinResp', telefono: '6' + sufijo(8), password: 'Test1234!', id_rol: rol.id_rol || ''
     });
@@ -179,15 +174,17 @@ async function escenarioMatching() {
 
     // Criterio con una respuesta que el propio usuario marca como imprescindible, señalando una
     // opción específica ("Normal") como innegociable: si la vivienda elige justo esa, se excluye.
-    const idCriterioR = await crear('criterio', { nombre_criterio: 'QA Matching Restrictivo' });
-    const idOpcionExcl = await crear('opcion', { nombre_opcion: 'QA Excluyente', valor: '1', id_criterio: idCriterioR });
-    const idOpcionNorm = await crear('opcion', { nombre_opcion: 'QA Normal', valor: '2', id_criterio: idCriterioR });
+    const idCriterioR = await crearRegistrado(filasCreadas, 'criterio', { nombre_criterio: 'QA Matching Restrictivo' });
+    const idOpcionExcl = await crearRegistrado(filasCreadas, 'opcion', { nombre_opcion: 'QA Excluyente', valor: '1', id_criterio: idCriterioR });
+    const idOpcionNorm = await crearRegistrado(filasCreadas, 'opcion', { nombre_opcion: 'QA Normal', valor: '2', id_criterio: idCriterioR });
 
     await apiPost('usuario_criterio_opcion', 'UPSERT_RESPUESTA', {
         id_usuario: idUsuario, id_criterio: idCriterioR, id_opcion: idOpcionExcl,
         restrictivo: '1', id_opcion_excluyente: idOpcionNorm
     });
+    filasCreadas.push(claveFilaCreada('usuario_criterio_opcion', { id_usuario: idUsuario, id_criterio: idCriterioR }));
     await apiPost('vivienda_criterio_opcion', 'updateOpcion', { id_vivienda: idVivienda, id_criterio: idCriterioR, id_opcion: idOpcionNorm });
+    filasCreadas.push(claveFilaCreada('vivienda_criterio_opcion', { id_vivienda: idVivienda, id_criterio: idCriterioR }));
 
     res = await apiPost('matching', 'calcularAfinidad', { id_usuario: idUsuario, id_vivienda: idVivienda });
     const excluido = res.ok && res.resource ? res.resource.excluido : null;
