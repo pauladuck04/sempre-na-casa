@@ -33,6 +33,10 @@ class email_pendiente_SERVICE extends appServiceBase{
 	}
 
 	function autorizado(){
+		$credsPath = dirname(dirname(__DIR__)) . '/bd/EmailCredentials.php';
+		if (is_file($credsPath)) {
+			include_once $credsPath;
+		}
 		return defined('RELAY_SECRET') && isset($_POST['secret']) && hash_equals(RELAY_SECRET, $_POST['secret']);
 	}
 
