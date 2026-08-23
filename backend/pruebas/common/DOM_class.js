@@ -14,16 +14,13 @@ class DOM_class {
         return newWindow;
     }
 
-    // Renderiza una tabla de resultados y la muestra en la ventana emergente (si sigue abierta)
-    // o, si no, en el panel de fallback de la propia pagina. Compartido por Backend_Test y
-    // Escenario_Test, que antes duplicaban casi entero este metodo (incluido el bloque de CSS).
-    mostrarResultadosEnVentana({ contenedorId, salida, marcados, ventana, tituloDocumento, tituloPanel, encabezadoPopup = '' }) {
+    mostrarResultadosEnVentana({ contenedorId, salida, marcados, ventana, nombreVentana, tituloDocumento }) {
         this.showData(contenedorId, salida, marcados);
         const contenedor = document.getElementById(contenedorId);
         const htmlContenido = contenedor.innerHTML;
         contenedor.style.display = 'none';
 
-        const newWindow = (ventana && !ventana.closed) ? ventana : null;
+        const newWindow = (ventana && !ventana.closed) ? ventana : DOM_class.abrirVentanaResultados(nombreVentana);
 
         if (newWindow) {
             newWindow.document.open();
@@ -102,20 +99,16 @@ class DOM_class {
                 </head>
                 <body>
                     <div id="resultados-wrap">
-                        ${encabezadoPopup}
                         ${htmlContenido}
                     </div>
                 </body>
                 </html>
             `);
             newWindow.document.close();
-            return;
+            return true;
         }
 
-        const panel = document.getElementById('resultados_panel');
-        if (!panel) return;
-        panel.innerHTML = `<h5 class="fw-bold mb-3">${tituloPanel}</h5>${htmlContenido}`;
-        panel.style.display = 'block';
+        return false;
     }
 
     showData(containerId, filas, marcados) {

@@ -99,9 +99,6 @@ async function escenarioRecuperarPassword(filasCreadas) {
     });
 
     // El token de recuperación ya no viaja en la respuesta de la API (solo dentro del enlace que
-    // se envía por correo, ver auth_SERVICE::RECUPERAR_PASSWORD), así que este escenario ya no
-    // puede probar el restablecimiento con un token real sin acceso al buzón: solo cubre lo que
-    // sigue siendo observable por API (la propia solicitud y el rechazo de un token inventado).
     let res = await apiPost('auth', 'RECUPERAR_PASSWORD', { mail });
     registrarPaso(pasos, 'Solicitar recuperación con mail existente', "ok:true, code:RECUPERAR_PASSWORD_OK", res,
         res.ok === true && res.code === 'RECUPERAR_PASSWORD_OK');
@@ -110,9 +107,21 @@ async function escenarioRecuperarPassword(filasCreadas) {
     registrarPaso(pasos, 'Solicitar recuperación con mail inexistente', "ok:false, code:USUARIO_NO_ENCONTRADO_KO", res,
         res.ok === false && res.code === 'USUARIO_NO_ENCONTRADO_KO');
 
+    res = await apiPost('auth', 'RECUPERAR_PASSWORD', { mail: '' });
+    registrarPaso(pasos, 'Solicitar recuperación sin mail', "ok:false, code:mail_es_nulo_KO", res,
+        res.ok === false && res.code === 'mail_es_nulo_KO');
+
     res = await apiPost('auth', 'RESTABLECER_PASSWORD', { token: 'token-invalido-' + sufijo(6), password: 'Otra4!' });
     registrarPaso(pasos, 'Restablecer con un token inválido', "ok:false, code:TOKEN_INVALIDO_KO", res,
         res.ok === false && res.code === 'TOKEN_INVALIDO_KO');
+
+    res = await apiPost('auth', 'RESTABLECER_PASSWORD', { token: '', password: 'Otra4!' });
+    registrarPaso(pasos, 'Restablecer sin token', "ok:false, code:token_es_nulo_KO", res,
+        res.ok === false && res.code === 'token_es_nulo_KO');
+
+    res = await apiPost('auth', 'RESTABLECER_PASSWORD', { token: 'token-invalido-' + sufijo(6), password: '' });
+    registrarPaso(pasos, 'Restablecer sin password nueva', "ok:false, code:password_es_nulo_KO", res,
+        res.ok === false && res.code === 'password_es_nulo_KO');
 
     return pasos;
 }

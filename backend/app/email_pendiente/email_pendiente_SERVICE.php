@@ -31,6 +31,12 @@ class email_pendiente_SERVICE extends appServiceBase{
 
 		$this->modelo = $this->crearModelOne('email_pendiente');
 	}
+	
+	function SEARCH(){    return array('ok' => false, 'code' => 'ACCION_NO_DISPONIBLE_KO'); }
+	function SEARCH_BY(){ return array('ok' => false, 'code' => 'ACCION_NO_DISPONIBLE_KO'); }
+	function ADD(){       return array('ok' => false, 'code' => 'ACCION_NO_DISPONIBLE_KO'); }
+	function EDIT(){      return array('ok' => false, 'code' => 'ACCION_NO_DISPONIBLE_KO'); }
+	function DELETE(){    return array('ok' => false, 'code' => 'ACCION_NO_DISPONIBLE_KO'); }
 
 	function autorizado(){
 		$credsPath = dirname(dirname(__DIR__)) . '/bd/EmailCredentials.php';

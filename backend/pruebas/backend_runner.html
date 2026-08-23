@@ -9,7 +9,11 @@
         document.write('<script src="' + window.__FRONTEND_BASE__ + 'js/cookies.js?v=3"><\/script>');
         document.write('<script src="' + window.__FRONTEND_BASE__ + 'js/route-guard.js?v=3"><\/script>');
     </script>
-    <script>protegerRuta(['admin'], window.__FRONTEND_BASE__);</script>
+    <script>
+        if (window.self === window.top) {
+            protegerRuta(['admin'], window.__FRONTEND_BASE__);
+        }
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Backend Runner - Sempre na Casa</title>
 
@@ -21,16 +25,6 @@
         #IU_Test_result_nofile { display: none; }
         #backend-test-card { padding: 1.25rem 1.5rem; }
         #backend-test-card img { width: 48px; height: 48px; }
-        #resultados_panel .table-responsive { overflow-x: auto; }
-        #resultados_panel table { table-layout: auto; width: 100%; font-size: 0.8rem; }
-        #resultados_panel thead th {
-            position: sticky; top: 0; z-index: 1; background-color: #e9ecef;
-            white-space: nowrap; padding: 0.6rem 0.8rem; text-align: left;
-        }
-        #resultados_panel tbody td {
-            white-space: normal; word-break: break-word; overflow-wrap: anywhere;
-            padding: 0.5rem 0.8rem; vertical-align: top;
-        }
     </style>
 </head>
 <body class="bg-light">
@@ -106,8 +100,6 @@
 
     <div id="IU_Test_result_nofile"></div>
 
-    <div id="resultados_panel" class="container-fluid px-4 pb-5" style="display:none;"></div>
-
     <script>document.write('<script src="' + window.__FRONTEND_BASE__ + 'js/api.js?v=3"><\/script>');</script>
 
     <script src="common/DOM_class.js?v=3"></script>
@@ -131,11 +123,14 @@
 
             try {
                 const bt = new Backend_Test(nombre, ventanaResultados);
-                await bt.ejecutar();
-                statusEl.className = 'alert alert-success d-flex align-items-start gap-2 mb-0';
-                const dondeVerlo = ventanaResultados ? 'la nueva ventana' : 'la tabla de resultados debajo';
-                statusEl.innerHTML = '<i class="bi bi-check-circle mt-1"></i><span>Tests de backend completados para: ' + nombre + '. Revisa ' + dondeVerlo + '.</span>';
-                if (!ventanaResultados) document.getElementById('resultados_panel').scrollIntoView({ behavior: 'smooth' });
+                const mostrado = await bt.ejecutar();
+                if (mostrado) {
+                    statusEl.className = 'alert alert-success d-flex align-items-start gap-2 mb-0';
+                    statusEl.innerHTML = '<i class="bi bi-check-circle mt-1"></i><span>Tests de backend completados para: ' + nombre + '. Revisa la nueva ventana.</span>';
+                } else {
+                    statusEl.className = 'alert alert-warning d-flex align-items-start gap-2 mb-0';
+                    statusEl.innerHTML = '<i class="bi bi-exclamation-triangle mt-1"></i><span>Tests completados, pero el navegador bloqueó la ventana emergente de resultados. Permite las ventanas emergentes para este sitio y vuelve a ejecutar.</span>';
+                }
             } catch (e) {
                 statusEl.className = 'alert alert-danger d-flex align-items-start gap-2 mb-0';
                 statusEl.innerHTML = '<i class="bi bi-x-circle mt-1"></i><span>Error al ejecutar: ' + e.message + '</span>';
@@ -155,11 +150,14 @@
 
             try {
                 const et = new Escenario_Test(nombre, ventanaResultados);
-                await et.ejecutar();
-                statusEl.className = 'alert alert-success d-flex align-items-start gap-2 mb-0';
-                const dondeVerlo = ventanaResultados ? 'la nueva ventana' : 'la tabla de resultados debajo';
-                statusEl.innerHTML = '<i class="bi bi-check-circle mt-1"></i><span>Escenario completado: ' + nombreEscenario + '. Revisa ' + dondeVerlo + '.</span>';
-                if (!ventanaResultados) document.getElementById('resultados_panel').scrollIntoView({ behavior: 'smooth' });
+                const mostrado = await et.ejecutar();
+                if (mostrado) {
+                    statusEl.className = 'alert alert-success d-flex align-items-start gap-2 mb-0';
+                    statusEl.innerHTML = '<i class="bi bi-check-circle mt-1"></i><span>Escenario completado: ' + nombreEscenario + '. Revisa la nueva ventana.</span>';
+                } else {
+                    statusEl.className = 'alert alert-warning d-flex align-items-start gap-2 mb-0';
+                    statusEl.innerHTML = '<i class="bi bi-exclamation-triangle mt-1"></i><span>Escenario completado, pero el navegador bloqueó la ventana emergente de resultados. Permite las ventanas emergentes para este sitio y vuelve a ejecutar.</span>';
+                }
             } catch (e) {
                 statusEl.className = 'alert alert-danger d-flex align-items-start gap-2 mb-0';
                 statusEl.innerHTML = '<i class="bi bi-x-circle mt-1"></i><span>Error al ejecutar: ' + e.message + '</span>';

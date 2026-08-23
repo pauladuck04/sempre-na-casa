@@ -22,12 +22,14 @@ class Backend_Test {
             this.errorFixtures = e;
         }
         const salida = await this._ejecutarCasos();
-        this._mostrarResultados(salida);
+        const mostrado = this._mostrarResultados(salida);
 
         const limpieza = await limpiarFixtures(this.filasCreadas, this.fixtures);
         if (limpieza.omitidas && limpieza.omitidas.length > 0) {
             console.warn('Limpieza de fixtures QA: filas omitidas por seguridad ->', limpieza.omitidas);
         }
+
+        return mostrado;
     }
 
     async _ejecutarCasos() {
@@ -63,12 +65,12 @@ class Backend_Test {
             backend_status: { value: 'BACKEND_MAS_ESTRICTO', clase: 'table-danger' }
         };
 
-        this.dom.mostrarResultadosEnVentana({
+        return this.dom.mostrarResultadosEnVentana({
             contenedorId: 'IU_Test_result_nofile',
             salida, marcados,
             ventana: this.ventanaResultados,
-            tituloDocumento: 'Resultados de pruebas de backend',
-            tituloPanel: `Resultados: ${this.nombreEntidad}`
+            nombreVentana: 'Nueva Ventana Backend',
+            tituloDocumento: 'Resultados de pruebas de backend'
         });
     }
 }
