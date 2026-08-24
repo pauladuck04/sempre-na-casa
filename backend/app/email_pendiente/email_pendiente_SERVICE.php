@@ -52,10 +52,16 @@ class email_pendiente_SERVICE extends appServiceBase{
 		}
 
 		$map = new mapping('email_pendiente');
-		return $map->lanzarqueryconresults(
+		$res = $map->lanzarqueryconresults(
 			"SELECT id_email_pendiente, destinatario, asunto, cuerpo " .
 			"FROM email_pendiente WHERE enviado = 0 ORDER BY fecha_creacion ASC LIMIT 20"
 		);
+
+		if (!isset($res['resource']) || !is_array($res['resource'])) {
+			$res['resource'] = array();
+		}
+
+		return $res;
 	}
 
 	function MARCAR_ENVIADO(){
