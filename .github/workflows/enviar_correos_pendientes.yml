@@ -34,9 +34,12 @@ jobs:
             exit 1
           fi
 
-          total=$(echo "$respuesta" | jq '.resource | length')
+          total=$(echo "$respuesta" | jq '(.resource // []) | if type=="array" then length else 0 end')
           echo "Pendientes: $total"
-
+          if [ "$total" -eq 0 ]; then
+            echo "Nada que enviar."
+            exit 0
+          fi
           echo "$respuesta" | jq -c '.resource[]' | while read -r fila; do
             id=$(echo "$fila" | jq -r '.id_email_pendiente')
             destinatario=$(echo "$fila" | jq -r '.destinatario')
