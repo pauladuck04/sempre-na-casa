@@ -180,15 +180,9 @@ if (registroForm) {
             id_rol:    idRolSeleccionado
         };
 
-        // Si quedaba una sesión antigua abierta en este navegador, la limpiamos:
-        // de lo contrario encuesta.html la detectaría como "usuario ya logueado"
-        // y el registro nuevo (con su rol elegido) nunca llegaría a crearse.
         ['user_token', 'user_id', 'user_email', 'user_nombre', 'user_id_rol', 'user_rol'].forEach(eraseCookie);
 
         if (rolSeleccionado === 'anfitrion') {
-            // Los anfitriones no tienen encuesta de "compañero ideal": sus criterios se
-            // asocian a la vivienda (vivienda_criterio_opcion) y se rellenan al darla de
-            // alta desde su panel, así que la cuenta se crea directamente aquí.
             const submitBtn = registroForm.querySelector('button[type="submit"]');
             submitBtn.disabled = true;
 
@@ -380,10 +374,6 @@ if (encuestaForm) {
             let idUsuario;
 
             if (userData) {
-                // Flujo normal de registro: crear la cuenta primero.
-                // Prioridad sobre usuarioLogueadoId: si venimos de registro.html con
-                // datos nuevos en sessionStorage, es un registro nuevo, aunque quede
-                // una cookie de sesión antigua sin limpiar en el navegador.
                 const resRegistro = await registerUser({
                     nombre:    userData.nombre,
                     apellidos: userData.apellidos,
@@ -405,9 +395,6 @@ if (encuestaForm) {
                 idUsuario = usuarioLogueadoId;
             }
 
-            // Guardar respuestas de la encuesta. Los anfitriones no tienen criterios de
-            // convivencia propios: los suyos se asocian a la vivienda (vivienda_criterio_opcion),
-            // no al usuario, y se rellenan al dar de alta la vivienda desde su panel.
             if (!userData || userData.rol !== 'anfitrion') {
                 const secciones = document.querySelectorAll('[data-criterio]');
                 const promesas = [];

@@ -26,9 +26,7 @@ class auth_SERVICE extends appServiceBase{
 
 		$this->notnull = array(
 			'LOGIN' => array('mail', 'password'),
-			'DESCONECTAR' => array('mail'),
 			'CAMBIAR_CONTRASENA' => array('mail', 'password_actual', 'password'),
-			'CAMBIAR_PASSWORD' => array('id_usuario', 'password'),
 			'REGISTRAR' => array('dni','mail','nombre_usuario','apellidos','password','telefono','id_rol'),
 			'RECUPERAR_PASSWORD' => array('mail'),
 			'RESTABLECER_PASSWORD' => array('token', 'password')
@@ -88,21 +86,6 @@ function mapRolToId($rol){
 	}
 
 	return 4;
-	}
-
-	function cargarTokenCabecera(){
-
-		$tokenFront = '';
-
-		if (function_exists('apache_request_headers')){
-			foreach(apache_request_headers() as $header => $value){
-				if(strtolower($header) == 'authorization'){
-					$tokenFront = $value;
-				}
-			}
-		}
-
-		return $tokenFront;
 	}
 
 	function LOGIN(){
@@ -260,12 +243,6 @@ function mapRolToId($rol){
 		return array('ok' => false, 'code' => 'CAMBIAR_PASSWORD_KO');
 	}
 
-	// Genera un token JWT stateless (valido 2 horas, mismo mecanismo que el login) que lleva
-	// el id de usuario y una "huella" derivada de su password actual. No se guarda nada en BD:
-	// el propio token se autovalida (firma + caducidad) al restablecer. El token NUNCA se
-	// devuelve en la respuesta: solo viaja dentro del enlace del email. Si se devolviera aqui,
-	// cualquiera podria pedir un reset para el email de otra persona y sacar el token
-	// directamente por la API, sin necesitar acceso a esa bandeja de entrada.
 	function RECUPERAR_PASSWORD(){
 		$mail = addslashes(trim($_POST['mail']));
 
@@ -298,10 +275,6 @@ function mapRolToId($rol){
 		return array('ok' => true, 'code' => 'RECUPERAR_PASSWORD_OK');
 	}
 
-	// El backend (AwardSpace) no tiene salida de red (ni mail() ni SMTP ni una llamada HTTP a una
-	// API de correo funcionan: confirmado que hasta una conexion a google.com da "Network is
-	// unreachable"), asi que aqui no se envia nada: se deja en cola en email_pendiente y un
-	// proceso externo con salida a internet (GitHub Actions programado) lo recoge y lo envia.
 	function enviarCorreoRecuperacion($destinatario, $enlace){
 		$asunto = 'Recupera tu contraseña - Sempre na Casa';
 
@@ -326,17 +299,11 @@ function mapRolToId($rol){
 		return $res['ok'];
 	}
 
-	// Huella derivada del hash de la contrasena actual (no es el hash en si: se le aplica otra
-	// vuelta de hash con la clave secreta del JWT como pimienta, para no filtrar el hash real
-	// dentro del token). Cambia en cuanto la contrasena cambia, asi que sirve para invalidar el
-	// enlace de recuperacion automaticamente tras usarlo una vez, sin guardar ni borrar nada en BD.
 	function huellaPassword($passwordHashActual){
 		include_once './base/JWT/token.php';
 		return substr(hash('sha256', $passwordHashActual . SECRET_KEY), 0, 16);
 	}
 
-	// Valida el token (firma + caducidad, vía MiToken) y comprueba que la huella de contrasena
-	// siga coincidiendo (si no, es que el enlace ya se uso o quedo obsoleto por uno mas reciente).
 	function RESTABLECER_PASSWORD(){
 		include_once './base/JWT/token.php';
 
@@ -379,52 +346,6 @@ function mapRolToId($rol){
 		return array('ok' => false, 'code' => 'RESTABLECER_PASSWORD_KO');
 	}
 
-	function CAMBIAR_PASSWORD(){
-
-		if (isset($_POST['dni']) && $_POST['dni'] == '11111111H'){
-			return array(
-				'ok' => false,
-				'code' => 'admin_no_se_puede_modificar_KO',
-				'resource' => ''
-			);
-		}
-
-		$idUsuario = intval($_POST['id_usuario']);
-		$password = md5($_POST['password']);
-
-		include_once './base/mapping.php';
-		$map = new mapping('usuario');
-		$res = $map->lanzarquery("UPDATE usuario SET password = '".$password."', fecha_modificacion_usuario = '".date('Y-m-d H:i:s')."' WHERE id_usuario = ".$idUsuario);
-
-		if ($res['ok'] === true){
-			$res['code'] = 'CAMBIAR_PASSWORD_OK';
-		}
-		else{
-			$res['code'] = 'CAMBIAR_PASSWORD_KO';
-		}
-
-		return $res;
-	}
-
-	// Comprueba la cabecera Authorization. Antes llamaba a MiToken::devuelveToken() sin
-	// try/catch: un token ausente, caducado o invalido tiraba un error fatal sin capturar
-	// (HTML en vez de JSON) en lugar de una respuesta controlada. Tambien se normaliza el
-	// retorno al formato {ok, code, resource} que usa el resto del backend (antes devolvia
-	// $resultado->data suelto, sin envolver, inconsistente con todo lo demas).
-	function validar_token(){
-
-		include_once './base/JWT/token.php';
-		$current_token = $this->cargarTokenCabecera();
-
-		try {
-			$resultado = MiToken::devuelveToken($current_token);
-		} catch (Exception $e) {
-			$codigo = ($e->getMessage() === 'TOKEN_CADUCADO') ? 'TOKEN_EXPIRADO_KO' : 'TOKEN_INVALIDO_KO';
-			return array('ok' => false, 'code' => $codigo);
-		}
-
-		return array('ok' => true, 'code' => 'TOKEN_VALIDO_OK', 'resource' => $resultado->data);
-	}
 }
 
 ?>

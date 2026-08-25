@@ -46,10 +46,6 @@ export async function renderPreguntasEncuesta(contenedor, opciones = {}) {
         });
         html += `</div>`;
 
-        // Preferencias propias de esta respuesta: cuanto pesa para mi este criterio, si es
-        // imprescindible, y (solo si es imprescindible, ver conectarControlOpcionExcluyente())
-        // que opcion concreta -no necesariamente la que he elegido como respuesta- descarta el
-        // match si la otra parte la elige.
         const idPeso        = `${nombreCampo}-peso`;
         const idRestrictivo = `${nombreCampo}-restrictivo`;
         const idExcluyente  = `${nombreCampo}-excluyente`;
@@ -83,9 +79,6 @@ export async function renderPreguntasEncuesta(contenedor, opciones = {}) {
     conectarControlOpcionExcluyente(contenedor);
 }
 
-// El selector "opcion que no acepto" de cada criterio solo tiene sentido si ese mismo criterio
-// ya esta marcado como imprescindible (restrictivo) por la misma persona: se habilita/deshabilita
-// y se resetea a "Ninguna" junto con el.
 function conectarControlOpcionExcluyente(contenedor) {
     contenedor.querySelectorAll('[data-criterio]').forEach(seccion => {
         const chkRestrictivo = seccion.querySelector('[data-restrictivo]');

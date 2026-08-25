@@ -452,7 +452,6 @@ class Data_Test {
      * se recorren todos los elementos checkbox con el mismo nombre
      * si el valor esta en uno de los elementos se coloca como seleccionado
      * si no esta el valor se crea un elemento con ese valor y se coloca como seleccionado
-     * UPDATE: pendiente realizar modificacion para admitir eleccion multiple
      * @param {String} name valor del parametro name que deben tener todos los elementos del checkbox 
      * @param {String} valor a comprobar en el checkbox
      */
@@ -509,14 +508,9 @@ class Data_Test {
             opcionesradio[0].value = valor;
             opcionesradio[0].checked = true;
         }
-        // si hay mas de un elemento con ese nombre
-        // comprobamos si el valor esta y si esta lo ponemos como checked
-        // si no esta lo creamos y lo ponemos checked
         else {
             var encontrado = false;
             for (var i = 0; i < opcionesradio.length; i++) {
-                // si recibiesemos un array de valores deberiamos comprobarlos todos 
-                // posiblemente con un (opcionesradio.includes(valor))
                 if (opcionesradio[i].value == valor) {
                     opcionesradio[i].checked = true;
                     encontrado = true;

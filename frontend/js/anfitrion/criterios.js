@@ -73,8 +73,6 @@ export function renderizarCriterios(lista) {
         tbody.appendChild(row);
     });
 
-    // Click en la fila para seleccionar (mismo patrón que las tablas del panel admin:
-    // checkbox oculto + borde azul .row-selected, ver components.css).
     tbody.querySelectorAll('.criterio-row').forEach(row => {
         row.addEventListener('click', function() {
             const checkbox = this.querySelector('.criterio-checkbox');

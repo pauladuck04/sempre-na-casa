@@ -38,9 +38,6 @@ const MAPA_ERRORES = {
     REGISTRO_NO_ENCONTRADO_KO: 'errors.registroNoEncontrado',
     REGISTRO_YA_ACTIVO_KO:     'errors.registroYaActivo',
 
-    // Enrutado / infraestructura (backend/index.php, backend/base/*) — en condiciones
-    // normales no deberían llegar al usuario, pero si el backend falla a ese nivel
-    // (BD caída, despliegue roto...) hay que mostrar algo en vez de un código crudo.
     CONFIGURACION_NO_ENCONTRADA_KO:     'errors.generic',
     peticion_invalida:                  'errors.generic',
     controlador_vacio:                  'errors.generic',
@@ -52,10 +49,6 @@ const MAPA_ERRORES = {
     QUERY_ERROR:                        'errors.generic'
 };
 
-// appServiceBase::comprobarnulos() genera dinámicamente un código "{atributo}_es_nulo_KO"
-// por cada campo obligatorio que falte, para cualquier entidad (dni_es_nulo_KO,
-// id_rol_es_nulo_KO, direccion_es_nulo_KO...). Son demasiados para listarlos uno a uno,
-// así que se reconocen por patrón en vez de tener una entrada estática por campo.
 const SUFIJO_CAMPO_OBLIGATORIO = '_es_nulo_KO';
 
 /**

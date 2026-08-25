@@ -189,7 +189,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (efectiva === 'viviendas' && usuarios.listaUsuariosMemoria.length === 0) {
             await usuarios.cargarUsuarios();
         }
-        if (efectiva === 'usuarios' && roles.listaRolesMemoria.length === 0) {
+        if ((efectiva === 'usuarios' || efectiva === 'viviendas') && roles.listaRolesMemoria.length === 0) {
             await roles.cargarRoles();
         }
         await abrirModalGenerico(efectiva);
@@ -202,7 +202,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (efectiva === 'viviendas' && usuarios.listaUsuariosMemoria.length === 0) {
             await usuarios.cargarUsuarios();
         }
-        if (efectiva === 'usuarios' && roles.listaRolesMemoria.length === 0) {
+        if ((efectiva === 'usuarios' || efectiva === 'viviendas') && roles.listaRolesMemoria.length === 0) {
             await roles.cargarRoles();
         }
 
@@ -680,7 +680,7 @@ async function abrirModalGenerico(seccion) {
     const config = CONFIG_MODALES[seccion];
     if (!config) return;
 
-    if (seccion === 'usuarios' && Array.isArray(roles.listaRolesMemoria) && roles.listaRolesMemoria.length === 0) {
+    if ((seccion === 'usuarios' || seccion === 'viviendas') && Array.isArray(roles.listaRolesMemoria) && roles.listaRolesMemoria.length === 0) {
         try { await roles.cargarRoles(); } catch (err) { console.warn('No se pudieron cargar roles antes de abrir modal:', err); }
     }
 

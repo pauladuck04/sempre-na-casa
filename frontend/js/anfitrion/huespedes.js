@@ -59,9 +59,6 @@ export function renderizarHuespedes(lista) {
         tbody.appendChild(row);
     });
 
-    // Click en la fila para seleccionar (mismo patrón que las tablas del panel admin:
-    // checkbox oculto + borde azul .row-selected, ver components.css); clic en el nombre
-    // sigue abriendo el detalle en vez de seleccionar la fila.
     tbody.querySelectorAll('.huesped-row').forEach(row => {
         row.addEventListener('click', function(e) {
             if (e.target.closest('.huesped-nombre')) {

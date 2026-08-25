@@ -6,7 +6,11 @@ let idiomaActual = getCookie('lang') || DEFAULT_LANG;
 
 export async function setLang(lang) {
     if (!LANGS_DISPONIBLES.includes(lang)) return;
-    const res = await fetch(new URL(`../assets/translations/${lang}.json`, import.meta.url));
+    // Sin cache-busting aquí, el navegador puede servir indefinidamente una copia vieja de este
+    // JSON (a diferencia de los .js, que al menos llevan un ?v= manual): un texto nuevo añadido
+    // a la traducción podía tardar en verse pase lo que pase, incluido un refresco forzado. Con
+    // un parametro que cambia en cada carga de pagina se fuerza a pedir siempre el fichero real.
+    const res = await fetch(new URL(`../assets/translations/${lang}.json?_=${Date.now()}`, import.meta.url));
     traducciones = await res.json();
     idiomaActual = lang;
     setCookie('lang', lang, 365);
