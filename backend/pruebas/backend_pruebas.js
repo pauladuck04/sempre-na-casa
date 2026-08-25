@@ -97,6 +97,13 @@ let rol_backend_tests = [
 // =====================================================================================
 let opcion_backend_tests = [
     { accion: 'ADD', descripcion: 'ADD con todos los campos obligatorios', overrides: {}, esperado: true },
+
+    // El fixture ya trae 1 opción activa para ese criterio (prepararFixtures) y el caso de
+    // arriba acaba de crear una 2ª: este ADD la lleva a 3 (el máximo), y el siguiente prueba
+    // que un 4º ADD sobre el mismo criterio se rechaza (opcion_SERVICE::ADD).
+    { accion: 'ADD', descripcion: 'ADD que completa el máximo de 3 opciones activas del criterio', overrides: {}, esperado: true },
+    { accion: 'ADD', descripcion: 'ADD que supera el máximo de 3 opciones activas del criterio', overrides: {}, esperado: 'LIMITE_OPCIONES_KO' },
+
     { accion: 'ADD', descripcion: 'ADD sin nombre_opcion', overrides: { nombre_opcion: '' }, esperado: 'nombre_opcion_es_nulo_KO' },
     { accion: 'ADD', descripcion: 'ADD sin valor', overrides: { valor: '' }, esperado: 'valor_es_nulo_KO' },
     { accion: 'ADD', descripcion: 'ADD sin id_criterio', overrides: { id_criterio: '' }, esperado: 'id_criterio_es_nulo_KO' },

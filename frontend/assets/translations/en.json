@@ -393,7 +393,9 @@
       "tabCriteria": "Criteria",
       "tabOptions": "Options",
       "createOptionTitle": "New Option",
-      "editOptionTitle": "Edit Option"
+      "editOptionTitle": "Edit Option",
+      "valueHint": "The value must be a number between 1 and 3.",
+      "optionsLimitError": "No more than 3 options can be assigned to the criteria."
     }
   },
   "anfitrion": {
@@ -728,6 +730,7 @@
     "sinCriteriosComunes": "There are no shared criteria to calculate compatibility.",
     "rankViviendas": "Could not calculate the home ranking.",
     "registroNoEncontrado": "Record not found.",
-    "registroYaActivo": "The record is already active."
+    "registroYaActivo": "The record is already active.",
+    "limiteOpciones": "No more options can be added to this criterion."
   }
 }

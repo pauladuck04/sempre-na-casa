@@ -92,7 +92,7 @@ const CONFIG_MODALES = {
     criterios: {
         getTitulo: () => t('admin.criteria.createTitle'),
         getHtml: () => `
-            <div class="mb-3"><label class="form-label fw-bold">${t('admin.criteria.criteriaName')}</label><input name="nombre" class="form-control" required></div>`
+            <div class="mb-3"><label class="form-label fw-bold">${t('admin.criteria.criteriaName')}</label><input name="nombre" class="form-control" maxlength="150" required></div>`
     },
     opciones: {
         getTitulo: () => t('admin.criteria.createOptionTitle'),
@@ -103,8 +103,12 @@ const CONFIG_MODALES = {
                     ${criterios.listaCriteriosMemoria.filter(c => c.estado === 'activo').map(c => `<option value="${c.id}">${c.nombre}</option>`).join('')}
                 </select>
             </div>
-            <div class="mb-3"><label class="form-label fw-bold">${t('admin.criteria.option')}</label><input name="opcion" class="form-control" required></div>
-            <div class="mb-3"><label class="form-label fw-bold">${t('admin.criteria.value')}</label><input name="valor" class="form-control" required></div>`
+            <div class="mb-3"><label class="form-label fw-bold">${t('admin.criteria.option')}</label><input name="opcion" class="form-control" maxlength="150" required></div>
+            <div class="mb-3">
+                <label class="form-label fw-bold">${t('admin.criteria.value')}</label>
+                <input name="valor" type="number" min="1" max="3" step="1" class="form-control" required>
+                <small class="form-text text-muted">${t('admin.criteria.valueHint')}</small>
+            </div>`
     }
 };
 
@@ -458,11 +462,19 @@ document.addEventListener('DOMContentLoaded', async function() {
                 if (data.id_edit) {
                     params.id_opcion = data.id_edit;
                     const res = await apiPost('opcion', 'EDIT', params);
-                    if (!res.ok) { mostrarErrorFormulario(errorEl, 'Error al guardar opción: ' + (res.code || 'desconocido')); return; }
+                    if (!res.ok) {
+                        const mensaje = res.code === 'LIMITE_OPCIONES_KO' ? t('admin.criteria.optionsLimitError') : ('Error al guardar opción: ' + (res.code || 'desconocido'));
+                        mostrarErrorFormulario(errorEl, mensaje);
+                        return;
+                    }
                     mostrarToast('Modificado correctamente', 'success');
                 } else {
                     const res = await apiPost('opcion', 'ADD', params);
-                    if (!res.ok) { mostrarErrorFormulario(errorEl, 'Error al crear opción: ' + (res.code || 'desconocido')); return; }
+                    if (!res.ok) {
+                        const mensaje = res.code === 'LIMITE_OPCIONES_KO' ? t('admin.criteria.optionsLimitError') : ('Error al crear opción: ' + (res.code || 'desconocido'));
+                        mostrarErrorFormulario(errorEl, mensaje);
+                        return;
+                    }
                     mostrarToast('Guardado correctamente', 'success');
                 }
             } else {

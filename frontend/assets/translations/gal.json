@@ -334,6 +334,8 @@
     "criteria": {
       "criteriaName": "Nome do Criterio", "compatibilityCriteria": "Criterio de Compatibilidade",
       "option": "Opción", "value": "Valor",
+      "valueHint": "Debe ser un número entre 1 e 3",
+      "optionsLimitError": "Este criterio xa ten o máximo de 3 opcións",
       "filterActive": "Activos", "filterInactive": "Inactivos",
       "createTitle": "Novo Criterio", "editTitle": "Editar Criterio", "detailTitle": "Detalles do Criterio",
       "tabCriteria": "Criterios", "tabOptions": "Opcións",
@@ -592,6 +594,7 @@
     "sinCriteriosComunes": "Non hai criterios comúns para calcular a compatibilidade.",
     "rankViviendas": "Non se puido calcular o ranking de vivendas.",
     "registroNoEncontrado": "Non se atopou o rexistro.",
-    "registroYaActivo": "O rexistro xa está activo."
+    "registroYaActivo": "O rexistro xa está activo.",
+    "limiteOpciones": "Non se poden engadir máis opcións a este criterio."
   }
 }

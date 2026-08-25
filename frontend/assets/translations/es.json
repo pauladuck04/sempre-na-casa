@@ -361,6 +361,8 @@
       "compatibilityCriteria": "Criterio de Compatibilidad",
       "option": "Opción",
       "value": "Valor",
+      "valueHint": "Debe ser un número entre 1 y 3",
+      "optionsLimitError": "Este criterio ya tiene el máximo de 3 opciones",
       "filterActive": "Activos",
       "filterInactive": "Inactivos",
       "createTitle": "Nuevo Criterio",
@@ -716,6 +718,7 @@
     "sinCriteriosComunes": "No hay criterios comunes para calcular la compatibilidad.",
     "rankViviendas": "No se pudo calcular el ranking de viviendas.",
     "registroNoEncontrado": "No se ha encontrado el registro.",
-    "registroYaActivo": "El registro ya está activo."
+    "registroYaActivo": "El registro ya está activo.",
+    "limiteOpciones": "No se pueden añadir más opciones a este criterio."
   }
 }

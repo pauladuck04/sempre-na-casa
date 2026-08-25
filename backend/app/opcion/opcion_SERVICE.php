@@ -39,6 +39,28 @@ class opcion_SERVICE extends appServiceBase {
         }
     }
 
+    // Un criterio no puede tener mas de 3 opciones activas (el motor de matching asume un rango
+    // de opciones acotado por criterio). Cuenta solo opciones activas: una desactivada no ocupa
+    // hueco.
+    const MAX_OPCIONES_POR_CRITERIO = 3;
+
+    function opcionesActivasEnCriterio($idCriterio) {
+        include_once './base/mapping.php';
+        $map = new mapping('opcion');
+        $res = $map->lanzarqueryconresults(
+            "SELECT COUNT(*) AS total FROM opcion WHERE id_criterio = {$idCriterio} AND activo_opcion = 1"
+        );
+        return ($res['ok'] && !empty($res['resource'])) ? intval($res['resource'][0]['total']) : 0;
+    }
+
+    function ADD() {
+        $idCriterio = intval($_POST['id_criterio']);
+        if ($this->opcionesActivasEnCriterio($idCriterio) >= self::MAX_OPCIONES_POR_CRITERIO) {
+            return array('ok' => false, 'code' => 'LIMITE_OPCIONES_KO');
+        }
+        return $this->modelo->ADD();
+    }
+
     function getAll() {
         $this->modelo->listaAtributos = [];
         $this->modelo->foraneas = [];
@@ -60,10 +82,38 @@ class opcion_SERVICE extends appServiceBase {
     }
 
     function REACTIVAR() {
+        include_once './base/mapping.php';
+        $map = new mapping('opcion');
+        $idOpcion = intval($_POST['id_opcion']);
+        $res = $map->lanzarqueryconresults(
+            "SELECT id_criterio FROM opcion WHERE id_opcion = {$idOpcion} LIMIT 1"
+        );
+        if ($res['ok'] && !empty($res['resource'])) {
+            $idCriterio = intval($res['resource'][0]['id_criterio']);
+            if ($this->opcionesActivasEnCriterio($idCriterio) >= self::MAX_OPCIONES_POR_CRITERIO) {
+                return array('ok' => false, 'code' => 'LIMITE_OPCIONES_KO');
+            }
+        }
         return $this->reactivarRegistro('activo_opcion', 'fecha_modificacion_opcion');
     }
 
     function EDIT() {
+        // Si se reasigna la opcion a otro criterio, ese otro criterio tambien tiene que respetar
+        // el maximo de 3 (editar el nombre/valor sin cambiar de criterio no toca el recuento).
+        include_once './base/mapping.php';
+        $map = new mapping('opcion');
+        $idOpcion = intval($_POST['id_opcion']);
+        $idCriterioNuevo = intval($_POST['id_criterio']);
+        $res = $map->lanzarqueryconresults(
+            "SELECT id_criterio FROM opcion WHERE id_opcion = {$idOpcion} LIMIT 1"
+        );
+        if ($res['ok'] && !empty($res['resource'])) {
+            $idCriterioActual = intval($res['resource'][0]['id_criterio']);
+            if ($idCriterioNuevo !== $idCriterioActual && $this->opcionesActivasEnCriterio($idCriterioNuevo) >= self::MAX_OPCIONES_POR_CRITERIO) {
+                return array('ok' => false, 'code' => 'LIMITE_OPCIONES_KO');
+            }
+        }
+
         unset($this->modelo->valores['fecha_alta_opcion']);
         unset($this->modelo->valores['activo_opcion']);
         $this->modelo->valores['fecha_modificacion_opcion'] = date('Y-m-d H:i:s');

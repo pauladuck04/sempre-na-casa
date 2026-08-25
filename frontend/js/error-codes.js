@@ -32,6 +32,7 @@ const MAPA_ERRORES = {
     EXCLUYENTE_REQUIERE_CRITERIO_RESTRICTIVO_KO: 'errors.excluyenteRequiereRestrictivo',
     SIN_CRITERIOS_COMUNES_KO:                    'errors.sinCriteriosComunes',
     RANK_VIVIENDAS_KO:                           'errors.rankViviendas',
+    LIMITE_OPCIONES_KO:                          'errors.limiteOpciones',
 
     // Genéricos de CRUD (backend/base/appServiceBase.php, usados por cualquier entidad)
     REGISTRO_NO_ENCONTRADO_KO: 'errors.registroNoEncontrado',
