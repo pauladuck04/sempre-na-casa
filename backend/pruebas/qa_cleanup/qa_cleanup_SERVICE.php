@@ -2,14 +2,6 @@
 
 include_once './base/appServiceBase.php';
 
-// Controlador dedicado exclusivamente a borrar de verdad (DELETE fisico, no baja logica) las
-// filas "QA..." que crean los runners de pruebas de caja negra (backend/pruebas/), para que no
-// se acumulen indefinidamente en la base de datos real (no hay BD de pruebas separada).
-//
-// Por seguridad NO es un borrado fisico generico: solo opera sobre una lista fija de tablas
-// (nunca elegida por quien llama, ver $tablasPermitidas) y, antes de borrar cada fila, comprueba
-// que su campo identificativo empiece por "QA" -o que la fila padre a la que apunta lo cumpla, en
-// las tablas de relacion sin campo de texto propio-. Si no lo cumple, se omite en vez de borrarse.
 class qa_cleanup_SERVICE extends appServiceBase {
 
     // tabla => columna que debe empezar por 'QA', o null si hay que mirar la tabla padre
@@ -37,9 +29,6 @@ class qa_cleanup_SERVICE extends appServiceBase {
         $this->modelo->tabla = 'qa_cleanup';
     }
 
-    // $_POST['filas']: JSON de [{tabla, valores:{campo:valor,...}}, ...], en el orden en que se
-    // deben borrar (quien llama es responsable de poner las tablas de relacion antes que sus
-    // padres, para no dejar filas huerfanas si algo falla a mitad).
     function LIMPIAR() {
         $filas = json_decode($_POST['filas'], true);
         if (!is_array($filas)) {
@@ -86,9 +75,6 @@ class qa_cleanup_SERVICE extends appServiceBase {
         ));
     }
 
-    // Solo nombres de columna simples (letras minusculas y guion bajo) y valores forzados a
-    // entero: todas las claves de estas tablas son IDs numericos, asi que no hace falta admitir
-    // nada mas y esto evita cualquier posibilidad de inyeccion via nombre de columna.
     private function construirWhere($valores) {
         $condiciones = array();
         foreach ($valores as $campo => $valor) {
