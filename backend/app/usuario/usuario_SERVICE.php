@@ -51,10 +51,29 @@ class usuario_SERVICE extends appServiceBase{
     }
 
     function EDIT() {
+        unset($this->modelo->valores['fecha_alta_usuario']);
+        unset($this->modelo->valores['activo_usuario']);
+        $this->modelo->valores['fecha_modificacion_usuario'] = date('Y-m-d H:i:s');
         if (empty($this->modelo->valores['password'])) {
             unset($this->modelo->valores['password']);
         }
         return $this->modelo->EDIT();
+    }
+
+    function getAll() {
+        $this->modelo->listaAtributos = [];
+        $this->modelo->foraneas = [];
+        return $this->modelo->SEARCH();
+    }
+
+    function getById() {
+        foreach ($this->modelo->valores as $key => $value) {
+            $this->modelo->valores[$key] = '';
+        }
+        $primaryKey = $this->modelo->clave[0];
+        $this->modelo->valores[$primaryKey] = $_POST['id_usuario'];
+        $this->modelo->foraneas = [];
+        return $this->modelo->SEARCH_BY();
     }
 
     function getByMail() {

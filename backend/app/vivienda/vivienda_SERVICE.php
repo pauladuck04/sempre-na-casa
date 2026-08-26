@@ -38,12 +38,25 @@ class vivienda_SERVICE extends appServiceBase {
         }
     }
 
+    function getAll() {
+        $this->modelo->listaAtributos = [];
+        $this->modelo->foraneas = [];
+        return $this->modelo->SEARCH();
+    }
+
     function DELETE() {
         return $this->softDelete('activo_vivienda', 'fecha_modificacion_vivienda');
     }
 
     function REACTIVAR() {
         return $this->reactivarRegistro('activo_vivienda', 'fecha_modificacion_vivienda');
+    }
+
+    function EDIT() {
+        unset($this->modelo->valores['fecha_alta_vivienda']);
+        unset($this->modelo->valores['activo_vivienda']);
+        $this->modelo->valores['fecha_modificacion_vivienda'] = date('Y-m-d H:i:s');
+        return $this->modelo->EDIT();
     }
 
     function getById() {

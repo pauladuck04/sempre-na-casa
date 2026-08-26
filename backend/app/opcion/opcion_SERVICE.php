@@ -61,6 +61,12 @@ class opcion_SERVICE extends appServiceBase {
         return $this->modelo->ADD();
     }
 
+    function getAll() {
+        $this->modelo->listaAtributos = [];
+        $this->modelo->foraneas = [];
+        return $this->modelo->SEARCH();
+    }
+
     function getByCriterio() {
         foreach ($this->modelo->valores as $key => $value) {
             $this->modelo->valores[$key] = '';
@@ -107,7 +113,21 @@ class opcion_SERVICE extends appServiceBase {
                 return array('ok' => false, 'code' => 'LIMITE_OPCIONES_KO');
             }
         }
+
+        unset($this->modelo->valores['fecha_alta_opcion']);
+        unset($this->modelo->valores['activo_opcion']);
+        $this->modelo->valores['fecha_modificacion_opcion'] = date('Y-m-d H:i:s');
         return $this->modelo->EDIT();
+    }
+
+    function getById() {
+        foreach ($this->modelo->valores as $key => $value) {
+            $this->modelo->valores[$key] = '';
+        }
+        $primaryKey = $this->modelo->clave[0];
+        $this->modelo->valores[$primaryKey] = $_POST['id_opcion'];
+        $this->modelo->foraneas = [];
+        return $this->modelo->SEARCH_BY();
     }
 
 }

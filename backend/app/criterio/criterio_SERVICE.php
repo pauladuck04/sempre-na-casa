@@ -38,12 +38,35 @@ class criterio_SERVICE extends appServiceBase {
         }
     }
 
+    function getAll() {
+        $this->modelo->listaAtributos = [];
+        $this->modelo->foraneas = [];
+        return $this->modelo->SEARCH();
+    }
+
     function DELETE() {
         return $this->softDelete('activo_criterio', 'fecha_modificacion_criterio');
     }
 
     function REACTIVAR() {
         return $this->reactivarRegistro('activo_criterio', 'fecha_modificacion_criterio');
+    }
+
+    function EDIT() {
+        unset($this->modelo->valores['fecha_alta_criterio']);
+        unset($this->modelo->valores['activo_criterio']);
+        $this->modelo->valores['fecha_modificacion_criterio'] = date('Y-m-d H:i:s');
+        return $this->modelo->EDIT();
+    }
+
+    function getById() {
+        foreach ($this->modelo->valores as $key => $value) {
+            $this->modelo->valores[$key] = '';
+        }
+        $primaryKey = $this->modelo->clave[0];
+        $this->modelo->valores[$primaryKey] = $_POST['id'];
+        $this->modelo->foraneas = [];
+        return $this->modelo->SEARCH_BY();
     }
 
 }

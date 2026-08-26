@@ -55,5 +55,28 @@ class rol_SERVICE extends appServiceBase {
         return $this->reactivarRegistro('activo_rol', 'fecha_modificacion_rol');
     }
 
+    function EDIT() {
+        unset($this->modelo->valores['fecha_alta_rol']);
+        unset($this->modelo->valores['activo_rol']);
+        $this->modelo->valores['fecha_modificacion_rol'] = date('Y-m-d H:i:s');
+        return $this->modelo->EDIT();
+    }
+
+    function getAll() {
+        $this->modelo->listaAtributos = [];
+        $this->modelo->foraneas = [];
+        return $this->modelo->SEARCH();
+    }
+
+    function getById() {
+        foreach ($this->modelo->valores as $key => $value) {
+            $this->modelo->valores[$key] = '';
+        }
+        $primaryKey = $this->modelo->clave[0];
+        $this->modelo->valores[$primaryKey] = $_POST['id_rol'];
+        $this->modelo->foraneas = [];
+        return $this->modelo->SEARCH_BY();
+    }
+
 }
 ?>
