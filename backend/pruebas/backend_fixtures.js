@@ -174,13 +174,6 @@ async function compararConBackend(nombreEntidad, accion, fixtures, overrides, re
 
 const TABLAS_RELACION = ['usuario_criterio_opcion', 'vivienda_criterio_opcion', 'usuario_vivienda'];
 
-/** Borra físicamente (DELETE, no baja lógica) las filas QA creadas durante un run. Reordena
- * siempre las tablas de relación primero: su comprobación de seguridad mira la fila padre
- * (usuario/vivienda) a la que apuntan (ver qa_cleanup_SERVICE::esFilaQA), así que si esa fila
- * padre ya no existe la relación se omitiría en vez de borrarse, dejando basura. Después van las
- * demás filas "extra" (en el orden en que se crearon) y por último las fixtures base, en orden de
- * dependencia (opcion antes que criterio, vivienda/usuario antes que rol). Los errores de
- * limpieza no deben romper la ejecución de pruebas: solo se registran en consola. */
 async function limpiarFixtures(filasExtra, fixtures) {
     const extra = filasExtra.filter(Boolean);
     const relaciones = extra.filter(f => TABLAS_RELACION.includes(f.tabla));

@@ -102,14 +102,15 @@
 
     <script>document.write('<script src="' + window.__FRONTEND_BASE__ + 'js/api.js?v=3"><\/script>');</script>
 
-    <script src="common/DOM_class.js?v=3"></script>
-    <script src="backend_fixtures.js?v=3"></script>
-
-    <script src="backend_pruebas.js"></script>
-    <script src="backend_test.js?v=3"></script>
-
-    <script src="escenarios_pruebas.js?v=3"></script>
-    <script src="escenario_test.js?v=3"></script>
+    <script>
+        // Herramienta de pruebas: se edita a menudo y se recarga a mano, así que aquí interesa
+        // más pedir siempre el fichero real que aprovechar la caché del navegador (a diferencia
+        // de un ?v=3 fijo, que una vez cacheado por el navegador con ese mismo valor se queda
+        // sirviendo la copia vieja indefinidamente aunque el fichero cambie en el servidor).
+        const _vTest = Date.now();
+        ['common/DOM_class.js', 'backend_fixtures.js', 'backend_pruebas.js', 'backend_test.js', 'escenarios_pruebas.js', 'escenario_test.js']
+            .forEach(f => document.write('<script src="' + f + '?v=' + _vTest + '"><\/script>'));
+    </script>
 
     <script>
         async function ejecutarTestsBackend() {

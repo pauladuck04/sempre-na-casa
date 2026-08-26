@@ -84,10 +84,6 @@ let rol_backend_tests = [
     { accion: 'EDIT', descripcion: 'EDIT sin id_rol', overrides: { id_rol: '' }, esperado: 'id_rol_es_nulo_KO' },
     { accion: 'EDIT', descripcion: 'EDIT sin nombre_rol', overrides: { nombre_rol: '' }, esperado: 'nombre_rol_es_nulo_KO' },
 
-    // DELETE de rol también desactiva (soft delete) a los usuarios con ese id_rol (ver
-    // rol_SERVICE::DELETE). El fixture de rol se crea siempre desde cero en prepararFixtures()
-    // (nunca se reutiliza uno existente), así que el único usuario afectado es el propio
-    // usuario QA de este fixture, no datos reales.
     { accion: 'DELETE', descripcion: 'DELETE de un rol existente (baja lógica)', overrides: {}, esperado: true },
     { accion: 'DELETE', descripcion: 'DELETE sin id_rol', overrides: { id_rol: '' }, esperado: 'id_rol_es_nulo_KO' }
 ];
@@ -98,9 +94,6 @@ let rol_backend_tests = [
 let opcion_backend_tests = [
     { accion: 'ADD', descripcion: 'ADD con todos los campos obligatorios', overrides: {}, esperado: true },
 
-    // El fixture ya trae 1 opción activa para ese criterio (prepararFixtures) y el caso de
-    // arriba acaba de crear una 2ª: este ADD la lleva a 3 (el máximo), y el siguiente prueba
-    // que un 4º ADD sobre el mismo criterio se rechaza (opcion_SERVICE::ADD).
     { accion: 'ADD', descripcion: 'ADD que completa el máximo de 3 opciones activas del criterio', overrides: {}, esperado: true },
     { accion: 'ADD', descripcion: 'ADD que supera el máximo de 3 opciones activas del criterio', overrides: {}, esperado: 'LIMITE_OPCIONES_KO' },
 
