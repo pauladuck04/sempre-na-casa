@@ -370,6 +370,22 @@ class mapping extends mappingBase{
 		$atributosnumericos = $this->formatonumericoatributos($this->tabla);
 		$atributosfecha = $this->formatofechaatributos($this->tabla);
 
+		// Actualizar automaticamente la columna fecha_modificacion_XXX si la tabla la tiene
+		foreach ($atributosfecha as $atributo) {
+			if (strpos($atributo, 'fecha_modificacion') === 0){
+				$valores[$atributo] = date('Y-m-d H:i:s');
+			}
+			elseif (strpos($atributo, 'fecha_alta') === 0){
+				unset($valores[$atributo]);
+			}
+		}
+
+		foreach ($atributos as $atributo) {
+			if (strpos($atributo, 'activo_') === 0){
+				unset($valores[$atributo]);
+			}
+		}
+
 		$this->query = "UPDATE " . $tabla . " SET ";
 
 		$cadena = '';

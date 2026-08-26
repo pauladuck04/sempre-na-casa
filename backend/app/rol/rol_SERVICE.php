@@ -55,12 +55,5 @@ class rol_SERVICE extends appServiceBase {
         return $this->reactivarRegistro('activo_rol', 'fecha_modificacion_rol');
     }
 
-    function EDIT() {
-        unset($this->modelo->valores['fecha_alta_rol']);
-        unset($this->modelo->valores['activo_rol']);
-        $this->modelo->valores['fecha_modificacion_rol'] = date('Y-m-d H:i:s');
-        return $this->modelo->EDIT();
-    }
-
 }
 ?>

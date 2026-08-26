@@ -46,12 +46,5 @@ class criterio_SERVICE extends appServiceBase {
         return $this->reactivarRegistro('activo_criterio', 'fecha_modificacion_criterio');
     }
 
-    function EDIT() {
-        unset($this->modelo->valores['fecha_alta_criterio']);
-        unset($this->modelo->valores['activo_criterio']);
-        $this->modelo->valores['fecha_modificacion_criterio'] = date('Y-m-d H:i:s');
-        return $this->modelo->EDIT();
-    }
-
 }
 ?>

@@ -46,13 +46,6 @@ class vivienda_SERVICE extends appServiceBase {
         return $this->reactivarRegistro('activo_vivienda', 'fecha_modificacion_vivienda');
     }
 
-    function EDIT() {
-        unset($this->modelo->valores['fecha_alta_vivienda']);
-        unset($this->modelo->valores['activo_vivienda']);
-        $this->modelo->valores['fecha_modificacion_vivienda'] = date('Y-m-d H:i:s');
-        return $this->modelo->EDIT();
-    }
-
     function getById() {
         foreach ($this->modelo->valores as $key => $value) {
             $this->modelo->valores[$key] = '';

@@ -107,10 +107,6 @@ class opcion_SERVICE extends appServiceBase {
                 return array('ok' => false, 'code' => 'LIMITE_OPCIONES_KO');
             }
         }
-
-        unset($this->modelo->valores['fecha_alta_opcion']);
-        unset($this->modelo->valores['activo_opcion']);
-        $this->modelo->valores['fecha_modificacion_opcion'] = date('Y-m-d H:i:s');
         return $this->modelo->EDIT();
     }
 

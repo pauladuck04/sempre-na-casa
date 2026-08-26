@@ -51,9 +51,6 @@ class usuario_SERVICE extends appServiceBase{
     }
 
     function EDIT() {
-        unset($this->modelo->valores['fecha_alta_usuario']);
-        unset($this->modelo->valores['activo_usuario']);
-        $this->modelo->valores['fecha_modificacion_usuario'] = date('Y-m-d H:i:s');
         if (empty($this->modelo->valores['password'])) {
             unset($this->modelo->valores['password']);
         }
