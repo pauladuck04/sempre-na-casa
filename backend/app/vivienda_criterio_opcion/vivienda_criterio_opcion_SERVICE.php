@@ -83,12 +83,6 @@ class vivienda_criterio_opcion_SERVICE extends appServiceBase {
         return true;
     }
 
-    function getAll() {
-        $this->modelo->listaAtributos = [];
-        $this->modelo->foraneas = [];
-        return $this->modelo->SEARCH();
-    }
-
     function getByVivienda() {
         $idVivienda = intval($_POST['id_vivienda']);
         include_once './base/mapping.php';
@@ -131,17 +125,5 @@ class vivienda_criterio_opcion_SERVICE extends appServiceBase {
              VALUES ({$idVivienda}, {$idCriterio}, {$idOpcion}, {$peso}, {$restrictivo}, {$valorOpcionExcluyente}, 1)"
         );
     }
-
-    function getById() {
-        foreach ($this->modelo->valores as $key => $value) {
-            $this->modelo->valores[$key] = '';
-        }
-        $this->modelo->valores['id_vivienda'] = $_POST['id_vivienda'];
-        $this->modelo->valores['id_criterio'] = $_POST['id_criterio'];
-        $this->modelo->valores['id_opcion']   = $_POST['id_opcion'];
-        $this->modelo->foraneas = [];
-        return $this->modelo->SEARCH_BY();
-    }
-
 }
 ?>

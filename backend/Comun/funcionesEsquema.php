@@ -92,7 +92,6 @@ function Comprobar_si_existe_BD(){
 		$respuesta = array('ok' => false, 'code' => 'BD_not_defined_KO', 'resource' => $mensaje);
 		header('Content-type: application/json');
 		echo(json_encode($respuesta));
-		//escribirLogInterno($respuesta['resource']);
 		exit();
 
 	}
@@ -105,7 +104,6 @@ function Comprobar_si_existe_BD(){
 		$respuesta = array('ok' => false, 'code' => 'BD_not_defined_KO', 'resource' => $mensaje);
 		header('Content-type: application/json');
 		echo(json_encode($respuesta));
-		//escribirLogInterno($respuesta['resource']);
 		exit();
 
 	}

@@ -143,7 +143,6 @@ if ($res['ok']){
 		$respuesta = array('ok' => false, 'code' => 'controlador_invalido_KO', 'resource' => $mensaje);
 		header('Content-type: application/json');
 		echo(json_encode($respuesta));
-		//escribirLogInterno($res['resource']);
 		exit();
 	}
 
@@ -152,7 +151,6 @@ if ($res['ok']){
 	$respuesta = array('ok' => false, 'code' => 'definicion_controlador_invalida_KO', 'resource' => $mensaje);
 	header('Content-type: application/json');
 	echo(json_encode($respuesta));
-	//escribirLogInterno($res['resource']);
 	exit();
 }
 

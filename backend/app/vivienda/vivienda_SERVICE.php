@@ -38,12 +38,6 @@ class vivienda_SERVICE extends appServiceBase {
         }
     }
 
-    function getAll() {
-        $this->modelo->listaAtributos = [];
-        $this->modelo->foraneas = [];
-        return $this->modelo->SEARCH();
-    }
-
     function DELETE() {
         return $this->softDelete('activo_vivienda', 'fecha_modificacion_vivienda');
     }

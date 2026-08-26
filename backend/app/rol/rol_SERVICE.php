@@ -62,21 +62,5 @@ class rol_SERVICE extends appServiceBase {
         return $this->modelo->EDIT();
     }
 
-    function getAll() {
-        $this->modelo->listaAtributos = [];
-        $this->modelo->foraneas = [];
-        return $this->modelo->SEARCH();
-    }
-
-    function getById() {
-        foreach ($this->modelo->valores as $key => $value) {
-            $this->modelo->valores[$key] = '';
-        }
-        $primaryKey = $this->modelo->clave[0];
-        $this->modelo->valores[$primaryKey] = $_POST['id_rol'];
-        $this->modelo->foraneas = [];
-        return $this->modelo->SEARCH_BY();
-    }
-
 }
 ?>

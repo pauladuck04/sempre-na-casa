@@ -221,12 +221,6 @@ class usuario_vivienda_SERVICE extends appServiceBase {
         return $this->reactivarRegistro('activo_usuario_vivienda');
     }
 
-    function getAll() {
-        $this->modelo->listaAtributos = [];
-        $this->modelo->foraneas = [];
-        return $this->modelo->SEARCH();
-    }
-
     function getHuespedesByVivienda() {
         $idVivienda = intval($_POST['id_vivienda']);
         include_once './base/mapping.php';
@@ -353,16 +347,6 @@ class usuario_vivienda_SERVICE extends appServiceBase {
 
         $score = $matching->calcularScore($nombres, $rangos, $respuestasUsuario, $respuestasVivienda);
         return $score['porcentaje'] !== null ? $score['porcentaje'] : 0;
-    }
-
-    function getById() {
-        foreach ($this->modelo->valores as $key => $value) {
-            $this->modelo->valores[$key] = '';
-        }
-        $primaryKey = $this->modelo->clave[0];
-        $this->modelo->valores[$primaryKey] = $_POST['id'];
-        $this->modelo->foraneas = [];
-        return $this->modelo->SEARCH_BY();
     }
 
 }
